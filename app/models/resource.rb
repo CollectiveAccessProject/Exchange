@@ -1,16 +1,15 @@
 class Resource < ActiveRecord::Base
+  has_many :tags, as: :taggable
+  has_many :comments, as: :commentable
+  has_many :change_logs, as: :change_log
 
+  belongs_to :parent, class_name: "Resource", foreign_key: "parent_id"
+  has_many :child_resources, class_name: "Resource", foreign_key: "parent_id"
+  has_many :resources, through: "related_resources"
 
+  belongs_to :forked_from_resource, class_name: "Resource", foreign_key: "forked_from_resource_id"
+  has_many :forked_resources, class_name: "Resource", foreign_key: "forked_from_resource_id"
 
-    has_many :links, :class_name => 'Link'
-    has_many :media_files, :class_name => 'MediaFile'
-    has_many :related_resources, :class_name => 'RelatedResource'
-    has_many :related_resources, :class_name => 'RelatedResource'
-    has_many :resource_accesses, :class_name => 'ResourceAccess'
-    has_many :resource_transitions, :class_name => 'ResourceTransition'
-    has_many :resource_transitions, :class_name => 'ResourceTransition'
-    belongs_to :user, :class_name => 'User', :foreign_key => :user_id
-    belongs_to :resource, :class_name => 'Resource', :foreign_key => :parent_id
-    belongs_to :resource, :class_name => 'Resource', :foreign_key => :forked_from_resource_id
-    has_many :surveys, :class_name => 'Survey'
+  validates :slug, :uniqueness: true, :message: "Slug is already in use"
+
 end

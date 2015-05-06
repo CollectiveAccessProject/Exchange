@@ -1,7 +1,6 @@
 class MediaFile < ActiveRecord::Base
+  has_many :change_logs, as: :change_log
+  belongs_to :resources
 
-
-
-    belongs_to :resource, :class_name => 'Resource', :foreign_key => :resource_id
-    has_many :media_subfiles, :class_name => 'MediaSubfile'
+  validates :slug, :uniqueness: true, :message: "Slug is already in use"
 end
