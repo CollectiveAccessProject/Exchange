@@ -10,6 +10,9 @@ class Resource < ActiveRecord::Base
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
 
+  belongs_to :user
+
   validates :slug, uniqueness: 'Slug is already in use'
+  validates :resource_type, :presence => true
 
 end

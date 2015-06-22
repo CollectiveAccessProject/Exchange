@@ -26,6 +26,7 @@ class ResourcesController < ApplicationController
   # POST /resources.json
   def create
     @resource = Resource.new(resource_params)
+    @resource.user = current_user
 
     respond_to do |format|
       if @resource.save
@@ -70,6 +71,8 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(:slug, :title, :resource_type, :subtitle, :source_type, :source, :copyright_license, :rank)
+      params.require(:resource).permit(
+          :slug, :title, :resource_type, :subtitle, :source_type, :source, :copyright_license, :rank, :user_id, :copyright_notes
+      )
     end
 end
