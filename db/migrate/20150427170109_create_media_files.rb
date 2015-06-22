@@ -17,7 +17,7 @@ class CreateMediaFiles < ActiveRecord::Migration
       t.string :copyright_notes, null: false
       t.integer :access, null: false, default: 0, limit: 1
 
-      t.integer :lock_version, null: false
+      t.integer :lock_version, null: false, default: 0
 
       t.timestamps null: false
     end

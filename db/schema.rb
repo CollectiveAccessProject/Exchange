@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(version: 20150622162333) do
     t.integer  "copyright_license", limit: 1,     default: 0,  null: false
     t.string   "copyright_notes",   limit: 255,                null: false
     t.integer  "access",            limit: 1,     default: 0,  null: false
-    t.integer  "lock_version",      limit: 4,                  null: false
+    t.integer  "lock_version",      limit: 4,     default: 0,  null: false
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
   end
