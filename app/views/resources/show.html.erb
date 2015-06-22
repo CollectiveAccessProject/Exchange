@@ -1,2 +1,14 @@
-YaY
-<%= @resource.title %> [<%= @resource.slug %>]
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @resource.title %>
+</p>
+
+<p>
+  <strong>Subtitle:</strong>
+  <%= @resource.subtitle %>
+</p>
+
+<%= link_to 'Edit', edit_resource_path(@resource) %> |
+<%= link_to 'Back', resources_path %>
