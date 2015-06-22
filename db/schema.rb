@@ -52,7 +52,7 @@ ActiveRecord::Schema.define(version: 20150622162333) do
 
   create_table "media_files", force: :cascade do |t|
     t.string   "slug",              limit: 255,   default: "", null: false
-    t.integer  "resources_id",      limit: 4
+    t.integer  "resource_id",       limit: 4,                  null: false
     t.text     "title",             limit: 65535,              null: false
     t.string   "source_type",       limit: 10,                 null: false
     t.string   "source",            limit: 255

@@ -1,8 +1,8 @@
 class CreateMediaFiles < ActiveRecord::Migration
   def change
     create_table :media_files do |t|
-      t.string :slug,              null: false, index: true, default: ""
-      t.references :resources
+      t.string :slug, null: false, index: true, default: ''
+      t.references :resource, null: true
 
       t.text :title, null: false, limit: 65535
 

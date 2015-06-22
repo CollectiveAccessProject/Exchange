@@ -5,6 +5,8 @@ class Resource < ActiveRecord::Base
 
   belongs_to :parent, class_name: 'Resource', foreign_key: 'parent_id'
   has_many :child_resources, class_name: 'Resource', foreign_key: 'parent_id'
+
+  has_many :related_resources
   has_many :resources, through: 'related_resources'
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
