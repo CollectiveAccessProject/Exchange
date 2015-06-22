@@ -45,5 +45,6 @@ gem 'devise'
 # simple forms
 gem 'simple_form'
 
-# image uploads/processing
+# media upload/processing
 gem 'paperclip', '~> 4.2'
+gem 'paperclip-av-transcoder'
