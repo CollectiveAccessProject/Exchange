@@ -1,62 +1,28 @@
-<%= form_for(@media_file) do |f| %>
-  <% if @media_file.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@media_file.errors.count, "error") %> prohibited this media_file from being saved:</h2>
+<div class="panel panel-primary">
+<div class="panel-body">
+<% if @media_file.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@media_file.errors.count, "error") %> prohibited this media_file from being saved:</h2>
 
-      <ul>
+    <ul>
       <% @media_file.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :slug %><br>
-    <%= f.text_field :slug %>
-  </div>
-
-  <div class="field">
-    <%= f.label :title %><br>
-    <%= f.text_field :title %>
-  </div>
-
-  <div class="field">
-    <%= f.label :media %><br>
-    <%= f.file_field :media %>
-  </div>
-
-  <div class="field">
-    <%= f.label :source_type %><br>
-    <%= f.text_field :source_type %>
-  </div>
-
-  <div class="field">
-    <%= f.label :source %><br>
-    <%= f.text_field :source %>
-  </div>
-
-  <div class="field">
-    <%= f.label :copyright_license %><br>
-    <%= f.text_field :copyright_license %>
-  </div>
-
-  <div class="field">
-    <%= f.label :copyright_notes %><br>
-    <%= f.text_field :copyright_notes %>
-  </div>
-
-  <div class="field">
-    <%= f.label :access %><br>
-    <%= f.text_field :access %>
-  </div>
-
-  <div class="field">
-    <%= f.label :lock_version %><br>
-    <%= f.text_field :lock_version %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
+    </ul>
   </div>
 <% end %>
+
+<%= simple_form_for @media_file do |f| %>
+  <%= f.input :slug %>
+  <%= f.input :title %>
+  <%= f.input :media %>
+  <%= f.input :source_type %>
+  <%= f.input :source %>
+  <%= f.input :copyright_license %>
+  <%= f.input :copyright_notes %>
+  <%= f.input :access %>
+  <%= f.input :lock_version %>
+  <%= f.button :submit %>
+<% end %>
+</div>
+</div>
