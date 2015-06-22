@@ -5,11 +5,17 @@
 # gem 'activerecord-jdbcsqlite3-adapter'
 #
 default: &default
-  adapter: sqlite3
+  adapter: mysql2
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  #database: db/development.sqlite
+  encoding: utf8
+  database: exchange
+  username: exchange
+  password: exchange
+  host: 127.0.0.1
+  port: 3306
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

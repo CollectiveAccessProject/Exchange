@@ -2,8 +2,8 @@ class CreateResources < ActiveRecord::Migration
   def change
     create_table :resources do |t|
       t.string :slug,              null: false, index: true, default: ""
-      t.references :users, index: true, null: false     # reference to user creating resource
-      t.references :parent, index: true, null: true     # reference to parent resource
+      t.references :users, index: true, null: false     # reference to user creating resources
+      t.references :parent, index: true, null: true     # reference to parent resources
 
       t.integer :resource_type, index: true, null: false, limit: 1
       t.text :title, null: false, limit: 65535
