@@ -56,7 +56,6 @@ ActiveRecord::Schema.define(version: 20150622195455) do
     t.text     "title",              limit: 65535,              null: false
     t.string   "source_type",        limit: 10,                 null: false
     t.string   "source",             limit: 255
-    t.string   "md5",                limit: 32
     t.string   "mimetype",           limit: 100
     t.integer  "copyright_license",  limit: 1,     default: 0,  null: false
     t.string   "copyright_notes",    limit: 255,                null: false
@@ -68,6 +67,7 @@ ActiveRecord::Schema.define(version: 20150622195455) do
     t.string   "media_content_type", limit: 255
     t.integer  "media_file_size",    limit: 4
     t.datetime "media_updated_at"
+    t.string   "media_fingerprint",  limit: 255
   end
 
   add_index "media_files", ["slug"], name: "index_media_files_on_slug", using: :btree
