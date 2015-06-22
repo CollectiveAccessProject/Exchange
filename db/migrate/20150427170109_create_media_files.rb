@@ -9,7 +9,6 @@ class CreateMediaFiles < ActiveRecord::Migration
       t.string :source_type, null:false, limit: 10
       t.string :source
 
-      t.text :media, null: false
       t.string :md5, limit: 32, null: true
       t.string :mimetype, limit: 100, null: true
 

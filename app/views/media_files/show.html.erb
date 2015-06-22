@@ -15,10 +15,9 @@
   <%= link_to "Download", @media_file.media.url %>
 </p>
 
-<p>
-  <strong>Media Thumbnail:</strong>
-  <%= image_tag(@media_file.media.thumb.url) %>
-</p>
+<%= image_tag @media_file.media.url %>
+<%= image_tag @media_file.media.url(:medium) %>
+<%= image_tag @media_file.media.url(:thumb) %>
 
 <%= link_to 'Edit', edit_media_file_path(@media_file) %> |
 <%= link_to 'Back', media_files_path %>

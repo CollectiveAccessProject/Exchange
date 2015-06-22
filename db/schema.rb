@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150622162333) do
+ActiveRecord::Schema.define(version: 20150622195455) do
 
   create_table "change_logs", force: :cascade do |t|
     t.integer  "change_log_id",   limit: 4,     null: false
@@ -51,20 +51,23 @@ ActiveRecord::Schema.define(version: 20150622162333) do
   add_index "comments", ["users_id"], name: "index_comments_on_users_id", using: :btree
 
   create_table "media_files", force: :cascade do |t|
-    t.string   "slug",              limit: 255,   default: "", null: false
-    t.integer  "resource_id",       limit: 4
-    t.text     "title",             limit: 65535,              null: false
-    t.string   "source_type",       limit: 10,                 null: false
-    t.string   "source",            limit: 255
-    t.text     "media",             limit: 65535,              null: false
-    t.string   "md5",               limit: 32
-    t.string   "mimetype",          limit: 100
-    t.integer  "copyright_license", limit: 1,     default: 0,  null: false
-    t.string   "copyright_notes",   limit: 255,                null: false
-    t.integer  "access",            limit: 1,     default: 0,  null: false
-    t.integer  "lock_version",      limit: 4,     default: 0,  null: false
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
+    t.string   "slug",               limit: 255,   default: "", null: false
+    t.integer  "resource_id",        limit: 4
+    t.text     "title",              limit: 65535,              null: false
+    t.string   "source_type",        limit: 10,                 null: false
+    t.string   "source",             limit: 255
+    t.string   "md5",                limit: 32
+    t.string   "mimetype",           limit: 100
+    t.integer  "copyright_license",  limit: 1,     default: 0,  null: false
+    t.string   "copyright_notes",    limit: 255,                null: false
+    t.integer  "access",             limit: 1,     default: 0,  null: false
+    t.integer  "lock_version",       limit: 4,     default: 0,  null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.string   "media_file_name",    limit: 255
+    t.string   "media_content_type", limit: 255
+    t.integer  "media_file_size",    limit: 4
+    t.datetime "media_updated_at"
   end
 
   add_index "media_files", ["slug"], name: "index_media_files_on_slug", using: :btree
