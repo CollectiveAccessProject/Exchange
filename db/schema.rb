@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150427170211) do
+ActiveRecord::Schema.define(version: 20150622162333) do
 
   create_table "change_logs", force: :cascade do |t|
     t.integer  "change_log_id",   limit: 4,     null: false
@@ -140,6 +140,8 @@ ActiveRecord::Schema.define(version: 20150427170211) do
     t.string   "last_sign_in_ip",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "first_name",             limit: 255,              null: false
+    t.string   "last_name",              limit: 255,              null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
