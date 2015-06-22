@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20150622162333) do
 
   create_table "resources", force: :cascade do |t|
     t.string   "slug",                    limit: 255,   default: "", null: false
-    t.integer  "users_id",                limit: 4,                  null: false
+    t.integer  "user_id",                 limit: 4,                  null: false
     t.integer  "parent_id",               limit: 4
     t.integer  "resource_type",           limit: 1,                  null: false
     t.text     "title",                   limit: 65535,              null: false
@@ -92,8 +92,8 @@ ActiveRecord::Schema.define(version: 20150622162333) do
     t.integer  "rank",                    limit: 4,     default: 0,  null: false
     t.integer  "access",                  limit: 1,     default: 0,  null: false
     t.integer  "forked_from_resource_id", limit: 4
-    t.integer  "transition",              limit: 1,                  null: false
-    t.integer  "lock_version",            limit: 4,                  null: false
+    t.integer  "transition",              limit: 1,     default: 0,  null: false
+    t.integer  "lock_version",            limit: 4,     default: 0,  null: false
     t.datetime "created_at",                                         null: false
     t.datetime "updated_at",                                         null: false
   end
@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 20150622162333) do
   add_index "resources", ["parent_id"], name: "index_resources_on_parent_id", using: :btree
   add_index "resources", ["resource_type"], name: "index_resources_on_resource_type", using: :btree
   add_index "resources", ["slug"], name: "index_resources_on_slug", using: :btree
-  add_index "resources", ["users_id"], name: "index_resources_on_users_id", using: :btree
+  add_index "resources", ["user_id"], name: "index_resources_on_user_id", using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.integer  "taggable_id",   limit: 4,               null: false
