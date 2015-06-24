@@ -13,7 +13,7 @@ class CreateComments < ActiveRecord::Migration
 
       t.string :ip, null: false, index: true, limit: 15
 
-      t.string :source_type, null:false, limit: 10
+      t.string :source_type, null:false, default: 0, limit: 10
       t.string :source
 
       t.integer :access, null: false, default: 0, limit: 1

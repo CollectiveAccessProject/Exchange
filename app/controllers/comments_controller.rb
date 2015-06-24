@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy]
 
   # GET /resources
   # GET /resources.json
@@ -63,32 +63,17 @@ class ResourcesController < ApplicationController
     end
   end
 
-  # add new comment to this resource
-  def add_new_comment
-    comment = Comment.new(comment_params)
-    # fill in user and ip
-    comment.user = current_user
-    comment.ip = request.ip
-
-    @resource.comments << comment
-    redirect_to :action => :show, :id => @resource.id
+  private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_resource
+    @resource = Resource.find(params[:id])
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_resource
-      @resource = Resource.find(params[:id])
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def resource_params
-      params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source,
-          :copyright_license, :rank, :user_id, :copyright_notes,
-      )
-    end
-
-    def comment_params
-      params.require(:comment).permit(:comment)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def resource_params
+    params.require(:resource).permit(
+        :slug, :title, :resource_type, :subtitle, :source_type, :source,
+        :copyright_license, :rank, :user_id, :copyright_notes
+    )
+  end
 end

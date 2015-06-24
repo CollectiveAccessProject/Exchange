@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150622195455) do
+ActiveRecord::Schema.define(version: 20150624142837) do
 
   create_table "change_logs", force: :cascade do |t|
     t.integer  "change_log_id",   limit: 4,     null: false
@@ -30,25 +30,27 @@ ActiveRecord::Schema.define(version: 20150622195455) do
   add_index "change_logs", ["users_id"], name: "index_change_logs_on_users_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.integer  "commentable_id",   limit: 4,                 null: false
-    t.string   "commentable_type", limit: 255,               null: false
-    t.text     "commment",         limit: 65535,             null: false
+    t.string   "title",            limit: 50,    default: ""
+    t.text     "comment",          limit: 65535
+    t.integer  "commentable_id",   limit: 4
+    t.string   "commentable_type", limit: 255
+    t.integer  "user_id",          limit: 4
+    t.string   "role",             limit: 255,   default: "comments"
     t.string   "name",             limit: 255
     t.string   "email",            limit: 255
     t.text     "media",            limit: 65535
-    t.integer  "users_id",         limit: 4,                 null: false
-    t.string   "ip",               limit: 15,                null: false
-    t.string   "source_type",      limit: 10,                null: false
+    t.string   "ip",               limit: 15,                         null: false
+    t.string   "source_type",      limit: 10,    default: "0",        null: false
     t.string   "source",           limit: 255
-    t.integer  "access",           limit: 1,     default: 0, null: false
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.integer  "access",           limit: 1,     default: 0,          null: false
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
   end
 
   add_index "comments", ["commentable_id"], name: "index_comments_on_commentable_id", using: :btree
   add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
   add_index "comments", ["ip"], name: "index_comments_on_ip", using: :btree
-  add_index "comments", ["users_id"], name: "index_comments_on_users_id", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "media_files", force: :cascade do |t|
     t.string   "slug",               limit: 255,   default: "", null: false

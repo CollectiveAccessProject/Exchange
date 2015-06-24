@@ -10,5 +10,22 @@
   <%= @resource.subtitle %>
 </p>
 
+<p>
+  <strong>comments:</strong>
+  <ul>
+    <% @resource.comments.each do |c| %>
+      <li><%= c.comment %>, by <i><%= c.user_name %></i></li>
+    <% end %>
+  </ul>
+
+</p>
+
+
+<%= form_tag '/resources/add_new_comment' do %>
+  <%= hidden_field_tag 'id', @resource.id %>
+  <%= text_area_tag 'comment[comment]' %>
+  <%= submit_tag 'Post Comment' %>
+<% end %>
+
 <%= link_to 'Edit', edit_resource_path(@resource) %> |
 <%= link_to 'Back', resources_path %>
