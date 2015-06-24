@@ -51,3 +51,6 @@ gem 'simple_form'
 # media upload/processing
 gem 'paperclip', '~> 4.2'
 gem 'paperclip-av-transcoder'
+
+# comments
+gem 'acts_as_commentable'

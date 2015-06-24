@@ -14,6 +14,8 @@ class Resource < ActiveRecord::Base
 
   belongs_to :user
 
+  acts_as_commentable
+
   validates :slug, uniqueness: 'Slug is already in use'
   validates :resource_type, :presence => true
 
