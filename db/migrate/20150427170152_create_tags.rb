@@ -19,5 +19,7 @@ class CreateTags < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
+    add_index :tags, [:tag, :tag_type, :user_id, :taggable_id, :taggable_type], :unique => true, :name => 'unique_tags_per_user'
   end
 end

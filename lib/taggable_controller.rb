@@ -6,8 +6,13 @@ module TaggableController
     tag.user = current_user
     tag.ip = request.ip
 
-    model.tags << tag
-    redirect_to :action => :show, :id => model.id
+    begin
+      model.tags << tag
+    rescue
+      flash[:alert] = 'Could not add tag'
+    ensure
+      redirect_to :action => :show, :id => model.id
+    end
   end
 
   private

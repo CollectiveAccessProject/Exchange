@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 20150624142837) do
   end
 
   add_index "tags", ["ip"], name: "index_tags_on_ip", using: :btree
+  add_index "tags", ["tag", "tag_type", "user_id", "taggable_id", "taggable_type"], name: "unique_tags_per_user", unique: true, using: :btree
   add_index "tags", ["tag"], name: "index_tags_on_tag", using: :btree
   add_index "tags", ["tag_sort"], name: "index_tags_on_tag_sort", using: :btree
   add_index "tags", ["tag_type"], name: "index_tags_on_tag_type", using: :btree

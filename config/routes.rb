@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   devise_for :users
   get 'welcome/index'
 
-  # Exchange "resources" are Rails resources :-)
   resources :resources, :media_files
 
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]
@@ -13,8 +12,6 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'home#index'
-
-
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
