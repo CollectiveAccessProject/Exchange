@@ -110,27 +110,27 @@ ActiveRecord::Schema.define(version: 20150624142837) do
   add_index "resources", ["user_id"], name: "index_resources_on_user_id", using: :btree
 
   create_table "tags", force: :cascade do |t|
-    t.integer  "taggable_id",   limit: 4,               null: false
-    t.string   "taggable_type", limit: 255,             null: false
-    t.integer  "type",          limit: 1,               null: false
-    t.string   "tag",           limit: 255,             null: false
-    t.string   "tag_sort",      limit: 255,             null: false
-    t.integer  "users_id",      limit: 4,               null: false
-    t.string   "ip",            limit: 15,              null: false
-    t.string   "source_type",   limit: 10,              null: false
+    t.integer  "taggable_id",   limit: 4,                 null: false
+    t.string   "taggable_type", limit: 255,               null: false
+    t.integer  "tag_type",      limit: 1,   default: 0,   null: false
+    t.string   "tag",           limit: 255,               null: false
+    t.string   "tag_sort",      limit: 255,               null: false
+    t.integer  "user_id",       limit: 4
+    t.string   "ip",            limit: 15,                null: false
+    t.string   "source_type",   limit: 10,  default: "0", null: false
     t.string   "source",        limit: 255
-    t.integer  "access",        limit: 1,   default: 0, null: false
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.integer  "access",        limit: 1,   default: 0,   null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
   end
 
   add_index "tags", ["ip"], name: "index_tags_on_ip", using: :btree
   add_index "tags", ["tag"], name: "index_tags_on_tag", using: :btree
   add_index "tags", ["tag_sort"], name: "index_tags_on_tag_sort", using: :btree
+  add_index "tags", ["tag_type"], name: "index_tags_on_tag_type", using: :btree
   add_index "tags", ["taggable_id"], name: "index_tags_on_taggable_id", using: :btree
   add_index "tags", ["taggable_type"], name: "index_tags_on_taggable_type", using: :btree
-  add_index "tags", ["type"], name: "index_tags_on_type", using: :btree
-  add_index "tags", ["users_id"], name: "index_tags_on_users_id", using: :btree
+  add_index "tags", ["user_id"], name: "index_tags_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false

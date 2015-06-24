@@ -2,7 +2,6 @@ class Comment < ActiveRecord::Base
 
   include ActsAsCommentable::Comment
 
-  belongs_to :commentable, :polymorphic => true
   before_save :add_ip_to_comment
 
   default_scope -> { order('created_at ASC') }

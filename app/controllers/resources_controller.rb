@@ -1,6 +1,9 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag]
+
+  include CommentableController
+  include TaggableController
 
   # GET /resources
   # GET /resources.json
@@ -63,15 +66,14 @@ class ResourcesController < ApplicationController
     end
   end
 
-  # add new comment to this resource
+  # add new comment
   def add_new_comment
-    comment = Comment.new(comment_params)
-    # fill in user and ip
-    comment.user = current_user
-    comment.ip = request.ip
+    add_comment @resource
+  end
 
-    @resource.comments << comment
-    redirect_to :action => :show, :id => @resource.id
+  # add new tag
+  def add_new_tag
+    add_tag @resource
   end
 
   private
@@ -88,7 +90,4 @@ class ResourcesController < ApplicationController
       )
     end
 
-    def comment_params
-      params.require(:comment).permit(:comment)
-    end
 end

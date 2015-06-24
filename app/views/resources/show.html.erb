@@ -18,6 +18,13 @@
     <% end %>
   </ul>
 
+  <strong>tags:</strong>
+  <ul>
+    <% @resource.tags.each do |t| %>
+      <li><%= t.tag %></li>
+    <% end %>
+  </ul>
+
 </p>
 
 
@@ -25,6 +32,12 @@
   <%= hidden_field_tag 'id', @resource.id %>
   <%= text_area_tag 'comment[comment]' %>
   <%= submit_tag 'Post Comment' %>
+<% end %>
+
+<%= form_tag '/resources/add_new_tag' do %>
+  <%= hidden_field_tag 'id', @resource.id %>
+  <%= text_area_tag 'tag[tag]' %>
+  <%= submit_tag 'Add tag' %>
 <% end %>
 
 <%= link_to 'Edit', edit_resource_path(@resource) %> |
