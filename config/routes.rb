@@ -1,17 +1,21 @@
 Rails.application.routes.draw do
   devise_for :users
-  get 'welcome/index'
+  root 'welcome#index'
 
   resources :resources, :media_files
 
+  # test for adding comments and tags asynchronously
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]
   match '/resources/add_new_tag' => 'resources#add_new_tag', :as => 'add_new_tag_to_resources', :via => [:post]
+
+  get '/quick_search/:q' => 'quick_search#query'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'home#index'
+  # root 'home#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

@@ -54,3 +54,7 @@ gem 'paperclip-av-transcoder'
 
 # comments
 gem 'acts_as_commentable'
+
+# elasticsearch
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'

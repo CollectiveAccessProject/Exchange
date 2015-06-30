@@ -14,6 +14,10 @@ class MediaFile < ActiveRecord::Base
   validates_attachment_content_type :media, :content_type => [/\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime']
   validates_with AttachmentPresenceValidator, :attributes => :media
 
+  # search
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+
   def get_media_tag
     if /\Aimage\/.*\Z/ =~ media_content_type
       image_tag media.url(:medium)
