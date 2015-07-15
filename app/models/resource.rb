@@ -19,11 +19,26 @@ class Resource < ActiveRecord::Base
   # tags via custom module
   include Taggable
 
+  # copyright instance methods
+  include CopyrightModel
+  # copyright class methods
+  # there are hacks to make this implicit in the include call above, but many
+  # people recommend keeping it separate so you can actually see what's going on
+  extend CopyrightModel::ClassMethods
+
   # search
   #include Elasticsearch::Model
   #include Elasticsearch::Model::Callbacks
 
+  # basic model validations
   validates :slug, uniqueness: 'Slug is already in use'
   validates :resource_type, :presence => true
 
+  # slug handling
+  include SlugModel
+  before_create :set_slug
+
+  def self.resource_types
+    Rails.application.config.x.resource_types
+  end
 end

@@ -1,3 +1,3 @@
 module Taggable
-  # tag-related helper methods can go here
+  # tag-related model helper methods can go here
 end
