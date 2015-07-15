@@ -1,0 +1,15 @@
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <%= simple_form_for(@group) do |f| %>
+      <%= f.error_notification %>
+
+      <%= f.input :name %>
+      <%= f.input :description %>
+      <%= f.input :type, collection: Group.group_types, include_blank: false %>
+
+    <div class="form-actions">
+      <%= f.button :submit %>
+    </div>
+    <% end %>
+  </div>
+</div>

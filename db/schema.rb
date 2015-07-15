@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624142837) do
+ActiveRecord::Schema.define(version: 20150715195713) do
 
   create_table "change_logs", force: :cascade do |t|
     t.integer  "change_log_id",   limit: 4,     null: false
@@ -51,6 +51,18 @@ ActiveRecord::Schema.define(version: 20150624142837) do
   add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
   add_index "comments", ["ip"], name: "index_comments_on_ip", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "groups", force: :cascade do |t|
+    t.string   "name",        limit: 100,   null: false
+    t.string   "slug",        limit: 100,   null: false
+    t.text     "description", limit: 65535
+    t.integer  "type",        limit: 1
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
+  add_index "groups", ["slug"], name: "index_groups_on_slug", using: :btree
 
   create_table "media_files", force: :cascade do |t|
     t.string   "slug",               limit: 255,   default: "", null: false
@@ -132,6 +144,12 @@ ActiveRecord::Schema.define(version: 20150624142837) do
   add_index "tags", ["taggable_id"], name: "index_tags_on_taggable_id", using: :btree
   add_index "tags", ["taggable_type"], name: "index_tags_on_taggable_type", using: :btree
   add_index "tags", ["user_id"], name: "index_tags_on_user_id", using: :btree
+
+  create_table "user_groups", force: :cascade do |t|
+    t.integer  "type",       limit: 1
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false

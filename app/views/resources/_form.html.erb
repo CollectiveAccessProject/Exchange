@@ -1,18 +1,8 @@
 <div class="panel panel-primary">
   <div class="panel-body">
-    <% if @resource.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@resource.errors.count, "error") %> prohibited this resource from being saved:</h2>
-
-        <ul>
-          <% @resource.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
     <%= simple_form_for @resource do |f| %>
+      <%= f.error_notification %>
+
       <%= f.input :resource_type, collection: Resource.resource_types, include_blank: false %>
       <%= f.input :title %>
       <%= f.input :subtitle %>

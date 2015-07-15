@@ -1,18 +1,8 @@
 <div class="panel panel-primary">
   <div class="panel-body">
-    <% if @media_file.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@media_file.errors.count, "error") %> prohibited this media_file from being saved:</h2>
-
-        <ul>
-          <% @media_file.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
     <%= simple_form_for @media_file do |f| %>
+      <%= f.error_notification %>
+
       <%= f.input :title %>
       <%= f.association :resource %>
       <%= f.input :media %>
