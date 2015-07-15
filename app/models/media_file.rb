@@ -15,8 +15,8 @@ class MediaFile < ActiveRecord::Base
   validates_with AttachmentPresenceValidator, :attributes => :media
 
   # search
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  #include Elasticsearch::Model
+  #include Elasticsearch::Model::Callbacks
 
   def get_media_tag
     if /\Aimage\/.*\Z/ =~ media_content_type

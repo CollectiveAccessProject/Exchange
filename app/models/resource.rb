@@ -20,8 +20,8 @@ class Resource < ActiveRecord::Base
   include Taggable
 
   # search
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  #include Elasticsearch::Model
+  #include Elasticsearch::Model::Callbacks
 
   validates :slug, uniqueness: 'Slug is already in use'
   validates :resource_type, :presence => true

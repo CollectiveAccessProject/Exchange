@@ -9,7 +9,6 @@ default: &default
 
 development:
   <<: *default
-  #database: db/development.sqlite
   encoding: utf8
   database: exchange
   username: exchange
@@ -22,8 +21,6 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: db/test.sqlite3
 
 production:
   <<: *default
-  database: db/production.sqlite3
