@@ -28,8 +28,8 @@ class Resource < ActiveRecord::Base
   extend CopyrightModel::ClassMethods
 
   # search
-  #include Elasticsearch::Model
-  #include Elasticsearch::Model::Callbacks
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
 
   # basic model validations
   validates :slug, uniqueness: 'Slug is already in use'
