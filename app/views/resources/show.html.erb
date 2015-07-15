@@ -10,6 +10,16 @@
   <%= @resource.subtitle %>
 </p>
 
+
+<p>
+  <strong>Related media files:</strong>
+  <ul>
+    <% @resource.media_files.each do |f| %>
+      <%= link_to(f.title, media_file_path(f))  %>
+    <% end %>
+  </ul>
+</p>
+
 <p>
   <strong>comments:</strong>
   <ul>

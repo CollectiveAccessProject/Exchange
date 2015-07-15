@@ -27,6 +27,7 @@ module Exchange
     config.autoload_paths += %W(#{config.root}/lib)
 
     # custom Exchange settings
+    # that 'x' namespace is predefined and can't be changed :-(
     config.x.license_types = { cc_by_nd: 1, commercial: 2, none: 3 }
     config.x.resource_types = { bacon: 1, steak: 2, burger: 3 }
   end

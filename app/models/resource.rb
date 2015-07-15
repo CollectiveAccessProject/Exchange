@@ -7,6 +7,7 @@ class Resource < ActiveRecord::Base
 
   has_many :related_resources
   has_many :resources, through: 'related_resources'
+  has_many :media_files
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
