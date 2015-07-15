@@ -18,6 +18,14 @@ class MediaFile < ActiveRecord::Base
   #include Elasticsearch::Model
   #include Elasticsearch::Model::Callbacks
 
+  # slug handling
+  include SlugModel
+  before_create :set_slug, :set_mimetype
+
+  def set_mimetype
+    self.mimetype = media_content_type
+  end
+
   def get_media_tag
     if /\Aimage\/.*\Z/ =~ media_content_type
       image_tag media.url(:medium)

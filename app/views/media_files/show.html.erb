@@ -20,6 +20,14 @@
   Name: <%= @media_file.media_file_name %>, Type: <%= @media_file.media_content_type %>, Updated at <%= @media_file.media_updated_at %>, File size: <%= @media_file.media_file_size %>
 </p>
 
+
+<% if @media_file.resource %>
+  <p>
+    <strong>Related resource:</strong>
+    <%= link_to(@media_file.resource.title, resource_path(@media_file.resource))  %>
+  </p>
+<% end %>
+
 <%= @media_file.get_media_tag %>
 
 <%= link_to 'Edit', edit_media_file_path(@media_file) %> |
