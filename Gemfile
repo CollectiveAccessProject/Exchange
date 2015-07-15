@@ -58,3 +58,6 @@ gem 'acts_as_commentable'
 # elasticsearch
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
+
+# settings
+gem 'ledermann-rails-settings'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715195713) do
+ActiveRecord::Schema.define(version: 20150715202845) do
 
   create_table "change_logs", force: :cascade do |t|
     t.integer  "change_log_id",   limit: 4,     null: false
@@ -120,6 +120,17 @@ ActiveRecord::Schema.define(version: 20150715195713) do
   add_index "resources", ["resource_type"], name: "index_resources_on_resource_type", using: :btree
   add_index "resources", ["slug"], name: "index_resources_on_slug", using: :btree
   add_index "resources", ["user_id"], name: "index_resources_on_user_id", using: :btree
+
+  create_table "settings", force: :cascade do |t|
+    t.string   "var",         limit: 255,   null: false
+    t.text     "value",       limit: 65535
+    t.integer  "target_id",   limit: 4,     null: false
+    t.string   "target_type", limit: 255,   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "settings", ["target_type", "target_id", "var"], name: "index_settings_on_target_type_and_target_id_and_var", unique: true, using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.integer  "taggable_id",   limit: 4,                 null: false
