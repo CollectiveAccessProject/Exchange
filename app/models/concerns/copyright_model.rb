@@ -1,6 +1,7 @@
 module CopyrightModel
+  extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def license_types
       Rails.application.config.x.license_types
     end
