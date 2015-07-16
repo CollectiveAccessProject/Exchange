@@ -11,6 +11,9 @@ class Resource < ActiveRecord::Base
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
 
+  # this allows us to save related media files though the resource
+  accepts_nested_attributes_for :media_files
+
   belongs_to :user
 
   # comments via gem

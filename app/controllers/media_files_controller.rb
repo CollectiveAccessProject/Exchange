@@ -29,7 +29,7 @@ class MediaFilesController < ApplicationController
 
     respond_to do |format|
       if @media_file.save
-        format.html { redirect_to @media_file, notice: 'Media file was successfully created.' }
+        format.html { redirect_to edit_resource_path(@media_file.resource), notice: 'Media file was successfully created.' }
         format.json { render :show, status: :created, location: @media_file }
       else
         format.html { render :new }

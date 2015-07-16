@@ -1,17 +1,71 @@
-<div class="panel panel-primary">
-  <div class="panel-body">
-    <%= simple_form_for @resource do |f| %>
-      <%= f.error_notification %>
-
-      <%= f.input :resource_type, collection: Resource.resource_types, include_blank: false %>
-      <%= f.input :title %>
-      <%= f.input :subtitle %>
-      <%= f.input :source_type %>
-      <%= f.input :source %>
-      <%= f.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-      <%= f.input :copyright_notes %>
-      <%= f.input :access, as: :select, include_blank: false %>
-      <%= f.button :submit %>
-    <% end %>
+<!-- @TODO: this should be a partial view -->
+<div class="modal fade" id="new_media_file" tabindex="-1" role="dialog" aria-labelledby="newMediaFile" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="newMediaFile">Create new media</h4>
+      </div>
+      <div class="modal-body">
+        <%= simple_form_for @media_file, authenticity_token: true do |f| %>
+          <%= f.input :title %>
+          <%= f.input :media %>
+          <%= f.input :source_type %>
+          <%= f.input :source %>
+          <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
+          <%= f.input :copyright_notes %>
+          <%= f.input :access, as: :select, include_blank: false %>
+          <%= f.button :submit %>
+          <%= f.hidden_field :resource_id, :value => @resource.id %>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
+</div>
+<!-- END TODO -->
+
+<div class="row">
+
+  <div class="col-md-4">
+    <div class="panel panel-default">
+
+      <div class="panel-heading">
+        <h3 class="">Editing Resource</h3>
+      </div>
+      <div class="panel-body">
+
+        <%= simple_form_for @resource do |r| %>
+          <%= r.error_notification %>
+
+          <%= r.input :resource_type, collection: Resource.resource_types, include_blank: false %>
+          <%= r.input :title %>
+          <%= r.input :subtitle %>
+          <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+          <%= r.input :copyright_notes %>
+          <%= r.input :access, as: :select, include_blank: false %>
+
+          <%= r.button :submit %>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="">Related Media Files</h3>
+      </div>
+      <div class="panel-body">
+        <% @resource.media_files.each do |f| %>
+          <li><%= link_to(f.title, media_file_path(f))  %></li>
+        <% end %>
+        <br />
+        <%= link_to 'New Media File', '#new_media_file', 'data-toggle' => 'modal' %>
+      </div>
+    </div>
+  </div>
+
 </div>
