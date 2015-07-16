@@ -16,13 +16,13 @@ class Resource < ActiveRecord::Base
   # comments via gem
   acts_as_commentable
 
-  # tags via custom module
+  # tags via custom module (@todo maybe rewrite as acts_as_* plugin)
   include TaggableModel
 
   # copyright instance methods
   include CopyrightModel
 
-  # search
+  # search (from elasticsearch gem)
   include Elasticsearch::Model
   include Elasticsearch::Model::Callbacks
 
@@ -37,4 +37,7 @@ class Resource < ActiveRecord::Base
   def self.resource_types
     Rails.application.config.x.resource_types
   end
+
+  include ExchangeResource::Loader
+  after_initialize :include_resource_plugin # from Loader module
 end
