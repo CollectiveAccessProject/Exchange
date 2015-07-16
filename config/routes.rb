@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]
   match '/resources/add_new_tag' => 'resources#add_new_tag', :as => 'add_new_tag_to_resources', :via => [:post]
 
-  get '/quick_search/:q' => 'quick_search#query'
+  get '/quick_search/query' => 'quick_search#query'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

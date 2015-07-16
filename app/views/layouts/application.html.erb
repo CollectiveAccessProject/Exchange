@@ -42,6 +42,10 @@
         <%= render 'devise/menu/registration_items' %>
         <%= render 'devise/menu/login_items' %>
       </ul>
+      <%= form_tag({ controller: 'quick_search', action: 'query' }, method: 'get', class: 'navbar-form navbar-right') do %>
+        <%= text_field_tag(:q, nil, class: 'form-control', placeholder: 'Search') %>
+        <%= submit_tag('Go!', class: 'btn btn-default') %>
+      <% end %>
     </div><!--/.nav-collapse -->
   </div>
 </nav>
