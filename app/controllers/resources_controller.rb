@@ -1,7 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
   before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag]
-  before_action :set_media_file
 
   include CommentableController
   include TaggableController
@@ -81,9 +80,6 @@ class ResourcesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_resource
       @resource = Resource.find(params[:id])
-    end
-
-    def set_media_file
       @media_file = MediaFile.new
     end
 
@@ -91,7 +87,7 @@ class ResourcesController < ApplicationController
     def resource_params
       params.require(:resource).permit(
           :slug, :title, :resource_type, :subtitle, :source_type, :source,
-          :copyright_license, :rank, :user_id, :copyright_notes,
+          :copyright_license, :rank, :user_id, :copyright_notes, :access
       )
     end
 

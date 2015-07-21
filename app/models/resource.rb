@@ -32,7 +32,6 @@ class Resource < ActiveRecord::Base
   # basic model validations
   validates :slug, uniqueness: 'Slug is already in use'
   validates :resource_type, :presence => true
-  validates :source_type, :presence => true
 
   # slug handling
   include SlugModel

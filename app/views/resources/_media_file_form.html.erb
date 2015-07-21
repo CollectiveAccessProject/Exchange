@@ -1,3 +1,4 @@
+<% if @media_file %>
 <div class="modal fade" id="new_media_file" tabindex="-1" role="dialog" aria-labelledby="newMediaFile" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -7,6 +8,7 @@
       </div>
       <div class="modal-body">
         <%= simple_form_for @media_file, authenticity_token: true do |f| %>
+          <%= f.error_notification %>
           <%= f.input :title %>
           <%= f.input :media %>
           <%= f.input :source_type %>
@@ -24,3 +26,4 @@
     </div>
   </div>
 </div>
+<% end %>

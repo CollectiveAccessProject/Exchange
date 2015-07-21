@@ -1,5 +1,3 @@
-<%= render 'media_file_form' %>
-
 <div class="row">
 
   <div class="col-md-4">
@@ -26,19 +24,23 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="">Related Media Files</h3>
-      </div>
-      <div class="panel-body">
-        <% @resource.media_files.each do |f| %>
-          <li><%= link_to(f.title, media_file_path(f))  %></li>
-        <% end %>
-        <br />
-        <%= link_to 'New Media File', '#new_media_file', 'data-toggle' => 'modal' %>
+  <% if @media_file %>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="">Related Media Files</h3>
+        </div>
+        <div class="panel-body">
+          <% @resource.media_files.each do |f| %>
+            <li><%= link_to(f.title, media_file_path(f))  %></li>
+          <% end %>
+          <br />
+          <%= link_to 'New Media File', '#new_media_file', 'data-toggle' => 'modal' %>
+        </div>
       </div>
     </div>
-  </div>
+
+    <%= render 'media_file_form' %>
+  <% end %>
 
 </div>
