@@ -96,23 +96,23 @@ ActiveRecord::Schema.define(version: 20150715202845) do
   end
 
   create_table "resources", force: :cascade do |t|
-    t.string   "slug",                    limit: 255,   default: "", null: false
-    t.integer  "user_id",                 limit: 4,                  null: false
+    t.string   "slug",                    limit: 255,   default: "",  null: false
+    t.integer  "user_id",                 limit: 4,                   null: false
     t.integer  "parent_id",               limit: 4
-    t.integer  "resource_type",           limit: 1,                  null: false
-    t.text     "title",                   limit: 65535,              null: false
-    t.text     "subtitle",                limit: 65535,              null: false
-    t.string   "source_type",             limit: 10,                 null: false
+    t.integer  "resource_type",           limit: 1,                   null: false
+    t.text     "title",                   limit: 65535,               null: false
+    t.text     "subtitle",                limit: 65535,               null: false
+    t.string   "source_type",             limit: 10,    default: "0", null: false
     t.string   "source",                  limit: 255
-    t.integer  "copyright_license",       limit: 1,     default: 0,  null: false
-    t.string   "copyright_notes",         limit: 255,                null: false
-    t.integer  "rank",                    limit: 4,     default: 0,  null: false
-    t.integer  "access",                  limit: 1,     default: 0,  null: false
+    t.integer  "copyright_license",       limit: 1,     default: 0,   null: false
+    t.string   "copyright_notes",         limit: 255,                 null: false
+    t.integer  "rank",                    limit: 4,     default: 0,   null: false
+    t.integer  "access",                  limit: 1,     default: 0,   null: false
     t.integer  "forked_from_resource_id", limit: 4
-    t.integer  "transition",              limit: 1,     default: 0,  null: false
-    t.integer  "lock_version",            limit: 4,     default: 0,  null: false
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
+    t.integer  "transition",              limit: 1,     default: 0,   null: false
+    t.integer  "lock_version",            limit: 4,     default: 0,   null: false
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "index_resources_on_forked_from_resource_id", using: :btree

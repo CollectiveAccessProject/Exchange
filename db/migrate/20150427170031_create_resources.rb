@@ -9,7 +9,7 @@ class CreateResources < ActiveRecord::Migration
       t.text :title, null: false, limit: 65535
       t.text :subtitle, null: false, limit: 65535
 
-      t.string :source_type, null:false, limit: 10
+      t.string :source_type, null:false, limit: 10, default: 0
       t.string :source
 
       t.integer :copyright_license, null: false, default: 0, limit: 1
