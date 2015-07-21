@@ -4,9 +4,7 @@ module ExchangeResource
     def include_resource_plugin
       case source_type
         when 'youtube'
-          extend ExchangeResource::Youtube
-        else
-          extend ExchangeResource::Base
+          include ExchangeResource::Youtube
       end
     end
   end

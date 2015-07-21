@@ -1,4 +1,9 @@
 module ExchangeResource::Youtube
-  extend ActiveSupport::Concern
-  include ExchangeResource::Base
+
+  # class method that searches youtube
+  def self.lookup(*opts)
+    opts = opts.extract_options!
+
+
+  end
 end
