@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 20150715202845) do
     t.string   "slug",               limit: 255,   default: "", null: false
     t.integer  "resource_id",        limit: 4
     t.text     "title",              limit: 65535,              null: false
-    t.string   "source_type",        limit: 10,                 null: false
+    t.string   "source_type",        limit: 10
     t.string   "source",             limit: 255
     t.string   "mimetype",           limit: 100
     t.integer  "copyright_license",  limit: 1,     default: 0,  null: false

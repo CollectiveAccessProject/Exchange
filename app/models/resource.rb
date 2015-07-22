@@ -40,8 +40,4 @@ class Resource < ActiveRecord::Base
   def self.resource_types
     Rails.application.config.x.resource_types
   end
-
-  include ExchangeResource::Base
-  include ExchangeResource::Loader
-  after_initialize :include_resource_plugin # from Loader module
 end

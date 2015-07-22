@@ -6,8 +6,6 @@
       <%= f.input :title %>
       <%= f.association :resource %>
       <%= f.input :media %>
-      <%= f.input :source_type %>
-      <%= f.input :source %>
       <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
       <%= f.input :copyright_notes %>
       <%= f.input :access, as: :select, include_blank: false %>

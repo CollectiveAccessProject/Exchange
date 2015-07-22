@@ -1,0 +1,3 @@
+module ExchangeMedia::Youtube
+
+end

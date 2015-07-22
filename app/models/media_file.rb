@@ -12,7 +12,7 @@ class MediaFile < ActiveRecord::Base
 
   # support, images+pdfs and basic mp4-style videos
   validates_attachment_content_type :media, :content_type => [/\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime']
-  validates_with AttachmentPresenceValidator, :attributes => :media
+  #validates_with AttachmentPresenceValidator, :attributes => :media
 
   # search
   include Elasticsearch::Model
@@ -36,4 +36,8 @@ class MediaFile < ActiveRecord::Base
       image_tag media.url(:medium)
     end
   end
+
+  include ExchangeMedia::Base
+  include ExchangeMedia::Loader
+  after_initialize :include_media_plugin # from Loader module
 end
