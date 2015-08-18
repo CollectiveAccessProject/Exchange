@@ -59,7 +59,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
-    collectiveaccess (0.2.0)
+    collectiveaccess (0.2.1)
       httparty (~> 0.13)
     devise (3.5.2)
       bcrypt (~> 3.0)
@@ -82,7 +82,7 @@ GEM
       faraday
       multi_json
     erubis (2.7.0)
-    execjs (2.5.2)
+    execjs (2.6.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     globalid (0.3.6)
@@ -102,7 +102,7 @@ GEM
     json (1.8.3)
     ledermann-rails-settings (2.4.0)
       activerecord (>= 3.1)
-    loofah (2.0.2)
+    loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
@@ -170,7 +170,7 @@ GEM
     simple_form (3.1.0)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
-    sprockets (3.3.0)
+    sprockets (3.3.1)
       rack (~> 1.0)
     sprockets-rails (2.3.2)
       actionpack (>= 3.0)
