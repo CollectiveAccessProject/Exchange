@@ -40,6 +40,4 @@ class MediaFile < ActiveRecord::Base
       image_tag media.url(:medium)
     end
   end
-  
-  after_initialize :include_media_plugin # from Loader module
 end
