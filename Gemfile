@@ -43,7 +43,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # CollectiveAccess Web Service API
-gem 'collectiveaccess'
+gem 'collectiveaccess', '0.2.2'
 
 # authentication
 gem 'devise'
