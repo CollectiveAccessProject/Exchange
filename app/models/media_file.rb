@@ -12,7 +12,6 @@ class MediaFile < ActiveRecord::Base
 
   # support, images+pdfs and basic mp4-style videos
   validates_attachment_content_type :media, :content_type => [/\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime']
-  #validates_with AttachmentPresenceValidator, :attributes => :media
 
   # search
   include Elasticsearch::Model
@@ -22,22 +21,25 @@ class MediaFile < ActiveRecord::Base
   include SlugModel
   before_create :set_slug, :set_mimetype
 
+  # set mimetype before saving
   def set_mimetype
-    self.mimetype = media_content_type
+    if media_content_type
+      self.mimetype = media_content_type
+    end
   end
 
+  # get media tag for display
   def get_media_tag
     if /\Aimage\/.*\Z/ =~ media_content_type
       image_tag media.url(:medium)
     elsif /\Avideo\/.*\Z/ =~ media_content_type
+      # this for some reason crashes my browser right now ... will have to investigate later :-)
       #video_tag media.url, :size => '600x400', controls: true, autobuffer: true
       ''
     elsif /\Aapplication\/pdf\Z/ =~ media_content_type
       image_tag media.url(:medium)
     end
   end
-
-  include ExchangeMedia::Base
-  include ExchangeMedia::Loader
+  
   after_initialize :include_media_plugin # from Loader module
 end
