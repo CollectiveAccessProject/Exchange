@@ -9,16 +9,17 @@ class SimpleLink < MediaPlugin
   end
 
   # this could be a search form for youtube or soundcloud or just a textfield for a simple link
-  def self.empty_form
-    ActionController::Base.new.render_to_string 'media_plugins/simple_link_empty_form'
+  def form
+    ActionController::Base.new.render_to_string 'media_plugins/simple_link_form'
   end
 
   def to_json
     { foo: 'bar' }.to_json
   end
 
-  # render this instance (e.g. via youtube embed or whatever)
+  # render this instance
   def render(options = {})
+    ActionController::Base.new.render_to_string 'media_plugins/simple_link_render'
   end
 
 end

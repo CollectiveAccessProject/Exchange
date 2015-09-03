@@ -28,22 +28,7 @@ class MediaFile < ActiveRecord::Base
   # media
   before_create :set_mimetype # for files that are attached directly
   after_initialize :init_media_plugin # for things referenced by plugin
-
   before_save :save_media_plugin_settings # transfer media plugin settings to 'source' field
-
-  # get media tag for display
-  def get_media_tag
-    if /\Aimage\/.*\Z/ =~ media_content_type
-      image_tag media.url(:medium)
-    # this for some reason crashes my browser right now ... will have to investigate later
-    #elsif /\Avideo\/.*\Z/ =~ media_content_type
-      #video_tag media.url, :size => '600x400', controls: true, autobuffer: true
-    elsif /\Aapplication\/pdf\Z/ =~ media_content_type
-      image_tag media.url(:medium)
-    end
-
-    ''
-  end
 
   private
     # set mimetype before saving
@@ -53,13 +38,13 @@ class MediaFile < ActiveRecord::Base
       end
     end
 
-    # always keep the media plugin instance handy, if source_type is available
+    # always keep the media plugin instance handy
+    # if source_type is available, use that to init plugin instance
+    # otherwise use LocalFile and pass self
     def init_media_plugin
-      if source_type == nil
-        return
-      end
-
-      if source_type.constantize.respond_to?(:init_from_settings)
+      if media_content_type
+        @source_instance = LocalFile.init_from_media_file self
+      elsif source_type && source_type.constantize.respond_to?(:init_from_settings)
         @source_instance = source_type.constantize.init_from_settings(source)
       end
     end
@@ -68,6 +53,7 @@ class MediaFile < ActiveRecord::Base
     def save_media_plugin_settings
       if source_instance
         self.source = source_instance.to_json
+        self.source_type = source_instance.class.to_s
       end
     end
 end
