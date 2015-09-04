@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 20150904145333) do
     t.string   "file_content_type", limit: 255
     t.integer  "file_file_size",    limit: 4
     t.datetime "file_updated_at"
-    t.string   "file_fingerprint",  limit: 255, null: false
+    t.string   "file_fingerprint",  limit: 255
   end
 
   create_table "media_files", force: :cascade do |t|

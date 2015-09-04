@@ -4,7 +4,8 @@ class LocalFilesController < ApplicationController
   # GET /local_files
   # GET /local_files.json
   def index
-    @sourceables = LocalFile.all
+    @media_file = MediaFile.find(params[:media_file_id])
+    @sourceables = [@media_file.sourceable]
   end
 
   # GET /local_files/1
@@ -25,10 +26,7 @@ class LocalFilesController < ApplicationController
   # POST /local_files.json
   def create
     @sourceable = LocalFile.new(local_file_params)
-    media_file = MediaFile.find(params[:media_file_id])
-    @sourceable.media_file = media_file
-
-
+    @sourceable.media_file = MediaFile.find(params[:media_file_id])
 
     respond_to do |format|
       if @sourceable.save
@@ -58,6 +56,7 @@ class LocalFilesController < ApplicationController
   # DELETE /local_files/1
   # DELETE /local_files/1.json
   def destroy
+    @sourceable.media_file = nil
     @sourceable.destroy
     respond_to do |format|
       format.html { redirect_to local_files_url, notice: 'Local file was successfully destroyed.' }
