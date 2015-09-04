@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   devise_for :users
   root 'welcome#index'
 
-  resources :resources, :media_files, :groups, :local_files
+  resources :resources, :groups
+
+  resources :media_files do
+    resources :local_files
+  end
 
   # test for adding comments and tags asynchronously
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]

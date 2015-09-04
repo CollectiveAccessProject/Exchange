@@ -2,7 +2,8 @@ class CreateLocalFiles < ActiveRecord::Migration
   def change
     create_table :local_files do |t|
       t.attachment :media
-      t.string :media_fingerprint
+      t.string :media_fingerprint, null: false
+      t.string :mimetype, null: false
 
       t.timestamps null: false
     end

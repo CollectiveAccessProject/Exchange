@@ -1,10 +1,11 @@
+# generic plugin module
 module Plugin
   module ClassMethods
     def repository
       @repository ||= []
     end
 
-    def inherited(klass)
+    def included(klass)
       repository << klass
     end
   end

@@ -69,7 +69,8 @@ ActiveRecord::Schema.define(version: 20150903233729) do
     t.string   "media_content_type", limit: 255
     t.integer  "media_file_size",    limit: 4
     t.datetime "media_updated_at"
-    t.string   "media_fingerprint",  limit: 255
+    t.string   "media_fingerprint",  limit: 255, null: false
+    t.string   "mimetype",           limit: 255, null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
   end

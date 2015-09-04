@@ -1,4 +1,4 @@
-class MediaPlugin
+module MediaPlugin
   include Plugin
 
   # include all media plugins
