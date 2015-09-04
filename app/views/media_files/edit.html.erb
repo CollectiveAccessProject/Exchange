@@ -2,14 +2,6 @@
 
 <%= render 'form' %>
 
-<% if @media_file.id %>
-  <div class="panel panel-primary">
-    <div class="panel-body">
-      <%= @media_file.source_instance.form if @media_file.source_instance && (@media_file.source_instance.respond_to? :form) %>
-    </div>
-  </div>
-<% end %>
-
 <hr/>
 
 <%= link_to 'Show', @media_file %> |

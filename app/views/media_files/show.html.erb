@@ -12,9 +12,5 @@
   </p>
 <% end %>
 
-<%= @media_file.source_instance.render if @media_file.source_instance && (@media_file.source_instance.respond_to? :render) %>
-
-<hr/>
-
 <%= link_to 'Edit', edit_media_file_path(@media_file) %> |
 <%= link_to 'Back', media_files_path %>

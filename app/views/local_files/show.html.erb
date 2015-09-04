@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Media:</strong>
+  <%= @local_file.media %>
+</p>
+
+<p>
+  <strong>Media fingerprint:</strong>
+  <%= @local_file.media_fingerprint %>
+</p>
+
+<%= link_to 'Edit', edit_local_file_path(@local_file) %> |
+<%= link_to 'Back', local_files_path %>

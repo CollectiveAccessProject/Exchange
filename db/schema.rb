@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715202845) do
+ActiveRecord::Schema.define(version: 20150903233729) do
 
   create_table "change_logs", force: :cascade do |t|
     t.integer  "change_log_id",   limit: 4,     null: false
@@ -64,27 +64,32 @@ ActiveRecord::Schema.define(version: 20150715202845) do
   add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
   add_index "groups", ["slug"], name: "index_groups_on_slug", using: :btree
 
-  create_table "media_files", force: :cascade do |t|
-    t.string   "slug",               limit: 255,   default: "", null: false
-    t.integer  "resource_id",        limit: 4
-    t.text     "title",              limit: 65535,              null: false
-    t.string   "source_type",        limit: 10
-    t.string   "source",             limit: 255
-    t.string   "mimetype",           limit: 100
-    t.integer  "copyright_license",  limit: 1,     default: 0,  null: false
-    t.string   "copyright_notes",    limit: 255,                null: false
-    t.integer  "access",             limit: 1,     default: 0,  null: false
-    t.integer  "lock_version",       limit: 4,     default: 0,  null: false
-    t.datetime "created_at",                                    null: false
-    t.datetime "updated_at",                                    null: false
+  create_table "local_files", force: :cascade do |t|
     t.string   "media_file_name",    limit: 255
     t.string   "media_content_type", limit: 255
     t.integer  "media_file_size",    limit: 4
     t.datetime "media_updated_at"
     t.string   "media_fingerprint",  limit: 255
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  create_table "media_files", force: :cascade do |t|
+    t.string   "slug",              limit: 255,   default: "", null: false
+    t.integer  "resource_id",       limit: 4
+    t.text     "title",             limit: 65535,              null: false
+    t.integer  "copyright_license", limit: 1,     default: 0,  null: false
+    t.string   "copyright_notes",   limit: 255,                null: false
+    t.integer  "access",            limit: 1,     default: 0,  null: false
+    t.integer  "lock_version",      limit: 4,     default: 0,  null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.integer  "sourceable_id",     limit: 4
+    t.string   "sourceable_type",   limit: 255
   end
 
   add_index "media_files", ["slug"], name: "index_media_files_on_slug", using: :btree
+  add_index "media_files", ["sourceable_type", "sourceable_id"], name: "index_media_files_on_sourceable_type_and_sourceable_id", using: :btree
 
   create_table "related_resources", force: :cascade do |t|
     t.text     "caption",          limit: 65535, null: false

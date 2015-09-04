@@ -15,7 +15,6 @@
     <% @media_files.each do |media_file| %>
       <tr>
         <td><%= media_file.title %></td>
-        <td><%= media_file.source_type %></td>
         <td><%= link_to 'Show', media_file %></td>
         <td><%= link_to 'Edit', edit_media_file_path(media_file) %></td>
         <td><%= link_to 'Destroy', media_file, method: :delete, data: { confirm: 'Are you sure?' } %></td>
