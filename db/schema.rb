@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150903233729) do
+ActiveRecord::Schema.define(version: 20150904145333) do
 
   create_table "change_logs", force: :cascade do |t|
     t.integer  "change_log_id",   limit: 4,     null: false
@@ -65,14 +65,13 @@ ActiveRecord::Schema.define(version: 20150903233729) do
   add_index "groups", ["slug"], name: "index_groups_on_slug", using: :btree
 
   create_table "local_files", force: :cascade do |t|
-    t.string   "media_file_name",    limit: 255
-    t.string   "media_content_type", limit: 255
-    t.integer  "media_file_size",    limit: 4
-    t.datetime "media_updated_at"
-    t.string   "media_fingerprint",  limit: 255, null: false
-    t.string   "mimetype",           limit: 255, null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "file_file_name",    limit: 255
+    t.string   "file_content_type", limit: 255
+    t.integer  "file_file_size",    limit: 4
+    t.datetime "file_updated_at"
+    t.string   "file_fingerprint",  limit: 255, null: false
   end
 
   create_table "media_files", force: :cascade do |t|

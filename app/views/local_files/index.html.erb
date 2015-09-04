@@ -5,17 +5,17 @@
 <table>
   <thead>
     <tr>
-      <th>Media</th>
-      <th>Media fingerprint</th>
+      <th>File</th>
+      <th>File fingerprint</th>
       <th colspan="3"></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @local_files.each do |local_file| %>
+    <% @sourceables.each do |local_file| %>
       <tr>
-        <td><%= local_file.media %></td>
-        <td><%= local_file.media_fingerprint %></td>
+        <td><%= local_file.file %></td>
+        <td><%= local_file.file_fingerprint %></td>
         <td><%= link_to 'Show', local_file %></td>
         <td><%= link_to 'Edit', edit_local_file_path(local_file) %></td>
         <td><%= link_to 'Destroy', local_file, method: :delete, data: { confirm: 'Are you sure?' } %></td>

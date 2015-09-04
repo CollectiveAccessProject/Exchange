@@ -1,14 +1,14 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Media:</strong>
-  <%= @local_file.media %>
+  <strong>File:</strong>
+  <%= @sourceable.file %>
 </p>
 
 <p>
-  <strong>Media fingerprint:</strong>
-  <%= @local_file.media_fingerprint %>
+  <strong>File fingerprint:</strong>
+  <%= @sourceable.file_fingerprint %>
 </p>
 
-<%= link_to 'Edit', edit_local_file_path(@local_file) %> |
+<%= link_to 'Edit', edit_local_file_path(@sourceable) %> |
 <%= link_to 'Back', local_files_path %>
