@@ -1,0 +1,2 @@
+module YoutubeLinksHelper
+end

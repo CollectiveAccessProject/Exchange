@@ -74,8 +74,6 @@ class MediaFilesController < ApplicationController
       @media_file = MediaFile.find(params[:id])
       if @media_file.sourceable
         @sourceable = @media_file.sourceable
-      else
-        @sourceable = LocalFile.new
       end
     end
 

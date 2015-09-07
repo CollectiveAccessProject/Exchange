@@ -1,5 +1,3 @@
-Dir[File.join(Exchange::Application.config.root, '/lib/media_plugins/', '*.rb')].each {|file| require file }
-
 class MediaFile < ActiveRecord::Base
   belongs_to :resource
 

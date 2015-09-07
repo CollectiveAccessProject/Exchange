@@ -2,7 +2,13 @@
 
 <%= render 'form' %>
 
-<%= render 'local_files/form' %>
+<% if @sourceable %>
+  <%= render "#{@sourceable.class.to_s.pluralize.underscore}/form" %>
+<% else %>
+  <% MediaPlugin.repository.each do |plugin| %>
+      <%= render "#{plugin.to_s.pluralize.underscore}/form" %>
+  <% end %>
+<% end %>
 
 <hr/>
 

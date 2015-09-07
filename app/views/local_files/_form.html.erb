@@ -1,3 +1,5 @@
+<% @sourceable = MediaPlugin.repository[MediaPlugin.repository.index(LocalFile)].new unless @sourceable && @sourceable.class == LocalFile %>
+
 <div class="panel panel-primary">
   <div class="panel-body">
     <%= simple_form_for([@media_file, @sourceable]) do |f| %>

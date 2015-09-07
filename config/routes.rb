@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :media_files do
     resources :local_files
+    resources :youtube_links
   end
 
   # test for adding comments and tags asynchronously
