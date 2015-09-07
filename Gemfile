@@ -64,3 +64,6 @@ gem 'elasticsearch-rails'
 
 # settings
 gem 'ledermann-rails-settings'
+
+# change logging
+gem 'paper_trail', '~> 4.0'

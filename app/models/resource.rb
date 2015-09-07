@@ -1,6 +1,4 @@
 class Resource < ActiveRecord::Base
-  has_many :change_logs, as: :change_log
-
   belongs_to :parent, class_name: 'Resource', foreign_key: 'parent_id'
   has_many :child_resources, class_name: 'Resource', foreign_key: 'parent_id'
 
@@ -15,6 +13,9 @@ class Resource < ActiveRecord::Base
   accepts_nested_attributes_for :media_files
 
   belongs_to :user
+
+  # change log
+  has_paper_trail
 
   # comments via gem
   acts_as_commentable
