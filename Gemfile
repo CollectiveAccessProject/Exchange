@@ -67,3 +67,6 @@ gem 'ledermann-rails-settings'
 
 # change logging
 gem 'paper_trail', '~> 4.0'
+
+# generate missing foreign keys automatically
+gem 'immigrant'

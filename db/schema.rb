@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150907174112) do
+ActiveRecord::Schema.define(version: 20150907180319) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20150907174112) do
   add_index "comments", ["commentable_id"], name: "index_comments_on_commentable_id", using: :btree
   add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
   add_index "comments", ["ip"], name: "index_comments_on_ip", using: :btree
-  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+  add_index "comments", ["user_id"], name: "fk_rails_09e05f92e2", using: :btree
 
   create_table "groups", force: :cascade do |t|
     t.string   "name",        limit: 100,   null: false
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20150907174112) do
     t.string   "sourceable_type",   limit: 255
   end
 
-  add_index "media_files", ["resource_id"], name: "index_media_files_on_resource_id", using: :btree
+  add_index "media_files", ["resource_id"], name: "fk_rails_b0258777d0", using: :btree
   add_index "media_files", ["slug"], name: "index_media_files_on_slug", using: :btree
   add_index "media_files", ["sourceable_type", "sourceable_id"], name: "index_media_files_on_sourceable_type_and_sourceable_id", using: :btree
 
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20150907174112) do
     t.datetime "updated_at",                     null: false
   end
 
-  add_index "related_resources", ["from_resource_id", "to_resource_id"], name: "index_related_resources_on_from_resource_id_and_to_resource_id", using: :btree
+  add_index "related_resources", ["to_resource_id"], name: "fk_rails_936938121a", using: :btree
 
   create_table "resources", force: :cascade do |t|
     t.string   "slug",                    limit: 255,               null: false
@@ -107,11 +107,11 @@ ActiveRecord::Schema.define(version: 20150907174112) do
     t.datetime "updated_at",                                        null: false
   end
 
-  add_index "resources", ["forked_from_resource_id"], name: "index_resources_on_forked_from_resource_id", using: :btree
-  add_index "resources", ["parent_id"], name: "index_resources_on_parent_id", using: :btree
+  add_index "resources", ["forked_from_resource_id"], name: "fk_rails_4900265b15", using: :btree
+  add_index "resources", ["parent_id"], name: "fk_rails_8db5215ab7", using: :btree
   add_index "resources", ["resource_type"], name: "index_resources_on_resource_type", using: :btree
   add_index "resources", ["slug"], name: "index_resources_on_slug", using: :btree
-  add_index "resources", ["user_id"], name: "index_resources_on_user_id", using: :btree
+  add_index "resources", ["user_id"], name: "fk_rails_5e58b59c3e", using: :btree
 
   create_table "settings", force: :cascade do |t|
     t.string   "var",         limit: 255,   null: false
@@ -146,7 +146,7 @@ ActiveRecord::Schema.define(version: 20150907174112) do
   add_index "tags", ["tag_type"], name: "index_tags_on_tag_type", using: :btree
   add_index "tags", ["taggable_id"], name: "index_tags_on_taggable_id", using: :btree
   add_index "tags", ["taggable_type"], name: "index_tags_on_taggable_type", using: :btree
-  add_index "tags", ["user_id"], name: "index_tags_on_user_id", using: :btree
+  add_index "tags", ["user_id"], name: "fk_rails_eb8681a637", using: :btree
 
   create_table "user_groups", force: :cascade do |t|
     t.integer  "type",       limit: 1
@@ -156,8 +156,8 @@ ActiveRecord::Schema.define(version: 20150907174112) do
     t.integer  "group_id",   limit: 4
   end
 
-  add_index "user_groups", ["group_id"], name: "index_user_groups_on_group_id", using: :btree
-  add_index "user_groups", ["user_id"], name: "index_user_groups_on_user_id", using: :btree
+  add_index "user_groups", ["group_id"], name: "fk_rails_accaee6dc8", using: :btree
+  add_index "user_groups", ["user_id"], name: "fk_rails_fdfed99c5a", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
@@ -190,4 +190,13 @@ ActiveRecord::Schema.define(version: 20150907174112) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  add_foreign_key "comments", "users"
+  add_foreign_key "media_files", "resources"
+  add_foreign_key "related_resources", "resources", column: "to_resource_id"
+  add_foreign_key "resources", "resources", column: "forked_from_resource_id"
+  add_foreign_key "resources", "resources", column: "parent_id"
+  add_foreign_key "resources", "users"
+  add_foreign_key "tags", "users"
+  add_foreign_key "user_groups", "groups"
+  add_foreign_key "user_groups", "users"
 end
