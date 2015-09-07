@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150907170440) do
+ActiveRecord::Schema.define(version: 20150907174112) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20150907170440) do
     t.string   "sourceable_type",   limit: 255
   end
 
+  add_index "media_files", ["resource_id"], name: "index_media_files_on_resource_id", using: :btree
   add_index "media_files", ["slug"], name: "index_media_files_on_slug", using: :btree
   add_index "media_files", ["sourceable_type", "sourceable_id"], name: "index_media_files_on_sourceable_type_and_sourceable_id", using: :btree
 
@@ -83,6 +84,8 @@ ActiveRecord::Schema.define(version: 20150907170440) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
   end
+
+  add_index "related_resources", ["from_resource_id", "to_resource_id"], name: "index_related_resources_on_from_resource_id_and_to_resource_id", using: :btree
 
   create_table "resources", force: :cascade do |t|
     t.string   "slug",                    limit: 255,               null: false
@@ -149,7 +152,12 @@ ActiveRecord::Schema.define(version: 20150907170440) do
     t.integer  "type",       limit: 1
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "user_id",    limit: 4
+    t.integer  "group_id",   limit: 4
   end
+
+  add_index "user_groups", ["group_id"], name: "index_user_groups_on_group_id", using: :btree
+  add_index "user_groups", ["user_id"], name: "index_user_groups_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
