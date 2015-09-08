@@ -11,12 +11,17 @@
     <%= simple_form_for([@media_file, youtube_link]) do |f| %>
     <%= f.error_notification %>
 
-      <%= f.input :key %>
       <%= f.input :original_link %>
 
     <div class="form-actions">
+      <% if youtube_link.id %>
+        <%= link_to 'Delete?', [@media_file, youtube_link], method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
       <%= f.button :submit %>
     </div>
+    <% end %>
+    <% if youtube_link.id %>
+      <iframe id="youtubePreview<%= youtube_link.id %>" width="560" height="315" src="https://www.youtube.com/embed/<%= youtube_link.key %>" frameborder="0" allowfullscreen></iframe>
     <% end %>
   </div>
 </div>

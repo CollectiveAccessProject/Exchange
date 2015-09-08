@@ -14,6 +14,9 @@
       <%= f.input :file %>
 
     <div class="form-actions">
+      <% if local_file.id %>
+        <%= link_to 'Delete?', [@media_file, local_file], method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
       <%= f.button :submit %>
     </div>
     <% end %>

@@ -17,7 +17,9 @@ class MediaFile < ActiveRecord::Base
   before_create :set_slug
 
   def sourceable_classes
-    MediaPlugin.repository
+    # MediaPlugin.repository <-- there's some caching issue here. somewhere in the application
+    # life cycle the repo is nuked and just empty. it works right after starting up the rails server
+    [LocalFile, MediaFile]
   end
 
   def sourceables_underscored

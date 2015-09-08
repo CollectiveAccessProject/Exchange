@@ -35,10 +35,12 @@ class YoutubeLinksController < SourceableController
   # DELETE /youtube_links/1
   # DELETE /youtube_links/1.json
   def destroy
+    old_media_file = @youtube_link.media_file
+
     @youtube_link.media_file = nil
     @youtube_link.destroy
     respond_to do |format|
-      format.html { redirect_to youtube_links_url, notice: 'Youtube link was successfully destroyed.' }
+      format.html { redirect_to edit_media_file_path(old_media_file), notice: 'Youtube link was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

@@ -35,11 +35,12 @@ class LocalFilesController < SourceableController
   # DELETE /local_files/1
   # DELETE /local_files/1.json
   def destroy
+    old_media_file = @local_file.media_file
     @local_file.media_file = nil
     @local_file.destroy
     respond_to do |format|
-      format.html { redirect_to local_files_url, notice: 'Local file was successfully destroyed.' }
-      format.json { head :no_content }
+      format.html { redirect_to edit_media_file_path(old_media_file), notice: 'Local file was successfully destroyed.' }
+      #format.json { head :no_content }
     end
   end
 
