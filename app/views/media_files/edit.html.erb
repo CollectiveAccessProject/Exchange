@@ -5,9 +5,30 @@
 <% if @media_file.sourceable %>
   <%= render "#{@media_file.sourceable.class.to_s.pluralize.underscore}/form" %>
 <% else %>
-  <% @media_file.sourceables_underscored.each do |s| %>
-      <%= render "#{s}/form" %>
-  <% end %>
+
+  <!-- local files are special and are always shown separately (as per wireframes) -->
+  <%= render 'local_files/header' %>
+  <%= render 'local_files/form' %>
+
+  <ul class="nav nav-tabs">
+    <% @media_file.sourceables_underscored.each do |s| %>
+      <% if s=='local_files' %>
+        <li class="active">
+      <% else %>
+        <li>
+      <% end %>
+          <a data-toggle="tab" href="#<%= s %>"><%= render "#{s}/header" %></a>
+        </li>
+    <% end %>
+  </ul>
+
+  <div class="tab-content">
+    <% @media_file.sourceables_underscored.each_with_index do |s,i| %>
+        <div id="<%= s %>" class="tab-pane fade <% if i==0 %>in active<% end %>">
+        <p><%= render "#{s}/form" %></p>
+      </div>
+    <% end %>
+  </div>
 <% end %>
 
 <hr/>

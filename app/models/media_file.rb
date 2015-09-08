@@ -19,11 +19,11 @@ class MediaFile < ActiveRecord::Base
   def sourceable_classes
     # MediaPlugin.repository <-- there's some caching issue here. somewhere in the application
     # life cycle the repo is nuked and just empty. it works right after starting up the rails server
-    [LocalFile, MediaFile]
+    [YoutubeLink]
   end
 
   def sourceables_underscored
-    MediaPlugin.repository.map do |p|
+    sourceable_classes.map do |p|
       p.to_s.pluralize.underscore
     end
   end
