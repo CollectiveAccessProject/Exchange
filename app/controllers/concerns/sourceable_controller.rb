@@ -1,0 +1,2 @@
+class SourceableController < ApplicationController
+end

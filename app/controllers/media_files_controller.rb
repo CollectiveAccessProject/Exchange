@@ -72,9 +72,6 @@ class MediaFilesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_media_file
       @media_file = MediaFile.find(params[:id])
-      if @media_file.sourceable
-        @sourceable = @media_file.sourceable
-      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

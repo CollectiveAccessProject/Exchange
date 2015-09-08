@@ -1,40 +1,19 @@
-class LocalFilesController < ApplicationController
-  before_action :set_local_file, only: [:show, :edit, :update, :destroy]
-
-  # GET /local_files
-  # GET /local_files.json
-  def index
-    @media_file = MediaFile.find(params[:media_file_id])
-    @sourceables = [@media_file.sourceable]
-  end
-
-  # GET /local_files/1
-  # GET /local_files/1.json
-  def show
-  end
-
-  # GET /local_files/new
-  def new
-    @sourceable = LocalFile.new
-  end
-
-  # GET /local_files/1/edit
-  def edit
-  end
+class LocalFilesController < SourceableController
+  before_action :set_local_file, only: [:update, :destroy]
 
   # POST /local_files
   # POST /local_files.json
   def create
-    @sourceable = LocalFile.new(local_file_params)
-    @sourceable.media_file = MediaFile.find(params[:media_file_id])
+    @local_file = LocalFile.new(local_file_params)
+    @local_file.media_file = MediaFile.find(params[:media_file_id])
 
     respond_to do |format|
-      if @sourceable.save
-        format.html { redirect_to edit_media_file_path(@sourceable.media_file), notice: 'Local file was successfully created.' }
-        format.json { render :show, status: :created, location: @sourceable }
+      if @local_file.save
+        format.html { redirect_to edit_media_file_path(@local_file.media_file), notice: 'Local file was successfully created.' }
+        #format.json { render :show, status: :created, location: @local_file }
       else
-        format.html { render :new }
-        format.json { render json: @sourceable.errors, status: :unprocessable_entity }
+        format.html { redirect_to edit_media_file_path(MediaFile.find(params[:media_file_id])) }
+        #format.json { render json: @local_file.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -43,12 +22,12 @@ class LocalFilesController < ApplicationController
   # PATCH/PUT /local_files/1.json
   def update
     respond_to do |format|
-      if @sourceable.update(local_file_params)
-        format.html { redirect_to edit_media_file_path(@sourceable.media_file), notice: 'Local file was successfully updated.' }
-        format.json { render :show, status: :ok, location: @sourceable }
+      if @local_file.update(local_file_params)
+        format.html { redirect_to edit_media_file_path(@local_file.media_file), notice: 'Local file was successfully updated.' }
+        #format.json { render :show, status: :ok, location: @local_file }
       else
-        format.html { render :edit }
-        format.json { render json: @sourceable.errors, status: :unprocessable_entity }
+        format.html { redirect_to edit_media_file_path(@local_file.media_file) }
+        #format.json { render json: @local_file.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -56,8 +35,8 @@ class LocalFilesController < ApplicationController
   # DELETE /local_files/1
   # DELETE /local_files/1.json
   def destroy
-    @sourceable.media_file = nil
-    @sourceable.destroy
+    @local_file.media_file = nil
+    @local_file.destroy
     respond_to do |format|
       format.html { redirect_to local_files_url, notice: 'Local file was successfully destroyed.' }
       format.json { head :no_content }
@@ -67,7 +46,7 @@ class LocalFilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_local_file
-      @sourceable = LocalFile.find(params[:id])
+      @local_file = LocalFile.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

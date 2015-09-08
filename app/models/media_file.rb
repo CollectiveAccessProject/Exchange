@@ -16,4 +16,14 @@ class MediaFile < ActiveRecord::Base
   include SlugModel
   before_create :set_slug
 
+  def sourceable_classes
+    MediaPlugin.repository
+  end
+
+  def sourceables_underscored
+    MediaPlugin.repository.map do |p|
+      p.to_s.pluralize.underscore
+    end
+  end
+
 end

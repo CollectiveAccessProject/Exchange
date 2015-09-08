@@ -1,8 +1,14 @@
-<% @sourceable = MediaPlugin.repository[MediaPlugin.repository.index(LocalFile)].new unless @sourceable && @sourceable.class == LocalFile %>
+<%
+   if @media_file.sourceable && @media_file.sourceable.class == LocalFile
+     local_file = @media_file.sourceable
+   else
+     local_file = LocalFile.new
+   end
+%>
 
 <div class="panel panel-primary">
   <div class="panel-body">
-    <%= simple_form_for([@media_file, @sourceable]) do |f| %>
+    <%= simple_form_for([@media_file, local_file]) do |f| %>
     <%= f.error_notification %>
 
       <%= f.input :file %>
@@ -13,15 +19,15 @@
     <% end %>
 
 <!-- hacked img preview -->
-    <% if @sourceable.id %>
+    <% if local_file.id %>
       <%=
-          if /\Aimage\/.*\Z/ =~ @sourceable.file_content_type
-            image_tag @sourceable.file.url(:medium)
+          if /\Aimage\/.*\Z/ =~ local_file.file_content_type
+            image_tag local_file.file.url(:medium)
             # this for some reason crashes my browser right now ... will have to investigate later
             #elsif /\Avideo\/.*\Z/ =~ file_content_type
             #video_tag file.url, :size => '600x400', controls: true, autobuffer: true
-          elsif /\Aapplication\/pdf\Z/ =~ @sourceable.file_content_type
-            image_tag @sourceable.file.url(:medium)
+          elsif /\Aapplication\/pdf\Z/ =~ local_file.file_content_type
+            image_tag local_file.file.url(:medium)
           end
       %>
     <% end %>

@@ -1,8 +1,14 @@
-<% @sourceable = MediaPlugin.repository[MediaPlugin.repository.index(YoutubeLink)].new unless @sourceable && @sourceable.class == YoutubeLink %>
+<%
+   if @media_file.sourceable && @media_file.sourceable.class == YoutubeLink
+     youtube_link = @media_file.sourceable
+   else
+     youtube_link = YoutubeLink.new
+   end
+%>
 
 <div class="panel panel-primary">
   <div class="panel-body">
-    <%= simple_form_for([@media_file, @sourceable]) do |f| %>
+    <%= simple_form_for([@media_file, youtube_link]) do |f| %>
     <%= f.error_notification %>
 
       <%= f.input :key %>

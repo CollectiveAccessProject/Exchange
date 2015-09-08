@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   resources :resources, :groups
 
   resources :media_files do
-    resources :local_files
-    resources :youtube_links
+    resources :local_files, except: [:index, :show, :new, :edit]
+    resources :youtube_links, except: [:index, :show, :new, :edit]
   end
 
   # test for adding comments and tags asynchronously
