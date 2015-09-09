@@ -1,6 +1,5 @@
 class LocalFile < ActiveRecord::Base
-  include MediaPlugin
-
+  include MediaPluginModel
   has_one :media_file, as: :sourceable
 
   has_attached_file :file, :styles => {

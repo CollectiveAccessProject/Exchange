@@ -3,29 +3,29 @@
 <%= render 'form' %>
 
 <% if @media_file.sourceable %>
-  <%= render "#{@media_file.sourceable.class.to_s.pluralize.underscore}/form" %>
+  <%= @media_file.sourceable.render_form %>
+
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <%= @media_file.sourceable.preview 300, 168 %>
+    </div>
+  </div>
 <% else %>
 
-  <!-- local files are special and are always shown separately (as per wireframes) -->
-  <%= render 'local_files/header' %>
-  <%= render 'local_files/form' %>
+  <% instances = @media_file.ext_media_classes_instances %>
 
   <ul class="nav nav-tabs">
-    <% @media_file.sourceables_underscored.each do |s| %>
-      <% if s=='local_files' %>
-        <li class="active">
-      <% else %>
-        <li>
-      <% end %>
-          <a data-toggle="tab" href="#<%= s %>"><%= render "#{s}/header" %></a>
-        </li>
+    <% instances.each_with_index do |p,i| %>
+      <li<% if i==0 %> class="active"<% end %>>
+        <a data-toggle="tab" href="#<%= p.class.name %>"><%= p.class.header %></a>
+      </li>
     <% end %>
   </ul>
 
   <div class="tab-content">
-    <% @media_file.sourceables_underscored.each_with_index do |s,i| %>
-        <div id="<%= s %>" class="tab-pane fade <% if i==0 %>in active<% end %>">
-        <p><%= render "#{s}/form" %></p>
+    <% instances.each_with_index do |p,i| %>
+      <div id="<%= p.class.name %>" class="tab-pane fade <% if i==0 %>in active<% end %>">
+        <p><%= p.render_form %></p>
       </div>
     <% end %>
   </div>

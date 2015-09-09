@@ -10,10 +10,8 @@ class YoutubeLinksController < SourceableController
     respond_to do |format|
       if @youtube_link.save
         format.html { redirect_to edit_media_file_path(@youtube_link.media_file), notice: 'Youtube link was successfully created.' }
-        #format.json { render :show, status: :created, location: @youtube_link }
       else
         format.html { redirect_to edit_media_file_path(MediaFile.find(params[:media_file_id])) }
-        #format.json { render json: @youtube_link.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -24,10 +22,8 @@ class YoutubeLinksController < SourceableController
     respond_to do |format|
       if @youtube_link.update(youtube_link_params)
         format.html { redirect_to edit_media_file_path(@youtube_link.media_file), notice: 'Youtube link was successfully updated.' }
-        #format.json { render :show, status: :ok, location: @youtube_link }
       else
         format.html { redirect_to edit_media_file_path(@youtube_link.media_file) }
-        #format.json { render json: @youtube_link.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -41,7 +37,6 @@ class YoutubeLinksController < SourceableController
     @youtube_link.destroy
     respond_to do |format|
       format.html { redirect_to edit_media_file_path(old_media_file), notice: 'Youtube link was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 

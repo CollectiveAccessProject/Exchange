@@ -16,15 +16,19 @@ class MediaFile < ActiveRecord::Base
   include SlugModel
   before_create :set_slug
 
-  def sourceable_classes
-    # MediaPlugin.repository <-- there's some caching issue here. somewhere in the application
-    # life cycle the repo is nuked and just empty. it works right after starting up the rails server
-    [YoutubeLink]
+  def external_media_classes
+    [YoutubeLink, LocalFile]
   end
 
-  def sourceables_underscored
-    sourceable_classes.map do |p|
-      p.to_s.pluralize.underscore
+  def ext_media_classes_instances
+    if self.id
+      external_media_classes.map do |p|
+        n = p.new
+        n.media_file = self
+        n
+      end
+    else
+      []
     end
   end
 

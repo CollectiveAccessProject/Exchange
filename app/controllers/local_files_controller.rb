@@ -10,10 +10,8 @@ class LocalFilesController < SourceableController
     respond_to do |format|
       if @local_file.save
         format.html { redirect_to edit_media_file_path(@local_file.media_file), notice: 'Local file was successfully created.' }
-        #format.json { render :show, status: :created, location: @local_file }
       else
         format.html { redirect_to edit_media_file_path(MediaFile.find(params[:media_file_id])) }
-        #format.json { render json: @local_file.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -24,10 +22,8 @@ class LocalFilesController < SourceableController
     respond_to do |format|
       if @local_file.update(local_file_params)
         format.html { redirect_to edit_media_file_path(@local_file.media_file), notice: 'Local file was successfully updated.' }
-        #format.json { render :show, status: :ok, location: @local_file }
       else
         format.html { redirect_to edit_media_file_path(@local_file.media_file) }
-        #format.json { render json: @local_file.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -40,7 +36,6 @@ class LocalFilesController < SourceableController
     @local_file.destroy
     respond_to do |format|
       format.html { redirect_to edit_media_file_path(old_media_file), notice: 'Local file was successfully destroyed.' }
-      #format.json { head :no_content }
     end
   end
 
