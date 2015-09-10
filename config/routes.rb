@@ -2,12 +2,10 @@ Rails.application.routes.draw do
   devise_for :users
   root 'welcome#index'
 
-  resources :resources, :groups
+  resources :resources, :groups, :media_files
 
-  resources :media_files do
-    resources :local_files, except: [:index, :show, :new, :edit]
-    resources :youtube_links, except: [:index, :show, :new, :edit]
-  end
+  resources :local_files, except: [:index, :show, :new, :edit]
+  resources :youtube_links, except: [:index, :show, :new, :edit]
 
   # test for adding comments and tags asynchronously
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]

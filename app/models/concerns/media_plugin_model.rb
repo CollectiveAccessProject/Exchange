@@ -23,10 +23,6 @@ module MediaPluginModel
   end
 
   def render_form
-    unless self.media_file
-      raise ArgumentError.new('The media_file property must be set before rendering. We need this for navigation purposes.')
-    end
-
     action_view.render(
       partial: 'media_plugins/' + self.class.to_s.underscore + '_form',
       locals: { plugin_model: self }

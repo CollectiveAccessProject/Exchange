@@ -7,7 +7,7 @@
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="">Related Media Files</h3>
+        <h4 class="">Related Media Files</h4>
       </div>
       <div class="panel-body">
         <% @resource.media_files.each do |f| %>
@@ -24,8 +24,32 @@
       </div>
     </div>
   </div>
+</div>
 
-  <%= render 'media_files/modal_form' %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a data-toggle="tab" href="#media_files_form">Media</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#fooo">Foo</a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div id="media_files_form" class="tab-pane fade in active">
+            <p><%= render 'media_files/integrated_create_form' %></p>
+          </div>
+          <div id="fooo" class="tab-pane fade">
+            <p>There's nothing here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%= link_to 'Show', @resource %> |

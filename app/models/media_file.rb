@@ -21,14 +21,10 @@ class MediaFile < ActiveRecord::Base
   end
 
   def ext_media_classes_instances
-    if self.id
-      external_media_classes.map do |p|
-        n = p.new
-        n.media_file = self
-        n
-      end
-    else
-      []
+    external_media_classes.map do |p|
+      n = p.new
+      n.media_file = self if self.id
+      n
     end
   end
 

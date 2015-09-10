@@ -1,0 +1,30 @@
+<% media_file = MediaFile.new %>
+
+<!--<%= simple_form_for media_file, authenticity_token: true do |f| %>
+  <%= f.error_notification %>
+  <%= f.input :title %>
+  <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
+  <%= f.input :copyright_notes %>
+  <%= f.input :access, as: :select, include_blank: false %>
+  <%= f.button :submit %>
+  <%= f.hidden_field :resource_id, :value => @resource.id %>
+<% end %>-->
+
+<% instances = media_file.ext_media_classes_instances %>
+
+<ul class="nav nav-tabs">
+  <% instances.each_with_index do |p,i| %>
+    <li<% if i==0 %> class="active"<% end %>>
+      <a data-toggle="tab" href="#<%= p.class.name %>"><%= p.class.header %></a>
+    </li>
+  <% end %>
+</ul>
+
+<div class="tab-content">
+  <% instances.each_with_index do |p,i| %>
+    <div id="<%= p.class.name %>" class="tab-pane fade <% if i==0 %>in active<% end %>">
+      <p><%= p.render_form %></p>
+    </div>
+  <% end %>
+</div>
+
