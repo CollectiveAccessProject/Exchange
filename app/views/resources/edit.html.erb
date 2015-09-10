@@ -1,4 +1,32 @@
-<%= render 'form' %>
+<div class="row">
+
+  <div class="col-md-6">
+    <%= render 'form' %>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="">Related Media Files</h3>
+      </div>
+      <div class="panel-body">
+        <% @resource.media_files.each do |f| %>
+          <% if f.sourceable %>
+            <div><%= f.sourceable.preview(300,180)  %></div>
+          <% else %>
+            <div><%= f.title  %></div>
+          <% end %>
+          <div style="float: right"><%= link_to('Edit', edit_media_file_path(f)) %></div>
+          <hr />
+        <% end %>
+        <br />
+        <%= link_to 'New Media File', '#new_media_file', 'data-toggle' => 'modal' %>
+      </div>
+    </div>
+  </div>
+
+  <%= render 'media_files/modal_form' %>
+</div>
 
 <%= link_to 'Show', @resource %> |
 <%= link_to 'Back', resources_path %>
