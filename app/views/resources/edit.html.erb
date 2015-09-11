@@ -12,7 +12,16 @@
       <div class="panel-body">
         <% @resource.media_files.each do |f| %>
           <% if f.sourceable %>
-            <div><%= f.sourceable.preview :thumbnail  %></div>
+            <div>
+              <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+                <%= f.sourceable.preview :thumbnail  %>
+              </a>
+            </div>
+            <%=
+                # this renders a bootstrap model that is triggered if you click on the preview above
+                # it's in a partial because it's about a billion nested divs :-)
+                render partial: 'media_file_render_overlay', locals: { body: f.sourceable.render, modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s }
+            %>
           <% else %>
             <div><%= f.title  %></div>
           <% end %>
@@ -23,6 +32,8 @@
     </div>
   </div>
 </div>
+
+
 
 <div class="row">
   <div class="col-md-12">

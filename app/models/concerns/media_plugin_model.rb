@@ -22,6 +22,13 @@ module MediaPluginModel
     )
   end
 
+  def render
+    action_view.render(
+        partial: 'media_plugins/' + self.class.to_s.underscore + '_render',
+        locals: { plugin_model: self }
+    )
+  end
+
   def render_form
     action_view.render(
       partial: 'media_plugins/' + self.class.to_s.underscore + '_form',
