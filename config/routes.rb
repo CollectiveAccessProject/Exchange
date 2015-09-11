@@ -2,8 +2,14 @@ Rails.application.routes.draw do
   devise_for :users
   root 'welcome#index'
 
-  resources :resources, :groups, :media_files
+  resources :resources, :groups
 
+  # media files only exist in resource context, so we basically only need create, update and delete
+  # @todo: we might not even need update?!
+  resources :media_files, except: [:index, :show, :new, :edit]
+
+  # same goes for media plugin implementations. they can't exist without media_file and resource
+  # @todo: we might not even need update?!
   resources :local_files, except: [:index, :show, :new, :edit]
   resources :youtube_links, except: [:index, :show, :new, :edit]
 

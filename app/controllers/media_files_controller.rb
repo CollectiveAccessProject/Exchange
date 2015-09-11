@@ -27,6 +27,16 @@ class MediaFilesController < ApplicationController
   def create
     @media_file = MediaFile.new(media_file_params)
 
+    if session[:sourceable_id]
+      @media_file.sourceable = session[:sourceable_type].constantize.find(session[:sourceable_id])
+      session.delete :sourceable_type
+      session.delete :sourceable_id
+    end
+
+    if session[:resource_id]
+      @media_file.resource_id = session[:resource_id]
+    end
+
     respond_to do |format|
       if @media_file.save
         format.html do
@@ -61,9 +71,15 @@ class MediaFilesController < ApplicationController
   # DELETE /media_files/1
   # DELETE /media_files/1.json
   def destroy
+    resource = @media_file.resource
+
+    if @media_file.sourceable
+      @media_file.sourceable.destroy
+    end
+
     @media_file.destroy
     respond_to do |format|
-      format.html { redirect_to media_files_url, notice: 'Media file was successfully destroyed.' }
+      format.html { redirect_to edit_resource_path(resource), notice: 'Media file was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

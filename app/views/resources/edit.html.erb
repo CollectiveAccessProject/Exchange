@@ -16,7 +16,7 @@
           <% else %>
             <div><%= f.title  %></div>
           <% end %>
-          <div style="float: right"><%= link_to('Edit', edit_media_file_path(f)) %></div>
+          <div style="float: right"><%= link_to 'Delete', f, method: :delete, data: { confirm: 'Are you sure?' } %></div>
           <hr />
         <% end %>
         <br />
@@ -41,7 +41,11 @@
 
         <div class="tab-content">
           <div id="media_files_form" class="tab-pane fade in active">
-            <p><%= render 'media_files/integrated_create_form' %></p>
+            <% if session[:sourceable_id] %>
+              <p><%= render 'media_files/form' %></p>
+            <% else %>
+              <p><%= render 'media_files/integrated_create_form' %></p>
+            <% end %>
           </div>
           <div id="fooo" class="tab-pane fade">
             <p>There's nothing here.</p>

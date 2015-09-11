@@ -50,6 +50,13 @@
 </nav>
 
 <div class="container">
+  <% if flash[:notice] %>
+    <div class="col-md-12"><div class="panel panel-default"><div class="panel-body">
+      <div style="color: red; font-weight: bold;">
+        <%= flash[:notice] %>
+      </div>
+    </div></div></div>
+  <% end %>
   <%= yield %>
 </div>
 

@@ -5,13 +5,15 @@ class YoutubeLinksController < SourceableController
   # POST /youtube_links.json
   def create
     @youtube_link = YoutubeLink.new(youtube_link_params)
-    @youtube_link.media_file = MediaFile.find(params[:media_file_id])
 
     respond_to do |format|
       if @youtube_link.save
-        format.html { redirect_to edit_media_file_path(@youtube_link.media_file), notice: 'Youtube link was successfully created.' }
+        session[:sourceable_id] = @youtube_link.id
+        session[:sourceable_type] = 'YoutubeLink'
+
+        format.html { redirect_to :back, notice: 'Please fill out the media file information below' }
       else
-        format.html { redirect_to edit_media_file_path(MediaFile.find(params[:media_file_id])) }
+        format.html { redirect_to :back, notice: 'There was a problem with the Youtube link' }
       end
     end
   end
@@ -20,11 +22,7 @@ class YoutubeLinksController < SourceableController
   # PATCH/PUT /youtube_links/1.json
   def update
     respond_to do |format|
-      if @youtube_link.update(youtube_link_params)
-        format.html { redirect_to edit_media_file_path(@youtube_link.media_file), notice: 'Youtube link was successfully updated.' }
-      else
-        format.html { redirect_to edit_media_file_path(@youtube_link.media_file) }
-      end
+      format.html { redirect_to :back }
     end
   end
 

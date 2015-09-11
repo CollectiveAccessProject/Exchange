@@ -23,6 +23,9 @@ class ResourcesController < ApplicationController
 
   # GET /resources/1/edit
   def edit
+    @media_file = MediaFile.new
+
+    session[:resource_id] = @resource.id
   end
 
   # POST /resources
