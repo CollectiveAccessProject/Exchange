@@ -1,1 +1,17 @@
-<iframe id="youtubePreview<%= plugin_model.id %>" width="<%= width %>" height="<%= height %>" src="https://www.youtube.com/embed/<%= plugin_model.key %>" frameborder="0" allowfullscreen></iframe>
+<%
+case version
+  when :medium
+    url = 'http://img.youtube.com/vi/' + plugin_model.key + '/mqdefault.jpg'
+  when :full
+    url = 'http://img.youtube.com/vi/' + plugin_model.key + '/maxresdefault.jpg'
+  else
+    url = 'http://img.youtube.com/vi/' + plugin_model.key + '/default.jpg'
+end
+
+%>
+
+<img
+  src="<%= url %>"
+  <% if width %> width="<%= width %>" <% end %>
+  <% if height %> height="<%= height %>" <% end %>
+/>

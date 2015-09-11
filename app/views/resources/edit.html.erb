@@ -1,18 +1,18 @@
 <div class="row">
 
-  <div class="col-md-6">
+  <div class="col-md-10">
     <%= render 'form' %>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-2">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h4 class="">Related Media Files</h4>
+        <h4 class="">Media</h4>
       </div>
       <div class="panel-body">
         <% @resource.media_files.each do |f| %>
           <% if f.sourceable %>
-            <div><%= f.sourceable.preview(300,180)  %></div>
+            <div><%= f.sourceable.preview :thumbnail  %></div>
           <% else %>
             <div><%= f.title  %></div>
           <% end %>
