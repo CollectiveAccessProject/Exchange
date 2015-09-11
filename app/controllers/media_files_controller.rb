@@ -73,10 +73,6 @@ class MediaFilesController < ApplicationController
   def destroy
     resource = @media_file.resource
 
-    if @media_file.sourceable
-      @media_file.sourceable.destroy
-    end
-
     @media_file.destroy
     respond_to do |format|
       format.html { redirect_to edit_resource_path(resource), notice: 'Media file was successfully destroyed.' }

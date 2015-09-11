@@ -28,4 +28,11 @@ class MediaFile < ActiveRecord::Base
     end
   end
 
+  def destroy
+    if sourceable
+      sourceable.destroy
+    end
+
+    super
+  end
 end
