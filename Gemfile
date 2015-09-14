@@ -25,6 +25,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 # bootstrap
 gem 'bootstrap-sass', '~> 3.2'
+gem 'bootstrap-wysihtml5-rails'
 gem 'autoprefixer-rails'
 
 # Use ActiveModel has_secure_password
