@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150907195244) do
+ActiveRecord::Schema.define(version: 20150914133452) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 20150907195244) do
     t.integer  "lock_version",            limit: 4,     default: 0, null: false
     t.datetime "created_at",                                        null: false
     t.datetime "updated_at",                                        null: false
+    t.text     "body_text",               limit: 65535
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "fk_rails_3149540938", using: :btree

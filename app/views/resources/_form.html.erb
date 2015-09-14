@@ -1,23 +1,38 @@
+<%= simple_form_for @resource do |r| %>
 
-    <div class="panel panel-default">
+<div class="col-md-4">
+  <div class="panel panel-default">
 
-      <div class="panel-heading">
-        <h3 class="">Editing Resource</h3>
-      </div>
-      <div class="panel-body">
-
-        <%= simple_form_for @resource do |r| %>
-          <%= r.error_notification %>
-
-          <%= r.input :resource_type, collection: Resource.resource_types, include_blank: false %>
-          <%= r.input :title %>
-          <%= r.input :subtitle %>
-          <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-          <%= r.input :copyright_notes %>
-          <%= r.input :access, as: :select, include_blank: false %>
-
-          <%= r.button :submit %>
-        <% end %>
-
-      </div>
+    <div class="panel-heading">
+      <h3 class="">Editing Resource</h3>
     </div>
+    <div class="panel-body">
+
+
+        <%= r.error_notification %>
+
+        <%= r.input :resource_type, collection: Resource.resource_types, include_blank: false %>
+        <%= r.input :title %>
+        <%= r.input :subtitle %>
+        <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+        <%= r.input :copyright_notes %>
+        <%= r.input :access, as: :select, include_blank: false %>
+
+        <%= r.button :submit %>
+
+
+    </div>
+  </div>
+</div>
+<div class="col-md-6">
+
+  <div class="panel panel-default">
+
+    <div class="panel-body">
+      <%= r.input :body_text %>
+    </div>
+  </div>
+
+</div>
+
+<% end %>
