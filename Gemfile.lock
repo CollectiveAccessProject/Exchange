@@ -87,6 +87,7 @@ GEM
     execjs (2.6.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    flickraw (0.9.8)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.4.2)
@@ -214,6 +215,7 @@ DEPENDENCIES
   devise
   elasticsearch-model
   elasticsearch-rails
+  flickraw
   immigrant
   jbuilder (~> 2.0)
   jquery-rails
