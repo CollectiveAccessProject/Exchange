@@ -1,9 +1,13 @@
-.flash-error {
-  color: red;
+.flash {
   font-weight: bold;
 }
 
+.flash-error {
+  @extend .flash;
+  color: red;
+}
+
 .flash-notice {
+  @extend .flash;
   color: green;
-  font-weight: bold;
 }
