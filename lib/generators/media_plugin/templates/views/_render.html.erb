@@ -1,12 +1,1 @@
-<%=
-    # if we want the 'full'/original version, we leave the first parameter for url() empty
-    version = nil if version == :full
-
-    if /\Aimage\/.*\Z/ =~ plugin_model.file_content_type
-      image_tag plugin_model.file.url(version)
-    elsif /\Avideo\/.*\Z/ =~ plugin_model.file_content_type
-      video_tag file.url, :size => '600x400', controls: true, autobuffer: true
-    elsif /\Aapplication\/pdf\Z/ =~ plugin_model.file_content_type
-      image_tag plugin_model.file.url(version)
-    end
-%>
+<blockquote class="imgur-embed-pub" lang="en" data-id="IdawjQq"><a href="//imgur.com/IdawjQq">View post on imgur.com</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>

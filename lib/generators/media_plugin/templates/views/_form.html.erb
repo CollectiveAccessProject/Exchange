@@ -3,7 +3,10 @@
     <%= simple_form_for(plugin_model) do |f| %>
     <%= f.error_notification %>
 
-      <%= f.input :file %>
+      <%=
+          # add your essential inputs here!
+          #f.input :file
+      %>
 
     <div class="form-actions">
       <% if plugin_model.id %>
