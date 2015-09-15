@@ -1,4 +1,4 @@
-class ReplaceMeController < ApplicationController
+class ReplaceMesController < ApplicationController
   include SourceableController
   skip_before_action :verify_authenticity_token
 
