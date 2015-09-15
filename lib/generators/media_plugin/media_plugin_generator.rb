@@ -24,4 +24,14 @@ class MediaPluginGenerator < Rails::Generators::NamedBase
     end
   end
 
+  def copy_and_edit_controller
+    copy_file 'controller.rb', "app/controllers/#{plural_file_name}.rb"
+    gsub_file "app/controllers/#{plural_file_name}.rb", 'ReplaceMe', class_name
+    gsub_file "app/controllers/#{plural_file_name}.rb", 'replace_me', singular_table_name
+  end
+
+  def add_route
+    route "resources :#{plural_file_name}, except: [:index, :show, :new, :edit, :update, :destroy]"
+  end
+
 end
