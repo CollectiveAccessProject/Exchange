@@ -17,7 +17,7 @@ class MediaFile < ActiveRecord::Base
   before_create :set_slug
 
   def external_media_classes
-    [YoutubeLink, LocalFile, SoundcloudLink]
+    [YoutubeLink, LocalFile, VimeoLink, SoundcloudLink]
   end
 
   def ext_media_classes_instances

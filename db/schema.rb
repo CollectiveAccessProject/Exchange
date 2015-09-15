@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150915152337) do
+ActiveRecord::Schema.define(version: 20150915181811) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -198,6 +198,15 @@ ActiveRecord::Schema.define(version: 20150915152337) do
   end
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+
+  create_table "vimeo_links", force: :cascade do |t|
+    t.string   "key",           limit: 16,  null: false
+    t.string   "original_link", limit: 255, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "vimeo_links", ["key"], name: "index_vimeo_links_on_key", using: :btree
 
   create_table "youtube_links", force: :cascade do |t|
     t.string   "key",           limit: 16,  null: false

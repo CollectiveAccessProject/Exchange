@@ -1,0 +1,5 @@
+<%
+   resp = HTTParty.get("http://vimeo.com/api/v2/video/#{plugin_model.key}.json").parsed_response.first
+%>
+
+<%= image_tag resp['thumbnail_medium'], size: '135x100' %>
