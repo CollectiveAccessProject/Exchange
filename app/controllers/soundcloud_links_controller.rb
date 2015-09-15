@@ -11,7 +11,7 @@ class SoundcloudLinksController < ApplicationController
       if save_and_set_session @youtube_link
         format.html { redirect_to :back, notice: 'Please fill out the media file information below' }
       else
-        format.html { redirect_to :back, notice: 'There was a problem with the Youtube link' }
+        format.html { redirect_to :back, notice: 'There was a problem with the Soundcloud link' }
       end
     end
   end
