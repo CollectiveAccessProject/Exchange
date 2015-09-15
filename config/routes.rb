@@ -9,9 +9,9 @@ Rails.application.routes.draw do
   resources :media_files, except: [:index, :show, :new, :edit]
 
   # same goes for media plugin implementations. they can't exist without media_file and resource
-  # @todo: we might not even need update?!
   resources :local_files, except: [:index, :show, :new, :edit, :update, :destroy]
   resources :youtube_links, except: [:index, :show, :new, :edit, :update, :destroy]
+  resources :soundcloud_links, except: [:index, :show, :new, :edit, :update, :destroy]
 
   # test for adding comments and tags asynchronously
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914133452) do
+ActiveRecord::Schema.define(version: 20150915152337) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -124,6 +124,14 @@ ActiveRecord::Schema.define(version: 20150914133452) do
   end
 
   add_index "settings", ["target_type", "target_id", "var"], name: "index_settings_on_target_type_and_target_id_and_var", unique: true, using: :btree
+
+  create_table "soundcloud_links", force: :cascade do |t|
+    t.string   "original_link", limit: 255, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "soundcloud_links", ["original_link"], name: "index_soundcloud_links_on_original_link", using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.integer  "taggable_id",   limit: 4,                 null: false
