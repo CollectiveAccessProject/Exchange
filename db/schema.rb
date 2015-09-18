@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150915181811) do
+ActiveRecord::Schema.define(version: 20150915191645) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(version: 20150915181811) do
   add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
   add_index "comments", ["ip"], name: "index_comments_on_ip", using: :btree
   add_index "comments", ["user_id"], name: "fk_rails_f0d1fa43c0", using: :btree
+
+  create_table "flickr_links", force: :cascade do |t|
+    t.integer  "photo_id",      limit: 8,   null: false
+    t.string   "original_link", limit: 255, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "flickr_links", ["photo_id"], name: "index_flickr_links_on_photo_id", using: :btree
 
   create_table "groups", force: :cascade do |t|
     t.string   "name",        limit: 100,   null: false
