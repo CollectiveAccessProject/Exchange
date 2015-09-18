@@ -1,0 +1,135 @@
+$font-family-sans-serif:'Quicksand', sans-serif;
+$blue:#10069F;
+$gray:#707372;
+$lt_gray:#DEDEDE;
+html{
+	position:relative;
+	min-height: 100%;
+}
+body {
+	padding-top: 70px; 
+	padding-bottom: 80px;
+}
+a:hover{
+	background:inherit;
+}
+h4{
+	background-color:$gray;
+	color:white;
+	text-transform:uppercase;
+	padding:10px 15px 10px 15px;
+	margin-top:0px;
+	.btn-default{
+		color:white;
+		background:transparent;
+		border:0px;
+		margin-left:10px;
+	}
+}
+.navbar-header{
+	
+	a.navbar-brand{
+		font-size:30px;
+		font-weight: 700;
+		text-transform:uppercase;
+		.glyphicon{
+			font-size:24px;
+			margin-left:3px;
+			margin-right:1px;
+			color:$gray;
+		}
+	}
+}
+.navbar-form{
+	.form-control{
+		background-color:black;
+		border:none;
+		color:white;
+		box-shadow: none;
+	}
+	.form-control:focus{
+		border:none;
+  		box-shadow: none;
+  		outline: 0 none;
+	}
+	.btn-default{
+		border:1px solid black;
+		background-color:black;
+		padding-left:0px;
+		color:white;
+	}
+	::-webkit-input-placeholder{  
+	   color: white;  
+	}
+	:-moz-placeholder{  
+	   color: white;  
+	}
+	::-moz-placeholder{  
+	   color: white;  
+	}
+	:-ms-input-placeholder {  
+	   color: white;  
+	}
+}
+#navbar{
+	a{
+		font-family:$font-family-sans-serif;
+		font-weight:400;
+		text-transform:uppercase;
+	}
+	ul.dropdown-menu a{
+		font-family:$font-family-sans-serif;
+		font-weight:400;
+		text-transform:none;
+	}
+	.dropdown .glyphicon{
+		color:$gray;
+	}
+}
+.shadowed{
+	box-shadow: 0px 0px 3px $gray;
+}
+label.control-label{
+	margin-bottom:0px;
+}
+.form-control{
+	box-shadow:none;
+}
+.panel-heading{
+	color:white !important;
+	text-transform:uppercase;
+}
+.panel-body a{
+	color:$blue;
+	.glyphicon{
+		margin-top:3px;
+	}
+}
+.panel{
+	box-shadow:none;
+	border:0px;
+}
+.wysihtml5-toolbar{
+	a{
+		color:$gray !important;
+		padding:4px;
+		background-color:$lt_gray;
+		border:0px;
+	}
+	a:hover{
+		background-color:white;
+	}
+}
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: black;
+  color:white;
+  padding-top:20px;
+  a {
+  	color:white;
+  }
+}

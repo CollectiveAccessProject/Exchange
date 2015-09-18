@@ -1,11 +1,19 @@
 <div class="row">
+	<div class="col-sm-12">
+		<H4>
+			Editing Resource
+			<%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, @resource, class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, resources_path, class:'btn btn-default btn-xs pull-right' %>
+		</H4>
+	</div>
+</div>
+<div class="row">
 
   <%= render 'form' %>
 
   <div class="col-md-2">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h4 class="">Media</h4>
+        Media
       </div>
       <div class="panel-body">
         <% @resource.media_files.each do |f| %>
@@ -23,7 +31,7 @@
           <% else %>
             <div><%= f.title  %></div>
           <% end %>
-          <div style="float: right"><%= link_to 'Delete', f, method: :delete, data: { confirm: 'Are you sure?' } %></div>
+          <%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, f, method: :delete, data: { confirm: 'Are you sure?' } %>
           <hr />
         <% end %>
       </div>
@@ -35,8 +43,6 @@
 
 <div class="row">
   <div class="col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-body">
         <ul class="nav nav-tabs">
           <li class="active">
             <a data-toggle="tab" href="#media_files_form">Media</a>
@@ -58,10 +64,5 @@
             <p>There's nothing here.</p>
           </div>
         </div>
-      </div>
-    </div>
   </div>
 </div>
-
-<%= link_to 'Show', @resource %> |
-<%= link_to 'Back', resources_path %>

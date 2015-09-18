@@ -12,7 +12,7 @@
 <body>
 
 <!-- Fixed navbar -->
-<nav class="navbar navbar-default navbar-static-top">
+<nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -21,9 +21,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to 'The Exchange', root_url, class: 'navbar-brand' %>
+      <%= link_to 'The<span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>Exchange'.html_safe, root_url, class: 'navbar-brand' %>
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
+    <div id="navbar" class="navbar-collapse collapse navbar-right">
       <ul class="nav navbar-nav">
         <li><%= link_to 'Resources', resources_path %></li>
         <li class="dropdown">
@@ -36,14 +36,16 @@
             <li><a href="#">Meow</a></li>
           </ul>
         </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <%= render 'devise/menu/registration_items' %>
-        <%= render 'devise/menu/login_items' %>
+      	<li class="dropdown">
+      		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></a>
+      		<ul class="dropdown-menu" role="menu">
+       			<%= render 'devise/menu/registration_items' %>
+        		<%= render 'devise/menu/login_items' %>
+      		</ul>
+      	</li>
       </ul>
       <%= form_tag({ controller: '/quick_search', action: 'query' }, method: 'get', class: 'navbar-form navbar-right') do %>
-        <%= text_field_tag(:q, nil, class: 'form-control', placeholder: 'Search') %>
-        <%= submit_tag('Go!', class: 'btn btn-default') %>
+        <%= text_field_tag(:q, nil, class: 'form-control', placeholder: 'Search') %><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
       <% end %>
     </div><!--/.nav-collapse -->
   </div>
@@ -66,6 +68,30 @@
   <% end %>
   <%= yield %>
 </div>
+<div id="footer">
+	<div class="container">
+		&copy; UMMA 2015
+		<ul class="pull-right list-inline">
+			<li><a href="#">link</a></li>
+			<li><a href="#">link</a></li>
+			<li><a href="#">link</a></li>
+		</ul>
+	</div>
+</div>
 
 </body>
 </html>
+<!-- make menu have dropshadow when leaving the about section.-->
+<script>
+jQuery(document).ready(function() {	
+		$(window).scroll(function() {    
+			var scroll = $(window).scrollTop();
+
+			if (scroll >= 50) {
+				$(".navbar").addClass("shadowed");
+			} else {
+				$(".navbar").removeClass("shadowed");
+			}
+		});
+});
+</script>
