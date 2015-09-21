@@ -13,6 +13,15 @@ body {
 a:hover{
 	background:inherit;
 }
+p, ul, li{
+	font-family: $font-family-sans-serif;
+}
+.btn-default, a.btn-default{
+	color:white;
+}
+h2, .h2{
+	font-weight:500;
+}
 h4{
 	background-color:$gray;
 	color:white;
@@ -37,6 +46,12 @@ h4{
 			margin-left:3px;
 			margin-right:1px;
 			color:$gray;
+		}
+		img{
+			max-width:102px;
+			height:auto;
+			display:inline;
+			margin:-5px 2px 0px 0px;
 		}
 	}
 }
@@ -112,13 +127,41 @@ label.control-label{
 .wysihtml5-toolbar{
 	a{
 		color:$gray !important;
-		padding:4px;
+		padding:3px;
 		background-color:$lt_gray;
 		border:0px;
 	}
 	a:hover{
 		background-color:white;
 	}
+}
+.hpGray{
+	margin-top:10px;
+	background-color:$gray;
+	color:white;
+	padding:40px 0px 40px 0px;
+	.btn-default{
+		background-color:black;
+		color:white;
+		text-transform:uppercase;
+		border:0px;
+	}
+	.btn-default:hover{
+		background-color:$blue;
+	}
+}
+.hpFeatureImg{
+	.col-sm-4{
+		background-color:$lt_gray;
+	}
+	img{
+		width:100%;
+		height:auto;
+		margin-bottom:2px;
+	}
+}
+.hpFeatureBtn .btn{
+	margin-top:-85px;
 }
 #footer {
   position: absolute;

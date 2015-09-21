@@ -4,65 +4,62 @@
 			Editing Resource
 			<%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, @resource, class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, resources_path, class:'btn btn-default btn-xs pull-right' %>
 		</H4>
-	</div>
-</div>
+	</div><!-- end col -->
+</div><!-- end row -->
 <div class="row">
+	<div class="col-md-10">
+		<%= render 'form' %>
+		<div class="row">
+		  <div class="col-md-12">
+				<ul class="nav nav-tabs">
+				  <li class="active">
+					<a data-toggle="tab" href="#media_files_form">Media</a>
+				  </li>
+				  <li>
+					<a data-toggle="tab" href="#fooo">Foo</a>
+				  </li>
+				</ul>
 
-  <%= render 'form' %>
-
-  <div class="col-md-2">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        Media
-      </div>
-      <div class="panel-body">
-        <% @resource.media_files.each do |f| %>
-          <% if f.sourceable %>
-            <div>
-              <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-                <%= f.sourceable.preview :thumbnail  %>
-              </a>
-            </div>
-            <%=
-                # this renders a bootstrap model that is triggered if you click on the preview above
-                # it's in a partial because it's about a billion nested divs :-)
-                render partial: 'media_file_render_overlay', locals: { body: f.sourceable.render, modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s }
-            %>
-          <% else %>
-            <div><%= f.title  %></div>
-          <% end %>
-          <%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, f, method: :delete, data: { confirm: 'Are you sure?' } %>
-          <hr />
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<div class="row">
-  <div class="col-md-12">
-        <ul class="nav nav-tabs">
-          <li class="active">
-            <a data-toggle="tab" href="#media_files_form">Media</a>
-          </li>
-          <li>
-            <a data-toggle="tab" href="#fooo">Foo</a>
-          </li>
-        </ul>
-
-        <div class="tab-content">
-          <div id="media_files_form" class="tab-pane fade in active">
-            <% if session[:sourceable_id] %>
-              <p><%= render 'media_files/form' %></p>
-            <% else %>
-              <p><%= render 'media_files/integrated_create_form' %></p>
-            <% end %>
-          </div>
-          <div id="fooo" class="tab-pane fade">
-            <p>There's nothing here.</p>
-          </div>
-        </div>
-  </div>
-</div>
+				<div class="tab-content">
+				  <div id="media_files_form" class="tab-pane fade in active">
+					<% if session[:sourceable_id] %>
+					  <p><%= render 'media_files/form' %></p>
+					<% else %>
+					  <p><%= render 'media_files/integrated_create_form' %></p>
+					<% end %>
+				  </div>
+				  <div id="fooo" class="tab-pane fade">
+					<p>There's nothing here.</p>
+				  </div>
+				</div>
+		  </div><!-- end col -->
+		</div><!-- end row -->
+	</div><!-- end col -->
+	<div class="col-md-2">
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+			Media
+		  </div>
+		  <div class="panel-body">
+			<% @resource.media_files.each do |f| %>
+			  <% if f.sourceable %>
+				<div>
+				  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+					<%= f.sourceable.preview :thumbnail  %>
+				  </a>
+				</div>
+				<%=
+					# this renders a bootstrap model that is triggered if you click on the preview above
+					# it's in a partial because it's about a billion nested divs :-)
+					render partial: 'media_file_render_overlay', locals: { body: f.sourceable.render, modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s }
+				%>
+			  <% else %>
+				<div><%= f.title  %></div>
+			  <% end %>
+			  <%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, f, method: :delete, data: { confirm: 'Are you sure?' } %>
+			  <hr />
+			<% end %>
+		  </div><!-- end panel-body -->
+		</div><!-- end panel -->
+	</div><!-- end col -->
+</div><!-- end row -->

@@ -1,3 +1,69 @@
-<h1>The Exchange</h1>
-<p>This is the home page</p>
-<p><a href="#">This is a link</a></p>
+	<div class="row">
+		<div class="col-sm-8 hpFeatureImg">
+			<%= image_tag('tiffany.jpg') %>
+			<div class="small">&copy; Lorem Ipsum dolor sit</div>
+		</div>
+		<div class="col-sm-4">
+			<br/><br/><br/>
+			<H2>Louis Comfort Tiffany</H2>
+			<H3>The Home as a Work of Art</H3>
+			<br/>
+			<p class="text-center">
+				<a href="#" class="btn btn-default btn-lg">View Resource</a>
+			</p>
+		</div>
+	</div>
+	<div class="row hpFeatureBtn">
+		<div class="col-sm-12 text-right">
+			<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left aria-hidden="true"></span></a>&nbsp;&nbsp;<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-right aria-hidden="true"></span></a>
+		</div>
+	</div>
+</div><!-- this ends the container in application.html.erb so can make home page content go full screen -->
+
+<div class="hpGray">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-9 col-md-8">
+				<p>
+					<span class="h1">The Exchange</span> is a lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vehicula ligula at mauris fermentum, non accumsan risus imperdiet. Praesent eleifend non mi quis pretium. Vestibulum pulvinar aliquam arcu, eu faucibus enim mollis et. Integer aliquam at odio ut sollicitudin. Integer mi lacus, viverra eget auctor ac, iaculis ac velit. Morbi venenatis convallis libero non vestibulum. Sed interdum nibh sapien, ut finibus tortor vehicula sed. Aliquam erat volutpat. In hac habitasse platea dictumst. Ut eleifend, nulla vel lobortis fringilla, purus magna dictum tortor, ac hendrerit leo turpis in nunc. Phasellus turpis magna, vehicula quis semper id, rhoncus non nulla. Ut velit massa, semper a gravida vitae, vehicula quis velit. Nulla viverra efficitur diam, a bibendum leo. Pellentesque pulvinar quam in orci porta, non malesuada risus bibendum. 
+				</p>
+			</div>
+			<div class="col-sm-3 col-md-3 col-md-offset-1">
+				<% if user_signed_in? %>
+					<br/><p class="text-center">
+					  <%= link_to('Your Dashboard', resources_path, class:'btn btn-default btn-lg')  %>
+						<br/><br/>
+					  <%= link_to('New Resource', new_resource_path, class:'btn btn-default btn-lg')  %>
+					</p>
+				<% else %>
+					<br/><br/><br/><p class="text-center">
+					  <%= link_to('Login', new_user_session_path, class:'btn btn-default btn-lg')  %>
+						&nbsp;&nbsp;
+					  <%= link_to('Register', new_user_registration_path, class:'btn btn-default btn-lg')  %>
+					</p>
+				<% end %>
+			</div>
+		</div><!-- end row -->
+	</div>
+</div>
+<div class="container"><!--- this tag will be closed in application.html.erb -->
+	<div class="row">
+		<div class="col-sm-4">
+			<H2>Heading</H2>
+			<p>
+				Morbi ut pretium augue. Nullam interdum, velit ac porta laoreet, tellus sapien fermentum odio, id iaculis ex nisi quis nibh. Vestibulum nunc velit, porta ac purus ac, consequat dignissim erat. Nullam ultrices massa id sem placerat, nec pharetra risus pulvinar. Ut et cursus ipsum, at vulputate diam. Cras ac erat sem. Nunc tortor erat, facilisis vel accumsan varius, egestas ut sem. 
+			</p>
+		</div>
+		<div class="col-sm-4">
+			<H2>Heading</H2>
+			<p>
+				Morbi ut pretium augue. Nullam interdum, velit ac porta laoreet, tellus sapien fermentum odio, id iaculis ex nisi quis nibh. Vestibulum nunc velit, porta ac purus ac, consequat dignissim erat. Nullam ultrices massa id sem placerat, nec pharetra risus pulvinar. Ut et cursus ipsum, at vulputate diam. Cras ac erat sem. Nunc tortor erat, facilisis vel accumsan varius, egestas ut sem. 
+			</p>
+		</div>
+		<div class="col-sm-4">
+			<H2>Heading</H2>
+			<p>
+				Morbi ut pretium augue. Nullam interdum, velit ac porta laoreet, tellus sapien fermentum odio, id iaculis ex nisi quis nibh. Vestibulum nunc velit, porta ac purus ac, consequat dignissim erat. Nullam ultrices massa id sem placerat, nec pharetra risus pulvinar. Ut et cursus ipsum, at vulputate diam. Cras ac erat sem. Nunc tortor erat, facilisis vel accumsan varius, egestas ut sem. 
+			</p>
+		</div>
+	</div>

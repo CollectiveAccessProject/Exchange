@@ -1,34 +1,22 @@
 <%= simple_form_for @resource do |r| %>
-
-<div class="col-md-4">
-  <div class="panel panel-default">
+<div class="panel panel-default">
     <div class="panel-body">
+		<div class="row">
+			<div class="col-md-5">
+						<%= r.error_notification %>
 
-
-        <%= r.error_notification %>
-
-        <%= r.input :resource_type, collection: Resource.resource_types, include_blank: false %>
-        <%= r.input :title, :input_html => {:rows => 1} %>
-        <%= r.input :subtitle, :input_html => {:rows => 1} %>
-        <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-        <%= r.input :copyright_notes %>
-        <%= r.input :access, as: :select, include_blank: false %>
-
-        <%= r.button :submit %>
-
-
-    </div>
-  </div>
-</div>
-<div class="col-md-6">
-
-  <div class="panel panel-default">
-
-    <div class="panel-body">
-      <%= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 18} %>
-    </div>
-  </div>
-
-</div>
-
+						<%= r.input :resource_type, collection: Resource.resource_types, include_blank: false %>
+						<%= r.input :title, :input_html => {:rows => 1} %>
+						<%= r.input :subtitle, :input_html => {:rows => 1} %>
+						<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+						<%= r.input :copyright_notes %>
+						<%= r.input :access, as: :select, include_blank: false %>
+			</div><!-- end col -->
+			<div class="col-md-7">
+						<%= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 14} %>
+						<div class="pull-right"><%= r.button :submit %></div>
+			</div><!-- end col -->
+		</div><!-- end row -->
+	</div><!-- end panel-body -->
+</div><!-- end panel -->
 <% end %>

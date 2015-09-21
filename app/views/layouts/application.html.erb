@@ -21,7 +21,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to 'The<span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>Exchange'.html_safe, root_url, class: 'navbar-brand' %>
+      <%= link_to image_tag('ummaLogo.jpg')+' The Exchange'.html_safe, root_url, class: 'navbar-brand' %>
     </div>
     <div id="navbar" class="navbar-collapse collapse navbar-right">
       <ul class="nav navbar-nav">
@@ -87,7 +87,7 @@ jQuery(document).ready(function() {
 		$(window).scroll(function() {    
 			var scroll = $(window).scrollTop();
 
-			if (scroll >= 50) {
+			if (scroll >= 30) {
 				$(".navbar").addClass("shadowed");
 			} else {
 				$(".navbar").removeClass("shadowed");
