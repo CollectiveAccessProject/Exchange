@@ -1,0 +1,232 @@
+<div class="row">
+	<div class="col-sm-10">
+		<H1>Dashboard</H1>
+	</div>
+	<div class="col-sm-2">
+		<H1><%= link_to('New Resource', new_resource_path, class:'btn btn-default btn-lg')  %></H1>
+	</div>
+</div>	
+<div class="row">
+	<div class="col-sm-6">
+		<H4>Your Learning Collections/ Resources</H4>
+		<div class="dbUnit"><form>
+			<div class="row">
+				<div class="col-sm-4">
+					<input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				</div>
+				<div class="col-sm-3 col-sm-offset-2">
+					<select class="form-control input-sm" name="filter"><option value="">Filter list</option></select>
+				</div>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="sort"><option value="">Sort list</option></select>
+				</div>
+			</div><!-- end row -->
+		</form></div><!-- end dbUnit -->
+		<div class="dbUnit"><HR/></div>
+		<% @resources.each do |resource| %>
+		  <div class="dbUnit">
+			<div><b><%= resource.title %></b></div>
+			<p><%= resource.subtitle %></p>
+			<p>
+				<%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, resource, class:'btn btn-default btn-xs' %>
+				<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(resource), class:'btn btn-default btn-xs' %>
+				<%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span> Delete'.html_safe, resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-default btn-xs' %>
+				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-copy aria-hidden="true"></span> Fork</a>
+				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-share aria-hidden="true"></span> Share</a>
+				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ok aria-hidden="true"></span> Publish</a>
+				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-comment aria-hidden="true"></span> Tag</a>
+			</p>
+			<HR/>
+		  </div><!-- end dbUnit -->
+		<% end %>
+
+	</div><!-- end col -->
+	<div class="col-sm-6">
+		<H4>
+			<span class="small pull-right">Click on a collection or resource to filter Activity</span>
+			Activity
+		</H4>
+		<div class="dbUnit"><form>
+			<div class="row">
+				<div class="col-sm-3 col-sm-offset-6">
+					<select class="form-control input-sm" name="filter"><option value="">Filter list</option></select>
+				</div>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="sort"><option value="">Sort list</option></select>
+				</div>
+			</div><!-- end row -->
+		</form></div><!-- end dbUnit -->
+		<div class="dbUnit"><HR/></div>		
+		<div class="dbUnit">
+			<p><span class="small">5/3/2015</span>
+				<br/>Jane Smith commented on <a href="#">Learning Collection</a>
+			</p>
+			<HR/>
+		</div>
+		<div class="dbUnit">
+			<p><span class="small">5/3/2015</span>
+				<br/>Jane Smith commented on <a href="#">Learning Collection</a>
+			</p>
+			<HR/>
+		</div>
+		<H4>
+			<span class="small pull-right">Click on a collection or resource to filter Stats</span>
+			Stats
+		</H4>
+			<div class="dbUnit">
+				<%= @resources.count %> resource<%= @resources.count == 1 ? '' : 's' %></p>
+			</div><!-- end dbUnit -->
+	</div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+	<div class="col-sm-12">
+		<H4>
+			Favorites
+		</H4>
+		<div class="dbUnit">
+			<div class="row">
+				<div class="col-sm-4">
+					<input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				</div>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="filter"><option value="">Filter list</option></select>
+				</div>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="sort"><option value="">Sort list</option></select>
+				</div>
+				<div class="col-sm-2">
+					<a href="#" class="small"><b>View All 65</b></a>
+				</div>
+			</div><!-- end row -->
+		</div>
+		<div class="dbUnit"><HR/></div>
+		<div class="dbUnit">
+			
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->				
+			</div><!-- end row -->
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->
+				<div class="col-sm-3">
+					<div class="dbFavorite">
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
+						<%= image_tag('thumbnail.jpg') %>
+						<div>
+							Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+						</div>
+					</div>
+				</div><!--end col -->				
+			</div><!-- end row -->
+		</div><!-- end dbUnit -->
+	</div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+	<div class="col-sm-8">
+		<H4>User Groups</H4>
+		<div class="row">
+			<div class="col-sm-6">
+				<a href="#" class="btn btn-default btn-sm pull-right">New Group</a>
+				<H3>Owned By You</H3>
+				<div class="dbUnit">
+					<p>
+						<b>Art History 101</b>
+						<br/>14 members
+						<br/>
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user aria-hidden="true"></span> Manage Members</a>
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit Group Info</a>				
+					</p>
+					<HR/>
+				</div><!-- end dbUnit -->
+				<div class="dbUnit">
+					<p>
+						<b>English 101</b>
+						<br/>10 members
+						<br/>
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user aria-hidden="true"></span> Manage Members</a>
+						<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit Group Info</a>				
+					</p>
+					<HR/>
+				</div><!-- end dbUnit -->
+			</div><!--end col -->
+			<div class="col-sm-6">
+				<H3>Member Of</H3>
+				<div class="dbUnit">
+					<p>
+						<b>Teachers group</b>
+						<br/>owned by John Doe (jdoe@gmail.com)
+					</p>
+					<HR/>
+				</div><!-- end dbUnit -->
+			</div><!--end col -->
+		</div><!-- end row -->
+	</div><!-- end col -->
+	<div class="col-sm-4">
+		<H4>User Profile</H4>
+		<p>
+			<%= current_user.first_name + ' ' + current_user.last_name %><br/>
+			<i><%= current_user.email %></i>
+		</p>
+		<p><%= link_to('Edit Profile', edit_user_registration_path, class:'btn btn-default btn-md') %></p>
+	</div>
+</div><!-- end row -->

@@ -31,7 +31,7 @@
 			<div class="col-sm-3 col-md-3 col-md-offset-1">
 				<% if user_signed_in? %>
 					<br/><p class="text-center">
-					  <%= link_to('Your Dashboard', resources_path, class:'btn btn-default btn-lg')  %>
+					  <%= link_to('Your Dashboard', '/dashboard', class:'btn btn-default btn-lg')  %>
 						<br/><br/>
 					  <%= link_to('New Resource', new_resource_path, class:'btn btn-default btn-lg')  %>
 					</p>

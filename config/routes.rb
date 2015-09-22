@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   match '/resources/add_new_tag' => 'resources#add_new_tag', :as => 'add_new_tag_to_resources', :via => [:post]
 
   get '/quick_search/query' => 'quick_search#query'
-
+  get '/dashboard' => 'dashboard#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

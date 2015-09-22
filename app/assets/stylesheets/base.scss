@@ -22,6 +22,12 @@ p, ul, li{
 h2, .h2{
 	font-weight:500;
 }
+h3, .h3{
+	font-weight:700;
+	font-size:17px;
+	margin-top:0px;
+	padding-top:0px;
+}
 h4{
 	background-color:$gray;
 	color:white;
@@ -34,6 +40,16 @@ h4{
 		border:0px;
 		margin-left:10px;
 	}
+	.small{
+		color:white;
+		text-transform:none;
+		padding-top:5px;
+		font-size:10px;
+	}
+}
+.scaleImg img{
+	width:100%;
+	height:auto;
 }
 .navbar-header{
 	
@@ -114,15 +130,32 @@ label.control-label{
 	color:white !important;
 	text-transform:uppercase;
 }
-.panel-body a{
-	color:$blue;
-	.glyphicon{
-		margin-top:3px;
+.panel-body{
+	a{
+		color:$blue;
+		.glyphicon{
+			margin-top:3px;
+		}
+	}
+	input, select, .form-control{
+		border:none;
 	}
 }
 .panel{
 	box-shadow:none;
 	border:0px;
+}
+input.input-sm{
+	font-size:10px;
+	padding:3px;
+	height:19px;
+	line-height:1em;
+}
+select.input-sm{
+	font-size:10px;
+	padding:3px;
+	height:21px;
+	line-height:1em;
 }
 .wysihtml5-toolbar{
 	a{
@@ -162,6 +195,51 @@ label.control-label{
 }
 .hpFeatureBtn .btn{
 	margin-top:-85px;
+}
+.dbUnit{
+	padding:5px 10px 5px 10px;
+	.btn{
+		margin-right:10px;
+	}
+	HR{
+		color: $lt_gray;
+		margin:0px 0px 5px 0px;
+	}
+	input.form-control{
+		width:85%;
+		display:inline;
+		position:relative;
+		top:-2px;
+	}
+	select.form-control{
+		width:100%;
+		display:inline;
+	}
+	button{
+		color:$blue;
+		padding:0px 0px 0px 3px;
+		border:0px;
+		background-color:transparent;
+	}
+	.dbFavorite{
+		font-size:11px;
+		position:relative;
+		clear:left;
+		margin-bottom:10px;
+		img{
+			max-width:150px;
+			height:auto;
+			float:left;
+			margin:0px 10px 10px 0px;
+		}
+		a.btn{
+			position:absolute;
+			left:0px;
+			top:0px;
+		}
+		
+		
+	}
 }
 #footer {
   position: absolute;
