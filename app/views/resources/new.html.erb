@@ -1,5 +1,13 @@
-<h1>New Resource</h1>
-
-<%= render 'form' %>
-
-<%= link_to 'Back', resources_path %>
+<div class="row">
+	<div class="col-sm-12">
+		<H4>
+			New Resource
+			<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+		</H4>
+	</div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+	<div class="col-sm-12">
+		<%= render 'form' %>
+	</div><!-- end col -->
+</div><!-- end row -->

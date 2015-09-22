@@ -2,7 +2,7 @@
 	<div class="col-sm-10">
 		<H1>Dashboard</H1>
 	</div>
-	<div class="col-sm-2">
+	<div class="col-sm-2 text-right">
 		<H1><%= link_to('New Resource', new_resource_path, class:'btn btn-default btn-lg')  %></H1>
 	</div>
 </div>	
@@ -186,8 +186,10 @@
 		<H4>User Groups</H4>
 		<div class="row">
 			<div class="col-sm-6">
-				<a href="#" class="btn btn-default btn-sm pull-right">New Group</a>
-				<H3>Owned By You</H3>
+				<div class="dbUnit">
+					<a href="#" class="btn btn-default btn-sm pull-right">New Group</a>
+					<H3>Owned By You</H3>
+				</div><!-- end bdUnit -->
 				<div class="dbUnit">
 					<p>
 						<b>Art History 101</b>
@@ -210,7 +212,9 @@
 				</div><!-- end dbUnit -->
 			</div><!--end col -->
 			<div class="col-sm-6">
-				<H3>Member Of</H3>
+				<div class="dbUnit">
+					<H3>Member Of</H3>
+				</div>
 				<div class="dbUnit">
 					<p>
 						<b>Teachers group</b>
@@ -223,10 +227,12 @@
 	</div><!-- end col -->
 	<div class="col-sm-4">
 		<H4>User Profile</H4>
-		<p>
-			<%= current_user.first_name + ' ' + current_user.last_name %><br/>
-			<i><%= current_user.email %></i>
-		</p>
-		<p><%= link_to('Edit Profile', edit_user_registration_path, class:'btn btn-default btn-md') %></p>
+		<div class="dbUnit">
+			<p>
+				<%= current_user.first_name + ' ' + current_user.last_name %><br/>
+				<i><%= current_user.email %></i>
+			</p>
+			<p><%= link_to('Edit Profile', edit_user_registration_path, class:'btn btn-default btn-md') %></p>
+		</div>
 	</div>
 </div><!-- end row -->
