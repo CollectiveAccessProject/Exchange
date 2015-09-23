@@ -1,0 +1,8 @@
+<div class="">
+  <p>Tags goes here.</p>
+  <ul>
+    <% @resource.tags.each do |c| %>
+        <li><%= c.tag %>, by <i><%= c.user_name %></i></li>
+    <% end %>
+  </ul>
+</div>

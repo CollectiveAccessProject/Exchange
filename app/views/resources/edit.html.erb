@@ -13,24 +13,42 @@
 		  <div class="col-md-12">
 				<ul class="nav nav-tabs">
 				  <li class="active">
-					<a data-toggle="tab" href="#media_files_form">Media</a>
+					<a data-toggle="tab" href="#tab_media_files">Media</a>
 				  </li>
 				  <li>
-					<a data-toggle="tab" href="#fooo">Foo</a>
+					<a data-toggle="tab" href="#tab_formatting">Formatting</a>
 				  </li>
+                  <li>
+                    <a data-toggle="tab" href="#tab_related">Related</a>
+                  </li>
+                  <li>
+                    <a data-toggle="tab" href="#tab_tags">Tags</a>
+                  </li>
+                  <li>
+                    <a data-toggle="tab" href="#tab_comments">Comments</a>
+                  </li>
 				</ul>
 
 				<div class="tab-content">
-				  <div id="media_files_form" class="tab-pane fade in active">
+				  <div id="tab_media_files" class="tab-pane fade in active">
 					<% if session[:sourceable_id] %>
 					  <p><%= render 'media_files/form' %></p>
 					<% else %>
 					  <p><%= render 'media_files/integrated_create_form' %></p>
 					<% end %>
 				  </div>
-				  <div id="fooo" class="tab-pane fade">
-					<p>There's nothing here.</p>
+				  <div id="tab_formatting" class="tab-pane">
+                    <p><%= render 'resources/formatting_options' %></p>
 				  </div>
+                  <div id="tab_related" class="tab-pane">
+                    <p><%= render 'resources/related' %></p>
+                  </div>
+                  <div id="tab_tags" class="tab-pane">
+                    <p><%= render 'resources/tags' %></p>
+                  </div>
+                  <div id="tab_comments" class="tab-pane">
+                    <p><%= render 'resources/comments' %></p>
+                  </div>
 				</div>
 		  </div><!-- end col -->
 		</div><!-- end row -->

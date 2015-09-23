@@ -1,0 +1,8 @@
+<div class="">
+  <p>Comments goes here.</p>
+  <ul>
+                      <% @resource.comments.each do |c| %>
+                          <li><%= c.comment %>, by <i><%= c.user_name %></i></li>
+                      <% end %>
+                    </ul>
+</div>
