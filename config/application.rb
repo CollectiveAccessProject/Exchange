@@ -28,8 +28,8 @@ module Exchange
 
     # custom Exchange settings
     # that 'x' namespace is predefined and can't be changed :-(
-    config.x.license_types = { cc_by_nd: 1, commercial: 2, none: 3 }
-    config.x.resource_types = { bacon: 1, steak: 2, burger: 3 }
+    config.x.license_types = { "All Rights Reserved": 0, "Creative Commons by-nc-sa": 1, "Creative Commons by-nc": 2, "Creative Commons by-nc-nd": 3, "Creative Commons by": 4, "Creative Commons by-sa": 5, "Creative Commons by-nd": 6, "No copyright restrictions": 7, "United States Government work": 8 }
+    config.x.resource_types = { "Resource": 1, "Learning collection": 2 }
     config.x.group_types = { basic_group: 1 }
   end
 end
