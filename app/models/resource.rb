@@ -41,6 +41,9 @@ class Resource < ActiveRecord::Base
   def self.resource_types
     Rails.application.config.x.resource_types
   end
+  def self.access_types
+    Rails.application.config.x.access_types
+  end
 
   def destroy
     if media_files

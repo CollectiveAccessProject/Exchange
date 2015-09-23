@@ -10,7 +10,7 @@
 						<%= r.input :subtitle, :input_html => {:rows => 1} %>
 						<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
 						<%= r.input :copyright_notes %>
-						<%= r.input :access, as: :select, include_blank: false %>
+						<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
 			</div><!-- end col -->
 			<div class="col-md-7">
 						<%= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 14} %>
