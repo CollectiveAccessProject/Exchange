@@ -19,11 +19,11 @@
 			<% @resource.media_files.each do |f| %>
 			  <div class="col-md-2">
 			  <% if f.sourceable %>
-					<div class="thumbnail">
+					<div class="thumbnail previewThumbnail">
 					  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
 						<%= f.sourceable.preview :thumbnail  %>
 					  </a>
-					  <div class="caption">
+					  <div class="caption small">
 						<b><%= f.title  %></b><br/>
 						<p>
 							<a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" class="btn btn-default btn-xs">View</a>
@@ -43,7 +43,7 @@
 				
 		</div><!-- end row -->
 		<p><%= @resource.body_text.html_safe %></p>
-
+<% if @resource.comments.count > 0 %>
 		<H3><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H3>
 		<div class="panel panel-primary">
 			<div class="panel-body">
@@ -52,7 +52,7 @@
 				<% end %>
 			</div><!-- end panel-body -->
 		</div><!-- end panel -->
-
+<% end %>
 		<H4>Add your comment and tags</H4>
 		<div class="panel panel-primary">
 			<div class="panel-body">
@@ -82,6 +82,7 @@
 		</div><!-- end panel -->
 	</div><!-- end col -->
 	<div class="col-sm-2">
+<% if @resource.tags.count > 0 %>
 		<p>
 		  <strong>Tags:</strong>
 		  <ul>
@@ -89,5 +90,7 @@
 			  <li><%= t.tag %></li>
 			<% end %>
 		  </ul>
+		</p>
+<% end %>
 	</div><!-- end col -->
 </div><!-- end row -->
