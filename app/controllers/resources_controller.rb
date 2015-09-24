@@ -1,9 +1,11 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag, :save_preferences]
 
   include CommentableController
   include TaggableController
+
+  respond_to :html, :json
 
   # GET /resources
   # GET /resources.json
@@ -24,7 +26,8 @@ class ResourcesController < ApplicationController
   # GET /resources/1/edit
   def edit
     @media_file = MediaFile.new
-
+   # @resource.settings(:media_formatting).mode = 'foo'
+   # @resource.save!
     session[:resource_id] = @resource.id
   end
 
@@ -77,6 +80,40 @@ class ResourcesController < ApplicationController
   # add new tag
   def add_new_tag
     add_tag @resource
+  end
+
+  # save preferences
+  def save_preferences
+    params.permit(:media_formatting_mode, :text_placement_placement, :text_formatting_show_all, :text_formatting_collapse, :user_interaction_allow_comments, :user_interaction_allow_tags, :user_interaction_allow_responses, :user_interaction_display_responses_on_separate_page)
+
+    resp = nil
+
+    begin
+      # Save individual setting values
+      @resource.settings(:media_formatting).mode = params[:media_formatting_mode].to_sym;
+      @resource.settings(:text_placement).placement = params[:text_placement_placement].to_sym;
+
+      @resource.settings(:text_formatting).show_all = (params[:text_formatting_show_all] == "show_all") ? 1 : 0;
+      @resource.settings(:text_formatting).collapse = (params[:text_formatting_collapse] == "collapse") ? 1 : 0;
+
+      @resource.settings(:user_interaction).allow_comments = (params[:user_interaction_allow_comments] == "allow_comments") ? 1 : 0;
+      @resource.settings(:user_interaction).allow_tags = (params[:user_interaction_allow_tags] == "allow_tags") ? 1 : 0;
+
+      @resource.settings(:user_interaction).allow_responses = (params[:user_interaction_allow_responses] == "allow_responses") ? 1 : 0;
+      @resource.settings(:user_interaction).display_responses_on_separate_page = (params[:user_interaction_display_responses_on_separate_page] == "display_responses_on_separate_page") ? 1 : 0;
+
+      @resource.save;
+
+      # response
+      resp = {:status => "ok"}
+    rescue StandardError => ex
+      resp = {:status => "err", :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.html
+      format.json {render :json => resp }
+    end
   end
 
   private

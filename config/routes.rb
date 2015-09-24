@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]
   match '/resources/add_new_tag' => 'resources#add_new_tag', :as => 'add_new_tag_to_resources', :via => [:post]
 
+  # save preferences via ajax, get JSON in return
+  post '/resources/:id/save_preferences' => 'resources#save_preferences',  defaults: { format: 'json' }
+
   get '/quick_search/query' => 'quick_search#query'
   get '/dashboard' => 'dashboard#index'
 
