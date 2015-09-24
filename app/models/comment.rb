@@ -22,7 +22,7 @@ class Comment < ActiveRecord::Base
   def user_name
     begin
       user = User.find(user_id)
-      user.first_name + ' ' + user.last_name
+      user.name
     rescue
       'anonymous'
     end

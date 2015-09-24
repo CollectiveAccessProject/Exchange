@@ -74,3 +74,7 @@ gem 'immigrant'
 
 # nice wrapper around flickr API
 gem 'flickraw'
+
+# oauth
+gem 'omniauth'
+gem 'omniauth-facebook'

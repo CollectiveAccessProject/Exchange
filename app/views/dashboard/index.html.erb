@@ -229,7 +229,7 @@
 		<H4>User Profile</H4>
 		<div class="dbUnit">
 			<p>
-				<%= current_user.first_name + ' ' + current_user.last_name %><br/>
+				<%= current_user.name %><br/>
 				<i><%= current_user.email %></i>
 			</p>
 			<p><%= link_to('Edit Profile', edit_user_registration_path, class:'btn btn-default btn-md') %></p>
