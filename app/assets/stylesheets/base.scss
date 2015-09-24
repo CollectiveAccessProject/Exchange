@@ -65,7 +65,7 @@ h4{
 .navbar-header{
 	
 	a.navbar-brand{
-		font-size:30px;
+		font-size:18px;
 		font-weight: 700;
 		text-transform:uppercase;
 		.glyphicon{
@@ -75,14 +75,32 @@ h4{
 			color:$gray;
 		}
 		img{
-			max-width:102px;
+			max-width:65px;
 			height:auto;
 			display:inline;
 			margin:-5px 2px 0px 0px;
 		}
 	}
+	@media(min-width: 700px){
+		a.navbar-brand{
+			font-size:30px;
+		}
+		img{
+			max-width:102px;
+		}
+	}
 }
 .navbar-form{
+	@media(max-width: 699px){
+		.form-control{
+			width:90%;
+			display:inline;
+		}
+		.quickSearch{
+			background-color:black;
+			height:37px;
+		}	
+	}
 	.form-control{
 		background-color:black;
 		border:none;
@@ -152,6 +170,11 @@ label.control-label{
 	}
 	input, select, .form-control{
 		border:none;
+	}	
+	HR, hr{
+		color: white;
+		border-color: white;
+		margin:5px 0px 10px 0px;
 	}
 }
 .panel{

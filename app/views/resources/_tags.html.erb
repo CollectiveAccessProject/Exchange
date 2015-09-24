@@ -1,8 +1,7 @@
-<div class="">
-  <p>Tags goes here.</p>
-  <ul>
-    <% @resource.tags.each do |c| %>
-        <li><%= c.tag %>, by <i><%= c.user_name %></i></li>
-    <% end %>
-  </ul>
-</div>
+<div class="panel panel-primary">
+	<div class="panel-body">
+		<% @resource.tags.each do |c| %>
+		  <p><%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %></i></small></p><HR/>
+		<% end %>
+	</div><!-- end panel-body -->
+</div><!-- end panel -->

@@ -1,8 +1,7 @@
-<div class="">
-  <p>Comments goes here.</p>
-  <ul>
-                      <% @resource.comments.each do |c| %>
-                          <li><%= c.comment %>, by <i><%= c.user_name %></i></li>
-                      <% end %>
-                    </ul>
-</div>
+<div class="panel panel-primary">
+	<div class="panel-body">
+		<% @resource.comments.each do |c| %>
+		  <p><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %></i></small></p><HR/>
+		<% end %>
+	</div><!-- end panel-body -->
+</div><!-- end panel -->

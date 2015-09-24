@@ -1,53 +1,93 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+	<div class="col-sm-12">
+		<H4>
+			Previewing Resource
+			<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+		</H4>
+	</div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+	<div class="col-sm-10">
+		<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Title:</strong>
-  <%= @resource.title %>
-</p>
+		<H2><%= @resource.title %></H2>
 
-<p>
-  <strong>Subtitle:</strong>
-  <%= @resource.subtitle %>
-</p>
+		<H3><%= @resource.subtitle %></H3>
 
 
-<p>
-  <strong>Related media files:</strong>
-  <ul>
-    <% @resource.media_files.each do |f| %>
-      <%= link_to(f.title, media_file_path(f))  %>
-    <% end %>
-  </ul>
-</p>
+		<div class="row">
+			<% @resource.media_files.each do |f| %>
+			  <div class="col-md-2">
+			  <% if f.sourceable %>
+					<div class="thumbnail">
+					  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+						<%= f.sourceable.preview :thumbnail  %>
+					  </a>
+					  <div class="caption">
+						<b><%= f.title  %></b><br/>
+						<p>
+							<a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" class="btn btn-default btn-xs">View</a>
+						</p>
+					  </div>
+					</div>
+					<%=
+						# this renders a bootstrap model that is triggered if you click on the preview above
+						# it's in a partial because it's about a billion nested divs :-)
+						render partial: 'media_file_render_overlay', locals: { body: f.sourceable.render, modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s }
+					%>
+				  <% else %>
+					<p><%= f.title  %></p>
+				  <% end %>
+				  </div><!-- end col -->
+				<% end %>
+				
+		</div><!-- end row -->
+		<p><%= @resource.body_text.html_safe %></p>
 
-<p>
-  <strong>comments:</strong>
-  <ul>
-    <% @resource.comments.each do |c| %>
-      <li><%= c.comment %>, by <i><%= c.user_name %></i></li>
-    <% end %>
-  </ul>
+		<H3><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H3>
+		<div class="panel panel-primary">
+			<div class="panel-body">
+				<% @resource.comments.each do |c| %>
+				  <p><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %></i></small></p><HR/>
+				<% end %>
+			</div><!-- end panel-body -->
+		</div><!-- end panel -->
 
-  <strong>tags:</strong>
-  <ul>
-    <% @resource.tags.each do |t| %>
-      <li><%= t.tag %></li>
-    <% end %>
-  </ul>
-
-</p>
-
-<%= form_tag '/resources/add_new_comment' do %>
-  <%= hidden_field_tag 'id', @resource.id %>
-  <%= text_area_tag 'comment[comment]' %>
-  <%= submit_tag 'Post Comment' %>
-<% end %>
-
-<%= form_tag '/resources/add_new_tag' do %>
-  <%= hidden_field_tag 'id', @resource.id %>
-  <%= text_area_tag 'tag[tag]' %>
-  <%= submit_tag 'Add tag' %>
-<% end %>
-
-<%= link_to 'Edit', edit_resource_path(@resource) %> |
-<%= link_to 'Back', resources_path %>
+		<H4>Add your comment and tags</H4>
+		<div class="panel panel-primary">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6">
+						<%= form_tag '/resources/add_new_comment' do %>
+						  <%= hidden_field_tag 'id', @resource.id %>
+						  <div class="form-group">
+						    <label>Comment</label>
+						  	<%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+						  </div>
+						  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+						<% end %>
+					</div><!-- end col -->
+					<div class="col-sm-6">			
+						<%= form_tag '/resources/add_new_tag' do %>
+						  <%= hidden_field_tag 'id', @resource.id %>
+						  <div class="form-group">
+							  <label>Tag</label>
+							  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+						  </div>
+						  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+						<% end %>
+					</div><!-- end col -->
+				</div><!-- end row -->
+			</div><!-- end panel-body -->
+		</div><!-- end panel -->
+	</div><!-- end col -->
+	<div class="col-sm-2">
+		<p>
+		  <strong>Tags:</strong>
+		  <ul>
+			<% @resource.tags.each do |t| %>
+			  <li><%= t.tag %></li>
+			<% end %>
+		  </ul>
+	</div><!-- end col -->
+</div><!-- end row -->
