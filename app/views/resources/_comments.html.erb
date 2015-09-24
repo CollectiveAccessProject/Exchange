@@ -1,8 +1,11 @@
-<div class="">
-  <p>Comments goes here.</p>
-  <ul>
-                      <% @resource.comments.each do |c| %>
-                          <li><%= c.comment %>, by <i><%= c.user_name %></i></li>
-                      <% end %>
-                    </ul>
+<div class="panel-body">
+  <% if @resource.tags.count > 0 %>
+      <ul>
+        <% @resource.comments.each do |c| %>
+            <li><%= (c.comment.length > 0) ? c.comment.length : '<EMPTY>' %>, by <i><%= c.user_name %></i></li>
+        <% end %>
+      </ul>
+  <% else %>
+      <p>No comments</p>
+  <% end %>
 </div>

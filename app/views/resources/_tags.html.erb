@@ -1,8 +1,11 @@
-<div class="">
-  <p>Tags goes here.</p>
-  <ul>
-    <% @resource.tags.each do |c| %>
-        <li><%= c.tag %>, by <i><%= c.user_name %></i></li>
-    <% end %>
-  </ul>
+<div class="panel-body">
+  <% if @resource.tags.count > 0 %>
+      <ul>
+        <% @resource.tags.each do |c| %>
+            <li><%= (c.tag.length > 0) ? c.tag : '<EMPTY>' %>, by <i><%= c.user_name %></i></li>
+        <% end %>
+      </ul>
+  <% else %>
+      <p>No tags</p>
+  <% end %>
 </div>
