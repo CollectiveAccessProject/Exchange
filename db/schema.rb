@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150924143739) do
+ActiveRecord::Schema.define(version: 20160217135655) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -44,6 +44,12 @@ ActiveRecord::Schema.define(version: 20150924143739) do
   end
 
   add_index "flickr_links", ["photo_id"], name: "index_flickr_links_on_photo_id", using: :btree
+
+  create_table "googledocs_links", force: :cascade do |t|
+    t.string   "original_link", limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
 
   create_table "groups", force: :cascade do |t|
     t.string   "name",        limit: 100,   null: false
