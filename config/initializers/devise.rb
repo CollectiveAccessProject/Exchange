@@ -235,6 +235,10 @@ Devise.setup do |config|
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   config.omniauth :facebook, ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET'], scope: 'email', info_fields: 'email, name'
   config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET']
+  #config.omniauth :shibboleth, {:uid_field => 'eppn',
+  #                              :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn'},
+  #                              :extra_fields => [:schacHomeOrganization]
+  #}
   config.omniauth :shibboleth, {
       :shib_session_id_field     => 'Shib-Session-ID',
       :shib_application_id_field => 'Shib-Application-ID',
