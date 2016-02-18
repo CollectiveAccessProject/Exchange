@@ -245,7 +245,7 @@ Devise.setup do |config|
       :shib_application_id_field => 'Shib-Application-ID',
       :debug                     => false,
       :name_field                => 'displayName',
-      :uid_field                 => 'uid',
+      :uid_field                 => 'eppn',
       :info_fields => {
           :email    => 'mail',
           :location => 'contactAddress',
