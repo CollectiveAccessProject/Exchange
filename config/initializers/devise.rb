@@ -248,7 +248,6 @@ Devise.setup do |config|
       :info_fields => {
           :email    => 'mail',
           :location => 'contactAddress',
-          :phone    => 'contactPhone',
           :name     => 'displayName'
       }
   }
