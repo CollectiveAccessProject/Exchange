@@ -62,7 +62,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
-    collectiveaccess (0.2.2)
+    collectiveaccess (0.2.3)
       httparty (~> 0.13)
     concurrent-ruby (1.0.0)
     devise (3.5.3)
@@ -238,7 +238,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.2)
   bootstrap-wysihtml5-rails
   coffee-rails (~> 4.1.0)
-  collectiveaccess (= 0.2.2)
+  collectiveaccess
   devise
   elasticsearch-model
   elasticsearch-rails
