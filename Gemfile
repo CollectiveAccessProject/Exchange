@@ -80,3 +80,6 @@ gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-shibboleth'
+
+# old fashioned text file logging for maintenance scripts
+require 'logger'
