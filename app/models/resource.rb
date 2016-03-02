@@ -14,6 +14,8 @@ class Resource < ActiveRecord::Base
 
   belongs_to :user
 
+  serialize :indexing_data
+
   # change log
   has_paper_trail
 
@@ -37,6 +39,18 @@ class Resource < ActiveRecord::Base
   # slug handling
   include SlugModel
   before_create :set_slug
+
+  # get record as indexed json for elasticsearch
+  def as_indexed_json(options={})
+    # we want the indexing data at the "top level" of the document,
+    # and not as sub-hash under the 'indexing-data' field
+    puts 'call indexed json'
+    record = as_json(except: [:indexing_data])
+    if indexing_data.is_a? Hash
+      record = record.merge(indexing_data)
+    end
+    record
+  end
 
   # settings
   has_settings :class_name => 'ResourceSettingObject'  do |s|

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160226123400) do
+ActiveRecord::Schema.define(version: 20160302161245) do
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20160226123400) do
   add_index "comments", ["commentable_id"], name: "index_comments_on_commentable_id", using: :btree
   add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
   add_index "comments", ["ip"], name: "index_comments_on_ip", using: :btree
-  add_index "comments", ["user_id"], name: "fk_rails_337495afd6", using: :btree
+  add_index "comments", ["user_id"], name: "fk_rails_4f7d594f92", using: :btree
 
   create_table "flickr_links", force: :cascade do |t|
     t.integer  "photo_id",      limit: 8,   null: false
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 20160226123400) do
     t.string   "sourceable_type",   limit: 255
   end
 
-  add_index "media_files", ["resource_id"], name: "fk_rails_b1c4ae68fe", using: :btree
+  add_index "media_files", ["resource_id"], name: "fk_rails_53a6cb160c", using: :btree
   add_index "media_files", ["slug"], name: "index_media_files_on_slug", using: :btree
   add_index "media_files", ["sourceable_type", "sourceable_id"], name: "index_media_files_on_sourceable_type_and_sourceable_id", using: :btree
 
@@ -100,7 +100,7 @@ ActiveRecord::Schema.define(version: 20160226123400) do
     t.datetime "updated_at",                     null: false
   end
 
-  add_index "related_resources", ["to_resource_id"], name: "fk_rails_aaa62a075f", using: :btree
+  add_index "related_resources", ["to_resource_id"], name: "fk_rails_c5612257be", using: :btree
 
   create_table "resources", force: :cascade do |t|
     t.string   "slug",                    limit: 255,                null: false
@@ -122,13 +122,14 @@ ActiveRecord::Schema.define(version: 20160226123400) do
     t.datetime "updated_at",                                         null: false
     t.text     "body_text",               limit: 65535
     t.string   "collectiveaccess_id",     limit: 255,   default: ""
+    t.text     "indexing_data",           limit: 65535
   end
 
-  add_index "resources", ["forked_from_resource_id"], name: "fk_rails_414ee90939", using: :btree
-  add_index "resources", ["parent_id"], name: "fk_rails_7c36011dac", using: :btree
+  add_index "resources", ["forked_from_resource_id"], name: "fk_rails_767173611a", using: :btree
+  add_index "resources", ["parent_id"], name: "fk_rails_c3d3b6ec20", using: :btree
   add_index "resources", ["resource_type"], name: "index_resources_on_resource_type", using: :btree
   add_index "resources", ["slug"], name: "index_resources_on_slug", using: :btree
-  add_index "resources", ["user_id"], name: "fk_rails_203bddaeb9", using: :btree
+  add_index "resources", ["user_id"], name: "fk_rails_f6d53978db", using: :btree
 
   create_table "settings", force: :cascade do |t|
     t.string   "var",         limit: 255,   null: false
@@ -171,7 +172,7 @@ ActiveRecord::Schema.define(version: 20160226123400) do
   add_index "tags", ["tag_type"], name: "index_tags_on_tag_type", using: :btree
   add_index "tags", ["taggable_id"], name: "index_tags_on_taggable_id", using: :btree
   add_index "tags", ["taggable_type"], name: "index_tags_on_taggable_type", using: :btree
-  add_index "tags", ["user_id"], name: "fk_rails_31da23e688", using: :btree
+  add_index "tags", ["user_id"], name: "fk_rails_1b26cac2ea", using: :btree
 
   create_table "user_groups", force: :cascade do |t|
     t.integer  "type",       limit: 1
@@ -181,8 +182,8 @@ ActiveRecord::Schema.define(version: 20160226123400) do
     t.integer  "group_id",   limit: 4
   end
 
-  add_index "user_groups", ["group_id"], name: "fk_rails_74f86b5f81", using: :btree
-  add_index "user_groups", ["user_id"], name: "fk_rails_dbab6363ea", using: :btree
+  add_index "user_groups", ["group_id"], name: "fk_rails_59250fb3a7", using: :btree
+  add_index "user_groups", ["user_id"], name: "fk_rails_53e27ea038", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
