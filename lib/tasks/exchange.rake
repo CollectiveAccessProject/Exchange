@@ -1,8 +1,11 @@
 namespace :exchange do
   desc 'Create system user for import'
   task create_system_user: :environment do
-    pass = SecureRandom.hex
-    User.where(id: 1).first_or_create.update(name: 'UMMA Exchange', :email => 'admin@exchange.umma.umich.edu', :password => pass, :password_confirmation => pass)
+    pass = Rails.env.development? ? 'michigan' : SecureRandom.hex
+    User.where(email: 'admin@exchange.umma.umich.edu').first_or_create.update(
+        name: 'UMMA Exchange', email: 'admin@exchange.umma.umich.edu',
+        password: pass, password_confirmation: pass
+    )
   end
 
   desc 'Pulls in latest UMMA collections data from CollectiveAccess'
@@ -46,7 +49,7 @@ namespace :exchange do
                                      body_text: value['body_text'],
                                      subtitle: '',
                                      resource_type: 1,
-                                     user_id: 1 # @todo: make configurable?
+                                     user_id: User.where(email: 'admin@exchange.umma.umich.edu').first.id
         end
       end
 

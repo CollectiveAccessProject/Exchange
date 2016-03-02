@@ -30,7 +30,6 @@ class Resource < ActiveRecord::Base
 
   # search (from elasticsearch gem)
   include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
 
   # basic model validations
   validates :slug, uniqueness: 'Slug is already in use'
@@ -44,12 +43,27 @@ class Resource < ActiveRecord::Base
   def as_indexed_json(options={})
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
-    puts 'call indexed json'
     record = as_json(except: [:indexing_data])
     if indexing_data.is_a? Hash
       record = record.merge(indexing_data)
     end
     record
+  end
+
+  # the automatic elasticsearch callbacks seem to ignore or
+  # overwrite the as_indexed_json, so we make our own callbacks
+  # instead of including Elasticsearch::Model::Callbacks
+
+  after_commit on: [:create] do
+    __elasticsearch__.index_document
+  end
+
+  after_commit on: [:update] do
+    __elasticsearch__.update_document
+  end
+
+  after_commit on: [:destroy] do
+    __elasticsearch__.delete_document
   end
 
   # settings
