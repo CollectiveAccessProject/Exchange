@@ -1,83 +1,69 @@
 <div class="row">
-	<div class="col-sm-12">
-		<H4>
-			Editing Resource
-			<%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, @resource, class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
-		</H4>
-	</div><!-- end col -->
+  <div class="col-sm-12">
+    <H4>
+      Editing Resource
+      <%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, @resource, class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
+    </H4>
+  </div><!-- end col -->
 </div><!-- end row -->
 <div class="row">
-	<div class="col-md-10">
-		<%= render 'form' %>
-		<div class="row">
-		  <div class="col-md-12">
-				<ul class="nav nav-tabs">
-				  <li class="active">
-					<a data-toggle="tab" href="#tab_media_files">Media</a>
-				  </li>
-				  <li>
-					<a data-toggle="tab" href="#tab_formatting">Formatting</a>
-				  </li>
-                  <li>
-                    <a data-toggle="tab" href="#tab_related">Related</a>
-                  </li>
-                  <li>
-                    <a data-toggle="tab" href="#tab_tags">Tags</a>
-                  </li>
-                  <li>
-                    <a data-toggle="tab" href="#tab_comments">Comments</a>
-                  </li>
-				</ul>
+  <div class="col-md-10">
+    <%= render 'form' %>
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a data-toggle="tab" href="#tab_formatting">Formatting</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#tab_related">Related</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#tab_tags">Tags</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#tab_comments">Comments</a>
+          </li>
+        </ul>
 
-				<div class="tab-content">
-				  <div id="tab_media_files" class="tab-pane fade in active">
-					<% if session[:sourceable_id] %>
-					  <p><%= render 'media_files/form' %></p>
-					<% else %>
-					  <p><%= render 'media_files/integrated_create_form' %></p>
-					<% end %>
-				  </div>
-				  <div id="tab_formatting" class="tab-pane">
-                    <p><%= render 'resources/formatting_options' %></p>
-				  </div>
-                  <div id="tab_related" class="tab-pane">
-                    <p><%= render 'resources/related' %></p>
-                  </div>
-                  <div id="tab_tags" class="tab-pane">
-                    <p><%= render 'resources/tags' %></p>
-                  </div>
-                  <div id="tab_comments" class="tab-pane">
-                    <p><%= render 'resources/comments' %></p>
-                  </div>
-				</div>
-		  </div><!-- end col -->
-		</div><!-- end row -->
-	</div><!-- end col -->
-	<div class="col-md-2">
-		<div class="panel panel-default">
-		  <div class="panel-heading">
-			Media
-		  </div>
-		  <div class="panel-body">
-			<% @resource.media_files.each do |f| %>
-			  <% if f.sourceable %>
-				<div>
-				  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-					<%= f.sourceable.preview :thumbnail  %>
-				  </a>
-				</div>
-				<%=
-					# this renders a bootstrap model that is triggered if you click on the preview above
-					# it's in a partial because it's about a billion nested divs :-)
-					render partial: 'media_file_render_overlay', locals: { body: f.sourceable.render, modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s }
-				%>
-			  <% else %>
-				<div><%= f.title  %></div>
-			  <% end %>
-			  <%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, f, method: :delete, data: { confirm: 'Are you sure?' } %>
-			  <hr />
-			<% end %>
-		  </div><!-- end panel-body -->
-		</div><!-- end panel -->
-	</div><!-- end col -->
+        <div class="tab-content">
+          <div id="tab_formatting" class="tab-pane active">
+            <p><%= render 'resources/formatting_options' %></p>
+          </div>
+          <div id="tab_related" class="tab-pane">
+            <p><%= render 'resources/related' %></p>
+          </div>
+          <div id="tab_tags" class="tab-pane">
+            <p><%= render 'resources/tags' %></p>
+          </div>
+          <div id="tab_comments" class="tab-pane">
+            <p><%= render 'resources/comments' %></p>
+          </div>
+        </div>
+      </div><!-- end col -->
+    </div><!-- end row -->
+  </div><!-- end col -->
+  <div class="col-md-2">
+    <div class="panel panel-default">
+      <% if (@resource.resource_type == Resource::RESOURCE) %>
+          <!-- Resource media list -->
+          <%= button_tag "Add media", "href": "#", "class": "btn btn-default", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
+          <%= render 'media_files/integrated_create_form' %>
+          <div class="panel-heading">
+            Media
+          </div>
+          <div class="panel-body" id="resource_media_list">
+           <%= render(partial: "resources/media_list") %>
+          </div><!-- end panel-body -->
+      <% else %>
+          <!-- Learning collection contents list -->
+          <div class="panel-heading">
+            Collection Content
+          </div>
+          <div class="panel-body">
+            List of resources goes here
+          </div>
+      <% end %>
+    </div><!-- end panel -->
+  </div><!-- end col -->
 </div><!-- end row -->

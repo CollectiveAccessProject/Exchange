@@ -26,30 +26,29 @@ class MediaFilesController < ApplicationController
   # POST /media_files.json
   def create
     @media_file = MediaFile.new(media_file_params)
+    @media_file.set_sourceable_media(params);
+    @media_file.resource_id = params[:media_file][:resource_id]
 
-    if session[:sourceable_id]
-      @media_file.sourceable = session[:sourceable_type].constantize.find(session[:sourceable_id])
-      session.delete :sourceable_type
-      session.delete :sourceable_id
-    end
 
-    if session[:resource_id]
-      @media_file.resource_id = session[:resource_id]
-    end
+    @resource = @media_file.resource;
 
     respond_to do |format|
       if @media_file.save
         format.html do
           if @media_file.resource
-            redirect_to edit_resource_path(@media_file.resource), notice: 'Media file was successfully created.'
+            redirect_to edit_resource_path(@media_file.resource), notice: 'Media was added.'
           elsif
-            redirect_to @media_file, notice: 'Media file was successfully created.'
+            redirect_to @media_file, notice: 'Media was added.'
           end
         end
-        format.json { render :show, status: :created, location: @media_file }
+        format.json { render json: {status: :OK, notice: 'Media was added.', media: @media_file }}
+
+        format.js
       else
-        format.html { render :new }
-        format.json { render json: @media_file.errors, status: :unprocessable_entity }
+        format.html { redirect_to edit_resource_path(@media_file.resource), notice: 'Media could not be saved: ' + @media_file.errors.full_messages.join("; ")}
+        format.json { render json: {errors: @media_file.errors, status: :ERR }, status: :unprocessable_entity }
+
+        format.js
       end
     end
   end
@@ -59,11 +58,11 @@ class MediaFilesController < ApplicationController
   def update
     respond_to do |format|
       if @media_file.update(media_file_params)
-        format.html { redirect_to @media_file, notice: 'Media file was successfully updated.' }
-        format.json { render :show, status: :ok, location: @media_file }
+        format.html { redirect_to @media_file, notice: 'Media was updated.' }
+        format.json { render :show, status: :ok, location: @media_file, notice: 'Media was updated' }
       else
         format.html { render :edit }
-        format.json { render json: @media_file.errors, status: :unprocessable_entity }
+        format.json { render json: @media_file.errors, status: :unprocessable_entity}
       end
     end
   end
@@ -71,12 +70,13 @@ class MediaFilesController < ApplicationController
   # DELETE /media_files/1
   # DELETE /media_files/1.json
   def destroy
-    resource = @media_file.resource
+    @resource = @media_file.resource
 
     @media_file.destroy
     respond_to do |format|
-      format.html { redirect_to edit_resource_path(resource), notice: 'Media file was successfully destroyed.' }
+      format.html { redirect_to edit_resource_path(@resource), notice: 'Media was removed.' }
       format.json { head :no_content }
+      format.js
     end
   end
 
@@ -89,7 +89,7 @@ class MediaFilesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def media_file_params
       params.require(:media_file).permit(
-          :slug, :title, :media, :source_type, :source, :copyright_license, :copyright_notes, :access, :lock_version, :resource_id
+          :slug, :title, :media, :source_type, :source, :copyright_license, :copyright_notes, :access, :lock_version, :resource_id,
       )
     end
 end

@@ -10,4 +10,10 @@
                 jQuery("#formatting-options-status").slideUp(250);
             }, 3000);
         });
+
+        $("#new_media_file")
+            .bind("ajax:success", function(event, data, status, xhr) {
+                $('#addMediaForm').modal('hide').find("input[type=text], textarea").val("")   // hide add media model
+                //$('#addMediaForm select').prop('selectedIndex', 0); // reset drop-downs
+           });
     });

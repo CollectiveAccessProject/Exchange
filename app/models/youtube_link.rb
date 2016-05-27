@@ -11,5 +11,9 @@ class YoutubeLink < ActiveRecord::Base
       self.key = h['v'].first
     end
   end
+
+  def get_params
+      return { :youtube_link => [:original_link]}
+  end
 end
 

@@ -12,4 +12,9 @@ class LocalFile < ActiveRecord::Base
   # support, images+pdfs and basic mp4-style videos
   validates_attachment_content_type :file, :content_type =>
     [/\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime']
+
+
+  def get_params
+    return { :local_file => [:file]}
+  end
 end

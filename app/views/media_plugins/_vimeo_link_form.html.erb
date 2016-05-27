@@ -1,15 +1,14 @@
 <div class="panel panel-primary">
   <div class="panel-body">
-    <%= simple_form_for(plugin_model) do |f| %>
-    <%= f.error_notification %>
+    <%= fields_for(plugin_model) do |f| %>
 
-      <%= f.input :original_link %>
+        <label for="vimeoMedia">Vimeo URL:</label>
+        <%= f.text_field :original_link, class: "form-control", id: "vimeoMedia" %>
 
     <div class="form-actions">
       <% if plugin_model.id %>
         <%= link_to 'Delete?', plugin_model, method: :delete, data: { confirm: 'Are you sure?' } %>
       <% end %>
-      <%= f.button :submit %>
     </div>
     <% end %>
   </div>

@@ -39,6 +39,10 @@ class Resource < ActiveRecord::Base
   include SlugModel
   before_create :set_slug
 
+  # constants
+  RESOURCE = 1
+  LEARNING_COLLECTION = 2
+
   # get record as indexed json for elasticsearch
   def as_indexed_json(options={})
     # we want the indexing data at the "top level" of the document,

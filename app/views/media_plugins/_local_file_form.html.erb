@@ -1,15 +1,14 @@
 <div class="panel panel-primary">
   <div class="panel-body">
-    <%= simple_form_for(plugin_model) do |f| %>
-    <%= f.error_notification %>
+    <%= fields_for(plugin_model) do |f| %>
 
-      <%= f.input :file %>
+        <label for="localMedia">Local file:</label>
+      <%= f.file_field :file, class: "form-control", id: "localMedia"  %>
 
     <div class="form-actions">
       <% if plugin_model.id %>
         <%= link_to 'Delete?', plugin_model, method: :delete, data: { confirm: 'Are you sure?' } %>
       <% end %>
-      <%= f.button :submit %>
     </div>
     <% end %>
   </div>

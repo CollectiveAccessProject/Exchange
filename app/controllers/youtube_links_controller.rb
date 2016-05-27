@@ -10,8 +10,10 @@ class YoutubeLinksController < ApplicationController
     respond_to do |format|
       if save_and_set_session @youtube_link
         format.html { redirect_to :back, notice: 'Please fill out the media file information below' }
+        format.json  { render :json => { id: @youtube_link.id, class: @youtube_link.class.to_s()} }
       else
         format.html { redirect_to :back, notice: 'There was a problem with the Youtube link' }
+        format.json  { render :json => { notice: 'There was a problem with the Youtube link' }, status: :unprocessable_entity  }
       end
     end
   end

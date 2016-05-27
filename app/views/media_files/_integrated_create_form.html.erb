@@ -1,30 +1,48 @@
-<% media_file = MediaFile.new %>
+<div id="addMediaForm" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addMediaModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="addMediaFormLabel">Add new media</h4>
+      </div>
 
-<!--<%= simple_form_for media_file, authenticity_token: true do |f| %>
-  <%= f.error_notification %>
-  <%= f.input :title %>
-  <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
-  <%= f.input :copyright_notes %>
-  <%= f.input :access, as: :select, include_blank: false %>
-  <%= f.button :submit %>
-  <%= f.hidden_field :resource_id, :value => @resource.id %>
-<% end %>-->
+      <% media_file = MediaFile.new %>
+      <% instances = media_file.ext_media_classes_instances %>
 
-<% instances = media_file.ext_media_classes_instances %>
+      <%= simple_form_for(@media_file, :remote => true, html: { data: { :url => '/media_files', :format => :js}}) do |f| %>
+          <div class="panel panel-primary">
+            <div class="panel-body">
+              <%= f.error_notification %>
 
-<ul class="nav nav-tabs">
-  <% instances.each_with_index do |p,i| %>
-    <li<% if i==0 %> class="active"<% end %>>
-      <a data-toggle="tab" href="#<%= p.class.name %>"><%= p.class.header %></a>
-    </li>
-  <% end %>
-</ul>
+              <%= f.input :title %>
+              <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
+              <%= f.input :copyright_notes %>
+              <%= f.input :access, as: :select, include_blank: false %>
+            </div>
 
-<div class="tab-content">
-  <% instances.each_with_index do |p,i| %>
-    <div id="<%= p.class.name %>" class="tab-pane fade <% if i==0 %>in active<% end %>">
-      <p><%= p.render_form %></p>
+          <ul class="nav nav-tabs">
+            <% instances.each_with_index do |p,i| %>
+                <li<% if i==0 %> class="active"<% end %>>
+                  <a data-toggle="tab" href="#<%= p.class.name %>"><%= p.class.header %></a>
+                </li>
+            <% end %>
+          </ul>
+
+          <div class="tab-content">
+            <% instances.each_with_index do |p,i| %>
+                <div id="<%= p.class.name %>" class="tab-pane fade <% if i==0 %>in active<% end %>">
+                  <p><%= p.render_form %></p>
+                </div>
+            <% end %>
+          </div>
+            <%= hidden_field(:media_file, :resource_id, :value => @resource.id) %>
+
+          <%= f.button :submit %>
+          </div>
+      <% end %>
+
     </div>
-  <% end %>
+  </div>
 </div>
-

@@ -13,4 +13,9 @@ class VimeoLink < ActiveRecord::Base
       end
     end
   end
+
+
+  def get_params
+    return { :vimeo_link => [:original_link]}
+  end
 end
