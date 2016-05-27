@@ -118,7 +118,7 @@ h4{
 	.col-sm-6{
 		padding:0px 15px 0px 0px;
 		.featureBoxText{
-			padding:60px 50px 0px 50px;
+			padding:70px 50px 0px 50px;
 			p{
 				margin-top:20px;
 				color:#000000;
@@ -148,13 +148,18 @@ h4{
 			color:$gray;
 		}
 		img{
-			max-width:100px;
+			max-width:185px;
 			height:auto;
 			display:inline;
 			margin:0px;
 		}
 	}
-	@media(min-width: 700px){
+	@media(min-width: 768px){
+		img{
+			max-width:100px !important;
+		}
+	}
+	@media(min-width: 1024px){
 		a.navbar-brand{
 			font-size:30px;
 		}
@@ -164,57 +169,65 @@ h4{
 	}
 }
 .navbar-form{
-	@media(max-width: 699px){
+	@media(max-width: 767px){
 		.form-control{
-			width:90%;
+			width:80%;
 			display:inline;
+			border-radius:0px;
 		}
 		.quickSearch{
 			background-color:transparent;
 			height:37px;
+			text-align:center;
+		}
+		.btn-default{
+			background-color:transparent;
+			color:$gray !important;
 		}	
 	}
-	.form-control{
-		background-color:rgba(255,255,255,0.1);
-		border:none;
-		color:white;
-		box-shadow: none;
-		border-radius:0px;
-		margin-top:10px;
-		margin-left:7px;
-	}
-	.form-control:focus{
-		border:none;
-  		box-shadow: none;
-  		outline: 0 none;
-  		background-color:rgba(255,255,255,0.2);
-	}
-	.btn-default{
-		border:none;
-		background-color:transparent;
-		color:white;		
-		border-radius:0px;
-		font-size:20px;
-		margin:0px 0px 0px 6px;
-		padding:0px;
-		.glyphicon{
-			top:5px;
+	@media(min-width: 767px){
+		.form-control{
+			background-color:rgba(255,255,255,0.1);
+			border:none;
+			color:white;
+			box-shadow: none;
+			border-radius:0px;
+			margin-top:10px;
+			margin-left:7px;
+		}
+		.form-control:focus{
+			border:none;
+			box-shadow: none;
+			outline: 0 none;
+			background-color:rgba(255,255,255,0.2);
+		}
+		.btn-default{
+			border:none;
+			background-color:transparent;
+			color:white;		
+			border-radius:0px;
+			font-size:20px;
+			margin:0px 0px 0px 6px;
+			padding:0px;
+			.glyphicon{
+				top:5px;
+			}
+		}
+		::-webkit-input-placeholder{  
+		   color: white;  
+		}
+		:-moz-placeholder{  
+		   color: white;  
+		}
+		::-moz-placeholder{  
+		   color: white;  
+		}
+		:-ms-input-placeholder {  
+		   color: white;  
 		}
 	}
-	::-webkit-input-placeholder{  
-	   color: white;  
-	}
-	:-moz-placeholder{  
-	   color: white;  
-	}
-	::-moz-placeholder{  
-	   color: white;  
-	}
-	:-ms-input-placeholder {  
-	   color: white;  
-	}
 }
-@media(min-width: 767px){
+@media(min-width: 1200px){
 	#navbar.navbar-right{
 		margin-right:80px;
 	}
@@ -239,9 +252,11 @@ h4{
 	li:hover a{
 		color: $bluegray;
 	}
-	li.firsticon{
-		padding-left:41px;
-		margin-right:-5px;
+	@media(min-width: 1200px){
+		li.firsticon{
+			padding-left:41px;
+			margin-right:-5px;
+		}
 	}
 	li.icon:hover {
 		border-bottom: none;
@@ -303,37 +318,49 @@ h4{
 			text-decoration:none;
 		}
 	}
-	li{
-		padding:2px 0px 0px 0px;
-	}
-	li:hover, li.dropdown.open{
-		background-color:rgba(255,255,255,0.1);
-		border-bottom:7px solid $bluegray;
-		a{
-			padding-bottom: 20px;
-			background-color:transparent;
-		}
-		ul.dropdown-menu{
-			margin-top:7px;
+	@media(max-width: 767px){
+		#exmenu{
+			background-color:#FFF;
+			clear:both;
+			a{
+				color:$gray;
+				padding-top:5px;
+				padding-bottom:5px;
+			}
 		}
 	}
-	li.dropdown.open ul li{	
-		border:0px;
-		a{
-			color:$gray;
-			padding:0px;
-			font-size:12px;
-			padding:5px 10px 5px 10px;
+	@media(min-width: 767px){
+		li{
+			padding:2px 0px 0px 0px;
 		}
-	}
-	li.dropdown.open ul li:hover{
-		a{
-			padding:0px;
+		li:hover, li.dropdown.open{
+			background-color:rgba(255,255,255,0.1);
+			border-bottom:7px solid $bluegray;
+			a{
+				padding-bottom: 20px;
+				background-color:transparent;
+			}
+			ul.dropdown-menu{
+				margin-top:7px;
+			}
+		}
+		li.dropdown.open ul li{	
 			border:0px;
-			padding:5px 10px 5px 10px;
+			a{
+				color:$gray;
+				padding:0px;
+				font-size:12px;
+				padding:5px 10px 5px 10px;
+			}
 		}
-	}
-	
+		li.dropdown.open ul li:hover{
+			a{
+				padding:0px;
+				border:0px;
+				padding:5px 10px 5px 10px;
+			}
+		}
+	}	
 }
 .shadowed{
 	box-shadow: 0px 0px 3px $gray;

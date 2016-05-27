@@ -8,7 +8,7 @@
 				<p>
 					Sed interdum nibh sapien, ut finibus tortor vehicula sed. Aliquam erat volutpat. In hac habitasse platea dictumst. Ut eleifend, nulla vel lobortis fringilla, purus magna dictum tortor, ac hendrerit leo turpis in nunc.
 				</p>
-				<br/>
+				<p class="text-center">
 				<% if user_signed_in? %>
 					
 					  <%= link_to('Your Dashboard', '/dashboard', class:'btn btn-default btn-lg btn-green')  %>
@@ -21,6 +21,7 @@
 						&nbsp;&nbsp;&nbsp;
 					  <%= link_to('Register', new_user_registration_path, class:'btn btn-default btn-lg btn-green')  %>
 				<% end %>
+				</p>
 			</div>
 		</div>
 	</div>
