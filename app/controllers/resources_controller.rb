@@ -72,7 +72,7 @@ class ResourcesController < ApplicationController
           end
         end
         session[:mode] = :new;
-        format.html { redirect_to edit_resource_path(@resource), notice: 'Resource has been added.'}
+        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been added.'}
         format.json { render :show, status: :created, location: @resource }
       else
         format.html { render :new }
@@ -87,7 +87,7 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       if @resource.update(resource_params)
         session[:mode] = :update;
-        format.html { redirect_to edit_resource_path(@resource), notice: 'Resource has been updated.' }
+        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
         format.json { render :show, status: :ok, location: @resource }
       else
         format.html { render :edit }
@@ -101,7 +101,7 @@ class ResourcesController < ApplicationController
   def destroy
     @resource.destroy
     respond_to do |format|
-      format.html { redirect_to resources_url, notice: 'Resource has been removed.' }
+      format.html { redirect_to resources_url, notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been removed.' }
       format.json { head :no_content }
     end
   end
