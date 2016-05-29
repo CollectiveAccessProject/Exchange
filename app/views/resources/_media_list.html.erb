@@ -1,6 +1,3 @@
-<script type="text/javascript">
-jQuery("#resource_media_list_heading").<%= (@resource.media_files.length > 0) ? "show()" : "hide()" %>;
-</script>
 <% @resource.media_files.each do |f| %>
     <% if f.sourceable %>
         <div>

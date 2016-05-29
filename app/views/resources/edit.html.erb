@@ -1,8 +1,16 @@
 <div class="row">
   <div class="col-sm-12">
     <H4>
-      Editing Resource
-      <%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, @resource, class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
+      Editing <%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %>
+      <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, @resource, class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
+      <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Back'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
+
+      <%= if (!@resource.parent_id)
+            button_tag ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-default btn-xs pull-right", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+          else
+            link_to raw("Part of <em>" + @resource.parent.title + "</em>"), edit_resource_path(@resource.parent), "class": "btn btn-default btn-xs pull-right"
+          end
+      %>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -47,25 +55,17 @@
     <div class="panel panel-default">
       <% if (@resource.resource_type == Resource::RESOURCE) %>
           <!-- Resource media list -->
-          <%= if (!@resource.parent_id)
-                button_tag "Add to collection", "href": "#", "class": "btn btn-default", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-             else
-                link_to "View collection " + @resource.parent.title, edit_resource_path(@resource.parent), "class": "btn btn-default"
-              end
-          %>
-          <%= button_tag "Add media", "href": "#", "class": "btn btn-default", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
           <%= render(partial:'media_files/integrated_create_form') %>
           <div class="panel-heading" id="resource_media_list_heading">
-            Media
+            Media  <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>'), "href": "#", "class": "btn btn-default pull-right", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
           </div>
           <div class="panel-body" id="resource_media_list">
            <%= render(partial: "resources/media_list") %>
           </div><!-- end panel-body -->
       <% else %>
-          <%= link_to "Add resource", new_resource_for_collection_with_id_path(@resource.id ) %>
           <!-- Learning collection contents list -->
-          <div class="panel-heading">
-            Collection Content
+          <div class="panel-heading" id="collection_contents_list_heading">
+            Contents <%= link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default pull-right" %>
           </div>
           <div class="panel-body">
             <%= render(partial: "resources/resource_list") %>

@@ -1,9 +1,20 @@
 <div class="row">
 	<div class="col-sm-12">
 		<H4>
-			New Resource
+			New <%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %>
 			<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
-		</H4>
+
+      <%=
+        if (@resource.parent)
+         link_to raw("Will be part of <em>" + @resource.parent.title + "</em>"), edit_resource_path(@resource.parent), "class": "btn btn-default btn-xs pull-right"
+        end
+      %>
+      <%=
+        if (@child)
+          link_to raw("Will contain <em>" + @child.title + "</em> after save"), edit_resource_path(@child), "class": "btn btn-default btn-xs pull-right"
+        end
+      %>
+    </H4>
 	</div><!-- end col -->
 </div><!-- end row -->
 <div class="row">

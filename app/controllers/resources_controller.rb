@@ -21,6 +21,18 @@ class ResourcesController < ApplicationController
   # GET /resources/new
   def new
     @resource = Resource.new
+
+    # Set parent, if set, for display purposes in "new" form
+    if ((parent_id = params[:parent_id].to_i) > 0)
+      @resource.parent_id = parent_id
+    end
+
+    # Set child, if set, for display purposes in "new" form
+    @child = nil
+    if ((child_id = params[:child_id].to_i) > 0)
+      @child  = Resource.find(child_id)
+    end
+
     @resource.resource_type = (params['type'] == 'collection') ? 2 : 1  # preset type
   end
 

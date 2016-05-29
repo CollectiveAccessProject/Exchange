@@ -1,6 +1,6 @@
 <div class="panel panel-primary">
  <div class="panel-body">
-  <%= form_tag("/resources/#{@resource.id}/save_preferences", method: "post", remote: true, format: :json, class: 'formatting_options') do  %>
+  <%= form_tag("/resources/#{@resource.id}/save_preferences", method: "post", remote: true, format: :json, class: 'formatting_options', id: 'formattingOptionsFormElements') do  %>
 
       <div id="formatting-options-status">
         <div class="flash-notice" id="formatting-options-status-message">
