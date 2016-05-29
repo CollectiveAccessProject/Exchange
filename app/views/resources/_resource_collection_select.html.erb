@@ -1,0 +1,25 @@
+<div id="selectResourceCollectionForm" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addMediaModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="addMediaFormLabel">Select a learning collection</h4>
+      </div>
+
+      <div>
+        Learning Collections are groups of Resources with a common theme. You can use Learning
+        Collections to make slideshow, tours, presentations, digita papers and more.
+      </div>
+      <div>
+        Would you like to organize this Resource within a Learning Collection?
+      </div>
+
+      <div>
+      <%= link_to "Create new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
+       </div>
+
+    </div>
+  </div>
+</div>

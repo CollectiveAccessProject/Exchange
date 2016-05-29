@@ -9,8 +9,15 @@ Rails.application.routes.draw do
 
   resources :resources, :groups
 
+  # add new collection - just a resource with the resource_type preset
+  get '/collections/new' => 'resources#new', type: 'collection', as: "new_collection"
+  get '/collections/new/resource/:child_id' => 'resources#new', type: 'collection', as: "new_collection_with_id"
+
+  # add new resource to collection
+  get '/resources/new/collection/:parent_id' => "resources#new", type: 'resource', as: "new_resource_for_collection_with_id"
+
   # media files only exist in resource context, so we basically only need create, update and delete
-  # @todo: we might not even need update?!
+  # @todo: implement update
   resources :media_files, except: [:index, :show, :new, :edit]
 
   # same goes for media plugin implementations. they can't exist without media_file and resource

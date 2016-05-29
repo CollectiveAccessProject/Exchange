@@ -21,6 +21,7 @@ class ResourcesController < ApplicationController
   # GET /resources/new
   def new
     @resource = Resource.new
+    @resource.resource_type = (params['type'] == 'collection') ? 2 : 1  # preset type
   end
 
   # GET /resources/1/edit
@@ -37,9 +38,29 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(resource_params)
     @resource.user = current_user
 
+    parent_id = params[:resource][:parent_id].to_i
+
+    if (parent_id > 0)
+      # TODO: Verify that current user have privs to do this
+      @resource.parent_id = parent_id
+    end
+
+    child_id = params[:resource][:child_id].to_i
     respond_to do |format|
       if @resource.save
-        format.html { redirect_to edit_resource_path(@resource), notice: 'Resource has been added.' }
+        # Set resource under newly created collection or resource
+        # TODO: Verify that current user has privs to do this
+        if(child_id > 0)
+          child = Resource.find(child_id)
+          if (child.user_id == current_user.id)
+            child.parent_id = @resource.id
+            child.save
+          else
+
+          end
+        end
+        session[:mode] = :new;
+        format.html { redirect_to edit_resource_path(@resource), notice: 'Resource has been added.'}
         format.json { render :show, status: :created, location: @resource }
       else
         format.html { render :new }
@@ -53,6 +74,7 @@ class ResourcesController < ApplicationController
   def update
     respond_to do |format|
       if @resource.update(resource_params)
+        session[:mode] = :update;
         format.html { redirect_to edit_resource_path(@resource), notice: 'Resource has been updated.' }
         format.json { render :show, status: :ok, location: @resource }
       else
@@ -129,5 +151,4 @@ class ResourcesController < ApplicationController
           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
       )
     end
-
 end

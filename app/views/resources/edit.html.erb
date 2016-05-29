@@ -47,8 +47,14 @@
     <div class="panel panel-default">
       <% if (@resource.resource_type == Resource::RESOURCE) %>
           <!-- Resource media list -->
+          <%= if (!@resource.parent_id)
+                button_tag "Add to collection", "href": "#", "class": "btn btn-default", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+             else
+                link_to "View collection " + @resource.parent.title, edit_resource_path(@resource.parent), "class": "btn btn-default"
+              end
+          %>
           <%= button_tag "Add media", "href": "#", "class": "btn btn-default", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
-          <%= render 'media_files/integrated_create_form' %>
+          <%= render(partial:'media_files/integrated_create_form') %>
           <div class="panel-heading" id="resource_media_list_heading">
             Media
           </div>
@@ -56,14 +62,26 @@
            <%= render(partial: "resources/media_list") %>
           </div><!-- end panel-body -->
       <% else %>
+          <%= link_to "Add resource", new_resource_for_collection_with_id_path(@resource.id ) %>
           <!-- Learning collection contents list -->
           <div class="panel-heading">
             Collection Content
           </div>
           <div class="panel-body">
-            List of resources goes here
+            <%= render(partial: "resources/resource_list") %>
           </div>
       <% end %>
     </div><!-- end panel -->
   </div><!-- end col -->
 </div><!-- end row -->
+
+<!-- Resource collection modal -->
+<%= render(partial:'resources/resource_collection_select') %>
+<%
+  if(!@resource.parent_id && (@resource.resource_type == Resource::RESOURCE)&& (session['mode'] == 'new'))
+      # Trigger modal on save if no parent is set for resources (not collections)
+%>
+    <script type="text/javascript">
+    jQuery("#selectResourceCollectionForm").modal();
+    </script>
+<% end %>
