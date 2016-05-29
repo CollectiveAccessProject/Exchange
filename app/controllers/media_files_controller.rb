@@ -27,6 +27,8 @@ class MediaFilesController < ApplicationController
   def create
     @media_file = MediaFile.new(media_file_params)
     @media_file.set_sourceable_media(params);
+
+    # TODO: does user have access to this resource?
     @media_file.resource_id = params[:media_file][:resource_id]
 
 
