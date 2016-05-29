@@ -9,10 +9,12 @@ class FlickrLink < ActiveRecord::Base
   def extract_key_from_link
     if original_link
       s = URI::Parser.new.parse(original_link).path.match(/\/([0-9]+)/)[1]
-
       if s.is_a?(String) && (s.length > 0)
         self.photo_id = s.to_i
       end
+
+      # cut long links down to size
+      self.original_link = original_link.slice(0,255)
     end
   end
 

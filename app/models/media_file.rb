@@ -1,7 +1,7 @@
 class MediaFile < ActiveRecord::Base
   belongs_to :resource
 
-  belongs_to :sourceable, polymorphic: true
+  belongs_to :sourceable, polymorphic: true, autosave: true
 
   validates :slug, uniqueness: 'Slug is already in use'
 
@@ -30,7 +30,6 @@ class MediaFile < ActiveRecord::Base
   end
 
   def set_sourceable_media(params)
-
     # Check for params from media plugins
     catch (:done) do
       external_media_classes.map do |plugin|
