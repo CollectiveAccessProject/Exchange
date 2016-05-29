@@ -42,6 +42,9 @@ class ResourcesController < ApplicationController
    # @resource.settings(:media_formatting).mode = 'foo'
    # @resource.save!
     session[:resource_id] = @resource.id
+
+    # Get list of available collections
+    @available_collections = Resource.where("resource_type = ? AND user_id = ? AND id <> ?", Resource::LEARNING_COLLECTION, current_user.id, @resource.id).order(title: :asc)
   end
 
   # POST /resources
@@ -53,7 +56,7 @@ class ResourcesController < ApplicationController
     parent_id = params[:resource][:parent_id].to_i
 
     if (parent_id > 0)
-      # TODO: Verify that current user have privs to do this
+      # TODO: Verify that current user has privs to do this
       @resource.parent_id = parent_id
     end
 
@@ -158,9 +161,15 @@ class ResourcesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def resource_params
-      params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source,
-          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
-      )
+      # TODO: allow parent_id to be set simultaneously with other form fields
+      if (params[:parent_id])
+        return {parent_id: params[:parent_id]}
+      else
+        params.require(:resource).permit(
+            :slug, :title, :resource_type, :subtitle, :source_type, :source,
+           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
+        )
+      end
+
     end
 end

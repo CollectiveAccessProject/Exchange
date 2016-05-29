@@ -5,21 +5,38 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="addMediaFormLabel">Select a learning collection</h4>
+        <h4 class="modal-title" id="addMediaFormLabel">Add to a learning collection</h4>
       </div>
-
-      <div>
-        Learning Collections are groups of Resources with a common theme. You can use Learning
-        Collections to make slideshow, tours, presentations, digita papers and more.
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            Learning Collections are groups of Resources (and/or sub-Collections) with a common theme. You can use Learning
+            Collections to make slideshow, tours, presentations, digital papers and more.
+          </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+          <div class="col-md-12 text-center">
+            <strong>Would you like to organize this <%= (@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection" %> within a Learning Collection?</strong>
+          </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+          <div class="col-md-6 text-center">
+            <%= link_to "Create new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
+          </div>
+          <div class="col-md-6 text-center">
+            <%= form_tag(set_resource_parent_with_id_path(@resource), method: "get") do %>
+                Use collection
+                <%=
+                  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, :title))
+                %>
+                <%= hidden_field_tag(:id, @resource.id) %>
+                <%=
+                  submit_tag("Set", "class": "btn btn-default", "id": "addToExistingCollection")
+                %>
+            <% end %>
+          </div>
+        </div>
       </div>
-      <div>
-        Would you like to organize this Resource within a Learning Collection?
-      </div>
-
-      <div>
-      <%= link_to "Create new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
-       </div>
-
     </div>
   </div>
 </div>
