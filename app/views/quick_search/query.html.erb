@@ -1,4 +1,36 @@
-<h1>Media files:</h1>
-<pre><%= @media_files.inspect %></pre>
-<h1>Resources:</h1>
-<pre><%= @resources.inspect %></pre>
+<div class="row">
+  <div class="col-md-12">
+    <% if((@collections.length == 0) && (@resources.length == 0) && (@media_files.length == 0)) %>
+        <h1>No results found for <em><%= sanitize(@query) %></em></h1>
+    <% else %>
+        <h1>Results for <em><%= sanitize(@query) %></em></h1>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <% if(@collections.length > 0) %>
+      <div class="col-md-4">
+        <h2>Collections (<%= @collections.length %>)</h2>
+        <div>
+          <%= render :partial => "quick_search/collection_results" %>
+        </div>
+      </div>
+  <% end %>
+  <% if(@resources.length > 0) %>
+      <div class="col-md-4">
+        <h2>Resources (<%= @resources.length %>)</h2>
+        <div>
+          <%= render :partial => "quick_search/resource_results" %>
+        </div>
+      </div>
+  <% end %>
+
+  <% if(@media_files.length > 0) %>
+      <div class="col-md-4">
+        <h2>Media files (<%= @media_files.length %>)</h2>
+        <div>
+          <%= render :partial => "quick_search/media_file_results" %>
+        </div>
+      </div>
+  <% end %>
+</div>
