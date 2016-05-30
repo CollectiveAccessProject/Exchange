@@ -24,15 +24,17 @@
             <%= link_to "Create new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
           </div>
           <div class="col-md-6 text-center">
-            <%= form_tag(set_resource_parent_with_id_path(@resource), method: "get") do %>
-                Use collection
-                <%=
-                  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, :title))
-                %>
-                <%= hidden_field_tag(:id, @resource.id) %>
-                <%=
-                  submit_tag("Set", "class": "btn btn-default", "id": "addToExistingCollection")
-                %>
+          <% if (@available_collections.length > 0) %>
+				<%= form_tag(set_resource_parent_with_id_path(@resource), method: "get") do %>
+					Use collection
+					<%=
+					  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, :title))
+					%>
+					<%= hidden_field_tag(:id, @resource.id) %>
+					<%=
+					  submit_tag("Set", "class": "btn btn-default", "id": "addToExistingCollection")
+					%>
+				<% end %>
             <% end %>
           </div>
         </div>
