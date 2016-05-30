@@ -106,6 +106,5 @@ namespace :exchange do
       end
     end
 
-    log.info "Reindex finished at #{Time.now}"
   end
 end
