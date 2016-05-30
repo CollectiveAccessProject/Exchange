@@ -55,15 +55,15 @@ namespace :exchange do
 
       # query indexing data service
       object_list_for_search = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
-                                                        url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
-                                                        port: ENV['COLLECTIVEACCESS_PORT'].to_i,
-                                                        endpoint: 'exchangeObjectListForSearch',
-                                                        get_params: {
-                                                            q: '*',
-                                                            start: start,
-                                                            limit: 100,
-                                                            #noCache: Rails.env.development? ? 1 : 0
-                                                        }
+                                                       url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
+                                                       port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+                                                       endpoint: 'exchangeObjectListForSearch',
+                                                       get_params: {
+                                                           q: '*',
+                                                           start: start,
+                                                           limit: 100,
+                                                           #noCache: Rails.env.development? ? 1 : 0
+                                                       }
 
       log.info "Got response with size #{object_list_for_search.size}"
 
@@ -85,5 +85,27 @@ namespace :exchange do
     end while object_list_for_display.size > 1
 
     log.info "Task finished at #{Time.now}"
+  end
+
+  desc 'Rebuild ElasticSearch quick search index'
+  task :reindex => :environment do
+    {'Resource' => 'resource', 'MediaFile' => 'media_file'}.each do |k,v|
+      t = k.constantize
+
+      index_name = t.index_name
+      t.__elasticsearch__.create_index! force: true
+      t.all.find_in_batches(batch_size: 1000) do |group|
+        group_for_bulk = group.map do |a|
+           { index: { _id: a.id, data: a.as_indexed_json }}
+        end
+        t.__elasticsearch__.client.bulk(
+            index: index_name,
+            type: v,
+            body: group_for_bulk
+        )
+      end
+    end
+
+    log.info "Reindex finished at #{Time.now}"
   end
 end
