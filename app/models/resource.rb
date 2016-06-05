@@ -41,7 +41,7 @@ class Resource < ActiveRecord::Base
   include SlugModel
   before_create :set_slug
 
-  # constants
+  # resource type constants
   RESOURCE = 1
   LEARNING_COLLECTION = 2
   COLLECTION = 2
