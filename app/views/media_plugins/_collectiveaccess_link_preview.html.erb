@@ -1,6 +1,8 @@
 <%
     url = plugin_model.base_url + plugin_model.key
 case version
+  when :thumbnail
+    url += "/full/!140,120/0/default.jpg"
   when :medium
     url += "/full/!512,512/0/default.jpg"
   when :full
