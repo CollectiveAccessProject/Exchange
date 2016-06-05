@@ -6,7 +6,7 @@ class YoutubeLinkValidator < ActiveModel::Validator
       when 'youtu.be', 'youtube.com', 'www.youtube.com'
         # noop
       else
-        record.errors[:base] << "This doesn't seem to be a youtube link"
+        record.errors[:base] << "This doesn't seem to be a Youtube link"
     end
   end
 end
