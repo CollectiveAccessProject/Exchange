@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160605150743) do
+ActiveRecord::Schema.define(version: 20160605213949) do
+
+  create_table "collectiveaccess_links", force: :cascade do |t|
+    t.string   "host",          limit: 255, null: false
+    t.string   "key",           limit: 50,  null: false
+    t.string   "base_url",      limit: 255, null: false
+    t.string   "original_link", limit: 255, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "collectiveaccess_links", ["base_url"], name: "index_collectiveaccess_links_on_base_url", using: :btree
+  add_index "collectiveaccess_links", ["host"], name: "index_collectiveaccess_links_on_host", using: :btree
+  add_index "collectiveaccess_links", ["key"], name: "index_collectiveaccess_links_on_key", using: :btree
 
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50,    default: ""

@@ -18,7 +18,7 @@ class MediaFile < ActiveRecord::Base
 
   # List of supported media "plugins"
   def external_media_classes
-    [YoutubeLink, LocalFile, GoogledocsLink, FlickrLink, VimeoLink, SoundcloudLink]
+    [YoutubeLink, LocalFile, GoogledocsLink, FlickrLink, VimeoLink, SoundcloudLink, CollectiveaccessLink]
   end
 
   def ext_media_classes_instances
