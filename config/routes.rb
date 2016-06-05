@@ -36,6 +36,8 @@ Rails.application.routes.draw do
   # save preferences via ajax, get JSON in return
   post '/resources/:id/save_preferences' => 'resources#save_preferences',  defaults: { format: 'json' }
 
+  get '/resources/:id/preview' => 'resources#show', mode: :preview,  as: 'resource_preview'
+
   get '/quick_search/query' => 'quick_search#query'
   get '/dashboard' => 'dashboard#index'
 
