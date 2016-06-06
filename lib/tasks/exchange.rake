@@ -144,4 +144,15 @@ namespace :exchange do
     end
 
   end
+
+  desc 'Remove all resources and media from database'
+  task :clean => :environment do
+    MediaFile.new.external_media_classes do |c|
+      t = c.constantize
+      t.destroy_all
+    end
+    MediaFile.destroy_all
+    Resource.destroy_all
+
+  end
 end
