@@ -88,11 +88,23 @@ namespace :exchange do
           r.update(h)
 
           if (value['media'])
+            i = 1;
             value['media'].split('|').each do |u|
-              if ((representation_id = /representation:([\d]+)/.match(u)))
-                m = r.media_files.where(title: representation_id, copyright_notes:'').first_or_create
-                m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
-                m.update({title: representation_id, access: 1, copyright_notes:''})
+              if ((key = /representation:([\d]+)/.match(u)))
+                representation_id = key[1]
+                if ((cl = CollectiveaccessLink.where(key: key[0]).first) && cl.id)
+                  m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
+                else
+                  m = MediaFile.new(title: i.to_s, copyright_notes:'')
+                end
+
+                if (m)
+                  m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
+                  m.update({title: i.to_s, access: 1, copyright_notes:'', resource_id: r.id})
+                end
+
+                i += 1
+
               end
             end
           end
