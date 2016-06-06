@@ -39,7 +39,6 @@ class MediaFile < ActiveRecord::Base
         instance.get_params.each do |n,field_list|
           field_list.each do |f|
           if(params[n] && params[n][f] && (params[n][f].length) > 0)
-            puts "original link is " + params[n][f]
             instance.original_link = params[n][f]
 
             self.sourceable = instance
