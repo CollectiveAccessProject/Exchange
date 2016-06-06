@@ -23,9 +23,9 @@
     <%#= link_to "#{index} Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider) %><br />
   <%# end -%>
 
-  <%= link_to "Sign in with Shibboleth", omniauth_authorize_path(resource_name, :shibboleth) %> <%= image_tag('shibboleth.png') %><br/>
-  <%= link_to "Sign in with Facebook", omniauth_authorize_path(resource_name, :facebook) %> <i class="fa fa-facebook"></i><br/>
-  <%= link_to "Sign in with Google Oauth2", omniauth_authorize_path(resource_name, :google_oauth2) %> <i class="fa fa-google"></i><br/>
+  <%= link_to image_tag('shibboleth.png'), omniauth_authorize_path(resource_name, :shibboleth) %>
+  <%= link_to raw("<i class='fa fa-facebook'></i> Facebook"), omniauth_authorize_path(resource_name, :facebook) %>
+  <%= link_to raw("<i class='fa fa-google'></i> Google Oauth2"), omniauth_authorize_path(resource_name, :google_oauth2) %>
 
 
 <% end -%>
