@@ -34,11 +34,12 @@ class MediaFile < ActiveRecord::Base
     catch (:done) do
       external_media_classes.map do |plugin|
         instance = plugin.new
-        params.permit(instance.get_params)
+        params.permit(instance.get_params) if (params.respond_to?(:permit))
 
         instance.get_params.each do |n,field_list|
           field_list.each do |f|
           if(params[n] && params[n][f] && (params[n][f].length) > 0)
+            puts "original link is " + params[n][f]
             instance.original_link = params[n][f]
 
             self.sourceable = instance
