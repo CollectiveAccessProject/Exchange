@@ -24,6 +24,10 @@
 
           <ul class="nav nav-tabs">
             <% instances.each_with_index do |p,i| %>
+                <% if (p.class.name == 'CollectiveaccessLink')    # hide CollectiveAccess plugin (only used for data import, not for direct user interaction)
+                     break
+                  end
+                %>
                 <li<% if i==0 %> class="active"<% end %>>
                   <a data-toggle="tab" href="#<%= p.class.name %>"><%= p.class.header %></a>
                 </li>
@@ -32,6 +36,10 @@
 
           <div class="tab-content">
             <% instances.each_with_index do |p,i| %>
+                <% if (p.class.name == 'CollectiveaccessLink')
+                     break
+                   end
+                %>
                 <div id="<%= p.class.name %>" class="tab-pane fade <% if i==0 %>in active<% end %>">
                   <p><%= p.render_form %></p>
                 </div>
