@@ -49,6 +49,12 @@ gem 'collectiveaccess'
 # authentication
 gem 'devise'
 
+# user authorization
+gem 'pundit'
+
+# group authorization
+gem 'groupify'
+
 # simple forms
 gem 'simple_form'
 

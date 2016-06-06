@@ -4,6 +4,8 @@ class Resource < ActiveRecord::Base
 
   has_many :related_resources
   has_many :resources, through: 'related_resources'
+  has_many :resource_parents
+  has_many :resources, through: 'resource_parents'
   has_many :media_files
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
@@ -39,7 +41,7 @@ class Resource < ActiveRecord::Base
   include SlugModel
   before_create :set_slug
 
-  # constants
+  # resource type constants
   RESOURCE = 1
   LEARNING_COLLECTION = 2
   COLLECTION = 2
@@ -53,6 +55,38 @@ class Resource < ActiveRecord::Base
       record = record.merge(indexing_data)
     end
     record
+  end
+
+
+  # return true if resource type is "resource"
+  def is_resource
+    return self.resource_type == Resource::RESOURCE;
+  end
+
+  # return true if resource type is "collection"
+  def is_collection
+    return self.resource_type == Resource::LEARNING_COLLECTION;
+  end
+
+  # returns license type as text
+  def get_license_type
+    return Rails.application.config.x.license_types.key(self.copyright_license)
+  end
+
+  # return number of direct children on this resource
+  # @param type Resource type to restrict count to (Resource::RESOURCE or Resource::LEARNING_COLLECTION); if omitted resources of all types are counted
+  # @return int
+  def child_count(type=nil)
+    if ((type != Resource::RESOURCE) && (type != Resource::LEARNING_COLLECTION))
+      type = nil
+    end
+    if (type == nil)
+      return self.child_resources.length
+    end
+
+    # TODO: cache this
+    r = Resource.where("resource_type = ? AND parent_id = ?", type, self.id)
+    return r.length
   end
 
   # the automatic elasticsearch callbacks seem to ignore or

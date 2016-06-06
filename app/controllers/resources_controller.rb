@@ -24,7 +24,7 @@ class ResourcesController < ApplicationController
 
     # Set parent, if set, for display purposes in "new" form
     if ((parent_id = params[:parent_id].to_i) > 0)
-      @resource.parent_id = parent_id
+   #   @resource.parent_id = parent_id
     end
 
     # Set child, if set, for display purposes in "new" form
@@ -57,7 +57,7 @@ class ResourcesController < ApplicationController
 
     if (parent_id > 0)
       # TODO: Verify that current user has privs to do this
-      @resource.parent_id = parent_id
+     # @resource.parent_id = parent_id
     end
 
     child_id = params[:resource][:child_id].to_i
@@ -68,7 +68,7 @@ class ResourcesController < ApplicationController
         if(child_id > 0)
           child = Resource.find(child_id)
           if (child.user_id == current_user.id)
-            child.parent_id = @resource.id
+            #child.parent_id = @resource.id
             child.save
           else
 
