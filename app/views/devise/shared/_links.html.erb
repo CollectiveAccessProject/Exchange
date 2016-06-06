@@ -19,7 +19,13 @@
 <% end -%>
 
 <%- if devise_mapping.omniauthable? %>
-  <%- resource_class.omniauth_providers.each do |provider| %>
-    <%= link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider) %><br />
-  <% end -%>
+  <%#- resource_class.omniauth_providers.each_with_index do |provider, index| %>
+    <%#= link_to "#{index} Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider) %><br />
+  <%# end -%>
+
+  <%= link_to "Sign in with Shibboleth", omniauth_authorize_path(resource_name, :shibboleth) %> <%= image_tag('shibboleth.png') %><br/>
+  <%= link_to "Sign in with Facebook", omniauth_authorize_path(resource_name, :facebook) %> <i class="fa fa-facebook"></i><br/>
+  <%= link_to "Sign in with Google Oauth2", omniauth_authorize_path(resource_name, :google_oauth2) %> <i class="fa fa-google"></i><br/>
+
+
 <% end -%>
