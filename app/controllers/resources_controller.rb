@@ -24,7 +24,8 @@ class ResourcesController < ApplicationController
 
     # Set parent, if set, for display purposes in "new" form
     if ((parent_id = params[:parent_id].to_i) > 0)
-   #   @resource.parent_id = parent_id
+      @new_parent_id = parent_id
+      @new_parent = Resource.find(parent_id)
     end
 
     # Set child, if set, for display purposes in "new" form
@@ -33,7 +34,7 @@ class ResourcesController < ApplicationController
       @child  = Resource.find(child_id)
     end
 
-    @resource.resource_type = (params['type'] == 'collection') ? 2 : 1  # preset type
+    @resource.resource_type = (params['type'] == 'collection') ? Resource::LEARNING_COLLECTION : Resource::RESOURCE  # preset type
   end
 
   # GET /resources/1/edit
@@ -55,24 +56,26 @@ class ResourcesController < ApplicationController
 
     parent_id = params[:resource][:parent_id].to_i
 
-    if (parent_id > 0)
-      # TODO: Verify that current user has privs to do this
-     # @resource.parent_id = parent_id
-    end
 
     child_id = params[:resource][:child_id].to_i
     respond_to do |format|
       if @resource.save
+
+        if (parent_id > 0)
+          # TODO: Verify that current user has privs to do this
+          prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create
+        end
+
         # Set resource under newly created collection or resource
         # TODO: Verify that current user has privs to do this
         if(child_id > 0)
           child = Resource.find(child_id)
-          if (child.user_id == current_user.id)
-            #child.parent_id = @resource.id
+          #if (child.user_id == current_user.id)
+            prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
             child.save
-          else
+          #else
 
-          end
+          #end
         end
         session[:mode] = :new;
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been added.'}

@@ -1,11 +1,11 @@
 class Resource < ActiveRecord::Base
-  belongs_to :parent, class_name: 'Resource', foreign_key: 'parent_id'
-  has_many :child_resources, class_name: 'Resource', foreign_key: 'parent_id'
-
   has_many :related_resources
+
   has_many :resources, through: 'related_resources'
-  has_many :resource_parents
-  has_many :resources, through: 'resource_parents'
+
+  has_many :resource_hierarchies
+  has_many :children, through: 'resource_hierarchies', source: :child_resource
+
   has_many :media_files
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
@@ -81,12 +81,17 @@ class Resource < ActiveRecord::Base
       type = nil
     end
     if (type == nil)
-      return self.child_resources.length
+      return self.children.length
     end
 
     # TODO: cache this
-    r = Resource.where("resource_type = ? AND parent_id = ?", type, self.id)
+    r = ResourceHierarchy.joins(:child_resource).where("resources.resource_type = ? AND resource_hierarchies.resource_id = ?", type, self.id)
     return r.length
+  end
+
+  # Return list of parents for current resource
+  def parents
+    return Resource.joins(:resource_hierarchies).where("child_resource_id = ?", self.id)
   end
 
   # the automatic elasticsearch callbacks seem to ignore or

@@ -115,11 +115,11 @@ ActiveRecord::Schema.define(version: 20160605213949) do
 
   add_index "related_resources", ["to_resource_id"], name: "fk_rails_2eadc87d49", using: :btree
 
-  create_table "resource_parents", force: :cascade do |t|
-    t.integer  "parent_resource_id", limit: 4, null: false
-    t.integer  "child_resource_id",  limit: 4, null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+  create_table "resource_hierarchies", force: :cascade do |t|
+    t.integer  "resource_id",       limit: 4, null: false
+    t.integer  "child_resource_id", limit: 4, null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "resources", force: :cascade do |t|

@@ -1,4 +1,4 @@
-<% @resource.child_resources.each do |c| %>
+<% @resource.children.each do |c| %>
    <%= link_to c.title, edit_resource_path(c) %>
     <hr/>
 <% end %>

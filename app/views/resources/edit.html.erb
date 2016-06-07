@@ -6,11 +6,13 @@
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Back'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
 
       <%=
-        #if (!@resource.parent_id)
-         #   button_tag ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-default btn-xs pull-right", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-          #else
-           # link_to raw("Part of <em>" + @resource.parent.title + "</em>"), edit_resource_path(@resource.parent), "class": "btn btn-default btn-xs pull-right"
-          #end
+        if (@resource.parents.length == 0)
+            button_tag ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-default btn-xs pull-right", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+        else
+          if(@resource.parents.first)
+           link_to raw("Part of <em>" + @resource.parents.first.title + "</em>"), edit_resource_path(@resource.parents.first), "class": "btn btn-default btn-xs pull-right"
+          end
+        end
       %>
     </H4>
   </div><!-- end col -->
@@ -79,12 +81,12 @@
 <!-- Resource collection modal -->
 <%= render(partial:'resources/resource_collection_select') %>
 <%
-  #if(!@resource.parent_id && (@resource.resource_type == Resource::RESOURCE)&& (session['mode'] == 'new'))
+  if(!@resource.parents.length && (@resource.resource_type == Resource::RESOURCE)&& (session['mode'] == 'new'))
       # Trigger modal on save if no parent is set for resources (not collections)
 %>
     <script type="text/javascript">
     jQuery("#selectResourceCollectionForm").modal();
     </script>
 <%
-  #end
+  end
 %>
