@@ -1,11 +1,14 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag, :save_preferences]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag, :save_preferences, :add_related_resource, :remove_related_resource]
 
   include CommentableController
   include TaggableController
 
   respond_to :html, :json
+
+  # UI autocomplete on resource title (used by related resources lookup)
+  autocomplete :resource, :title, :full => true, :extra_data => [:id]
 
   # GET /resources
   # GET /resources.json
@@ -169,10 +172,50 @@ class ResourcesController < ApplicationController
     end
   end
 
+  # add related resource
+  def add_related_resource
+    begin
+      # response
+
+      # TODO: Check if user can relate to target
+      to_resource_id = params[:to_resource_id]
+      prel = RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id, caption: params[:caption]).first_or_create
+
+      resp = {:status => "ok", :html => render_to_string("resources/_related", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => "err", :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json {render :json => resp }
+    end
+  end
+
+  # remove related resource
+  def remove_related_resource
+    begin
+      # TODO: Check if user can delete this
+      to_resource_id = params[:related]
+      RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id).destroy_all
+      resp = {:status => "ok", :html => render_to_string("resources/_related", layout: false),feh: to_resource_id, meow: @resource.id  }
+    rescue StandardError => ex
+      resp = {:status => "err", :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json {render :json => resp }
+    end
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_resource
     @resource = Resource.find(params[:id])
+
+
+    # TODO: get rid of this; related resources will use AJAX lookup
+    # Get list of available resources and collections (TEMPORARY)
+    @available_resources = Resource.where("user_id = ? AND id <> ?", current_user.id, @resource.id).order(title: :asc)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

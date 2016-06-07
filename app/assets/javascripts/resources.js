@@ -11,6 +11,30 @@
             }, 3000);
         });
 
+        jQuery("#tab_related").on("ajax:success", "#relatedResourcesElements", function(e, data) {
+            jQuery("#related-resources-status").slideDown(250);
+
+            jQuery("#related-resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Added resource" : "Could not add resource: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#related-resources-status").slideUp(250);
+            }, 3000);
+            if(data.status == 'ok') {
+                jQuery("#tab_related").html(data.html)
+            }
+        });
+
+        jQuery("#tab_related").on("ajax:success", ".relatedResourcesRemoveLink", function(e, data) {
+            jQuery("#related-resources-status").slideDown(250);
+
+            jQuery("#related-resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed resource" : "Could not remove resource: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#related-resources-status").slideUp(250);
+            }, 3000);
+            if(data.status == 'ok') {
+                jQuery("#tab_related").html(data.html)
+            }
+        });
+
         jQuery("#addMediaFormElements").bind("ajax:success", function(event, data, status, xhr) {
             console.log("got", data);
             $('#addMediaForm').modal('hide').find("input[type=text], textarea").val("")   // hide add media model

@@ -1,5 +1,47 @@
 <div class="panel panel-primary">
   <div class="panel-body">
-    <p>Related resource list to come.</p>
+
+
+    <ul>
+    <% @resource.related_resources.each do |r| %>
+        <li>
+          <%= r.related.title %>
+          <%= link_to('<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, remove_related_resource_path(@resource) + "?related=" + r.related.id.to_s, {remote: true, class: :relatedResourcesRemoveLink}) %>
+          <blockquote>
+            <%= r.caption %>
+          </blockquote>
+        </li>
+    <% end %>
+    </ul>
+
+    <% if @resource.related_resources.length > 0 %>
+      <hr/>
+    <% end %>
+
+    <%= form_tag(add_related_resource_path(@resource), remote: true, method: "post", format: :json, class: 'related_resources', id: 'relatedResourcesElements') do |f| %>
+        <div id="related-resources-status">
+          <div class="flash-notice" id="related-resources-status-message">
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-5">
+            Search for resource
+            <br/>
+            <%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#to_resource_id") %>
+            <%= hidden_field_tag(:to_resource_id) %>
+          </div>
+          <div class="col-md-6">
+            Caption
+            <br/>
+            <%= text_field_tag(:caption, '', size: 50) %>
+          </div>
+          <div class="col-md-1">
+            <%= hidden_field_tag(:id, @resource.id) %>
+            <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
+          </div>
+        </div>
+    <% end %>
   </div>
 </div>

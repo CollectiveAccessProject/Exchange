@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   # add new collection - just a resource with the resource_type preset
   get '/collections/new' => 'resources#new', type: 'collection', as: "new_collection"
   get '/collections/new/resource/:child_id' => 'resources#new', type: 'collection', as: "new_collection_with_id"
-  get '/resources/setParent/:id' => 'resources#update', as: "set_resource_parent_with_id"
 
   # add new resource to collection
   get '/resources/new/collection/:parent_id' => "resources#new", type: 'resource', as: "new_resource_for_collection_with_id"
@@ -33,6 +32,10 @@ Rails.application.routes.draw do
   match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]
   match '/resources/add_new_tag' => 'resources#add_new_tag', :as => 'add_new_tag_to_resources', :via => [:post]
 
+  post '/resources/:id/set_parent' => 'resources#update', as: "set_resource_parent_with_id"
+  post '/resources/:id/add_related_resource' => 'resources#add_related_resource', as: "add_related_resource"
+  get '/resources/:id/remove_related_resource' => 'resources#remove_related_resource', as: "remove_related_resource"
+
   # save preferences via ajax, get JSON in return
   post '/resources/:id/save_preferences' => 'resources#save_preferences',  defaults: { format: 'json' }
 
@@ -40,6 +43,9 @@ Rails.application.routes.draw do
 
   get '/quick_search/query' => 'quick_search#query'
   get '/dashboard' => 'dashboard#index'
+
+  get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

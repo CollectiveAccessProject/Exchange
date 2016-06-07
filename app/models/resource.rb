@@ -127,6 +127,10 @@ class Resource < ActiveRecord::Base
     Rails.application.config.x.access_types
   end
 
+  def to_s
+    title
+  end
+
   def destroy
     if media_files
       media_files.each do |f|
@@ -136,7 +140,6 @@ class Resource < ActiveRecord::Base
 
     super
   end
-
 end
 
 # validators for resource settings
