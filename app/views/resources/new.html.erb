@@ -5,8 +5,8 @@
 			<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
 
       <%=
-        if (@resource.parent)
-         link_to raw("Will be part of <em>" + @resource.parent.title + "</em>"), edit_resource_path(@resource.parent), "class": "btn btn-default btn-xs pull-right"
+        if (@new_parent && @new_parent.id)
+         link_to raw("Will be part of <em>" + @new_parent.title + "</em>"), edit_resource_path(@new_parent), "class": "btn btn-default btn-xs pull-right"
         end
       %>
       <%=

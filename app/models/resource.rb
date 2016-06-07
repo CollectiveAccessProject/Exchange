@@ -1,9 +1,11 @@
 class Resource < ActiveRecord::Base
-  belongs_to :parent, class_name: 'Resource', foreign_key: 'parent_id'
-  has_many :child_resources, class_name: 'Resource', foreign_key: 'parent_id'
-
   has_many :related_resources
-  has_many :resources, through: 'related_resources'
+
+  has_many :resources, through: 'related_resources', source: :related
+
+  has_many :resource_hierarchies
+  has_many :children, through: 'resource_hierarchies', source: :child_resource
+
   has_many :media_files
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
@@ -39,7 +41,7 @@ class Resource < ActiveRecord::Base
   include SlugModel
   before_create :set_slug
 
-  # constants
+  # resource type constants
   RESOURCE = 1
   LEARNING_COLLECTION = 2
   COLLECTION = 2
@@ -53,6 +55,43 @@ class Resource < ActiveRecord::Base
       record = record.merge(indexing_data)
     end
     record
+  end
+
+
+  # return true if resource type is "resource"
+  def is_resource
+    return self.resource_type == Resource::RESOURCE;
+  end
+
+  # return true if resource type is "collection"
+  def is_collection
+    return self.resource_type == Resource::LEARNING_COLLECTION;
+  end
+
+  # returns license type as text
+  def get_license_type
+    return Rails.application.config.x.license_types.key(self.copyright_license)
+  end
+
+  # return number of direct children on this resource
+  # @param type Resource type to restrict count to (Resource::RESOURCE or Resource::LEARNING_COLLECTION); if omitted resources of all types are counted
+  # @return int
+  def child_count(type=nil)
+    if ((type != Resource::RESOURCE) && (type != Resource::LEARNING_COLLECTION))
+      type = nil
+    end
+    if (type == nil)
+      return self.children.length
+    end
+
+    # TODO: cache this
+    r = ResourceHierarchy.joins(:child_resource).where("resources.resource_type = ? AND resource_hierarchies.resource_id = ?", type, self.id)
+    return r.length
+  end
+
+  # Return list of parents for current resource
+  def parents
+    return Resource.joins(:resource_hierarchies).where("child_resource_id = ?", self.id)
   end
 
   # the automatic elasticsearch callbacks seem to ignore or
@@ -88,6 +127,10 @@ class Resource < ActiveRecord::Base
     Rails.application.config.x.access_types
   end
 
+  def to_s
+    title
+  end
+
   def destroy
     if media_files
       media_files.each do |f|
@@ -97,7 +140,6 @@ class Resource < ActiveRecord::Base
 
     super
   end
-
 end
 
 # validators for resource settings

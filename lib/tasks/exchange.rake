@@ -15,6 +15,7 @@ namespace :exchange do
 
     CollectiveAccess.set_credentials ENV['COLLECTIVEACCESS_USER'], ENV['COLLECTIVEACCESS_KEY']
 
+    user_id = User.where(email: 'admin@exchange.umma.umich.edu').first.id
     start = 0
 
     # query UMMA collections to get list of all records in chunks of 100 and
@@ -22,6 +23,8 @@ namespace :exchange do
     begin
       log.info "Query CollectiveAccess simple services with start=#{start}"
       log.debug "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
+
+      #puts "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
 
       # query exchangeObjectListForDisplay service
       object_list_for_display = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
@@ -32,7 +35,7 @@ namespace :exchange do
                                                             q: '*',
                                                             start: start,
                                                             limit: 100,
-                                                            #noCache: Rails.env.development? ? 1 : 0
+                                                            noCache: Rails.env.development? ? 1 : 0
                                                         }
 
       log.info "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
@@ -62,7 +65,7 @@ namespace :exchange do
                                                            q: '*',
                                                            start: start,
                                                            limit: 100,
-                                                           #noCache: Rails.env.development? ? 1 : 0
+                                                           noCache: Rails.env.development? ? 1 : 0
                                                        }
 
       log.info "Got response with size #{object_list_for_search.size}"
@@ -71,7 +74,41 @@ namespace :exchange do
       object_list_for_search.each do |_, value|
         if value.is_a?(Hash) && value['collectiveaccess_id'].present?
           log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
-          Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first.update(indexing_data: value)
+          #Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first.update(indexing_data: value)
+
+          h = value.except("media").merge({
+            resource_type: Resource::RESOURCE,
+            user_id: user_id,
+            copyright_notes: value['copyright_notes'].present? ? value['copyright_notes'] : ''
+
+          })
+
+          r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).
+              first_or_create
+          r.update(h)
+
+          if (value['media'])
+            i = 1;
+            value['media'].split('|').each do |u|
+              if ((key = /representation:([\d]+)/.match(u)))
+                representation_id = key[1]
+                if ((cl = CollectiveaccessLink.where(key: key[0]).first) && cl.id)
+                  m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
+                else
+                  m = MediaFile.new(caption: i.to_s, copyright_notes:'')
+                end
+
+                if (m)
+                  m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
+                  m.update({caption: i.to_s, access: 1, copyright_notes:'', resource_id: r.id})
+                end
+
+                i += 1
+
+              end
+            end
+          end
+
         end
       end
 
@@ -105,6 +142,19 @@ namespace :exchange do
         )
       end
     end
+
+  end
+
+  desc 'Remove all resources and media from database'
+  task :clean => :environment do
+    MediaFile.new.external_media_classes do |c|
+      t = c.constantize
+      t.destroy_all
+    end
+    MediaFile.destroy_all
+    RelatedResource.destroy_all
+    ResourceHierarchy.destroy_all
+    Resource.destroy_all
 
   end
 end

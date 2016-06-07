@@ -3,7 +3,7 @@
     <%= simple_form_for @media_file do |f| %>
       <%= f.error_notification %>
 
-      <%= f.input :title %>
+      <%= f.input :caption %>
       <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
       <%= f.input :copyright_notes %>
       <%= f.input :access, as: :select, include_blank: false %>

@@ -18,7 +18,7 @@ class MediaFile < ActiveRecord::Base
 
   # List of supported media "plugins"
   def external_media_classes
-    [YoutubeLink, LocalFile, GoogledocsLink, FlickrLink, VimeoLink, SoundcloudLink]
+    [YoutubeLink, LocalFile, GoogledocsLink, FlickrLink, VimeoLink, SoundcloudLink, CollectiveaccessLink]
   end
 
   def ext_media_classes_instances
@@ -34,7 +34,7 @@ class MediaFile < ActiveRecord::Base
     catch (:done) do
       external_media_classes.map do |plugin|
         instance = plugin.new
-        params.permit(instance.get_params)
+        params.permit(instance.get_params) if (params.respond_to?(:permit))
 
         instance.get_params.each do |n,field_list|
           field_list.each do |f|
@@ -56,7 +56,7 @@ class MediaFile < ActiveRecord::Base
 
   def as_indexed_json(options = {})
     as_json(
-        only: [:id, :slug, :resource_id, :title, :copyright_notes, :access, :sourceable_type]
+        only: [:id, :slug, :resource_id, :caption, :copyright_notes, :access, :sourceable_type]
     )
   end
 

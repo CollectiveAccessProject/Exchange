@@ -25,7 +25,7 @@
           </div>
           <div class="col-md-6 text-center">
           <% if (@available_collections.length > 0) %>
-				<%= form_tag(set_resource_parent_with_id_path(@resource), method: "get") do %>
+				<%= form_tag(set_resource_parent_with_id_path(@resource), method: "post") do %>
 					Use collection
 					<%=
 					  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, :title))

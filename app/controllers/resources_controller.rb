@@ -1,11 +1,14 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag, :save_preferences]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag, :save_preferences, :add_related_resource, :remove_related_resource]
 
   include CommentableController
   include TaggableController
 
   respond_to :html, :json
+
+  # UI autocomplete on resource title (used by related resources lookup)
+  autocomplete :resource, :title, :full => true, :extra_data => [:id]
 
   # GET /resources
   # GET /resources.json
@@ -24,7 +27,8 @@ class ResourcesController < ApplicationController
 
     # Set parent, if set, for display purposes in "new" form
     if ((parent_id = params[:parent_id].to_i) > 0)
-      @resource.parent_id = parent_id
+      @new_parent_id = parent_id
+      @new_parent = Resource.find(parent_id)
     end
 
     # Set child, if set, for display purposes in "new" form
@@ -33,14 +37,14 @@ class ResourcesController < ApplicationController
       @child  = Resource.find(child_id)
     end
 
-    @resource.resource_type = (params['type'] == 'collection') ? 2 : 1  # preset type
+    @resource.resource_type = (params['type'] == 'collection') ? Resource::LEARNING_COLLECTION : Resource::RESOURCE  # preset type
   end
 
   # GET /resources/1/edit
   def edit
     @media_file = MediaFile.new
-   # @resource.settings(:media_formatting).mode = 'foo'
-   # @resource.save!
+    # @resource.settings(:media_formatting).mode = 'foo'
+    # @resource.save!
     session[:resource_id] = @resource.id
 
     # Get list of available collections
@@ -55,24 +59,26 @@ class ResourcesController < ApplicationController
 
     parent_id = params[:resource][:parent_id].to_i
 
-    if (parent_id > 0)
-      # TODO: Verify that current user has privs to do this
-      @resource.parent_id = parent_id
-    end
 
     child_id = params[:resource][:child_id].to_i
     respond_to do |format|
       if @resource.save
+
+        if (parent_id > 0)
+          # TODO: Verify that current user has privs to do this
+          prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create
+        end
+
         # Set resource under newly created collection or resource
         # TODO: Verify that current user has privs to do this
         if(child_id > 0)
           child = Resource.find(child_id)
-          if (child.user_id == current_user.id)
-            child.parent_id = @resource.id
-            child.save
-          else
+          #if (child.user_id == current_user.id)
+          prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
+          child.save
+          #else
 
-          end
+          #end
         end
         session[:mode] = :new;
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been added.'}
@@ -88,14 +94,27 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
     respond_to do |format|
-      if @resource.update(resource_params)
-        session[:mode] = :update;
-        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
-        format.json { render :show, status: :ok, location: @resource }
+      if (parent_id = params[:parent_id])
+        # TODO: Verify that current user has privs to do this
+        if (prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create)
+          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
+          format.json { render :show, status: :ok, location: @resource }
+
+        else
+          format.html { render :edit }
+          format.json { render json: @resource.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :edit }
-        format.json { render json: @resource.errors, status: :unprocessable_entity }
+        if @resource.update(resource_params)
+          session[:mode] = :update;
+          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
+          format.json { render :show, status: :ok, location: @resource }
+        else
+          format.html { render :edit }
+          format.json { render json: @resource.errors, status: :unprocessable_entity }
+        end
       end
+
     end
   end
 
@@ -153,23 +172,57 @@ class ResourcesController < ApplicationController
     end
   end
 
+  # add related resource
+  def add_related_resource
+    begin
+      # response
+
+      # TODO: Check if user can relate to target
+      to_resource_id = params[:to_resource_id]
+      prel = RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id, caption: params[:caption]).first_or_create
+
+      resp = {:status => "ok", :html => render_to_string("resources/_related", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => "err", :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json {render :json => resp }
+    end
+  end
+
+  # remove related resource
+  def remove_related_resource
+    begin
+      # TODO: Check if user can delete this
+      to_resource_id = params[:related]
+      RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id).destroy_all
+      resp = {:status => "ok", :html => render_to_string("resources/_related", layout: false),feh: to_resource_id, meow: @resource.id  }
+    rescue StandardError => ex
+      resp = {:status => "err", :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json {render :json => resp }
+    end
+  end
+
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_resource
-      @resource = Resource.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_resource
+    @resource = Resource.find(params[:id])
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def resource_params
-      # TODO: allow parent_id to be set simultaneously with other form fields
-      if (params[:parent_id])
-        return {parent_id: params[:parent_id]}
-      else
-        params.require(:resource).permit(
-            :slug, :title, :resource_type, :subtitle, :source_type, :source,
-           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
-        )
-      end
 
-    end
+    # TODO: get rid of this; related resources will use AJAX lookup
+    # Get list of available resources and collections (TEMPORARY)
+    @available_resources = Resource.where("user_id = ? AND id <> ?", current_user.id, @resource.id).order(title: :asc)
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def resource_params
+    params.require(:resource).permit(
+        :slug, :title, :resource_type, :subtitle, :source_type, :source,
+        :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
+    )
+  end
 end

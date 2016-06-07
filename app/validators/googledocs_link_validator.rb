@@ -6,7 +6,7 @@ class GoogledocsLinkValidator < ActiveModel::Validator
       when 'docs.google.com'
         # noop
       else
-        record.errors[:base] << "This doesn't seem to be a Vimeo link"
+        record.errors[:base] << "This doesn't seem to be a GoogleDocs link"
     end
   end
 end

@@ -2,14 +2,17 @@
   <div class="col-sm-12">
     <H4>
       Editing <%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %>
-      <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, @resource, class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
+      <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, resource_preview_path(@resource), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Back'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
 
-      <%= if (!@resource.parent_id)
+      <%=
+        if (@resource.parents.length == 0)
             button_tag ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-default btn-xs pull-right", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-          else
-            link_to raw("Part of <em>" + @resource.parent.title + "</em>"), edit_resource_path(@resource.parent), "class": "btn btn-default btn-xs pull-right"
+        else
+          if(@resource.parents.first)
+           link_to raw("Part of <em>" + @resource.parents.first.title + "</em>"), edit_resource_path(@resource.parents.first), "class": "btn btn-default btn-xs pull-right"
           end
+        end
       %>
     </H4>
   </div><!-- end col -->
@@ -68,7 +71,7 @@
             Contents <%= link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default pull-right" %>
           </div>
           <div class="panel-body">
-            <%= render(partial: "resources/resource_list") %>
+            <%= render(partial: "resources/resource_list_simple") %>
           </div>
       <% end %>
     </div><!-- end panel -->
@@ -78,10 +81,12 @@
 <!-- Resource collection modal -->
 <%= render(partial:'resources/resource_collection_select') %>
 <%
-  if(!@resource.parent_id && (@resource.resource_type == Resource::RESOURCE)&& (session['mode'] == 'new'))
+  if(!@resource.parents.length && (@resource.resource_type == Resource::RESOURCE)&& (session['mode'] == 'new'))
       # Trigger modal on save if no parent is set for resources (not collections)
 %>
     <script type="text/javascript">
     jQuery("#selectResourceCollectionForm").modal();
     </script>
-<% end %>
+<%
+  end
+%>

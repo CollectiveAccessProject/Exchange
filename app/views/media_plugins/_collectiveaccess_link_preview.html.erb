@@ -1,0 +1,19 @@
+<%
+    url = plugin_model.base_url + plugin_model.key
+case version
+  when :thumbnail
+    url += "/full/!140,120/0/default.jpg"
+  when :medium
+    url += "/full/!512,512/0/default.jpg"
+  when :full
+    url += "/full/!1024,1024/0/default.jpg"
+  else
+    url += "/full/!320,240/0/default.jpg"
+end
+%>
+<img
+src="<%= url %>"
+<% if width %> width="<%= width %>" <% end %>
+<% if height %> height="<%= height %>" <% end %>
+/>
+

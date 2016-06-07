@@ -1,0 +1,108 @@
+<div class="row">
+  <div class="col-sm-12">
+    <H4>
+      <% if (params['mode'] == :preview) %>
+          Previewing Collection
+      <% end %>
+      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Back'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+    </H4>
+  </div><!-- end col -->
+</div><!-- end row -->
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <p id="notice"><%= notice %></p>
+
+        <H2><%= @resource.title %></H2>
+
+        <H3><%= @resource.subtitle %></H3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+        <p><%= @resource.body_text.html_safe %></p>
+      </div>
+      <div class="col-sm-7">
+       <% if(@resource.child_count > 0) %>
+          <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Resource" : @resource.child_count.to_s + " Resources"  %> in this Learning Collection</h5>
+
+            <%= render :partial => "resource_list_grid" %>
+        <% end %>
+
+
+        <% if (@resource.copyright_license) %>
+            <p>
+              <h5>Copyright</h5>
+              <div><%= @resource.get_license_type %>
+                <% if (@resource.copyright_notes) %>
+                    (<%= @resource.copyright_notes %>)
+                <% end  %>
+                </div>
+            </p>
+        <% end %>
+      </div><!-- end col -->
+    </div><!-- end row -->
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-2">
+    <% if @resource.tags.count > 0 %>
+        <p>
+          <h5>Tags</h5>
+        <ul>
+          <% @resource.tags.each do |t| %>
+              <li class="tagList"><%= t.tag %></li>
+          <% end %>
+        </ul>
+        </p>
+    <% end %>
+  </div><!-- end col -->
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <% if @resource.comments.count > 0 %>
+        <H5><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H5>
+        <div class="panel panel-primary">
+          <div class="panel-body">
+            <% @resource.comments.each do |c| %>
+                <p><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %></i></small></p><HR/>
+            <% end %>
+          </div><!-- end panel-body -->
+        </div><!-- end panel -->
+    <% end %>
+    </div>
+  </div>
+<div class="row">
+  <div class="col-md-12">
+    <H4>Add your comment and tags</H4>
+    <div class="panel panel-primary">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-sm-6">
+            <%= form_tag '/resources/add_new_comment' do %>
+                <%= hidden_field_tag 'id', @resource.id %>
+                <div class="form-group">
+                  <label>Comment</label>
+                  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+                </div>
+                <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+            <% end %>
+          </div><!-- end col -->
+          <div class="col-sm-6">
+            <%= form_tag '/resources/add_new_tag' do %>
+                <%= hidden_field_tag 'id', @resource.id %>
+                <div class="form-group">
+                  <label>Tag</label>
+                  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+                </div>
+                <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+            <% end %>
+          </div><!-- end col -->
+        </div><!-- end row -->
+      </div><!-- end panel-body -->
+    </div><!-- end panel -->
+  </div>
+</div>
