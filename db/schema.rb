@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160605213949) do
+ActiveRecord::Schema.define(version: 20160607124446) do
 
   create_table "collectiveaccess_links", force: :cascade do |t|
     t.string   "host",          limit: 255, null: false
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20160605213949) do
   create_table "media_files", force: :cascade do |t|
     t.string   "slug",              limit: 255,   default: "", null: false
     t.integer  "resource_id",       limit: 4
-    t.text     "title",             limit: 65535,              null: false
+    t.text     "caption",           limit: 65535,              null: false
     t.integer  "copyright_license", limit: 1,     default: 0,  null: false
     t.string   "copyright_notes",   limit: 255,                null: false
     t.integer  "access",            limit: 1,     default: 0,  null: false
@@ -105,12 +105,12 @@ ActiveRecord::Schema.define(version: 20160605213949) do
   add_index "media_files", ["sourceable_type", "sourceable_id"], name: "index_media_files_on_sourceable_type_and_sourceable_id", using: :btree
 
   create_table "related_resources", force: :cascade do |t|
-    t.text     "caption",          limit: 65535, null: false
-    t.integer  "from_resource_id", limit: 4,     null: false
-    t.integer  "to_resource_id",   limit: 4,     null: false
-    t.integer  "type",             limit: 1,     null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.text     "caption",        limit: 65535, null: false
+    t.integer  "resource_id",    limit: 4,     null: false
+    t.integer  "to_resource_id", limit: 4,     null: false
+    t.integer  "type",           limit: 1,     null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   add_index "related_resources", ["to_resource_id"], name: "fk_rails_2eadc87d49", using: :btree
