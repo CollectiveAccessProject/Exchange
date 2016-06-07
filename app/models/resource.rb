@@ -1,7 +1,7 @@
 class Resource < ActiveRecord::Base
   has_many :related_resources
 
-  has_many :resources, through: 'related_resources'
+  has_many :resources, through: 'related_resources', source: :related
 
   has_many :resource_hierarchies
   has_many :children, through: 'resource_hierarchies', source: :child_resource

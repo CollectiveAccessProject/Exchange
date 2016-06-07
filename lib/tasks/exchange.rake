@@ -95,12 +95,12 @@ namespace :exchange do
                 if ((cl = CollectiveaccessLink.where(key: key[0]).first) && cl.id)
                   m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
                 else
-                  m = MediaFile.new(title: i.to_s, copyright_notes:'')
+                  m = MediaFile.new(caption: i.to_s, copyright_notes:'')
                 end
 
                 if (m)
                   m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
-                  m.update({title: i.to_s, access: 1, copyright_notes:'', resource_id: r.id})
+                  m.update({caption: i.to_s, access: 1, copyright_notes:'', resource_id: r.id})
                 end
 
                 i += 1
@@ -152,6 +152,8 @@ namespace :exchange do
       t.destroy_all
     end
     MediaFile.destroy_all
+    RelatedResource.destroy_all
+    ResourceHierarchy.destroy_all
     Resource.destroy_all
 
   end

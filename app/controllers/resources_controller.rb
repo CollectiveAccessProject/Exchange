@@ -40,8 +40,8 @@ class ResourcesController < ApplicationController
   # GET /resources/1/edit
   def edit
     @media_file = MediaFile.new
-   # @resource.settings(:media_formatting).mode = 'foo'
-   # @resource.save!
+    # @resource.settings(:media_formatting).mode = 'foo'
+    # @resource.save!
     session[:resource_id] = @resource.id
 
     # Get list of available collections
@@ -71,8 +71,8 @@ class ResourcesController < ApplicationController
         if(child_id > 0)
           child = Resource.find(child_id)
           #if (child.user_id == current_user.id)
-            prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
-            child.save
+          prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
+          child.save
           #else
 
           #end
@@ -91,14 +91,27 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
     respond_to do |format|
-      if @resource.update(resource_params)
-        session[:mode] = :update;
-        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
-        format.json { render :show, status: :ok, location: @resource }
+      if (parent_id = params[:parent_id])
+        # TODO: Verify that current user has privs to do this
+        if (prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create)
+          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
+          format.json { render :show, status: :ok, location: @resource }
+
+        else
+          format.html { render :edit }
+          format.json { render json: @resource.errors, status: :unprocessable_entity }
+        end
       else
-        format.html { render :edit }
-        format.json { render json: @resource.errors, status: :unprocessable_entity }
+        if @resource.update(resource_params)
+          session[:mode] = :update;
+          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
+          format.json { render :show, status: :ok, location: @resource }
+        else
+          format.html { render :edit }
+          format.json { render json: @resource.errors, status: :unprocessable_entity }
+        end
       end
+
     end
   end
 
@@ -157,22 +170,16 @@ class ResourcesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_resource
-      @resource = Resource.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_resource
+    @resource = Resource.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def resource_params
-      # TODO: allow parent_id to be set simultaneously with other form fields
-      if (params[:parent_id])
-        return {parent_id: params[:parent_id]}
-      else
-        params.require(:resource).permit(
-            :slug, :title, :resource_type, :subtitle, :source_type, :source,
-           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
-        )
-      end
-
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def resource_params
+    params.require(:resource).permit(
+        :slug, :title, :resource_type, :subtitle, :source_type, :source,
+        :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
+    )
+  end
 end
