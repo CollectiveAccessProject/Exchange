@@ -26,7 +26,7 @@
                     <%= f.sourceable.preview :thumbnail  %>
                   </a>
                   <div class="caption small">
-                    <b><%= f.title  %></b><br/>
+                    <b><%= f.caption  %></b><br/>
                   </div>
                 </div>
                 <%=
@@ -35,7 +35,7 @@
                   render partial: 'media_file_render_overlay', locals: { body: f.sourceable.render, modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s }
                 %>
             <% else %>
-                <p><%= f.title  %></p>
+                <p><%= f.caption  %></p>
             <% end %>
           </div><!-- end col -->
       <% end %>

@@ -56,7 +56,7 @@ class MediaFile < ActiveRecord::Base
 
   def as_indexed_json(options = {})
     as_json(
-        only: [:id, :slug, :resource_id, :title, :copyright_notes, :access, :sourceable_type]
+        only: [:id, :slug, :resource_id, :caption, :copyright_notes, :access, :sourceable_type]
     )
   end
 
