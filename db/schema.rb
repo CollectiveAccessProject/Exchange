@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160607124446) do
+ActiveRecord::Schema.define(version: 20160607125549) do
 
   create_table "collectiveaccess_links", force: :cascade do |t|
     t.string   "host",          limit: 255, null: false
@@ -76,6 +76,9 @@ ActiveRecord::Schema.define(version: 20160607124446) do
   add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
   add_index "groups", ["slug"], name: "index_groups_on_slug", using: :btree
 
+  create_table "indices", force: :cascade do |t|
+  end
+
   create_table "local_files", force: :cascade do |t|
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
@@ -113,6 +116,7 @@ ActiveRecord::Schema.define(version: 20160607124446) do
     t.datetime "updated_at",                   null: false
   end
 
+  add_index "related_resources", ["resource_id"], name: "fk_rails_a68c65ab63", using: :btree
   add_index "related_resources", ["to_resource_id"], name: "fk_rails_2eadc87d49", using: :btree
 
   create_table "resource_hierarchies", force: :cascade do |t|
@@ -121,6 +125,9 @@ ActiveRecord::Schema.define(version: 20160607124446) do
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
   end
+
+  add_index "resource_hierarchies", ["child_resource_id"], name: "fk_rails_048b4737a3", using: :btree
+  add_index "resource_hierarchies", ["resource_id"], name: "fk_rails_5f091e1f26", using: :btree
 
   create_table "resources", force: :cascade do |t|
     t.string   "slug",                    limit: 255,                null: false
@@ -258,7 +265,11 @@ ActiveRecord::Schema.define(version: 20160607124446) do
 
   add_foreign_key "comments", "users"
   add_foreign_key "media_files", "resources"
+  add_foreign_key "related_resources", "resources"
+  add_foreign_key "related_resources", "resources"
   add_foreign_key "related_resources", "resources", column: "to_resource_id"
+  add_foreign_key "resource_hierarchies", "resources"
+  add_foreign_key "resource_hierarchies", "resources", column: "child_resource_id"
   add_foreign_key "resources", "resources", column: "forked_from_resource_id"
   add_foreign_key "resources", "users"
   add_foreign_key "tags", "users"
