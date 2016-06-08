@@ -541,3 +541,20 @@ select.input-sm{
 li.tagList {
   list-style: none;
 }
+.oauth-buttons{
+	line-height:2em;
+	margin-top:20px;
+	padding-top:20px;
+	border-top:1px solid #fff;
+}
+.oauth-button{
+	padding: 0px 10px 0px 10px;
+}
+.oauth-button img{
+	width:30px;
+	height:auto;
+	margin-top:-10px;
+}
+.oauth-button .fa{
+	font-size:30px;
+}
