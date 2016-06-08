@@ -31,11 +31,14 @@ class MediaFilesController < ApplicationController
     # TODO: does user have access to this resource?
     @media_file.resource_id = params[:media_file][:resource_id]
 
-
     @resource = @media_file.resource;
 
     respond_to do |format|
       if @media_file.save
+
+        puts "Media File Save Success!"
+        puts @media_file.errors
+
         format.html do
           if @media_file.resource
             redirect_to edit_resource_path(@media_file.resource), notice: 'Media was added.'
@@ -47,10 +50,15 @@ class MediaFilesController < ApplicationController
 
         format.js
       else
-        format.html { redirect_to edit_resource_path(@media_file.resource), notice: 'Media could not be saved: ' + @media_file.errors.full_messages.join("; ")}
-        format.json { render json: {errors: @media_file.errors, status: :ERR }, status: :unprocessable_entity }
 
-        format.js
+        puts "Media File Save Failure!"
+        puts @media_file.errors.full_messages.join(";")
+
+        format.html { redirect_to edit_resource_path(@media_file.resource), notice: 'Media could not be saved: ' + @media_file.errors.full_messages.join("; ")}
+
+        format.json { render :json => {errors: @media_file.errors.full_messages.join(";"), status: :ERR }, status: :unprocessable_entity }
+
+        #format.js
       end
     end
   end

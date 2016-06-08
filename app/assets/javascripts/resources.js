@@ -36,8 +36,20 @@
         });
 
         jQuery("#addMediaFormElements").bind("ajax:success", function(event, data, status, xhr) {
-            console.log("got", data);
-            $('#addMediaForm').modal('hide').find("input[type=text], textarea").val("")   // hide add media model
+
+            // TODO: This is displaying on the master form. - needs to stay within modal I think. 
+            // TODO: data.error is undefined still.
+            jQuery('#form-status').slideDown(250);
+            jQuery('#form-status-message').html((data && data.status && (data.status == 'ok')) ? "Added Media" : "Could not add media: " + data.error);
+           
+            window.setTimeout(function() {
+                jQuery('#form-status').slideUp(250);
+            }, 3000);           
+            if(data.status == 'ok') {
+                // TODO: Do something with data.html
+                $('#addMediaForm').modal('hide').find("input[type=text], textarea").val("")   // hide add media model
+            }
+
             //$('#addMediaForm select').prop('selectedIndex', 0); // reset drop-downs
         });
     });

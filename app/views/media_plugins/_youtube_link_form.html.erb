@@ -1,15 +1,17 @@
 <div class="panel panel-primary">
   <div class="panel-body">
+
     <%= fields_for(plugin_model) do |f| %>
 
-        <label for="youtubeMedia">YouTube URL:</label>
+      <label for="youtubeMedia">YouTube URL:</label>
       <%= f.text_field :original_link, class: "form-control", id: "youtubeMedia" %>
 
-    <div class="form-actions">
+      <div class="form-actions">
       <% if plugin_model.id %>
         <%= link_to 'Delete?', plugin_model, method: :delete, data: { confirm: 'Are you sure?' } %>
       <% end %>
-    </div>
+      </div>
+
     <% end %>
   </div>
 </div>

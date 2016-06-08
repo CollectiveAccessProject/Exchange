@@ -16,6 +16,11 @@
             <div class="panel-body">
               <%= f.error_notification %>
 
+              <div id="form-status">
+                  <div class="flash-notice" id="form-status-message"></div>
+              </div>
+
+
               <%= f.input :caption %>
               <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
               <%= f.input :copyright_notes %>
