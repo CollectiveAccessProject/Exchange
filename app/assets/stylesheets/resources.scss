@@ -1,13 +1,59 @@
 // Place all the styles related to the resources controller here.
 // They will automatically be included in application.css.sass.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+$blue:#10069f;
+$gray:#8a898a;
 .modal.modal-wide .modal-dialog {
   width: 90%;
 }
 .modal-wide .modal-body {
   overflow-y: auto;
 }
-
+.modal-header{
+	background-color:$blue;
+	padding:20px;
+	h2{
+		color:white;
+	}
+	.close{
+		color:white;
+		opacity:1;
+		font-size:35px;
+	}
+}
 #formatting-options-status {
   display: none;
+}
+.modal .panel{
+	background-color:#FFFFFF;
+	padding:20px;
+}
+.modal .panel-body .form-control{
+	border: 1px solid #EDEDED;
+}
+.modal .nav-tabs{
+	margin-top:20px;
+}
+.modal .nav-tabs .active a{
+	color:$blue !important;
+}
+.modal .nav-tabs a{
+	color:$gray;
+}
+.modal .nav-tabs a:hover{
+	background-color:#FFF;
+	color:$blue !important;
+	border-top-color:#FFF;
+	border-left-color:#FFF;
+	border-right-color:#FFF;
+}
+.modal .tab-content{
+	border-left: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	margin-bottom:20px !important;
+	margin-top:-10px;
+}
+.modal .nav-tabs .fa{
+	font-size:30px;
 }

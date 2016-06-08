@@ -440,37 +440,6 @@ select.input-sm{
 		margin-top:5px;
 	}
 }
-
-/*
-.hpGray{
-	margin-top:10px;
-	background-color:$gray;
-	color:white;
-	padding:40px 0px 40px 0px;
-	.btn-default{
-		background-color:black;
-		color:white;
-		text-transform:uppercase;
-		border:0px;
-	}
-	.btn-default:hover{
-		background-color:$blue;
-	}
-}
-.hpFeatureImg{
-	.col-sm-4{
-		background-color:$lt_gray;
-	}
-	img{
-		width:100%;
-		height:auto;
-		margin-bottom:2px;
-	}
-}
-.hpFeatureBtn .btn{
-	margin-top:-85px;
-}
-*/
 .dbUnit{
 	padding:5px 10px 5px 10px;
 	.btn{
@@ -577,5 +546,5 @@ li.tagList {
 }
 /* forms */
 .form-group label{
-	font-weight:normal;
+	font-weight:600;
 }

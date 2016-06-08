@@ -13,7 +13,7 @@
 
 <!-- Fixed navbar -->
 <nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container">
+  <div class="container" id="ummaHeader">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#exmenu" aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
@@ -87,17 +87,17 @@
 
 </body>
 </html>
-<!-- make menu have dropshadow when leaving the about section.-->
-<!--<script>
+<!-- hide umma nav when scroll down -->
+<script>
 jQuery(document).ready(function() {	
 		$(window).scroll(function() {    
 			var scroll = $(window).scrollTop();
 
 			if (scroll >= 30) {
-				$(".navbar").addClass("shadowed");
+				$("#ummaHeader").slideUp();
 			} else {
-				$(".navbar").removeClass("shadowed");
+				$("#ummaHeader").slideDown();
 			}
 		});
 });
-</script>-->
+</script>
