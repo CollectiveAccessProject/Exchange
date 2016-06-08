@@ -8,6 +8,7 @@ $green:#419276;
 $md_gray:#DEDEDE;
 $lt_gray:#eaeaeb;
 $black:#000000;
+$white:#FFFFFF;
 html{
 	position:relative;
 	min-height: 100%;
@@ -541,20 +542,40 @@ select.input-sm{
 li.tagList {
   list-style: none;
 }
+/* LOGIN FORM */
 .oauth-buttons{
-	line-height:2em;
-	margin-top:20px;
-	padding-top:20px;
-	border-top:1px solid #fff;
+	margin-bottom:20px;
 }
 .oauth-button{
-	padding: 0px 10px 0px 10px;
+	padding: 10px 10px 10px 10px;
+	width:100%;
+	margin-bottom:10px;
+	text-transform:none;
+	text-align:left;
+	font-size:20px;
+	font-weight: 500;
+	font-family: $font-family-sans-serif !important;
+}
+.oauth-button .icon{
+	float:left;
+	width:50px;
+	text-align:center;
+	margin-right:20px;
+	padding-right:10px;
+	border-right:1px solid $white;
+	line-height:1em !important;
 }
 .oauth-button img{
-	width:30px;
-	height:auto;
-	margin-top:-10px;
+	height:30px;
+	width:auto;
+	padding-top:5px;
+	padding-bottom:5px;
 }
 .oauth-button .fa{
-	font-size:30px;
+	font-size:25px;
+	margin-top:2px;
+}
+/* forms */
+.form-group label{
+	font-weight:normal;
 }
