@@ -6,7 +6,7 @@ class SoundcloudLinkValidator < ActiveModel::Validator
       when 'soundcloud.com'
         # noop
       else
-        record.errors[:base] << "This doesn't seem to be a SoundCloud link"
+        record.errors[:original_link] << "This doesn't seem to be a SoundCloud link"
     end
   end
 end
