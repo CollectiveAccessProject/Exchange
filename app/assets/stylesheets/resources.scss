@@ -47,7 +47,7 @@ $white:#FFFFFF;
 .tab-content .panel-subbody{
 	padding:0px 5px 0px 10px;
 }
-.tab-content H3{
+.tab-content H3, .panel-body H3{
 	color:$gray;
 	margin-top:10px;
 	font-weight:500;
@@ -104,7 +104,7 @@ $white:#FFFFFF;
 #resource_media_list, #collection_contents_list{
 	padding:0px;
 }
-.mediaListIcon{
+.mediaListIcon, .collectionContentsItem{
 	position:relative;
 	line-height:1em;
 	margin:15px;

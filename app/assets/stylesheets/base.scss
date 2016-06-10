@@ -37,6 +37,13 @@ p, ul, li{
 .btn-default, a.btn-default{
 	color:white !important;
 }
+.btn-noBg{
+	color:$blue !important;
+	background:transparent !important;
+}
+.btn-noBg:hover{
+	color:$blue !important;
+}
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
@@ -66,6 +73,12 @@ h4{
 	text-transform:capitalize;
 	padding:10px 10px 10px 10px;
 	margin-top:0px;
+	a{
+		color:$gray;
+	}
+	a:hover{
+		text-decoration:none;
+	}
 	.btn-default{
 		color:$gray !important;
 		background:transparent;
@@ -73,7 +86,8 @@ h4{
 		margin-left:10px;
 	}
 	.btn-default:hover{
-		color:white !important;
+		color:$blue !important;
+		background:transparent;
 	}
 	.small{
 		color:black;

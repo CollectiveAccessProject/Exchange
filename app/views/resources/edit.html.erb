@@ -1,19 +1,18 @@
 <div class="row">
   <div class="col-sm-12">
     <H4>
-      Editing <%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %>
+      <%=
+	  if(@resource.parents.first)
+	    link_to raw("Part of: " + @resource.parents.first.title), edit_resource_path(@resource.parents.first), "class": ""
+	  else
+	  	@resource.title
+	  end
+      %>
+     <!-- Editing <%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %>-->
       <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, resource_preview_path(@resource), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Back'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
 
-      <%=
-        if (@resource.parents.length == 0)
-            button_tag ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-default btn-xs pull-right", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-        else
-          if(@resource.parents.first)
-           link_to raw("Part of <em>" + @resource.parents.first.title + "</em>"), edit_resource_path(@resource.parents.first), "class": "btn btn-default btn-xs pull-right"
-          end
-        end
-      %>
+
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -71,6 +70,11 @@
             <%= link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large" %>
           </div>
           <div class="panel panel-default"><div class="panel-body" id="collection_contents_list">
+            <%=
+            if (@resource.parents.length == 0)
+           	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+        	end
+        	%>
             <%= render(partial: "resources/resource_list_simple") %>
           </div><!-- end panel-body --></div><!-- end panel -->
       <% end %>

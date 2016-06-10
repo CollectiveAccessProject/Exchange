@@ -1,4 +1,3 @@
 <% @resource.children.each do |c| %>
-   <%= link_to c.title, edit_resource_path(c) %>
-    <hr/>
+   <div class="collectionContentsItem"><%= link_to c.title, edit_resource_path(c) %></div>
 <% end %>
