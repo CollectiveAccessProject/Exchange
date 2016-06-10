@@ -12,7 +12,7 @@
         	</div>
         	<div class="col-sm-6">
 			  <% media_file = MediaFile.find(media_id) %>
-			  <%= simple_form_for(media_file, :remote => true, html: { id: 'editMediaFormElements', data: { :url => '/media_files', :format => :js}}) do |f| %>
+			  <%= simple_form_for(media_file, :remote => false, html: { id: 'editMediaFormElements', data: { :url => '/media_files', :format => :js}}) do |f| %>
 
 			  <%= f.error_notification %>
 			  <div id="form-status">
