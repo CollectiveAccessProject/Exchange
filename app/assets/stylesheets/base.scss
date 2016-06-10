@@ -545,6 +545,46 @@ li.tagList {
 	margin-top:2px;
 }
 /* forms */
+.form-group{
+	font-size:14px;
+}
 .form-group label{
 	font-weight:600;
+}
+.wysihtml5-toolbar{
+	padding:0px !Important;
+	ul, li{
+		padding:0px !Important;
+		margin:0px !Important;
+	}
+	.btn{
+		font-family:$font-family-sans-serif;
+		font-weight:500;
+		font-size:13px;
+		line-height:1em;
+	}
+	.glyphicon, a .glyphicon{
+		margin-top:0px !Important;
+		font-size:12px !important;
+	}
+	a .glyphicon.glyphicon-quote{
+		top:-1px !important;
+	}
+}
+.cornerButton{
+	position:absolute;
+	right:5px;
+	top:5px;
+	z-index:10;
+	border-radius:11px;
+	background-color:$blue;
+	color:$white !important;
+	font-size:16px;
+	width:18px;
+	padding:0px 2px 0px 2px;
+	text-align:center;
+	line-height:1em;
+}
+.cornerButton:hover{
+	background-color:$blue;
 }

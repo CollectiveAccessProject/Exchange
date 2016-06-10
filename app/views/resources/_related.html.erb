@@ -27,15 +27,17 @@
 
         <div class="row">
           <div class="col-md-5">
-            Search for resource
-            <br/>
-            <%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#to_resource_id") %>
-            <%= hidden_field_tag(:to_resource_id) %>
+            <div class="form-group">
+            	<label>Search for resource</label>
+            	<%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#to_resource_id", class:'form-control') %>
+            	<%= hidden_field_tag(:to_resource_id) %>
+            </div>
           </div>
           <div class="col-md-6">
-            Caption
-            <br/>
-            <%= text_field_tag(:caption, '', size: 50) %>
+            <div class="form-group">
+            	<label>Caption</label>
+            	<%= text_field_tag(:caption, '', size: 50, class:'form-control') %>
+            </div>
           </div>
           <div class="col-md-1">
             <%= hidden_field_tag(:id, @resource.id) %>

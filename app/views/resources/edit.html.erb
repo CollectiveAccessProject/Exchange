@@ -24,16 +24,16 @@
       <div class="col-md-12">
         <ul class="nav nav-tabs">
           <li class="active">
-            <a data-toggle="tab" href="#tab_formatting">Formatting</a>
+            <a data-toggle="tab" href="#tab_formatting"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp;Formatting</a>
           </li>
           <li>
-            <a data-toggle="tab" href="#tab_related">Related</a>
+            <a data-toggle="tab" href="#tab_related"><i class="fa fa-exchange" aria-hidden="true"></i> &nbsp;Related</a>
           </li>
           <li>
-            <a data-toggle="tab" href="#tab_tags">Tags</a>
+            <a data-toggle="tab" href="#tab_tags"><i class="fa fa-tags" aria-hidden="true"></i> &nbsp;Tags</a>
           </li>
           <li>
-            <a data-toggle="tab" href="#tab_comments">Comments</a>
+            <a data-toggle="tab" href="#tab_comments"><i class="fa fa-comments-o" aria-hidden="true"></i> &nbsp;Comments</a>
           </li>
         </ul>
 
@@ -55,26 +55,25 @@
     </div><!-- end row -->
   </div><!-- end col -->
   <div class="col-md-2">
-    <div class="panel panel-default">
+    
       <% if (@resource.resource_type == Resource::RESOURCE) %>
           <!-- Resource media list -->
           <%= render(partial:'media_files/integrated_create_form') %>
-          <div class="panel-heading" id="resource_media_list_heading">
-            Media  <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>'), "href": "#", "class": "btn btn-default pull-right", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
+          <div id="resource_media_list_heading">
+          <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Media'), "href": "#", "class": "btn btn-default btn-large", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
           </div>
-          <div class="panel-body" id="resource_media_list">
+          <div class="panel panel-default"><div class="panel-body" id="resource_media_list">
            <%= render(partial: "resources/media_list") %>
-          </div><!-- end panel-body -->
+          </div><!-- end panel-body --></div><!-- end panel -->
       <% else %>
           <!-- Learning collection contents list -->
-          <div class="panel-heading" id="collection_contents_list_heading">
-            Contents <%= link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default pull-right" %>
+          <div id="collection_contents_list_heading">
+            <%= link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large" %>
           </div>
-          <div class="panel-body">
+          <div class="panel panel-default"><div class="panel-body" id="collection_contents_list">
             <%= render(partial: "resources/resource_list_simple") %>
-          </div>
+          </div><!-- end panel-body --></div><!-- end panel -->
       <% end %>
-    </div><!-- end panel -->
   </div><!-- end col -->
 </div><!-- end row -->
 
