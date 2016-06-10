@@ -1,8 +1,17 @@
 // Place all the styles related to the resources controller here.
 // They will automatically be included in application.css.sass.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+$font-family-sans-serif:'Hind', sans-serif;
+$font-family-sans-serif2:'Oswald', sans-serif;
 $blue:#10069f;
 $gray:#8a898a;
+$bluegray:#337ab7;
+$yellow:#f9ce29;
+$green:#419276;
+$md_gray:#DEDEDE;
+$lt_gray:#eaeaeb;
+$black:#000000;
+$white:#FFFFFF;
 .modal.modal-wide .modal-dialog {
   width: 90%;
 }
@@ -20,6 +29,10 @@ $gray:#8a898a;
 		opacity:1;
 		font-size:35px;
 	}
+	.close:hover{
+		opacity:.9;
+		color:white;
+	}
 }
 #formatting-options-status {
   display: none;
@@ -28,32 +41,80 @@ $gray:#8a898a;
 	background-color:#FFFFFF;
 	padding:20px;
 }
-.modal .panel-body .form-control{
-	border: 1px solid #EDEDED;
+.tab-content .panel{
+	background-color:#FFFFFF;
 }
-.modal .nav-tabs{
+.tab-content .panel-subbody{
+	padding:0px 5px 0px 10px;
+}
+.tab-content H3, .panel-body H3{
+	color:$gray;
+	margin-top:10px;
+	font-weight:500;
+	font-family: $font-family-sans-serif;
+}
+.modal .tab-content .panel-body label{
+	font-weight:400;
+}
+.modal .modal-body .form-control, .modal .panel-body .form-control, .tab-content .panel-body .form-control{
+	border: 1px solid $lt_gray !important;
+}
+.nav-tabs{
 	margin-top:20px;
 }
-.modal .nav-tabs .active a{
+.nav-tabs .active a{
 	color:$blue !important;
 }
-.modal .nav-tabs a{
+.nav-tabs a{
 	color:$gray;
+	font-family:$font-family-sans-serif2;
+	text-transform:uppercase;
+	font-weight:600;
 }
-.modal .nav-tabs a:hover{
+.nav-tabs a:hover{
 	background-color:#FFF;
 	color:$blue !important;
 	border-top-color:#FFF;
 	border-left-color:#FFF;
 	border-right-color:#FFF;
 }
-.modal .tab-content{
+.tab-content{
 	border-left: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
 	border-right: 1px solid #ddd;
 	margin-bottom:20px !important;
 	margin-top:-10px;
+	border-bottom-right-radius:3px;
+	border-bottom-left-radius:3px;
 }
 .modal .nav-tabs .fa{
 	font-size:30px;
+}
+.form-group label.inline{
+	display:inline;
+	font-weight:400;
+}
+#resource_media_list_heading .btn, #collection_contents_list_heading .btn{
+	width:100%;
+	text-align:center;
+	padding-top:20px;
+	padding-bottom:20px;
+	font-size:18px;
+}
+#resource_media_list, #collection_contents_list{
+	padding:0px;
+}
+.mediaListIcon, .collectionContentsItem{
+	position:relative;
+	line-height:1em;
+	margin:15px;
+	img{
+		width:100%;
+		height:auto;
+	}
+	small{
+		font-size:10px;
+		display:inline-block;
+		color:$gray !important;
+	}
 }

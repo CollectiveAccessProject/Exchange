@@ -66,9 +66,10 @@ class MediaFilesController < ApplicationController
   # PATCH/PUT /media_files/1
   # PATCH/PUT /media_files/1.json
   def update
+    @resource = @media_file.resource
     respond_to do |format|
       if @media_file.update(media_file_params)
-        format.html { redirect_to @media_file, notice: 'Media was updated.' }
+        format.html { redirect_to edit_resource_path(@resource), notice: 'Media was updated.' }
         format.json { render :show, status: :ok, location: @media_file, notice: 'Media was updated' }
       else
         format.html { render :edit }

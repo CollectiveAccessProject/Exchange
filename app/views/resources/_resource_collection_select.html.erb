@@ -5,7 +5,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="addMediaFormLabel">Add to a learning collection</h4>
+        <h2 class="modal-title" id="addMediaFormLabel">Add to a learning collection</h2>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -14,34 +14,40 @@
             Collections to make slideshow, tours, presentations, digital papers and more.
           </div>
         </div>
-        <div class="row" style="margin-top: 20px;">
+        <div class="row" style="margin-top: 30px;">
           <div class="col-md-12 text-center">
             <strong>Would you like to organize this <%= (@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection" %> within a Learning Collection?</strong>
           </div>
         </div>
-        <div class="row" style="margin-top: 20px;">
-          <div class="col-md-6 text-center">
+        <div class="row" style="margin-top: 30px;">
+          <div class="col-sm-6 col-md-5 col-md-offset-1 text-center">
             <%= link_to "Create new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
           </div>
-          <div class="col-md-6 text-center">
+          <div class="col-sm-6 col-md-5 text-center">
           <% if (@available_collections.length > 0) %>
+          	<div class="row">
 				<%= form_tag(set_resource_parent_with_id_path(@resource), method: "post") do %>
-					Use collection
+					<div class="col-sm-3 text-right"><small>or use:</small></div>
+					<div class="col-sm-7">
 					<%=
-					  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, :title))
+					  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, :title), class:'form-control')
 					%>
 					<%= hidden_field_tag(:id, @resource.id) %>
+					</div>
+					<div class="col-sm-2">
 					<%=
-					  submit_tag("Set", "class": "btn btn-default", "id": "addToExistingCollection")
+					  submit_tag("Go", "class": "btn btn-default", "id": "addToExistingCollection")
 					%>
+					</div>
 				<% end %>
+			</div>
             <% end %>
           </div>
         </div>
         <div class="row" style="margin-top: 20px">
 
           <div class="col-md-12 text-right">
-            <a class="" data-dismiss="modal" aria-label="Close">No thanks</a>
+            <br/><a class="" data-dismiss="modal" aria-label="Close">No thanks <i class="fa fa-times"></i></a>
           </div>
         </div>
       </div>

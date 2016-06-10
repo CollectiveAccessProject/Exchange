@@ -37,6 +37,13 @@ p, ul, li{
 .btn-default, a.btn-default{
 	color:white !important;
 }
+.btn-noBg{
+	color:$blue !important;
+	background:transparent !important;
+}
+.btn-noBg:hover{
+	color:$blue !important;
+}
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
@@ -66,6 +73,12 @@ h4{
 	text-transform:capitalize;
 	padding:10px 10px 10px 10px;
 	margin-top:0px;
+	a{
+		color:$gray;
+	}
+	a:hover{
+		text-decoration:none;
+	}
 	.btn-default{
 		color:$gray !important;
 		background:transparent;
@@ -73,7 +86,8 @@ h4{
 		margin-left:10px;
 	}
 	.btn-default:hover{
-		color:white !important;
+		color:$blue !important;
+		background:transparent;
 	}
 	.small{
 		color:black;
@@ -545,6 +559,46 @@ li.tagList {
 	margin-top:2px;
 }
 /* forms */
+.form-group{
+	font-size:14px;
+}
 .form-group label{
 	font-weight:600;
+}
+.wysihtml5-toolbar{
+	padding:0px !Important;
+	ul, li{
+		padding:0px !Important;
+		margin:0px !Important;
+	}
+	.btn{
+		font-family:$font-family-sans-serif;
+		font-weight:500;
+		font-size:13px;
+		line-height:1em;
+	}
+	.glyphicon, a .glyphicon{
+		margin-top:0px !Important;
+		font-size:12px !important;
+	}
+	a .glyphicon.glyphicon-quote{
+		top:-1px !important;
+	}
+}
+.cornerButton{
+	position:absolute;
+	right:5px;
+	top:5px;
+	z-index:10;
+	border-radius:11px;
+	background-color:$blue;
+	color:$white !important;
+	font-size:16px;
+	width:18px;
+	padding:0px 2px 0px 2px;
+	text-align:center;
+	line-height:1em;
+}
+.cornerButton:hover{
+	background-color:$blue;
 }

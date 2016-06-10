@@ -1,17 +1,16 @@
 <% @resource.media_files.each do |f| %>
     <% if f.sourceable %>
-        <div>
-          <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+        <div class="mediaListIcon">
+          <%= link_to '<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, f, method: :delete, remote: true, data: {confirm: 'Are you sure you want to delete this media?'}, class: 'cornerButton' %>
+    	  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
             <%= f.sourceable.preview :thumbnail %>
+    		<small class="slug_<%= f.sourceable.id.to_s %>"><%= f.slug %></small>
           </a>
         </div>
         <%=
           # this renders a bootstrap model that is triggered if you click on the preview above
           # it's in a partial because it's about a billion nested divs :-)
-          render partial: 'resources/media_file_render_overlay', locals: {body: f.sourceable.render, modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s}
+          render partial: 'resources/media_file_render_overlay', locals: {media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s}
         %>
     <% end %>
-    <div><%= f.caption %></div>
-    <%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, f, method: :delete, remote: true, data: {confirm: 'Are you sure you want to delete this media?'} %>
-    <hr/>
 <% end %>

@@ -2,114 +2,132 @@
  <div class="panel-body">
   <%= form_tag("/resources/#{@resource.id}/save_preferences", method: "post", remote: true, format: :json, class: 'formatting_options', id: 'formattingOptionsFormElements') do  %>
 
-      <div id="formatting-options-status">
-        <div class="flash-notice" id="formatting-options-status-message">
-
-        </div>
-      </div>
-
       <div class="row">
-        <div class="col-sm-12">
-          <H2>Formatting</H2>
+			<div class="col-sm-12">
+				<div id="formatting-options-status">
+					<div class="flash-notice" id="formatting-options-status-message">
+
+					</div>
+				</div>
+			</div>
 		</div>
-	  </div>
-      <div class="form-group">
-		  <div class="row">
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-12">
+						<H4>Formatting</H4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="panel-subbody">
+							<div class="row">
+								<div class="col-sm-12">
+									<H3>Media formatting</H3>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<%= radio_button_tag(:media_formatting_mode, "slideshow", (@resource.settings(:media_formatting).mode == :slideshow)) %>
+										<%= label_tag(:media_formatting_mode_slideshow, "Slideshow", class: 'inline') %>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+									<%= radio_button_tag(:media_formatting_mode, "thumbnails", (@resource.settings(:media_formatting).mode == :thumbnails)) %>
+									<%= label_tag(:media_formatting_mode_thumbnails, "Thumbnails", class: 'inline') %>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<%= radio_button_tag(:media_formatting_mode, "embed", (@resource.settings(:media_formatting).mode == :embed)) %>
+										<%= label_tag(:media_formatting_mode_embed, "Embed in text", class: 'inline') %>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-12">
+									<H3>Text placement</H3>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="form-group">
+									<%= radio_button_tag(:text_placement_placement, "below", (@resource.settings(:text_placement).placement == :below)) %>
+									<%= label_tag(:text_placement_below, "Below media", class: 'inline') %>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+									<%= radio_button_tag(:text_placement_placement, "above", (@resource.settings(:text_placement).placement == :above)) %>
+									<%= label_tag(:text_placement_above, "Above media", class: 'inline') %>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+								  <H3>Text formatting</H3>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-group">
+										<%= check_box_tag(:text_formatting_show_all, "show_all", (@resource.settings(:text_formatting).show_all == 1)) %>
+										<%= label_tag(:text_formatting_show_all, "Only show the first 300 characters of text with link to Read More", class: 'inline') %>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-group">
+										<%= check_box_tag(:text_formatting_collapse, "collapse", (@resource.settings(:text_formatting).collapse == 1)) %>
+										<%= label_tag(:text_formatting_collapse, "Have text collapsed by default", class: 'inline') %>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+	  		</div>
+	  		<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-12">
+				  		<H4>User interactions</H4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="panel-subbody">
+							<div class="form-group">
+								<%= check_box_tag(:user_interaction_allow_comments, "allow_comments", (@resource.settings(:user_interaction).allow_comments == 1)) %>
+								<%= label_tag(:user_interaction_allow_comments, "Allow comments", class: 'inline') %>
+							</div>
+							<div class="form-group">
+								<%= check_box_tag(:user_interaction_allow_tags, "allow_tags", (@resource.settings(:user_interaction).allow_tags == 1)) %>
+								<%= label_tag(:user_interaction_allow_tags, "Allow tags", class: 'inline') %>
+							</div>
+							<div class="form-group">
+								<%= check_box_tag(:user_interaction_allow_responses, "allow_responses", (@resource.settings(:user_interaction).allow_responses == 1)) %>
+								<%= label_tag(:user_interaction_allow_responses, "Allow users to post resources in response to this resource", class: 'inline') %>
+							</div>
+							<div class="form-group">
+								<%= check_box_tag(:user_interaction_display_responses_on_separate_page, "display_responses_on_separate_page", (@resource.settings(:user_interaction).display_responses_on_separate_page == 1)) %>
+								<%= label_tag(:user_interaction_display_responses_on_separate_page, "Display responses on separate page", class: 'inline') %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col-sm-12">
-			  <H3>Media formatting</H3>
+				<div class="form-group">
+					<br/><%= submit_tag "Save", class:'btn btn-default btn-sm' %>
+				</div>
 			</div>
-		  </div>
-		  <div class="row">
-			<div class="col-sm-2">
-			  <%= radio_button_tag(:media_formatting_mode, "slideshow", (@resource.settings(:media_formatting).mode == :slideshow)) %>
-			  <%= label_tag(:media_formatting_mode_slideshow, "Slideshow") %>
-			</div>
-			<div class="col-sm-2">
-			  <%= radio_button_tag(:media_formatting_mode, "thumbnails", (@resource.settings(:media_formatting).mode == :thumbnails)) %>
-			  <%= label_tag(:media_formatting_mode_thumbnails, "Thumbnails") %>
-			</div>
-			<div class="col-sm-2">
-			  <%= radio_button_tag(:media_formatting_mode, "embed", (@resource.settings(:media_formatting).mode == :embed)) %>
-			  <%= label_tag(:media_formatting_mode_embed, "Embed in text") %>
-			</div>
-		  </div>
-	  </div>
-      <div class="form-group">
-		  <div class="row">
-			<div class="col-sm-12">
-			  <H3>Text placement</H3>
-			</div>
-		  </div>
-		  <div class="row">
-			<div class="col-sm-2">
-			  <%= radio_button_tag(:text_placement_placement, "below", (@resource.settings(:text_placement).placement == :below)) %>
-			  <%= label_tag(:text_placement_below, "Below media ") %>
-			</div>
-			<div class="col-sm-2">
-			  <%= radio_button_tag(:text_placement_placement, "above", (@resource.settings(:text_placement).placement == :above)) %>
-			  <%= label_tag(:text_placement_above, "Above media") %>
-			</div>
-		  </div>
-      </div>
-      <div class="form-group">
-		  <div class="row">
-			<div class="col-sm-12">
-			  <H3>Text formatting</H3>
-			</div>
-		  </div>
-		  <div class="row">
-			<div class="col-sm-12">
-			  <%= check_box_tag(:text_formatting_show_all, "show_all", (@resource.settings(:text_formatting).show_all == 1)) %>
-			  <%= label_tag(:text_formatting_show_all, "Only show the first 300 characters of text with link to Read More ") %>
-			</div>
-		  </div>
-		  <div class="row">
-			<div class="col-sm-12">
-			  <%= check_box_tag(:text_formatting_collapse, "collapse", (@resource.settings(:text_formatting).collapse == 1)) %>
-			  <%= label_tag(:text_formatting_collapse, "Have text collapsed by default") %>
-			</div>
-		  </div>
-	  </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <H2>User interactions</H2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-           <%= check_box_tag(:user_interaction_allow_comments, "allow_comments", (@resource.settings(:user_interaction).allow_comments == 1)) %>
-           <%= label_tag(:user_interaction_allow_comments, "Allow comments ") %>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-           <%= check_box_tag(:user_interaction_allow_tags, "allow_tags", (@resource.settings(:user_interaction).allow_tags == 1)) %>
-           <%= label_tag(:user_interaction_allow_tags, "Allow tags ") %>
-         </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-           <%= check_box_tag(:user_interaction_allow_responses, "allow_responses", (@resource.settings(:user_interaction).allow_responses == 1)) %>
-           <%= label_tag(:user_interaction_allow_responses, "Allow users to post resources in response to this resource ") %>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-           <%= check_box_tag(:user_interaction_display_responses_on_separate_page, "display_responses_on_separate_page", (@resource.settings(:user_interaction).display_responses_on_separate_page == 1)) %>
-           <%= label_tag(:user_interaction_display_responses_on_separate_page, "Display responses on separate page ") %>
-          </div>
-          <div class="form-group">
-           <%= submit_tag "Save", class:'btn btn-default btn-sm' %>
-          </div>
-        </div>
-      </div>
+		</div>
 
       
 
