@@ -5,18 +5,22 @@ class YoutubeLinksController < ApplicationController
   # POST /youtube_links
   # POST /youtube_links.json
   def create
-    @youtube_link = YoutubeLink.new(youtube_link_params)
+
+    begin
+
+      @youtube_link = YoutubeLink.new(youtube_link_params)
+      if save_and_set_session @youtube_link
+        resp = {:status => "ok", :html => :back}
+      end
+    rescue StandardError => ex
+        puts "Standard Error encountered and rescued"
+        resp = {:status => "err", :error => ex.message}
+    end
 
     respond_to do |format|
-      if save_and_set_session @youtube_link
-        format.html { redirect_to :back, notice: 'Please fill out the media file information below' }
-        format.json  { render :json => { id: @youtube_link.id, class: @youtube_link.class.to_s()} }
-      else
-        format.html { redirect_to :back, notice: 'There was a problem with the Youtube link' }
-        format.json  { render :json => { notice: 'There was a problem with the Youtube link' }, status: :unprocessable_entity  }
-      end
+      format.json {render :json => resp}
     end
-  end
+  end        
 
   private
     # Never trust parameters from the scary internet, only allow the white list through.
