@@ -9,7 +9,7 @@
 		<div class="row">
 			<div class="col-md-5">
 
-                <%
+        <%=
                 # don't show resource type field – consider as immutable
                 r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
             %>
