@@ -1,26 +1,5 @@
 <div class="panel panel-primary">
   <div class="panel-body">
-
-
-    <ul>
-    <% @resource.related_resources.each do |r| %>
-        <li>
-          <%= r.related.title %>
-          <%= link_to('<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, remove_related_resource_path(@resource) + "?related=" + r.related.id.to_s, {remote: true, class: :relatedResourcesRemoveLink}) %>
-          <% if (r.caption.length > 0) %>
-           <blockquote>
-             <%= r.caption %>
-           </blockquote>
-          <% end %>
-
-        </li>
-    <% end %>
-    </ul>
-
-    <% if @resource.related_resources.length > 0 %>
-      <hr/>
-    <% end %>
-
     <%= form_tag(add_related_resource_path(@resource), remote: true, method: "post", format: :json, class: 'related_resources', id: 'relatedResourcesElements') do |f| %>
         <div id="related-resources-status">
           <div class="flash-notice" id="related-resources-status-message">
@@ -44,9 +23,28 @@
           </div>
           <div class="col-md-1">
             <%= hidden_field_tag(:id, @resource.id) %>
+            <label>&nbsp;</label>
             <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
           </div>
         </div>
     <% end %>
+    <% if @resource.related_resources.count > 0 %>
+		<div class="relatedResources">
+			<H4><%= @resource.related_resources.count %> Related Item(s)</H4>
+		<% @resource.related_resources.each do |r| %>
+			<div>
+			  <%= ((r.related.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title %>
+			  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_related_resource_path(@resource) + "?related=" + r.related.id.to_s, {remote: true, class: :relatedResourcesRemoveLink}) %>
+			  <% if (r.caption.length > 0) %>
+			   <small>
+				 <%= r.caption %>
+			   </small>
+			  <% end %>
+
+			</div>
+		<% end %>
+		</div>
+    <% end %>
+
   </div>
 </div>

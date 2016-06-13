@@ -43,6 +43,10 @@ $white:#FFFFFF;
 }
 .tab-content .panel{
 	background-color:#FFFFFF;
+	hr{
+		color:$md_gray;
+		border-color:$md_gray;
+	}
 }
 .tab-content .panel-subbody{
 	padding:0px 5px 0px 10px;
@@ -106,8 +110,17 @@ $white:#FFFFFF;
 }
 .mediaListIcon, .collectionContentsItem{
 	position:relative;
-	line-height:1em;
+	line-height:1em !important;
 	margin:15px;
+	a{
+		font-size:12px;
+		font-family: $font-family-sans-serif;
+		line-height:1em !important;
+	}
+	a .fa-times{
+		font-size:14px;
+		line-height:1.3em !important;
+	}
 	img{
 		width:100%;
 		height:auto;
@@ -116,5 +129,25 @@ $white:#FFFFFF;
 		font-size:10px;
 		display:inline-block;
 		color:$gray !important;
+	}
+	i.fa-angle-double-right {
+		margin-left:-10px;
+	}
+	i.fa-folder-o{
+		font-size:10px;
+		margin-left:-12px;
+	}
+	.childcollection{
+		display:none;
+		margin-left:15px;
+	}
+}
+.relatedResources{
+	margin-top:15px;
+	max-height:300px;
+	overflow:auto;
+	div{
+		margin:10px 0px 10px 15px;
+		font-size:14px;
 	}
 }

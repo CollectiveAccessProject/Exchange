@@ -67,6 +67,11 @@
           <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Media'), "href": "#", "class": "btn btn-default btn-large", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
           </div>
           <div class="panel panel-default"><div class="panel-body" id="resource_media_list" data-resource_id="<%= @resource.id %>">
+            <%=
+            if (@resource.parents.length == 0)
+           	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+        	end
+        	%>
            <%= render(partial: "resources/media_list") %>
           </div><!-- end panel-body --></div><!-- end panel -->
       <% else %>
