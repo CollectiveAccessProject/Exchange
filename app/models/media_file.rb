@@ -16,6 +16,11 @@ class MediaFile < ActiveRecord::Base
   include SlugModel
   before_create :set_slug
 
+  # returns license type as text
+  def get_license_type
+    return Rails.application.config.x.license_types.key(self.copyright_license)
+  end
+
   # List of supported media "plugins"
   def external_media_classes
     [YoutubeLink, LocalFile, GoogledocsLink, FlickrLink, VimeoLink, SoundcloudLink, CollectiveaccessLink]
