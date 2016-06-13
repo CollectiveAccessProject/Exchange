@@ -618,8 +618,22 @@ li.tagList {
   border-radius: 3px;
   white-space: nowrap;
 }
-
+.mediaEmbedHelpLink a{
+	font-size:13px;
+	text-decoration:none;
+}
+.mediaEmbedHelpLink a:active, .mediaEmbedHelpLink a:hover{
+	text-decoration:none;
+}
 .mediaEmbedHelp {
-  font-size: 10px;
-  line-height: 11px;
+  font-size: 11px;
+  line-height: 1.1em;
+  display:none;
+  padding: 0px 0px 0px 15px;
+}
+.mediaEmbedHelp blockquote {
+  font-size: 11px;
+  line-height: 1.1em;
+  margin-bottom:0px;
+  border:0px;
 }
