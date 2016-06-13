@@ -1,19 +1,19 @@
-<% @resource.children.each do |c| %>
-	<div class="collectionContentsItem">   
-		<%= link_to ((c.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + c.title, edit_resource_path(c) %><br/>
-		<% if(c.resource_type == Resource::RESOURCE) %>
-			<% c.media_files.each do |f| %>
+<% @resource.resource_hierarchies.each do |rel| %>
+	<div class="collectionContentsItem" data-id="<%= rel.id %>">
+		<%= link_to ((rel.child_resource.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, edit_resource_path(rel.child_resource) %><br/>
+		<% if(rel.child_resource.resource_type == Resource::RESOURCE) %>
+			<% rel.child_resource.media_files.each do |f| %>
 				<% if f.sourceable %>
-					<%= link_to f.sourceable.preview :thumbnail, edit_resource_path(c) %><br/>
+					<%= link_to f.sourceable.preview :thumbnail, edit_resource_path(rel.child_resource) %><br/>
 					<% break %>
 				<% end %>
 			<% end %>
-			<small>Resource with <%= c.media_files.count %> media</small>
+			<small>Resource with <%= rel.child_resource.media_files.count %> media</small>
 		<% else %>
-			<a href="#" onCLick="$('.childcollection<%= c.id %>').slideToggle(); return false;"><small>Collection with <%= c.children.count %> items <%= (c.children.count) ? "<i class='fa fa-chevron-circle-down'></i>".html_safe : "" %></small></a>
-			<% if(c.children.count) %>
-				<div class="childcollection childcollection<%= c.id %>">
-				<% c.children.each do |g| %>
+			<a href="#" onCLick="$('.childcollection<%= rel.child_resource.id %>').slideToggle(); return false;"><small>Collection with <%= rel.child_resource.children.count %> items <%= (rel.child_resource.children.count) ? "<i class='fa fa-chevron-circle-down'></i>".html_safe : "" %></small></a>
+			<% if(rel.child_resource.children.count) %>
+				<div class="childcollection childcollection<%= rel.child_resource.id %>">
+				<% rel.child_resource.children.each do |g| %>
 					<%= link_to ((g.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + g.title, edit_resource_path(g) %><br/>
 		
 				<% end %>

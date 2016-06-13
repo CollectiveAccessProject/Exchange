@@ -79,7 +79,7 @@
           <div id="collection_contents_list_heading">
             <%= link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large" %>
           </div>
-          <div class="panel panel-default"><div class="panel-body" id="collection_contents_list">
+          <div class="panel panel-default"><div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">
             <%=
             if (@resource.parents.length == 0)
            	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}

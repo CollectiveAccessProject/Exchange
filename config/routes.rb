@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   get '/resources/:id/remove_related_resource' => 'resources#remove_related_resource', as: "remove_related_resource"
 
   get '/resources/:id/set_media_order' => 'resources#set_media_order', as: "set_media_order"
+  get '/resources/:id/set_resource_order' => 'resources#set_resource_order', as: "set_resource_order"
 
   # save preferences via ajax, get JSON in return
   post '/resources/:id/save_preferences' => 'resources#save_preferences',  defaults: { format: 'json' }

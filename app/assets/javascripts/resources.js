@@ -24,6 +24,27 @@
             }
         });
 
+        //
+        // Collection contents list drag and drop
+        //
+        jQuery("#collection_contents_list").sortable().on('sortstop', function(e, ui) {
+            var resource_id =  jQuery("#collection_contents_list").data("resource_id");
+            var ranks = [];
+            jQuery("#collection_contents_list .collectionContentsItem").each(function(k,m) {
+                ranks.push(jQuery(m).data('id'));
+            });
+
+            if (resource_id && (Object.keys(ranks).length > 0)) {
+                jQuery.getJSON("/resources/" + resource_id + "/set_resource_order", {ranks: ranks}, function(data) {
+                    jQuery("#resources-status").slideDown(250);
+
+                    jQuery("#resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Saved media order" : "Could not save media sort order: " + data.error);
+                    window.setTimeout(function() {
+                        jQuery("#resources-status").slideUp(250);
+                    }, 3000);
+                });
+            }
+        });
 
         //
         // AJAX form handling
