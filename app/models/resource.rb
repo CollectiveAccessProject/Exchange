@@ -40,7 +40,7 @@ class Resource < ActiveRecord::Base
   # slug handling
   include SlugModel
   include RankModel
-  before_create :set_slug
+  before_validation  :set_slug
   after_create :set_rank
 
   # resource type constants
