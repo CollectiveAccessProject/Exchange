@@ -4,7 +4,8 @@
           <%= link_to '<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, f, method: :delete, remote: true, data: {confirm: 'Are you sure you want to delete this media?'}, class: 'cornerButton' %>
     	  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
             <%= f.sourceable.preview :thumbnail %>
-    		<small class="slug_<%= f.sourceable.id.to_s %>"><%= f.slug %></small>
+
+    		<small class="slug_<%= f.sourceable.id.to_s %>"><%= f.caption %> (<em><%= f.slug %></em>)</small>
           </a>
         </div>
         <%=
