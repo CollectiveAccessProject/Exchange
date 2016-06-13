@@ -11,7 +11,7 @@
       <% media_file = MediaFile.new %>
       <% instances = media_file.ext_media_classes_instances %>
 
-      <%= simple_form_for(@media_file, :remote => true, html: { id: 'addMediaFormElements', data: { :url => '/media_files', :format => :js}}) do |f| %>
+      <%= simple_form_for(@media_file, :remote => true, html: { id: 'addMediaFormElements', :multipart => true, data: { :url => '/media_files', :format => :js}}) do |f| %>
           <div class="panel panel-primary">
             <div class="panel-body">
               <%= f.error_notification %>
@@ -50,7 +50,7 @@
 				<% end %>
 			  </div>
 				<%= hidden_field(:media_file, :resource_id, :value => @resource.id) %>
-
+              <%= tag(:input, :type => "hidden", :name => request_forgery_protection_token.to_s, :value => form_authenticity_token) %>
 			  <%= f.button :submit %>
             </div>
           </div>
