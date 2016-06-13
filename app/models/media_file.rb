@@ -46,8 +46,7 @@ class MediaFile < ActiveRecord::Base
         instance.get_params.each do |n,field_list|
           field_list.each do |f|
 
-            if (defined? instance.file)
-              puts params.require(:local_file).permit(:file, :file_fingerprint).inspect
+            if (instance.respond_to?(:file=) && params.has_key?(:local_file))
               instance.attributes = params.require(:local_file).permit(:file, :file_fingerprint)
               self.sourceable = instance
               throw :done
