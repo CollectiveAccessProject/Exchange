@@ -18,6 +18,11 @@
 </div><!-- end row -->
 <div class="row">
   <div class="col-md-10">
+    <div id="resources-status">
+      <div class="flash-notice" id="resources-status-message">
+
+      </div>
+    </div>
     <%= render 'form' %>
     <div class="row">
       <div class="col-md-12">
@@ -61,7 +66,7 @@
           <div id="resource_media_list_heading">
           <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Media'), "href": "#", "class": "btn btn-default btn-large", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
           </div>
-          <div class="panel panel-default"><div class="panel-body" id="resource_media_list">
+          <div class="panel panel-default"><div class="panel-body" id="resource_media_list" data-resource_id="<%= @resource.id %>">
            <%= render(partial: "resources/media_list") %>
           </div><!-- end panel-body --></div><!-- end panel -->
       <% else %>

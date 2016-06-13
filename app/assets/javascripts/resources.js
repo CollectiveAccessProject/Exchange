@@ -2,6 +2,32 @@
 // All this logic will automatically be available in application.js.
 
     jQuery(document).ready(function() {
+        //
+        // Media list drag and drop
+        //
+        jQuery("#resource_media_list").sortable().on('sortstop', function(e, ui) {
+            var resource_id =  jQuery("#resource_media_list").data("resource_id");
+           var ranks = [];
+            jQuery("#resource_media_list .mediaListIcon").each(function(k,m) {
+               ranks.push(jQuery(m).data('media_id'));
+           });
+
+            if (resource_id && (Object.keys(ranks).length > 0)) {
+                jQuery.getJSON("/resources/" + resource_id + "/set_media_order", {ranks: ranks}, function(data) {
+                    jQuery("#resources-status").slideDown(250);
+                    
+                    jQuery("#resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Saved media order" : "Could not save media sort order: " + data.error);
+                    window.setTimeout(function() {
+                        jQuery("#resources-status").slideUp(250);
+                    }, 3000);
+                });
+            }
+        });
+
+
+        //
+        // AJAX form handling
+        //
         jQuery("#formattingOptionsFormElements").bind("ajax:success", function(e, data) {
             jQuery("#formatting-options-status").slideDown(250);
 

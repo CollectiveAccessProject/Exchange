@@ -161,9 +161,9 @@ class ResourcesController < ApplicationController
       @resource.save;
 
       # response
-      resp = {:status => "ok"}
+      resp = {:status => :ok}
     rescue StandardError => ex
-      resp = {:status => "err", :error => ex.message}
+      resp = {:status => :err, :error => ex.message}
     end
 
     respond_to do |format|
@@ -181,9 +181,9 @@ class ResourcesController < ApplicationController
       to_resource_id = params[:to_resource_id]
       prel = RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id, caption: params[:caption]).first_or_create
 
-      resp = {:status => "ok", :html => render_to_string("resources/_related", layout: false)}
+      resp = {:status => :ok, :html => render_to_string("resources/_related", layout: false)}
     rescue StandardError => ex
-      resp = {:status => "err", :error => ex.message}
+      resp = {:status => :err, :error => ex.message}
     end
 
     respond_to do |format|
@@ -197,9 +197,34 @@ class ResourcesController < ApplicationController
       # TODO: Check if user can delete this
       to_resource_id = params[:related]
       RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id).destroy_all
-      resp = {:status => "ok", :html => render_to_string("resources/_related", layout: false),feh: to_resource_id, meow: @resource.id  }
+      resp = {:status => :ok, :html => render_to_string("resources/_related", layout: false) }
     rescue StandardError => ex
-      resp = {:status => "err", :error => ex.message}
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json {render :json => resp }
+    end
+  end
+
+  # set order of media
+  def set_media_order
+    resp = {status: :ok}
+
+    # TODO: Check if user has access to resource for which media is being reordered
+
+    # get current ranks for media
+    current_media = MediaFile.where(resource_id: params[:id]).order(:rank)
+    ranks = current_media.pluck(:rank)
+
+    params[:ranks].each do |media_id|
+      if (mf = MediaFile.where(resource_id: params[:id], id: media_id).first)
+        mf.rank = ranks.shift
+        if (!mf.save)
+          resp = {:status => :err, :error => ranks.errors.full_messages.join('; ')}
+          break
+        end
+      end
     end
 
     respond_to do |format|

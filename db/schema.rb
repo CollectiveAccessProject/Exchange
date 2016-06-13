@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160607151847) do
+ActiveRecord::Schema.define(version: 20160613040236) do
 
   create_table "collectiveaccess_links", force: :cascade do |t|
     t.string   "host",          limit: 255, null: false
@@ -101,6 +101,7 @@ ActiveRecord::Schema.define(version: 20160607151847) do
     t.datetime "updated_at",                                   null: false
     t.integer  "sourceable_id",     limit: 4
     t.string   "sourceable_type",   limit: 255
+    t.integer  "rank",              limit: 4
   end
 
   add_index "media_files", ["resource_id"], name: "fk_rails_0b5d71f8d5", using: :btree

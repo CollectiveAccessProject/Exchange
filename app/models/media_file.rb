@@ -14,7 +14,9 @@ class MediaFile < ActiveRecord::Base
 
   # slug handling
   include SlugModel
+  include RankModel
   before_create :set_slug
+  after_create :set_rank
 
   # returns license type as text
   def get_license_type
