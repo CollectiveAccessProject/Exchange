@@ -7,9 +7,12 @@
         <li>
           <%= r.related.title %>
           <%= link_to('<span class="glyphicon glyphicon-trash aria-hidden="true"></span>'.html_safe, remove_related_resource_path(@resource) + "?related=" + r.related.id.to_s, {remote: true, class: :relatedResourcesRemoveLink}) %>
-          <blockquote>
-            <%= r.caption %>
-          </blockquote>
+          <% if (r.caption.length > 0) %>
+           <blockquote>
+             <%= r.caption %>
+           </blockquote>
+          <% end %>
+
         </li>
     <% end %>
     </ul>
