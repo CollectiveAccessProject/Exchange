@@ -24,6 +24,15 @@
 			</div><!-- end col -->
 			<div class="col-md-7">
 						<%= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 14} %>
+            <br/>
+            <div class="mediaEmbedHelp">Embed media by entering placeholders within the body text in the format &lt;media [name] [version] [width=xxx] [height=yyy] [float=left/right]&gt;.
+            <br/>
+            Ex. <em>&lt;media my-video thumbnail&gt;</em>
+              <br/>
+              Ex. <em>&lt;media my-video thumbnail with=500 height=300 float=right&gt;</em>
+              <br/>
+              Names are shown under each media item. Version, width, height and float are optional.
+            </div>
 						<div class="pull-right"><%= r.button :submit, "Save" %></div>
 			</div><!-- end col -->
 		</div><!-- end row -->

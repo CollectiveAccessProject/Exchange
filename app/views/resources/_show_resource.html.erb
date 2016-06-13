@@ -40,7 +40,7 @@
       <% end %>
 
     </div><!-- end row -->
-    <p><%= @resource.body_text.html_safe %></p>
+    <p><%= @resource.parsed_body_text.html_safe %></p>
     <% if @resource.comments.count > 0 %>
         <H3><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H3>
         <div class="panel panel-primary">
