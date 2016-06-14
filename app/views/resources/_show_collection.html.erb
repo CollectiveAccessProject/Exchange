@@ -21,7 +21,7 @@
     </div>
     <div class="row">
       <div class="col-sm-5">
-        <p><%= @resource.body_text.html_safe %></p>
+        <p><%= (@resource.body_text) ? @resource.body_text.html_safe : "" %></p>
       </div>
       <div class="col-sm-7">
        <% if(@resource.child_count > 0) %>
