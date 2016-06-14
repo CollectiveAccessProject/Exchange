@@ -58,7 +58,7 @@
             }, 3000);
         });
 
-        jQuery("#tab_related").on("ajax:success", "#relatedResourcesElements", function(e, data) {
+        jQuery(document).on("ajax:success", "#relatedResourcesElements", function(e, data) {
             jQuery("#related-resources-status").slideDown(250);
 
             jQuery("#related-resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Added resource" : "Could not add resource: " + data.error);
@@ -70,7 +70,7 @@
             }
         });
 
-        jQuery("#tab_related").on("ajax:success", ".relatedResourcesRemoveLink", function(e, data) {
+        jQuery(document).on("ajax:success", ".relatedResourcesRemoveLink", function(e, data) {
             jQuery("#related-resources-status").slideDown(250);
 
             jQuery("#related-resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed resource" : "Could not remove resource: " + data.error);
@@ -100,7 +100,7 @@
         //
         // AJAX tagging
         //
-        jQuery("#tab_tags").on("ajax:success", "#addTagsForm", function(e, data) {
+        jQuery(document).on("ajax:success", "#addTagsForm", function(e, data) {
             jQuery("#tags-status").slideDown(250);
 
             jQuery("#tags-status-message").html((data && data.status && (data.status == 'ok')) ? "Added tag" : "Could not add tag: " + data.error);
@@ -112,7 +112,7 @@
             }
         });
 
-        jQuery("#tab_tags").on("ajax:success", ".tagRemoveLink", function(e, data) {
+        jQuery(document).on("ajax:success", ".tagRemoveLink", function(e, data) {
             jQuery("#tags-status").slideDown(250);
 
             jQuery("#tags-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed tag" : "Could not remove tag: " + data.error);
@@ -127,7 +127,7 @@
         //
         // AJAX commenting
         //
-        jQuery("#tab_comments").on("ajax:success", "#addCommentsForm", function(e, data) {
+        jQuery(document).on("ajax:success", "#addCommentsForm", function(e, data) {
             jQuery("#comments-status").slideDown(250);
 
             jQuery("#comments-status-message").html((data && data.status && (data.status == 'ok')) ? "Added comment" : "Could not add comment: " + data.error);
@@ -139,7 +139,7 @@
             }
         });
 
-        jQuery("#tab_comments").on("ajax:success", ".commentRemoveLink", function(e, data) {
+        jQuery(document).on("ajax:success", ".commentRemoveLink", function(e, data) {
             jQuery("#comments-status").slideDown(250);
 
             jQuery("#comments-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed comment" : "Could not remove comment: " + data.error);

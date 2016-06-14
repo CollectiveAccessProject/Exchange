@@ -39,5 +39,8 @@ module Exchange
     config.x.resource_types = { "Resource"=> 1, "Learning collection"=> 2 }
     config.x.group_types = { basic_group: 1 }
     config.x.access_types = { Published: 1, Unpublished: 0 }
+
+    # date/time format used to tags, comments, etc.
+    config.x.timestamp_format = '%B %e %Y @ %l:%M %p'
   end
 end

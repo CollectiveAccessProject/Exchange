@@ -1,6 +1,11 @@
 <div class="panel panel-primary">
   <div class="panel-body">
     <%= form_tag '/resources/add_comment', remote: true, "data-type": :json, id: :addCommentsForm do %>
+        <div id="comments-status">
+          <div class="flash-notice" id="comments-status-message">
+
+          </div>
+        </div>
         <%= hidden_field_tag 'id', @resource.id %>
         <div class="form-group">
           <label>Comment</label>
@@ -12,7 +17,7 @@
     <% if @resource.comments.count > 0 %>
         <p>
         <% @resource.comments.each do |c| %>
-            <div><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %></i></small>
+            <div><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
               <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_comment_from_resources_path(@resource) + "?comment_id=" + c.id.to_s, {remote: true, class: :commentRemoveLink}) %>
             </div>
             <HR/>

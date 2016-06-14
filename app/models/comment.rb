@@ -4,6 +4,8 @@ class Comment < ActiveRecord::Base
 
   before_save :add_ip_to_comment
 
+  validates :comment, length: { minimum: 1, :too_short => "Must be at least one character"}
+
   default_scope -> { order('created_at ASC') }
 
   # NOTE: install the acts_as_votable plugin if you

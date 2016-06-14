@@ -3,6 +3,7 @@ class Tag < ActiveRecord::Base
   belongs_to :taggable, polymorphic: true
   belongs_to :user
 
+  validates :tag, length: { minimum: 1}
   before_save :add_ip_to_tag, :fill_sort_field
 
   def add_ip_to_tag
