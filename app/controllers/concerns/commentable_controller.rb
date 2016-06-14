@@ -6,9 +6,19 @@ module CommentableController
     comment.user = current_user
     comment.ip = request.ip
 
-    model.comments << comment
-    if (!dont_redirect)
-      redirect_to :action => :show, :id => model.id
+    begin
+      res = model.comments << comment
+      if comment.errors
+        flash[:alert] = comment.errors.full_messages.join('; ')
+      end
+      res
+
+    rescue
+      flash[:alert] = comment.errors.full_messages.join('; ')
+    ensure
+      if (!dont_redirect)
+        redirect_to :action => :show, :id => model.id
+      end
     end
   end
 

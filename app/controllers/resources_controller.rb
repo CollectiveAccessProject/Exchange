@@ -71,21 +71,19 @@ class ResourcesController < ApplicationController
 
         # Set resource under newly created collection or resource
         # TODO: Verify that current user has privs to do this
-        puts "child=" + child_id.to_s
         if(child_id > 0)
           child = Resource.find(child_id)
-          #if (child.user_id == current_user.id)
-          prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
-          child.save
-          #else
+          if (child.user_id == current_user.id)
+            prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
+            child.save
+          else
 
-          #end
+          end
         end
         session[:mode] = :new;
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been added.'}
         format.json { render :show, status: :created, location: @resource }
       else
-        puts "ERROR = " + @resource.errors.full_messages.join("; ")
         format.html { render :new }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
       end
@@ -133,17 +131,19 @@ class ResourcesController < ApplicationController
   # add new comment
   def add_comment
     # TODO: make sure user is allowed to do this for this resource
-    super(@resource, true)
-
-    resp = {:status => :ok, :html => render_to_string("resources/_comments", layout: false)}
+    if(super(@resource, true))
+      resp = {status: :ok, html: render_to_string("resources/_comments", layout: false)}
+    else
+      resp = {status: :err, error: flash[:alert]}
+    end
 
     respond_to do |format|
       format.json { render json: resp }
+      format.html { redirect_to resource_path(@resource), notice: 'Added comment' }
     end
   end
 
   def remove_comment
-    # TODO: make sure user is allowed to do this for this resource
     # TODO: make sure user is allowed to do this for this resource
     t = Comment.where(id: params[:comment_id], commentable_id: @resource.id, commentable_type: :Resource).first
     t.destroy
@@ -158,12 +158,15 @@ class ResourcesController < ApplicationController
   # add new tag
   def add_tag
     # TODO: make sure user is allowed to do this for this resource
-    super(@resource, true)
-
-    resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+    if(super(@resource, true))
+      resp = {status: :ok, html: render_to_string("resources/_tags", layout: false)}
+    else
+      resp = {status: :err, error: flash[:alert]}
+    end
 
     respond_to do |format|
       format.json { render json: resp }
+      format.html { redirect_to resource_path(@resource), notice: 'Added tag' }
     end
   end
 

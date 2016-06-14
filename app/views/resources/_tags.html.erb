@@ -18,7 +18,7 @@
         <p>
         <% @resource.tags.each do |c| %>
             <div>
-              <%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %></i></small>
+              <%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %> (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
               <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_tag_from_resources_path(@resource) + "?tag_id=" + c.id.to_s, {remote: true, class: :tagRemoveLink}) %>
             </div>
             <HR/>

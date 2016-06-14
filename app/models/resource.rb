@@ -163,6 +163,45 @@ class Resource < ActiveRecord::Base
     return body_text_proc
   end
 
+  # Simple "quicksearch" of resources (broken out by type) and media files
+  # STATIC
+  def self.quicksearch(query)
+    begin
+      resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
+        if r._source
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+        end
+      end
+
+    rescue
+      # no search?
+      resources = []
+    end
+
+    begin
+      collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
+        if r._source
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+        end
+      end
+    rescue
+      # no search?
+      collections = []
+    end
+
+    begin
+      media_files = MediaFile.search(query).map do |r|
+        if r._source
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_id: r._source.resource_id }
+        end
+      end
+    rescue
+      media_files = []
+    end
+
+    return {resources: resources, collections: collections, media_files: media_files}
+  end
+
   def destroy
     if media_files
       media_files.each do |f|
