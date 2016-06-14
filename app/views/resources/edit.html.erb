@@ -93,12 +93,13 @@
 
 <!-- Resource collection modal -->
 <%= render(partial:'resources/resource_collection_select') %>
+
 <%
-  if(!@resource.parents.length && (@resource.resource_type == Resource::RESOURCE)&& (session['mode'] == 'new'))
+  if((@resource.parents.count == 0) && (@resource.resource_type == Resource::RESOURCE) && (session['mode'] == 'new'))
       # Trigger modal on save if no parent is set for resources (not collections)
 %>
     <script type="text/javascript">
-    jQuery("#selectResourceCollectionForm").modal();
+    	jQuery("#selectResourceCollectionForm").modal();
     </script>
 <%
   end

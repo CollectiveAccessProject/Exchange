@@ -48,6 +48,9 @@ $white:#FFFFFF;
 		border-color:$md_gray;
 	}
 }
+.tab-pane{
+	margin-top: 10px;
+}
 .tab-content .panel-subbody{
 	padding:0px 5px 0px 10px;
 }
@@ -142,12 +145,15 @@ $white:#FFFFFF;
 		margin-left:15px;
 	}
 }
-.relatedResources{
+.relatedResources, .relatedContent{
 	margin-top:15px;
 	max-height:300px;
 	overflow:auto;
 	div{
-		margin:10px 0px 10px 15px;
+		margin:15px 0px 15px 15px;
 		font-size:14px;
+		small{
+			margin-left:15px;
+		}
 	}
 }

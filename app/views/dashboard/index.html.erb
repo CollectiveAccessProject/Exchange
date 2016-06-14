@@ -23,23 +23,30 @@
 			</div><!-- end row -->
 		</form></div><!-- end dbUnit -->
 		<div class="dbUnit"><HR/></div>
+		<div class="dbResourceList">
 		<% @resources.each do |resource| %>
 		  <div class="dbUnit">
 			<div><b><%= resource.title %></b></div>
 			<p><%= resource.subtitle %></p>
-			<p>
+			<div>				
 				<%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, resource, class:'btn btn-default btn-xs' %>
-				<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(resource), class:'btn btn-default btn-xs' %>
-				<%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span> Delete'.html_safe, resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-default btn-xs' %>
-				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-copy aria-hidden="true"></span> Fork</a>
-				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-share aria-hidden="true"></span> Share</a>
-				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ok aria-hidden="true"></span> Publish</a>
-				<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-comment aria-hidden="true"></span> Tag</a>
-			</p>
+				<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(resource), class:'btn btn-default btn-xs' %>				
+				<div class="btn-group">
+					<a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#" class="btn btn-xs btn-noBg"><span class="glyphicon glyphicon-copy aria-hidden="true"></span> Fork</a></li>
+						<li><a href="#" class="btn btn-xs btn-noBg"><span class="glyphicon glyphicon-share aria-hidden="true"></span> Share</a></li>
+						<li><a href="#" class="btn btn-xs btn-noBg"><span class="glyphicon glyphicon-ok aria-hidden="true"></span> Publish</a></li>
+						<li><a href="#" class="btn btn-xs btn-noBg"><span class="glyphicon glyphicon-comment aria-hidden="true"></span> Tag</a></li>
+						<li role="separator" class="divider"></li>
+						<li><%= link_to '<span class="glyphicon glyphicon-trash aria-hidden="true"></span> Delete'.html_safe, resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-noBg' %></li>
+					</ul>
+				</div>
+			</div>
 			<HR/>
 		  </div><!-- end dbUnit -->
 		<% end %>
-
+		</div>
 	</div><!-- end col -->
 	<div class="col-sm-6">
 		<H4>

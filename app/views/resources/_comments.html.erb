@@ -15,14 +15,14 @@
     <% end %>
 
     <% if @resource.comments.count > 0 %>
-        <p>
-        <% @resource.comments.each do |c| %>
-            <div><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
-              <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_comment_from_resources_path(@resource) + "?comment_id=" + c.id.to_s, {remote: true, class: :commentRemoveLink}) %>
-            </div>
-            <HR/>
-        <% end %>
-        </p>
+		<div class="relatedContent">
+			<H4><%= @resource.comments.count %> Comment<%= ((@resource.comments.count > 1) ? "s" : "") %></H4>
+			<% @resource.comments.each do |c| %>
+				<div><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+				  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_comment_from_resources_path(@resource) + "?comment_id=" + c.id.to_s, {remote: true, class: :commentRemoveLink}) %>
+				</div>
+			<% end %>
+        </div>
     <% end %>
   </div><!-- end panel-body -->
 </div><!-- end panel -->

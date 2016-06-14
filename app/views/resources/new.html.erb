@@ -6,11 +6,10 @@
       <%=
         if (@new_parent && @new_parent.id)
          link_to raw("Part of " + @new_parent.title), edit_resource_path(@new_parent)
-        end
-      %>
-      <%=
-        if (@child)
+        elsif (@child)
           link_to raw("Contains: " + @child.title), edit_resource_path(@child)
+        elsif (!@resource.id)
+          (@resource.resource_type == Resource::RESOURCE) ? 'New Resource' : 'New Collection'
         end
       %>
     </H4>

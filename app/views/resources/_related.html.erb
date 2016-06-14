@@ -36,7 +36,7 @@
 			  <%= ((r.related.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title %>
 			  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_related_resource_path(@resource) + "?related=" + r.related.id.to_s, {remote: true, class: :relatedResourcesRemoveLink}) %>
 			  <% if (r.caption.length > 0) %>
-			   <small>
+			   <br/><small>
 				 <%= r.caption %>
 			   </small>
 			  <% end %>

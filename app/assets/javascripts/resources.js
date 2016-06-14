@@ -59,27 +59,29 @@
         });
 
         jQuery(document).on("ajax:success", "#relatedResourcesElements", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_related").html(data.html)
+            }
             jQuery("#related-resources-status").slideDown(250);
 
             jQuery("#related-resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Added resource" : "Could not add resource: " + data.error);
             window.setTimeout(function() {
                 jQuery("#related-resources-status").slideUp(250);
             }, 3000);
-            if(data.status == 'ok') {
-                jQuery("#tab_related").html(data.html)
-            }
+
         });
 
         jQuery(document).on("ajax:success", ".relatedResourcesRemoveLink", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_related").html(data.html)
+            }
             jQuery("#related-resources-status").slideDown(250);
 
             jQuery("#related-resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed resource" : "Could not remove resource: " + data.error);
             window.setTimeout(function() {
                 jQuery("#related-resources-status").slideUp(250);
             }, 3000);
-            if(data.status == 'ok') {
-                jQuery("#tab_related").html(data.html)
-            }
+
         });
 
         jQuery("#addMediaFormElements").bind("ajax:success", function(event, data, status, xhr) {
@@ -101,53 +103,53 @@
         // AJAX tagging
         //
         jQuery(document).on("ajax:success", "#addTagsForm", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_tags").html(data.html)
+            }
             jQuery("#tags-status").slideDown(250);
 
             jQuery("#tags-status-message").html((data && data.status && (data.status == 'ok')) ? "Added tag" : "Could not add tag: " + data.error);
             window.setTimeout(function() {
                 jQuery("#tags-status").slideUp(250);
             }, 3000);
-            if(data.status == 'ok') {
-                jQuery("#tab_tags").html(data.html)
-            }
         });
 
         jQuery(document).on("ajax:success", ".tagRemoveLink", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_tags").html(data.html)
+            }
             jQuery("#tags-status").slideDown(250);
 
             jQuery("#tags-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed tag" : "Could not remove tag: " + data.error);
             window.setTimeout(function() {
                 jQuery("#tags-status").slideUp(250);
             }, 3000);
-            if(data.status == 'ok') {
-                jQuery("#tab_tags").html(data.html)
-            }
         });
 
         //
         // AJAX commenting
         //
         jQuery(document).on("ajax:success", "#addCommentsForm", function(e, data) {
+             if(data.status == 'ok') {
+                jQuery("#tab_comments").html(data.html)
+            }
             jQuery("#comments-status").slideDown(250);
 
             jQuery("#comments-status-message").html((data && data.status && (data.status == 'ok')) ? "Added comment" : "Could not add comment: " + data.error);
             window.setTimeout(function() {
                 jQuery("#comments-status").slideUp(250);
             }, 3000);
-            if(data.status == 'ok') {
-                jQuery("#tab_comments").html(data.html)
-            }
         });
 
         jQuery(document).on("ajax:success", ".commentRemoveLink", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_comments").html(data.html)
+            }
             jQuery("#comments-status").slideDown(250);
 
             jQuery("#comments-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed comment" : "Could not remove comment: " + data.error);
             window.setTimeout(function() {
                 jQuery("#comments-status").slideUp(250);
             }, 3000);
-            if(data.status == 'ok') {
-                jQuery("#tab_comments").html(data.html)
-            }
         });
     });

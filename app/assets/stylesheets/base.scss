@@ -454,14 +454,30 @@ select.input-sm{
 		margin-top:5px;
 	}
 }
+.dbResourceList{
+	max-height:400px;
+	overflow-y:auto;
+	margin-bottom:20px;
+}
 .dbUnit{
 	padding:5px 10px 5px 10px;
 	.btn{
 		margin-right:10px;
 	}
+	.dropdown-menu{
+		min-width:auto;
+		.btn{
+			margin-right:0px;
+			text-align:left
+		}
+		.btn:hover{
+			color:white !important;
+			background-color:$blue !important;
+		}
+	}
 	HR{
 		color: $lt_gray;
-		margin:0px 0px 5px 0px;
+		margin:10px 0px 5px 0px;
 	}
 	input.form-control{
 		width:85%;
