@@ -1,11 +1,23 @@
 <div class="panel panel-primary">
-	<div class="panel-body">
-		  <% if @resource.tags.count > 0 %>
-			<% @resource.comments.each do |c| %>
-			  <p><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %></i></small></p><HR/>
-			<% end %>
-		  <% else %>
-     		 <p>No comments</p>
-  		<% end %>
-	</div><!-- end panel-body -->
+  <div class="panel-body">
+    <%= form_tag '/resources/add_comment', remote: true, "data-type": :json, id: :addCommentsForm do %>
+        <%= hidden_field_tag 'id', @resource.id %>
+        <div class="form-group">
+          <label>Comment</label>
+          <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+        </div>
+        <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+    <% end %>
+
+    <% if @resource.comments.count > 0 %>
+        <p>
+        <% @resource.comments.each do |c| %>
+            <div><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %></i></small>
+              <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_comment_from_resources_path(@resource) + "?comment_id=" + c.id.to_s, {remote: true, class: :commentRemoveLink}) %>
+            </div>
+            <HR/>
+        <% end %>
+        </p>
+    <% end %>
+  </div><!-- end panel-body -->
 </div><!-- end panel -->

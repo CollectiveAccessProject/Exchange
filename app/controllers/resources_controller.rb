@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag, :save_preferences, :add_related_resource, :remove_related_resource]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :remove_comment, :remove_tag, :save_preferences, :add_related_resource, :remove_related_resource, :set_media_order, :set_resource_order]
 
   include CommentableController
   include TaggableController
@@ -57,10 +57,10 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(resource_params)
     @resource.user = current_user
 
+    params.require(:resource).permit(:parent_id, :child_id)
     parent_id = params[:resource][:parent_id].to_i
-
-
     child_id = params[:resource][:child_id].to_i
+
     respond_to do |format|
       if @resource.save
 
@@ -71,6 +71,7 @@ class ResourcesController < ApplicationController
 
         # Set resource under newly created collection or resource
         # TODO: Verify that current user has privs to do this
+        puts "child=" + child_id.to_s
         if(child_id > 0)
           child = Resource.find(child_id)
           #if (child.user_id == current_user.id)
@@ -84,6 +85,7 @@ class ResourcesController < ApplicationController
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been added.'}
         format.json { render :show, status: :created, location: @resource }
       else
+        puts "ERROR = " + @resource.errors.full_messages.join("; ")
         format.html { render :new }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
       end
@@ -129,13 +131,52 @@ class ResourcesController < ApplicationController
   end
 
   # add new comment
-  def add_new_comment
-    add_comment @resource
+  def add_comment
+    # TODO: make sure user is allowed to do this for this resource
+    super(@resource, true)
+
+    resp = {:status => :ok, :html => render_to_string("resources/_comments", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
+  def remove_comment
+    # TODO: make sure user is allowed to do this for this resource
+    # TODO: make sure user is allowed to do this for this resource
+    t = Comment.where(id: params[:comment_id], commentable_id: @resource.id, commentable_type: :Resource).first
+    t.destroy
+
+    resp = {:status => :ok, :html => render_to_string("resources/_comments", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
   end
 
   # add new tag
-  def add_new_tag
-    add_tag @resource
+  def add_tag
+    # TODO: make sure user is allowed to do this for this resource
+    super(@resource, true)
+
+    resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
+  def remove_tag
+    # TODO: make sure user is allowed to do this for this resource
+    t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first
+    t.destroy
+
+    resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
   end
 
   # save preferences
@@ -187,7 +228,7 @@ class ResourcesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {render :json => resp }
+      format.json {render :json => resp, status: :ok }
     end
   end
 
@@ -221,9 +262,39 @@ class ResourcesController < ApplicationController
       if (mf = MediaFile.where(resource_id: params[:id], id: media_id).first)
         mf.rank = ranks.shift
         if (!mf.save)
-          resp = {:status => :err, :error => ranks.errors.full_messages.join('; ')}
+          resp = {:status => :err, :error => mf.errors.full_messages.join('; ')}
           break
         end
+      end
+    end
+
+    respond_to do |format|
+      format.json {render :json => resp }
+    end
+  end
+
+  # set order of child resources in collection
+  def set_resource_order
+    resp = {status: :ok}
+
+    # TODO: Check if user has access to collection for which resources are being reordered
+    parent_id = params[:id]
+
+    # get current ranks for child resources
+    current_child_rels = @resource.resource_hierarchies
+
+    ranks = current_child_rels.pluck(:rank)
+    params[:ranks].each do |rel_id|
+      if ((rel = ResourceHierarchy.where(id: rel_id).first) && (rel.resource_id.to_i == parent_id.to_i))
+        rel.rank = ranks.shift
+        if (!rel.save)
+          resp = {:status => :err, :error => rel.errors.full_messages.join('; ')}
+          break
+        end
+      else
+       # invalid ids
+        resp = {:status => :err, :error => "Invalid id"}
+        break
       end
     end
 

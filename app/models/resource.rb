@@ -3,8 +3,8 @@ class Resource < ActiveRecord::Base
 
   has_many :resources, through: 'related_resources', source: :related
 
-  has_many :resource_hierarchies
-  has_many :children, through: 'resource_hierarchies', source: :child_resource
+  has_many :resource_hierarchies, -> { order 'resource_hierarchies.rank' }
+  has_many :children, -> { order 'resource_hierarchies.rank' }, through: 'resource_hierarchies', source: :child_resource
 
   has_many :media_files, -> { order 'media_files.rank' }
 
@@ -39,9 +39,7 @@ class Resource < ActiveRecord::Base
 
   # slug handling
   include SlugModel
-  include RankModel
   before_validation  :set_slug
-  after_create :set_rank
 
   # resource type constants
   RESOURCE = 1

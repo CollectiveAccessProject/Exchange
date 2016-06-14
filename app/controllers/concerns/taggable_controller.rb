@@ -1,6 +1,6 @@
 module TaggableController
 
-  def add_tag(model)
+  def add_tag(model, dont_redirect)
     tag = Tag.new(tag_params)
     # fill in user and ip
     tag.user = current_user
@@ -11,7 +11,9 @@ module TaggableController
     rescue
       flash[:alert] = 'Could not add tag'
     ensure
-      redirect_to :action => :show, :id => model.id
+      if (!dont_redirect)
+        redirect_to :action => :show, :id => model.id
+      end
     end
   end
 

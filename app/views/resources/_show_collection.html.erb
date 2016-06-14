@@ -82,7 +82,7 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-sm-6">
-            <%= form_tag '/resources/add_new_comment' do %>
+            <%= form_tag '/resources/add_comment' do %>
                 <%= hidden_field_tag 'id', @resource.id %>
                 <div class="form-group">
                   <label>Comment</label>
@@ -92,7 +92,7 @@
             <% end %>
           </div><!-- end col -->
           <div class="col-sm-6">
-            <%= form_tag '/resources/add_new_tag' do %>
+            <%= form_tag '/resources/add_tag' do %>
                 <%= hidden_field_tag 'id', @resource.id %>
                 <div class="form-group">
                   <label>Tag</label>

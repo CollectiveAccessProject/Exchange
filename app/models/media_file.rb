@@ -45,20 +45,25 @@ class MediaFile < ActiveRecord::Base
 
         instance.get_params.each do |n,field_list|
           field_list.each do |f|
-          if(params[n] && params[n][f] && (params[n][f].length) > 0)
-            instance.original_link = params[n][f]
 
-            self.sourceable = instance
+            if (instance.respond_to?(:file=) && params.has_key?(:local_file))
+              instance.attributes = params.require(:local_file).permit(:file, :file_fingerprint)
+              self.sourceable = instance
+              throw :done
+            elsif(params[n] && params[n][f] && (params[n][f].length) > 0)
+              if (defined? instance.original_link)
+                instance.original_link = params[n][f]
+                 self.sourceable = instance
+                throw :done
+              end
+            end
 
-            throw :done
-          end
+
           end
 
         end
       end
     end
-
-
   end
 
   def as_indexed_json(options = {})

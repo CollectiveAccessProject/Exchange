@@ -1,11 +1,29 @@
 <div class="panel panel-primary">
-	<div class="panel-body">
-		<% if @resource.tags.count > 0 %>
-			<% @resource.tags.each do |c| %>
-			  <p><%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %></i></small></p><HR/>
-			<% end %>
-		  <% else %>
-			  <p>No tags</p>
-		  <% end %>
-	</div><!-- end panel-body -->
+  <div class="panel-body">
+    <%= form_tag '/resources/add_tag', remote: true, "data-type": :json, id: :addTagsForm do %>
+        <div id="tags-status">
+          <div class="flash-notice" id="tags-status-message">
+
+          </div>
+        </div>
+        <%= hidden_field_tag 'id', @resource.id %>
+        <div class="form-group">
+          <label>Tag</label>
+          <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+        </div>
+        <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+    <% end %>
+
+    <% if @resource.tags.count > 0 %>
+        <p>
+        <% @resource.tags.each do |c| %>
+            <div>
+              <%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %></i></small>
+              <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_tag_from_resources_path(@resource) + "?tag_id=" + c.id.to_s, {remote: true, class: :tagRemoveLink}) %>
+            </div>
+            <HR/>
+        <% end %>
+        </p>
+    <% end %>
+  </div><!-- end panel-body -->
 </div><!-- end panel -->

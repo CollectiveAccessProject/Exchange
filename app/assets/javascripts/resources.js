@@ -24,6 +24,27 @@
             }
         });
 
+        //
+        // Collection contents list drag and drop
+        //
+        jQuery("#collection_contents_list").sortable().on('sortstop', function(e, ui) {
+            var resource_id =  jQuery("#collection_contents_list").data("resource_id");
+            var ranks = [];
+            jQuery("#collection_contents_list .collectionContentsItem").each(function(k,m) {
+                ranks.push(jQuery(m).data('id'));
+            });
+
+            if (resource_id && (Object.keys(ranks).length > 0)) {
+                jQuery.getJSON("/resources/" + resource_id + "/set_resource_order", {ranks: ranks}, function(data) {
+                    jQuery("#resources-status").slideDown(250);
+
+                    jQuery("#resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Saved media order" : "Could not save media sort order: " + data.error);
+                    window.setTimeout(function() {
+                        jQuery("#resources-status").slideUp(250);
+                    }, 3000);
+                });
+            }
+        });
 
         //
         // AJAX form handling
@@ -74,5 +95,59 @@
                 jQuery('#form-status').slideUp(250);
             }, 36000);
 
+        });
+
+        //
+        // AJAX tagging
+        //
+        jQuery("#tab_tags").on("ajax:success", "#addTagsForm", function(e, data) {
+            jQuery("#tags-status").slideDown(250);
+
+            jQuery("#tags-status-message").html((data && data.status && (data.status == 'ok')) ? "Added tag" : "Could not add tag: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#tags-status").slideUp(250);
+            }, 3000);
+            if(data.status == 'ok') {
+                jQuery("#tab_tags").html(data.html)
+            }
+        });
+
+        jQuery("#tab_tags").on("ajax:success", ".tagRemoveLink", function(e, data) {
+            jQuery("#tags-status").slideDown(250);
+
+            jQuery("#tags-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed tag" : "Could not remove tag: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#tags-status").slideUp(250);
+            }, 3000);
+            if(data.status == 'ok') {
+                jQuery("#tab_tags").html(data.html)
+            }
+        });
+
+        //
+        // AJAX commenting
+        //
+        jQuery("#tab_comments").on("ajax:success", "#addCommentsForm", function(e, data) {
+            jQuery("#comments-status").slideDown(250);
+
+            jQuery("#comments-status-message").html((data && data.status && (data.status == 'ok')) ? "Added comment" : "Could not add comment: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#comments-status").slideUp(250);
+            }, 3000);
+            if(data.status == 'ok') {
+                jQuery("#tab_comments").html(data.html)
+            }
+        });
+
+        jQuery("#tab_comments").on("ajax:success", ".commentRemoveLink", function(e, data) {
+            jQuery("#comments-status").slideDown(250);
+
+            jQuery("#comments-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed comment" : "Could not remove comment: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#comments-status").slideUp(250);
+            }, 3000);
+            if(data.status == 'ok') {
+                jQuery("#tab_comments").html(data.html)
+            }
         });
     });
