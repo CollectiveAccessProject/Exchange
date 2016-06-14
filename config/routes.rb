@@ -29,8 +29,10 @@ Rails.application.routes.draw do
   resources :googledocs_links, except: [:index, :show, :new, :edit, :update, :destroy]
 
   # test for adding comments and tags asynchronously
-  match '/resources/add_new_comment' => 'resources#add_new_comment', :as => 'add_new_comment_to_resources', :via => [:post]
-  match '/resources/add_new_tag' => 'resources#add_new_tag', :as => 'add_new_tag_to_resources', :via => [:post]
+  match '/resources/add_comment' => 'resources#add_comment', :as => 'add_new_comment_to_resources', :via => [:post]
+  match '/resources/add_tag' => 'resources#add_tag', :as => 'add_new_tag_to_resources', :via => [:post]
+  match '/resources/:id/remove_comment' => 'resources#remove_comment', :as => 'remove_comment_from_resources', :via => [:get]
+  match '/resources/:id/remove_tag' => 'resources#remove_tag', :as => 'remove_tag_from_resources', :via => [:get]
 
   post '/resources/:id/set_parent' => 'resources#update', as: "set_resource_parent_with_id"
   post '/resources/:id/add_related_resource' => 'resources#add_related_resource', as: "add_related_resource"

@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_new_comment, :add_new_tag, :save_preferences, :add_related_resource, :remove_related_resource, :set_media_order, :set_resource_order]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :remove_comment, :remove_tag, :save_preferences, :add_related_resource, :remove_related_resource, :set_media_order, :set_resource_order]
 
   include CommentableController
   include TaggableController
@@ -131,13 +131,52 @@ class ResourcesController < ApplicationController
   end
 
   # add new comment
-  def add_new_comment
-    add_comment @resource
+  def add_comment
+    # TODO: make sure user is allowed to do this for this resource
+    super(@resource, true)
+
+    resp = {:status => :ok, :html => render_to_string("resources/_comments", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
+  def remove_comment
+    # TODO: make sure user is allowed to do this for this resource
+    # TODO: make sure user is allowed to do this for this resource
+    t = Comment.where(id: params[:comment_id], commentable_id: @resource.id, commentable_type: :Resource).first
+    t.destroy
+
+    resp = {:status => :ok, :html => render_to_string("resources/_comments", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
   end
 
   # add new tag
-  def add_new_tag
-    add_tag @resource
+  def add_tag
+    # TODO: make sure user is allowed to do this for this resource
+    super(@resource, true)
+
+    resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
+  def remove_tag
+    # TODO: make sure user is allowed to do this for this resource
+    t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first
+    t.destroy
+
+    resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
   end
 
   # save preferences
@@ -189,7 +228,7 @@ class ResourcesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {render :json => resp }
+      format.json {render :json => resp, status: :ok }
     end
   end
 
