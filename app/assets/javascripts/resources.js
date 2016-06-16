@@ -93,6 +93,8 @@
             jQuery('#form-status').slideDown(250);
             jQuery('#form-status-message').html("Could not add media: " + data.responseText);
            
+            jQuery('.tab-pane.active').css("border", "2px solid #cc0000");
+
             window.setTimeout(function() {
                 jQuery('#form-status').slideUp(250);
             }, 36000);
