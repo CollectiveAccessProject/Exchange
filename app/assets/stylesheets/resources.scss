@@ -157,3 +157,150 @@ $white:#FFFFFF;
 		}
 	}
 }
+
+/*  DETAIL/PREVIEW */
+.detailButtons{
+	padding-top:10px;
+	a{
+		font-size:24px;
+		color:$blue;
+		text-decoration:none;
+		.fa{
+			margin-left:10px
+		}
+	}
+	a:hover{
+		text-decoration:none;
+	}
+}
+.detailButtonsResource{
+	margin:10px -15px 10px -15px;
+	padding:15px 10px 10px 10px;
+	background-color:white;
+	a{
+		font-size:24px;
+		color:$blue;
+		text-decoration:none;
+		.fa{
+			margin:0px 5px 0px 5px;
+		}
+	}
+	a:hover{
+		text-decoration:none;
+	}
+}
+.detailBodyText{
+	max-height:550px;
+	overflow:auto;
+	margin-bottom:20px;
+	padding-right:20px;
+}
+.collectionDetailContents{
+	max-height:450px;
+	overflow:auto;
+	margin-bottom:10px;
+	.collectionDetailContentsItem{
+		margin-bottom:10px;
+		a{
+			font-weight:500;
+			font-size:13px;
+		}
+		img{
+			width:100%;
+			height:auto;
+		}
+		small{
+			font-size:11px;
+		}
+	}
+}
+.detailRelatedContentBlock{
+	margin:20px 0px 20px 0px;
+	.detailRelatedContentBlockScroll{
+		max-height:150px;
+		overflow:auto;
+		padding:0px 10px 0px 10px;
+		font-size:13px;
+		div{
+			margin-bottom:10px;
+			font-size:13px;
+			line-height:1.2em;
+			a{
+				font-weight:500;
+				font-size:13px;
+			}
+			small{
+				font-size:11px;
+				margin-left:10px;
+			}
+		}
+	}
+}
+.detailComments{
+	margin-bottom:20px;
+	div{
+		padding:0px 10px 0px 10px;
+		margin:0px 0px 20px 0px;
+		font-size:14px;
+		line-height:1.3em;
+		small{
+			font-size:11px;
+			margin-left:10px;
+		}
+	}
+}
+#resourceCarousel{
+	margin-bottom:30px;
+	.carousel-inner{
+		img{
+			width:100%;
+			height:auto;
+		}
+		.slideshowCaption{
+			background-color:#FFF;
+			font-size:13px;
+			padding:10px;
+			text-align:center;
+			position:relative;
+			z-index:1000;
+		}
+	}
+}
+.resourceSidePanel{
+	line-height:1.2em;
+	font-size:12px;
+	p{
+		font-size:13px;
+		line-height:1.2em;
+	}
+	.unit{
+		padding-bottom:10px;
+		border-bottom:1px solid $white;
+		line-height:1.2em;
+	}
+	H4{
+		font-size:16px;
+		padding:0px;
+		margin-top:15px;
+		background-color:transparent;
+	}
+	.resourceGrid{
+		margin-left:-5px;
+		margin-right:-5px;
+		div{
+			height:30px;
+			overflow:hidden;
+			padding-left:5px;
+			padding-right:5px;
+			margin-bottom:10px;
+			text-align:center;
+			img{
+				width:auto;
+				height:100%;
+			}
+			.fa{
+				font-size:30px;
+			}
+		}
+	}
+}

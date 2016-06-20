@@ -1,1 +1,23 @@
-foo
+<% if @resource.resource_hierarchies.count %>
+	<div class="row collectionDetailContents">
+	<% @resource.resource_hierarchies.each do |rel| %>
+		<div class="col-sm-4">
+			<div class="collectionDetailContentsItem" >
+				<%= link_to ((rel.child_resource.resource_type == Resource::RESOURCE) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %><br/>
+
+					<% if(rel.child_resource.resource_type == Resource::RESOURCE) %>
+						<% rel.child_resource.media_files.each do |f| %>
+							<% if f.sourceable %>
+								<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource) %><br/>
+								<% break %>
+							<% end %>
+						<% end %>
+						<small>Resource with <%= rel.child_resource.media_files.count %> media</small>
+					<% else %>
+						<small>Collection with <%= rel.child_resource.children.count %> item<%= (rel.child_resource.children.count == 1) ? "" : "s" %></small>
+					<% end %>
+			</div>
+		</div>
+	<% end %>
+	</div>
+<% end %>

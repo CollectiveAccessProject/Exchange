@@ -9,86 +9,261 @@
   </div><!-- end col -->
 </div><!-- end row -->
 <div class="row">
+  <div class="col-sm-12">
+    <H4>
+<%=
+	  if(@resource.parents.first)
+	    link_to raw(@resource.parents.first.title), resource_preview_path(@resource.parents.first), "class": ""
+	  end
+%>
+<%
+	    parent = @resource.parents.first
+	    if(parent)
+%>
+			<br/>
+<%=
+			"<small>#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
+%>
+			 in this learning collection</small>
+<%
+		end
+%>
+	    
+	    
+
+    </H4>
+  </div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
 
     <H2><%= @resource.title %></H2>
 
     <H3><%= @resource.subtitle %></H3>
-
+<% if @resource.settings(:text_placement).placement.to_s == "above" %>
     <div class="row">
-      <% @resource.media_files.each do |f| %>
-          <div class="col-md-2">
-            <% if f.sourceable %>
-                <div class="thumbnail previewThumbnail">
-                  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-                    <%= f.sourceable.preview :thumbnail  %>
-                  </a>
-                  <div class="caption small">
-                    <b><%= f.caption  %></b><br/>
-                  </div>
-                </div>
-                <%=
-                  # this renders a bootstrap model that is triggered if you click on the preview above
-                  # it's in a partial because it's about a billion nested divs :-)
-                  render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
-                %>
-            <% else %>
-                <p><%= f.caption  %></p>
-            <% end %>
-          </div><!-- end col -->
-      <% end %>
+  		<div class="col-md-12">
+    		<p><%= @resource.parsed_body_text.html_safe %></p>
+		</div>
+	</div>
+<% end %>
+    <div class="row">
+<%
+	case @resource.settings(:media_formatting).mode.to_s
+		when "thumbnails"
+%>
+			<% @resource.media_files.each do |f| %>
+			  <div class="col-md-2">
+				<% if f.sourceable %>
+					<div class="thumbnail previewThumbnail">
+					  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+						<%= f.sourceable.preview :thumbnail  %>
+					  </a>
+					  <div class="caption small">
+						<b><%= f.caption  %></b><br/>
+					  </div>
+					</div>
+					<%=
+					  # this renders a bootstrap model that is triggered if you click on the preview above
+					  # it's in a partial because it's about a billion nested divs :-)
+					  render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+					%>
+				<% else %>
+					<p><%= f.caption  %></p>
+				<% end %>
+			  </div><!-- end col -->
+<%
+			end
+		when "slideshow"
+%>
+			<div class="col-sm-8 col-sm-offset-2">
+				<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+					<!-- Wrapper for slides -->
+					<div class="carousel-inner" role="listbox">
+<%
+				  counter = 1
+				  @resource.media_files.each do |f| 
+%>
+					<div class="item <%= (counter == 1) ? 'active' : '' %>">
+<%
+						if f.sourceable 
+	%>
+						  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+							<%= f.sourceable.preview :thumbnail  %>
+						  </a>
+						<% end %>
+						<div class="slideshowCaption"><%= f.caption  %></div>
+						<%=
+						  # this renders a bootstrap model that is triggered if you click on the preview above
+						  # it's in a partial because it's about a billion nested divs :-)
+						  render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+						%>
+    				</div>             
+<% 
+					counter = counter + 1
+				end
+%>
+					</div><!-- end carousel-inner -->
+<%
+					if @resource.media_files.count > 1
+%>
+					  <!-- Left and right controls -->
+					  <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
+						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					  </a>
+					  <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
+						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					  </a>
+					<% end %>
+				</div><!-- end resourceCarousel -->
 
+			</div><!-- end col -->
+		<% end %>
     </div><!-- end row -->
-    <p><%= @resource.parsed_body_text.html_safe %></p>
-    <% if @resource.comments.count > 0 %>
-        <H3><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H3>
-        <div class="panel panel-primary">
-          <div class="panel-body">
-            <% @resource.comments.each do |c| %>
-                <p><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %> (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small></p><HR/>
-            <% end %>
-          </div><!-- end panel-body -->
-        </div><!-- end panel -->
-    <% end %>
-    <H4>Add your comment and tags</H4>
+<% if @resource.settings(:text_placement).placement.to_s == "below" %>
+    <div class="row">
+  		<div class="col-md-12">
+    		<p><%= @resource.parsed_body_text.html_safe %></p>
+		</div>
+	</div>
+<% end %>
+<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+	<div class="row" id="detailComments">
+	  <div class="col-md-12">
+		<% if @resource.comments.count > 0 %>
+			<H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4>
+			<div class="detailComments">
+			<% @resource.comments.each do |c| %>
+				<div>
+					<%= c.comment %>
+					<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+				</div>
+			<% end %>
+			</div>
+		<% end %>
+	  </div>
+	</div>
+<% end %>
+<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
+	<div class="row">
+	  <div class="col-md-12">
+		<H5>Add your <%= (@resource.settings(:user_interaction).allow_comments > 0) ? "comment" : "" %> <%= ((@resource.settings(:user_interaction).allow_comments > 0) && (@resource.settings(:user_interaction).allow_tags > 0)) ? "tags" : "" %> <%= (@resource.settings(:user_interaction).allow_tags > 0) ? "tags" : "" %></H5>
+			<div class="row">
+		<% if (@resource.settings(:user_interaction).allow_comments > 0) %>
+			  <div class="col-sm-6">
+				<%= form_tag '/resources/add_comment' do %>
+					<%= hidden_field_tag 'id', @resource.id %>
+					<div class="form-group">
+					  <label>Comment</label>
+					  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+					</div>
+					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+				<% end %>
+			  </div><!-- end col -->
+		<% end %>
+		<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+			  <div class="col-sm-6">
+				<%= form_tag '/resources/add_tag' do %>
+					<%= hidden_field_tag 'id', @resource.id %>
+					<div class="form-group">
+					  <label>Tag</label>
+					  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+					</div>
+					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+				<% end %>
+			  </div><!-- end col -->
+		<% end %>
+			</div><!-- end row -->
+		</div><!-- end col -->
+	</div><!-- end row -->
+<% end %>
+  </div><!-- end col -->
+  <div class="col-sm-2 resourceSidePanel">
     <div class="panel panel-primary">
       <div class="panel-body">
-        <div class="row">
-          <div class="col-sm-6">
-            <%= form_tag '/resources/add_comment' do %>
-                <%= hidden_field_tag 'id', @resource.id %>
-                <div class="form-group">
-                  <label>Comment</label>
-                  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-                </div>
-                <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-            <% end %>
-          </div><!-- end col -->
-          <div class="col-sm-6">
-            <%= form_tag '/resources/add_tag' do %>
-                <%= hidden_field_tag 'id', @resource.id %>
-                <div class="form-group">
-                  <label>Tag</label>
-                  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-                </div>
-                <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-            <% end %>
-          </div><!-- end col -->
-        </div><!-- end row -->
-      </div><!-- end panel-body -->
-    </div><!-- end panel -->
-  </div><!-- end col -->
-  <div class="col-sm-2">
-    <% if @resource.tags.count > 0 %>
-        <p>
-          <strong>Tags:</strong>
-        <ul>
-          <% @resource.tags.each do |t| %>
-              <li><%= t.tag %></li>
-          <% end %>
-        </ul>
-        </p>
+		<div class="row">
+			<div class="col-sm-7 text-left">
+				<a href="#"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous</a>
+			</div>
+			<div class="col-sm-5 text-right">
+				<a href="#">Next <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+			</div>
+		</div>
+		<div class="detailButtonsResource text-center">
+			<a href="#"><i class="fa fa-code-fork" aria-hidden="true"></i></a>
+			<a href="#"><i class="fa fa-share" aria-hidden="true"></i></a>
+<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+			<a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+<% end %>
+			<a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
+		</div>
+		
+<% if(parent.resource_hierarchies.count > 1) %>
+		<div class="unit">		
+		  <H4><small><%= parent.resource_hierarchies.count %> item<%= (parent.resource_hierarchies.count == 1) ? "" : "s" %> in this collection</small></H4>
+			<div class="row resourceGrid">
+		  <% parent.resource_hierarchies.each do |rel| %>
+				<div class="col-sm-4">
+					<% if(rel.child_resource.resource_type == Resource::RESOURCE) %>
+						<% if(rel.child_resource.media_files.count > 0) %>
+							<% rel.child_resource.media_files.each do |f| %>
+								<% if f.sourceable %>
+									<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
+									<% break %>
+								<% end %>
+							<% end %>
+						<% else %>
+							<%= link_to '<i class="fa fa-picture-o" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
+						<% end %>
+					<% else %>
+						<%= link_to "<i class='fa fa-folder-o'></i>".html_safe, resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
+					<% end %>
+				</div><!-- end col -->
+		  <% end %>
+			</div><!-- end row -->
+		</div><!-- end unit -->
+<% end %>		
+<% if @resource.related_resources.count > 0 %>
+	  <div class="unit">
+		<H4><%= @resource.related_resources.count %> Related</H4>
+		<div class="detailRelatedContentBlockScroll">
+		<% @resource.related_resources.each do |r| %>
+			<div>
+			  <%= link_to ((r.related.resource_type == Resource::RESOURCE) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
+			  <% if (r.caption.length > 0) %>
+			   <br/><small>
+				 <%= r.caption %>
+			   </small>
+			  <% end %>
+
+			</div>
+		<% end %>
+		</div>
+	  </div><!-- end unit -->
+<% end %>
+<% if(@resource.settings(:user_interaction).allow_tags > 0) %>
+	<% if @resource.tags.count > 0 %>
+        <div class="unit">
+			<H4>Tags</H4>
+			<% @resource.tags.each do |t| %>
+			  <%= t.tag %>, 
+			<% end %>
+		</div>
     <% end %>
+<% end %>
+    <% if (@resource.copyright_license) %>
+		<div class="unit">
+		  <h4>Copyright</h4>
+		  <%= @resource.get_license_type %>
+			<% if (@resource.copyright_notes) %>
+				(<%= @resource.copyright_notes %>)
+			<% end  %>
+		</div>
+    <% end %>
+    </div>
+	</div>
   </div><!-- end col -->
 </div><!-- end row -->

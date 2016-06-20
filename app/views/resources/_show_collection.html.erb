@@ -11,21 +11,29 @@
 <div class="panel panel-default">
   <div class="panel-body">
     <div class="row">
-      <div class="col-sm-12">
+      <div class="col-sm-10">
         <p id="notice"><%= notice %></p>
 
         <H2><%= @resource.title %></H2>
 
         <H3><%= @resource.subtitle %></H3>
       </div>
+      <div class="col-sm-2 detailButtons text-right">
+      	<a href="#"><i class="fa fa-code-fork" aria-hidden="true"></i></a>
+      	<a href="#"><i class="fa fa-share" aria-hidden="true"></i></a>
+<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+      	<a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+<% end %>
+		<a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
+      </div>
     </div>
     <div class="row">
       <div class="col-sm-5">
-        <p><%= (@resource.body_text) ? @resource.body_text.html_safe : "" %></p>
+        <div class="detailBodyText"><%= (@resource.body_text) ? @resource.body_text.html_safe : "" %></div>
       </div>
       <div class="col-sm-7">
        <% if(@resource.child_count > 0) %>
-          <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Resource" : @resource.child_count.to_s + " Resources"  %> in this Learning Collection</h5>
+          <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Item" : @resource.child_count.to_s + " Items"  %> in this Learning Collection</h5>
 
             <%= render :partial => "resource_list_grid" %>
         <% end %>
@@ -47,62 +55,83 @@
 </div>
 
 <div class="row">
-  <div class="col-sm-2">
-    <% if @resource.tags.count > 0 %>
-        <p>
-          <h5>Tags</h5>
-        <ul>
-          <% @resource.tags.each do |t| %>
-              <li class="tagList"><%= t.tag %></li>
-          <% end %>
-        </ul>
-        </p>
-    <% end %>
+<% if @resource.related_resources.count > 0 %>
+  <div class="col-sm-3 detailRelatedContentBlock">
+		<H4><%= @resource.related_resources.count %> Related</H4>
+		<div class="detailRelatedContentBlockScroll">
+		<% @resource.related_resources.each do |r| %>
+			<div>
+			  <%= link_to ((r.related.resource_type == Resource::RESOURCE) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
+			  <% if (r.caption.length > 0) %>
+			   <br/><small>
+				 <%= r.caption %>
+			   </small>
+			  <% end %>
+
+			</div>
+		<% end %>
+		</div>
   </div><!-- end col -->
+<% end %>
+<% if (@resource.settings(:user_interaction).allow_tags > 0) && (@resource.tags.count > 0) %>
+  <div class="col-sm-3 detailRelatedContentBlock"> 
+        <H4>Tags</h4>
+        <div class="detailRelatedContentBlockScroll">
+          <% @resource.tags.each do |t| %>
+              <%= t.tag %>, 
+          <% end %>
+        </div>
+  </div><!-- end col -->
+<% end %>
 </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <% if @resource.comments.count > 0 %>
-        <H5><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H5>
-        <div class="panel panel-primary">
-          <div class="panel-body">
-            <% @resource.comments.each do |c| %>
-                <p><%= c.comment %><br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small></p><HR/>
-            <% end %>
-          </div><!-- end panel-body -->
-        </div><!-- end panel -->
-    <% end %>
-    </div>
-  </div>
-<div class="row">
-  <div class="col-md-12">
-    <H4>Add your comment and tags</H4>
-    <div class="panel panel-primary">
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-sm-6">
-            <%= form_tag '/resources/add_comment' do %>
-                <%= hidden_field_tag 'id', @resource.id %>
-                <div class="form-group">
-                  <label>Comment</label>
-                  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-                </div>
-                <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-            <% end %>
-          </div><!-- end col -->
-          <div class="col-sm-6">
-            <%= form_tag '/resources/add_tag' do %>
-                <%= hidden_field_tag 'id', @resource.id %>
-                <div class="form-group">
-                  <label>Tag</label>
-                  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-                </div>
-                <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-            <% end %>
-          </div><!-- end col -->
-        </div><!-- end row -->
-      </div><!-- end panel-body -->
-    </div><!-- end panel -->
-  </div>
-</div>
+<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+	<div class="row" id="detailComments">
+	  <div class="col-md-12">
+		<% if @resource.comments.count > 0 %>
+			<H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4>
+			<div class="detailComments">
+			<% @resource.comments.each do |c| %>
+				<div>
+					<%= c.comment %>
+					<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+				</div>
+			<% end %>
+			</div>
+		<% end %>
+	  </div>
+	</div>
+<% end %>
+<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
+	<div class="row">
+	  <div class="col-md-12">
+		<H5>Add your <%= (@resource.settings(:user_interaction).allow_comments > 0) ? "comment" : "" %> <%= ((@resource.settings(:user_interaction).allow_comments > 0) && (@resource.settings(:user_interaction).allow_tags > 0)) ? "tags" : "" %> <%= (@resource.settings(:user_interaction).allow_tags > 0) ? "tags" : "" %></H5>
+			<div class="row">
+		<% if (@resource.settings(:user_interaction).allow_comments > 0) %>
+			  <div class="col-sm-6">
+				<%= form_tag '/resources/add_comment' do %>
+					<%= hidden_field_tag 'id', @resource.id %>
+					<div class="form-group">
+					  <label>Comment</label>
+					  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+					</div>
+					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+				<% end %>
+			  </div><!-- end col -->
+		<% end %>
+		<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+			  <div class="col-sm-6">
+				<%= form_tag '/resources/add_tag' do %>
+					<%= hidden_field_tag 'id', @resource.id %>
+					<div class="form-group">
+					  <label>Tag</label>
+					  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+					</div>
+					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+				<% end %>
+			  </div><!-- end col -->
+		<% end %>
+			</div><!-- end row -->
+		</div><!-- end col -->
+	</div><!-- end row -->
+<% end %>
