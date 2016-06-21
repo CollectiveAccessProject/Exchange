@@ -5,7 +5,7 @@
         //
         // Media list drag and drop
         //
-        jQuery("#resource_media_list").sortable().on('sortstop', function(e, ui) {
+        jQuery(document).sortable().on('sortstop', function(e, "#resource_media_list" ui) {
             var resource_id =  jQuery("#resource_media_list").data("resource_id");
            var ranks = [];
             jQuery("#resource_media_list .mediaListIcon").each(function(k,m) {
@@ -27,7 +27,7 @@
         //
         // Collection contents list drag and drop
         //
-        jQuery("#collection_contents_list").sortable().on('sortstop', function(e, ui) {
+        jQuery(document).sortable().on('sortstop', "#collection_contents_list", function(e, ui) {
             var resource_id =  jQuery("#collection_contents_list").data("resource_id");
             var ranks = [];
             jQuery("#collection_contents_list .collectionContentsItem").each(function(k,m) {
