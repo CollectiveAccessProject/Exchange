@@ -165,11 +165,10 @@
 	$(document).ready(function(){
 		$("#advType")[0].selectedIndex = 0;
 		$('#advType').change(function() {
+			$('.additionalFields').hide();
 			if ($('#advType').val() == 'collection_object'){
-				$('.additionalFields').hide();
 				$('#advancedSearchCollectionObject').slideDown();
 			}else if($('#advType').val() == 'exhibition'){
-				$('.additionalFields').hide();
 				$('#advancedSearchExhibition').slideDown();
 			}
 		});
