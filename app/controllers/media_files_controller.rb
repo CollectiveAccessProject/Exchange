@@ -53,12 +53,8 @@ class MediaFilesController < ApplicationController
 
         puts "( Media Files Controller - Media File Save Failure!"
         puts @media_file.errors.full_messages.join(";")
-
-        #format.html { redirect_to edit_resource_path(@media_file.resource), notice: 'Media could not be saved: ' + @media_file.errors.full_messages.join("; ")}
-
         format.json { render json: @media_file.errors.full_messages.join(";"), status: :unprocessable_entity }
 
-        #format.js
       end
     end
   end

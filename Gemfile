@@ -31,6 +31,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bootstrap-sass', '~> 3.2'
 gem 'bootstrap-wysihtml5-rails'
 
+# summernote alternative to boostrap-wysihtml5
+gem 'summernote-rails'
+
 gem 'autoprefixer-rails'
 
 # Use ActiveModel has_secure_password

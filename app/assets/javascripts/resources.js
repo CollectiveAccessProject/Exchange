@@ -7,7 +7,7 @@
         //
         jQuery("#resource_media_list").sortable();
         jQuery(document).on('sortstop', "#resource_media_list", function(e, ui) {
-            var resource_id =  jQuery("#resource_media_list").data("resource_id");
+           var resource_id =  jQuery("#resource_media_list").data("resource_id");
            var ranks = [];
             jQuery("#resource_media_list .mediaListIcon").each(function(k,m) {
                ranks.push(jQuery(m).data('media_id'));
