@@ -69,6 +69,10 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
+    dotenv (2.1.1)
+    dotenv-rails (2.1.1)
+      dotenv (= 2.1.1)
+      railties (>= 4.0, < 5.1)
     elasticsearch (1.0.17)
       elasticsearch-api (= 1.0.17)
       elasticsearch-transport (= 1.0.17)
@@ -89,6 +93,7 @@ GEM
     flickraw (0.9.8)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
+    groupify (0.7.2)
     hashie (3.4.4)
     httparty (0.13.7)
       json (~> 1.8)
@@ -103,6 +108,8 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
+    jquery-ui-rails (4.2.1)
+      railties (>= 3.2.16)
     json (1.8.3)
     jwt (1.5.1)
     ledermann-rails-settings (2.4.1)
@@ -158,6 +165,8 @@ GEM
     paperclip-av-transcoder (0.6.4)
       av (~> 0.9.0)
       paperclip (>= 2.5.2)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -180,6 +189,8 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
+    rails4-autocomplete (1.1.1)
+      rails (>= 3.0)
     railties (4.2.0)
       actionpack (= 4.2.0)
       activesupport (= 4.2.0)
@@ -211,6 +222,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    summernote-rails (0.8.1.1)
+      railties (>= 3.1)
     therubyrhino (2.0.4)
       therubyrhino_jar (>= 1.7.3)
     therubyrhino_jar (1.7.6)
@@ -237,12 +250,15 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   collectiveaccess
   devise
+  dotenv-rails
   elasticsearch-model
   elasticsearch-rails
   flickraw
+  groupify
   immigrant
   jbuilder (~> 2.0)
   jquery-rails
+  jquery-ui-rails (~> 4.2.0)
   ledermann-rails-settings
   mysql2 (~> 0.3.18)
   omniauth
@@ -252,11 +268,17 @@ DEPENDENCIES
   paper_trail (~> 4.0)
   paperclip (~> 4.2)
   paperclip-av-transcoder
+  pundit
   rails (= 4.2.0)
+  rails4-autocomplete
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   simple_form
+  summernote-rails
   therubyrhino
   turbolinks
   tzinfo-data
   uglifier (>= 1.3.0)
+
+BUNDLED WITH
+   1.12.5
