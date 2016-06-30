@@ -2,8 +2,7 @@
 	i = 0
 	col = 0
 %>
-<% 
-	@resources.each do |r|
+<% @collections.each do |r|
 	  i = i+1
 	  if i > 12 
 		break 
@@ -15,25 +14,21 @@
 <%
 		end
 %>
-    <div class="col-md-2 qsResult">
-    	<% @resource = Resource.find(r[:id]) %>
-    	<% @resource.media_files.each do |f| %>
-			<% if f.sourceable %>
-				<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
-				<% break %>
-			<% end %>
-		<% end %>
-    	<%= link_to r[:title], resource_preview_path(r[:id]) %>
+
+    <div class="col-sm-2 qsResult qsResultText">
+    	<%= link_to  r[:title], resource_preview_path(r[:id]) %>
+		<% @resource = Resource.find(r[:id]) %>
+
+		<div class="small">April 4 - June 23, 2016</div>
+		
     </div>
-    
 <% 
 		if(col == 6)
 %>
 			</div>
 			<div class="row">
 <%
-		end
-
+		end 
 	end	
 %>
 	</div><!-- end row -->

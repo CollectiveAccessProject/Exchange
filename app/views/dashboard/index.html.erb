@@ -29,7 +29,7 @@
 			<div><b><%= resource.title %></b></div>
 			<p><%= resource.subtitle %></p>
 			<div>				
-				<%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, resource, class:'btn btn-default btn-xs' %>
+				<%= link_to '<span class="glyphicon glyphicon-eye-open aria-hidden="true"></span> Preview'.html_safe, resource_preview_path(resource), class:'btn btn-default btn-xs' %>
 				<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(resource), class:'btn btn-default btn-xs' %>				
 				<div class="btn-group">
 					<a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>

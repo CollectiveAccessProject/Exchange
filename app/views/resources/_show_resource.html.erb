@@ -8,32 +8,27 @@
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
+<%
+	  parent = @resource.parents.first
+	  if(parent)
+%>
 <div class="row">
   <div class="col-sm-12">
-    <H4>
+    <H4>Part of: 
 <%=
-	  if(@resource.parents.first)
-	    link_to raw(@resource.parents.first.title), resource_preview_path(@resource.parents.first), "class": ""
-	  end
-%>
-<%
-	    parent = @resource.parents.first
-	    if(parent)
+	    link_to raw(parent.title), resource_preview_path(parent), "class": ""
 %>
 			<br/>
 <%=
 			"<small>#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
 %>
 			 in this learning collection</small>
+	</H4>
+  </div><!-- end col -->
+</div><!-- end row -->
 <%
 		end
 %>
-	    
-	    
-
-    </H4>
-  </div><!-- end col -->
-</div><!-- end row -->
 <div class="row">
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
@@ -201,7 +196,7 @@
 			<a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
 		</div>
 		
-<% if(parent.resource_hierarchies.count > 1) %>
+<% if(parent && parent.resource_hierarchies.count > 1) %>
 		<div class="unit">		
 		  <H4><small><%= parent.resource_hierarchies.count %> item<%= (parent.resource_hierarchies.count == 1) ? "" : "s" %> in this collection</small></H4>
 			<div class="row resourceGrid">
