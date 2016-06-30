@@ -52,13 +52,16 @@
       	</li>
       </ul>
       <%= form_tag({ controller: '/quick_search', action: 'query' }, method: 'get', class: 'navbar-form navbar-right') do %>
-        <div class="quickSearch"><%= text_field_tag(:q, nil, class: 'form-control', placeholder: 'Search') %><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button></div>
+        <div class="quickSearch">
+        	<%= text_field_tag(:q, nil, class: 'form-control', placeholder: 'Search') %><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+        	<div id="advSearchLink"><a href="#" onClick="$('#advancedSearchContainer').slideToggle(); return false;">Advanced Search</a></div>
+        </div>
       <% end %>
   	
   	<div style="clear:both;"></div></div><!--/.nav-collapse -->
   </div><!--/container --></div><!--/.subnavbar -->
 </nav>
-
+<%= render(partial:'layouts/advanced_search_form') %>
 <div class="container">
   <% if flash[:notice] %>
     <div class="col-md-12"><div class="panel panel-default"><div class="panel-body">
