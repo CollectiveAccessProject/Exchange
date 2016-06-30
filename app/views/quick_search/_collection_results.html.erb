@@ -1,3 +1,41 @@
-<% @collections.each do |r| %>
-    <div class="row"><div class="col-md-12"><h5><%= link_to r[:title], resource_path(r[:id]) %></h5></div></div>
-<% end %>
+<% 
+	i = 0
+	col = 0
+%>
+<% @collections.each do |r|
+	  i = i+1
+	  if i > 12 
+		break 
+	  end
+	  col = col+1
+		if(col == 1)
+%>
+			<div class="row">
+<%
+		end
+%>
+
+    <div class="col-sm-2 qsResult qsResultText">
+    	<%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + r[:title], resource_preview_path(r[:id]) %>
+		<% @resource = Resource.find(r[:id]) %>
+<%=
+		if(@resource.resource_hierarchies.count)
+			"<div class='small indent'>Contains #{@resource.resource_hierarchies.count}".html_safe + ((@resource.resource_hierarchies.count == 1) ? " item" : " items") + "</div>".html_safe
+		end
+%>
+    </div>
+<% 
+		if(col == 6)
+%>
+			</div>
+			<div class="row">
+<%
+		end 
+	end
+%>
+	</div><!-- end row -->
+<%=
+	if(@resources.count > 12)
+		"<div class='row'><div class='col-sm-12 text-center'><a href='#' class='btn btn-default'>View All</a></div></div>".html_safe
+	end
+%>

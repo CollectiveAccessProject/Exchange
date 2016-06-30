@@ -1,0 +1,59 @@
+<% 
+	i = 0
+	col = 0
+%>
+<% 
+	@resources.each do |r|
+	  i = i+1
+	  if i > 8 
+		break 
+	  end
+	  col = col+1
+		if(col == 1)
+%>
+			<div class="row">
+<%
+		end
+%>
+    <div class="col-md-3 qsResult">
+    	<div class="row">
+    		<div class="col-sm-12 qsResultText">
+    			<%= link_to r[:title], resource_preview_path(r[:id]) %>
+    		</div>
+    	</div>
+    	<div class="row rowLessPadding">
+    		<div class="col-sm-7">
+				<% @resource = Resource.find(r[:id]) %>
+				<% @resource.media_files.each do |f| %>
+					<% if f.sourceable %>
+						<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
+						<% break %>
+					<% end %>
+				<% end %>
+				<div class="small text-left">object identifier</div>
+    		</div>
+    		<div class="col-sm-5 text-left qsResultText">
+    			<div class="small">artist/maker (nationality)</div>
+    			<div class="small">creation date</div>
+    			<hr/>
+    			<div class="small"><i>credit line</i></div>
+    		</div>
+    	</div>
+    </div>
+    
+<% 
+		if(col == 4)
+%>
+			</div>
+			<div class="row">
+<%
+		end
+
+	end	
+%>
+	</div><!-- end row -->
+<%=
+	if(@resources.count > 8)
+		"<div class='row'><div class='col-sm-12 text-center'><a href='#' class='btn btn-default'>View All</a></div></div>".html_safe
+	end
+%>

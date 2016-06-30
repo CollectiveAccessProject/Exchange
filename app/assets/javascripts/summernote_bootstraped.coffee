@@ -1,5 +1,6 @@
 $ ->
-  $('[data-provider="summernote"]').each ->
+  #$('[data-provider="summernote"]').each ->
+  $('.summernote').each ->
     $(this).summernote
       toolbar : [
         ['style', [ 'bold', 'italic', 'underline', 'clear']],

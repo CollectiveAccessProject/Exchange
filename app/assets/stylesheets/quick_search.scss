@@ -1,3 +1,52 @@
 // Place all the styles related to the QuickSearch controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+$font-family-sans-serif:'Hind', sans-serif;
+$font-family-sans-serif2:'Oswald', sans-serif;
+$blue:#10069f;
+$gray:#8a898a;
+$bluegray:#337ab7;
+$yellow:#f9ce29;
+$green:#419276;
+$md_gray:#DEDEDE;
+$lt_gray:#eaeaeb;
+$lt_lt_gray:#fefefe;
+$black:#000000;
+$white:#FFFFFF;
+
+.qsResult{
+	text-align:center;
+	margin-bottom:25px;
+	line-height:1.1em;
+	img{
+		width:100%;
+		max-height:250px;
+		object-fit: contain;
+	}
+	a{
+		font-family: $font-family-sans-serif;
+		font-size:13px;
+		color:$blue !important;
+		line-height:1.1em !important;
+	}
+	.small{
+		font-size:11px;
+		line-height:1.2em;
+		padding:0px;
+	}
+	hr{
+		margin-top:10px;
+		margin-bottom:10px;
+	}
+}
+.qsResultText{
+	text-align:left;
+	a{
+		font-family: $font-family-sans-serif2;
+		font-size:13px;
+		color:$blue !important;
+	}
+	.indent{
+		padding-left:15px;
+	}
+}
