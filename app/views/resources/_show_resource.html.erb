@@ -22,7 +22,9 @@
 %>
 			<br/>
 <%=
+		if(parent.resource_hierarchies) 
 			"<small>#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
+		end
 %>
 			 in this learning collection</small>
 <%
@@ -201,7 +203,7 @@
 			<a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
 		</div>
 		
-<% if(parent.resource_hierarchies.count > 1) %>
+<% if(parent && parent.resource_hierarchies && (parent.resource_hierarchies.count > 1)) %>
 		<div class="unit">		
 		  <H4><small><%= parent.resource_hierarchies.count %> item<%= (parent.resource_hierarchies.count == 1) ? "" : "s" %> in this collection</small></H4>
 			<div class="row resourceGrid">
