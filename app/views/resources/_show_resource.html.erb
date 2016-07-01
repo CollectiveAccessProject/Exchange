@@ -34,7 +34,7 @@
 		  <div class="col-sm-7">
 		   <% if(parent.child_count > 0) %>
 			  <h5><%= (parent.child_count == 1) ? parent.child_count.to_s + " Item" : parent.child_count.to_s + " Items"  %> in this Learning Collection</h5>
-				<%= render :partial => 'resource_list_grid', :locals => {:resource => parent} %>
+				<%= render :partial => 'resource_list_grid', :locals => {:parent => parent} %>
 			<% end %>
 
 
