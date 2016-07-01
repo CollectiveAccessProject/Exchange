@@ -14,16 +14,43 @@
 %>
 <div class="row">
   <div class="col-sm-12">
-    <H4>Part of: 
+	<H4><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+		Part of:
 <%=
-	    link_to raw(parent.title), resource_preview_path(parent), "class": ""
+		link_to raw(parent.title), resource_preview_path(parent), "class": ""
 %>
-			<br/>
+			<br/><small><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;">
 <%=
-			"<small>#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
+			"#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
 %>
-			 in this learning collection</small>
+			 in this learning collection</a></small>
 	</H4>
+  	<div class="panel panel-primary" id="detailParentInfoPanel">
+      <div class="panel-body">
+		<div class="row">
+		  <div class="col-sm-5">
+			<div class="detailBodyText"><%= (parent.body_text) ? parent.body_text.html_safe : "" %></div>
+		  </div>
+		  <div class="col-sm-7">
+		   <% if(parent.child_count > 0) %>
+			  <h5><%= (parent.child_count == 1) ? parent.child_count.to_s + " Item" : parent.child_count.to_s + " Items"  %> in this Learning Collection</h5>
+				<%= render :partial => 'resource_list_grid', :locals => {:parent => parent} %>
+			<% end %>
+
+
+			<% if (parent.copyright_license) %>
+				<p>
+				  <h5>Copyright</h5>
+				  <div><%= parent.get_license_type %>
+					<% if (parent.copyright_notes) %>
+						(<%= parent.copyright_notes %>)
+					<% end  %>
+					</div>
+				</p>
+			<% end %>
+		  </div><!-- end col -->
+		</div><!-- end row -->
+    </div><!-- end panel body --></div><!-- end panel -->
   </div><!-- end col -->
 </div><!-- end row -->
 <%
