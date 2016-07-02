@@ -1,5 +1,5 @@
 $ ->
-  $('.summernote').each ->
+  $('[data-provider="summernote"]').each ->
 
     $(this).summernote
       height : 300,

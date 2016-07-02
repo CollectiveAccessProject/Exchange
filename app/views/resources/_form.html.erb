@@ -24,7 +24,7 @@
 			</div><!-- end col -->
 			<div class="col-md-7">
 				<%#= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 14} %>
-                <%= r.input :body_text, :input_html => {:class => 'summernote'} %>
+                <%= r.input :body_text, :input_html => {}, :as => :summernote %>
             	<div class="mediaEmbedHelpLink">
                   <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
                     <i class="fa fa-question-circle-o" aria-hidden="true"></i> How do I embed media in the body of my resource?
