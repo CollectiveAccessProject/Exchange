@@ -13,4 +13,8 @@ $ ->
         ['insert', ['picture', 'link', 'video', 'table', 'hr', 'mediaitem']]
       ],
 
-      buttons : { mediaitem: MediaItemButton }
+      buttons : { mediaitem: MediaItemButton },
+      callbacks: {
+        onInit: ->
+          exchangeLoadMediaForSummernote()
+      }
