@@ -156,22 +156,26 @@ class Resource < ActiveRecord::Base
   def parsed_body_text
     body_text_proc = self[:body_text]
 
-    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*([A-Za-z]*)[ ]*(width=[\d]+)?[ ]*(height=[\d]+)?[ ]*(float=[A-Za-z]+)?&gt;/).map { Regexp.last_match }
-
+    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
+#<media test-1 version="thumbnail" float="left">
+    puts "fooey"
+    puts matches.inspect
     matches.each do |m|
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
-        version = ((defined? m[2]) && m[2]) ? m[2] : 'thumbail'
-        width = ((defined? m[3]) && m[3]) ? m[3].sub!("width=", "") : 160
-        height = ((defined? m[4]) && m[4]) ? m[4].sub!("height=", "") : 120
-        cssFloat = ((defined? m[5]) && m[5]) ? m[5].sub!("float=", "") : ""
-        cssFloat.downcase!
+        version = (((defined? m[2]) && m[2]) ? m[2].sub!("version=", "").gsub!('"', "") : :thumbnail)
+        width = ((defined? m[3]) && m[3]) ? m[3].sub!("width=", "").gsub!('"', "") : 160
+        height = ((defined? m[4]) && m[4]) ? m[4].sub!("height=", "").gsub!('"', "") : 120
+        cssFloat = ((defined? m[5]) && m[5]) ? m[5].sub!("float=", "").gsub!('"', "") : ""
+        if (cssFloat)
+          cssFloat.downcase!
+        end
 
         if ((cssFloat.downcase != 'left') && (cssFloat.downcase != 'right'))
           cssFloat = '';
         else
           cssFloat = "style=\"float: #{cssFloat}\""
         end
-       body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}>" + mf.sourceable.preview(version, width, height) + "<br/>" + mf.caption + "</div>")
+       body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}>" + mf.sourceable.preview(version.to_sym, width, height) + "<br/>" + mf.caption + "</div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end
