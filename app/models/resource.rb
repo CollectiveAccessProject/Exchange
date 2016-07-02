@@ -131,8 +131,8 @@ class Resource < ActiveRecord::Base
 
   # settings
   has_settings :class_name => 'ResourceSettingObject'  do |s|
-    s.key :media_formatting, :defaults => { :mode => :thumbnails }
-    s.key :text_placement,  :defaults => { :placement => :above}
+    s.key :media_formatting, :defaults => { :mode => :slideshow }
+    s.key :text_placement,  :defaults => { :placement => :below}
     s.key :text_formatting,  :defaults => { :show_all => 1, :collapse => 0 }
     s.key :user_interaction,  :defaults => { :allow_comments => 1, :allow_tags => 1, :allow_responses => 1, :display_responses_on_separate_page => 1 }
   end
