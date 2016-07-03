@@ -52,9 +52,13 @@ class Resource < ActiveRecord::Base
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
-    if indexing_data.is_a? Hash
-      record = record.merge(indexing_data)
-    end
+    
+    if (indexing_data) 
+		index_data_hash = JSON.parse(indexing_data)
+		if index_data_hash.is_a? Hash
+		  record = record.merge(index_data_hash)
+		end
+	end
     record
   end
 
