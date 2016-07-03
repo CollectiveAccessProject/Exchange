@@ -14,7 +14,6 @@
 //= require jquery_ujs
 //= require jquery.ui.all
 //= require autocomplete-rails
-//= require turbolinks
 //= require bootstrap-sprockets
 //= require bootstrap-wysihtml5
 //= require summernote

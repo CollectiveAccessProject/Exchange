@@ -16,7 +16,6 @@ class Resource < ActiveRecord::Base
 
   belongs_to :user
 
-  serialize :indexing_data
 
   # change log
   has_paper_trail
@@ -45,7 +44,13 @@ class Resource < ActiveRecord::Base
   RESOURCE = 1
   LEARNING_COLLECTION = 2
   COLLECTION = 2
+  COLLECTION_OBJECT = 3
+  EXHIBITION = 4
 
+
+  #
+  # Search indexing
+  #
 
   # get record as indexed json for elasticsearch
   def as_indexed_json(options={})
@@ -61,6 +66,8 @@ class Resource < ActiveRecord::Base
 	end
     record
   end
+  serialize :indexing_data
+
 
 
   # return true if resource type is "resource"
@@ -73,16 +80,27 @@ class Resource < ActiveRecord::Base
     return self.resource_type == Resource::LEARNING_COLLECTION;
   end
 
+  # return true if resource type is "collection object" (museum object imported from CA; acts as a resource)
+  def is_collection_object
+    return self.resource_type == Resource::COLLECTION_OBJECT;
+  end
+
+  # return true if resource type is "exhibition" (imported from CA; acts as a collection)
+  def is_exhibition
+    return self.resource_type == Resource::EXHIBITION;
+  end
+
+
   # returns license type as text
   def get_license_type
     return Rails.application.config.x.license_types.key(self.copyright_license)
   end
 
   # return number of direct children on this resource
-  # @param type Resource type to restrict count to (Resource::RESOURCE or Resource::LEARNING_COLLECTION); if omitted resources of all types are counted
+  # @param type Resource type to restrict count to (Resource::RESOURCE, Resource::LEARNING_COLLECTION, Resource::COLLECTION_OBJECT or Resource::EXHIBITION); if omitted resources of all types are counted
   # @return int
   def child_count(type=nil)
-    if ((type != Resource::RESOURCE) && (type != Resource::LEARNING_COLLECTION))
+    if ((type != Resource::RESOURCE) && (type != Resource::LEARNING_COLLECTION) && (type != Resource::COLLECTION_OBJECT) && (type != Resource::EXHIBITION))
       type = nil
     end
     if (type == nil)
@@ -117,8 +135,8 @@ class Resource < ActiveRecord::Base
 
   # settings
   has_settings :class_name => 'ResourceSettingObject'  do |s|
-    s.key :media_formatting, :defaults => { :mode => :thumbnails }
-    s.key :text_placement,  :defaults => { :placement => :above}
+    s.key :media_formatting, :defaults => { :mode => :slideshow }
+    s.key :text_placement,  :defaults => { :placement => :below}
     s.key :text_formatting,  :defaults => { :show_all => 1, :collapse => 0 }
     s.key :user_interaction,  :defaults => { :allow_comments => 1, :allow_tags => 1, :allow_responses => 1, :display_responses_on_separate_page => 1 }
   end
@@ -142,22 +160,26 @@ class Resource < ActiveRecord::Base
   def parsed_body_text
     body_text_proc = self[:body_text]
 
-    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*([A-Za-z]*)[ ]*(width=[\d]+)?[ ]*(height=[\d]+)?[ ]*(float=[A-Za-z]+)?&gt;/).map { Regexp.last_match }
-
+    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
+#<media test-1 version="thumbnail" float="left">
+    puts "fooey"
+    puts matches.inspect
     matches.each do |m|
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
-        version = ((defined? m[2]) && m[2]) ? m[2] : 'thumbail'
-        width = ((defined? m[3]) && m[3]) ? m[3].sub!("width=", "") : 160
-        height = ((defined? m[4]) && m[4]) ? m[4].sub!("height=", "") : 120
-        cssFloat = ((defined? m[5]) && m[5]) ? m[5].sub!("float=", "") : ""
-        cssFloat.downcase!
+        version = (((defined? m[2]) && m[2]) ? m[2].sub!("version=", "").gsub!('"', "") : :thumbnail)
+        width = ((defined? m[3]) && m[3]) ? m[3].sub!("width=", "").gsub!('"', "") : 160
+        height = ((defined? m[4]) && m[4]) ? m[4].sub!("height=", "").gsub!('"', "") : 120
+        cssFloat = ((defined? m[5]) && m[5]) ? m[5].sub!("float=", "").gsub!('"', "") : ""
+        if (cssFloat)
+          cssFloat.downcase!
+        end
 
         if ((cssFloat.downcase != 'left') && (cssFloat.downcase != 'right'))
           cssFloat = '';
         else
           cssFloat = "style=\"float: #{cssFloat}\""
         end
-       body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}>" + mf.sourceable.preview(version, width, height) + "<br/>" + mf.caption + "</div>")
+       body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}>" + mf.sourceable.preview(version.to_sym, width, height) + "<br/>" + mf.caption + "</div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end
@@ -194,6 +216,28 @@ class Resource < ActiveRecord::Base
     end
 
     begin
+      collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
+        if r._source
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+        end
+      end
+    rescue
+      # no search?
+      collection_objects = []
+    end
+
+    begin
+      exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
+        if r._source
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+        end
+      end
+    rescue
+      # no search?
+      exhibitions = []
+    end
+
+    begin
       media_files = MediaFile.search(query).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_id: r._source.resource_id }
@@ -203,7 +247,7 @@ class Resource < ActiveRecord::Base
       media_files = []
     end
 
-    return {resources: resources, collections: collections, media_files: media_files}
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, media_files: media_files}
   end
 
   def destroy

@@ -23,6 +23,7 @@
                     }, 3000);
                 });
             }
+            exchangeLoadMediaForSummernote();
         });
 
         //
@@ -88,7 +89,7 @@
 
         jQuery("#addMediaFormElements").bind("ajax:success", function(event, data, status, xhr) {
 
-            $('#addMediaForm').modal('hide').find("input[type=text], textarea").val("")   // hide add media model
+            $('#addMediaForm').modal('hide').find("input[type=text], textarea").val("")   // hide add media modal
 
         }).bind("ajax:error", function(event, data, status, xhr) {
 

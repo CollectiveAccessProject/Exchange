@@ -1,6 +1,13 @@
-<% if @resource.resource_hierarchies.count %>
+<%
+	if defined?(parent)
+		resource = parent
+	else
+		resource = @resource
+	end
+%>
+<% if resource.resource_hierarchies.count %>
 	<div class="row collectionDetailContents">
-	<% @resource.resource_hierarchies.each do |rel| %>
+	<% resource.resource_hierarchies.each do |rel| %>
 		<div class="col-sm-4">
 			<div class="collectionDetailContentsItem" >
 				<%= link_to ((rel.child_resource.resource_type == Resource::RESOURCE) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %><br/>
