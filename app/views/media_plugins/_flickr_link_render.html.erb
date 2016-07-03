@@ -6,7 +6,11 @@
   target="_blank"
 >
   <%=
+    begin
       # TODO: don't hard code image label in here
       image_tag flickr.photos.getSizes(photo_id: plugin_model.photo_id).find {|p| p['label'] == 'Medium' }['source']
-  %>
+    rescue
+      "Flickr image not found"
+    end
+   %>
 </a>

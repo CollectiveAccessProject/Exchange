@@ -1,3 +1,7 @@
 <%=
-   image_tag flickr.photos.getSizes(photo_id: plugin_model.photo_id).find {|p| p['label'] == 'Large Square' }['source'], size: '135x135'
+  begin
+    image_tag flickr.photos.getSizes(photo_id: plugin_model.photo_id).find {|p| p['label'] == 'Large Square' }['source'], size: '135x135'
+   rescue
+    "Flick image not found"
+  end
 %>
