@@ -96,6 +96,18 @@ class Resource < ActiveRecord::Base
     return Rails.application.config.x.license_types.key(self.copyright_license)
   end
 
+  def get_collection_object_field(f, options=nil)
+    if (self.is_collection_object)
+      indexing_data_hash = JSON.parse(indexing_data)
+
+      val = indexing_data_hash[f]
+      if (options && options.key?(:enclose_in_parens) && (options[:enclose_in_parens] == true) && (val) && (val.length > 0))
+        val = "(" + val + ")"
+      end
+      return val
+    end
+  end
+
   # return number of direct children on this resource
   # @param type Resource type to restrict count to (Resource::RESOURCE, Resource::LEARNING_COLLECTION, Resource::COLLECTION_OBJECT or Resource::EXHIBITION); if omitted resources of all types are counted
   # @return int
@@ -161,9 +173,7 @@ class Resource < ActiveRecord::Base
     body_text_proc = self[:body_text]
 
     matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
-#<media test-1 version="thumbnail" float="left">
-    puts "fooey"
-    puts matches.inspect
+
     matches.each do |m|
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
         version = (((defined? m[2]) && m[2]) ? m[2].sub!("version=", "").gsub!('"', "") : :thumbnail)

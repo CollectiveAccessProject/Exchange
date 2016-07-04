@@ -1,7 +1,11 @@
 <%=
   if (@resource.is_resource)
     render :partial => "show_resource"
-  else
+  elsif(@resource.is_collection)
     render :partial => "show_collection"
+  elsif(@resource.is_collection_object)
+    render :partial => "show_collection_object"
+  else
+    render :partial => "show_exhibition"
   end
 %>

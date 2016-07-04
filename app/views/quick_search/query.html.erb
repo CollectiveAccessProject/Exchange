@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <% if((@collections.length == 0) && (@resources.length == 0) && (@media_files.length == 0)) %>
+    <% if((@collections.length == 0) && (@resources.length == 0) && (@collection_objects.length == 0) && (@exhibitions.length == 0) && (@media_files.length == 0)) %>
         <h2>No results found for <em><%= sanitize(@query) %></em></h2>
     <% else %>
         <h2>Results for <em><%= sanitize(@query) %></em></h2>
@@ -31,10 +31,10 @@
       	</div>
       </div>
   <% end %>
-  <% if(@collections.length > 0) %>
+  <% if(@exhibitions.length > 0) %>
       <div class="row">
         <div class="col-sm-12">
-          <h4><%= @collections.length %> UMMA Exhibition<%= (@collections.length == 1) ? "" : "s" %></h4>
+          <h4><%= @exhibitions.length %> UMMA Exhibition<%= (@exhibitions.length == 1) ? "" : "s" %></h4>
         </div>
       </div>
       <div class="row">
@@ -43,10 +43,10 @@
         </div>
       </div>
   <% end %>
-  <% if(@resources.length > 0) %>
+  <% if(@collection_objects.length > 0) %>
       <div class="row">
         <div class="col-sm-12">
-          <h4><%= @resources.length %> UMMA Collection Object<%= (@resources.length == 1) ? "" : "s" %></h4>
+          <h4><%= @collection_objects.length %> UMMA Collection Object<%= (@collection_objects.length == 1) ? "" : "s" %></h4>
         </div>
       </div>
       <div class="row">

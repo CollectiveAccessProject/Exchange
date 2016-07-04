@@ -3,7 +3,7 @@
 	col = 0
 %>
 <% 
-	@resources.each do |r|
+	@collection_objects.each do |r|
 	  i = i+1
 	  if i > 8 
 		break 
@@ -33,10 +33,10 @@
 				<div class="small text-left">object identifier</div>
     		</div>
     		<div class="col-sm-5 text-left qsResultText">
-    			<div class="small">artist/maker (nationality)</div>
-    			<div class="small">creation date</div>
+    			<div class="small"><%= @resource.get_collection_object_field('artist') %> <%= @resource.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
+    			<div class="small"><%= @resource.get_collection_object_field('date_created') %></div>
     			<hr/>
-    			<div class="small"><i>credit line</i></div>
+    			<div class="small"><i><%= @resource.get_collection_object_field('credit_line') %></i></div>
     		</div>
     	</div>
     </div>
@@ -53,7 +53,7 @@
 %>
 	</div><!-- end row -->
 <%=
-	if(@resources.count > 8)
+	if(@collection_objects.count > 8)
 		"<div class='row'><div class='col-sm-12 text-center'><a href='#' class='btn btn-default'>View All</a></div></div>".html_safe
 	end
 %>

@@ -1,15 +1,16 @@
 <%
     url = plugin_model.base_url + plugin_model.key
-case version
-  when :thumbnail
-    url += "/full/!140,120/0/default.jpg"
-  when :medium
-    url += "/full/!512,512/0/default.jpg"
-  when :full
-    url += "/full/!1024,1024/0/default.jpg"
-  else
-    url += "/full/!320,240/0/default.jpg"
-end
+
+  if (size = media_size_for_version(version))
+    puts size.inspect
+    if (size['full'] == true)
+      # TODO: maybe have it return in native resolution?
+      url += "/full/!2000,2000/0/default.jpg"
+      else
+        url += "/full/!" + size[:width].to_s + "," + size[:height].to_s + "/0/default.jpg"
+      end
+  end
+
 %>
 <img
 src="<%= url %>"
