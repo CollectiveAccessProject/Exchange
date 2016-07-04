@@ -17,6 +17,7 @@ namespace :exchange do
 
     user_id = User.where(email: 'admin@exchange.umma.umich.edu').first.id
     start = 0
+    limit = 100
 
     # query UMMA collections to get list of all records in chunks of 100 and
     # create or update exchange resources based on collectiveaccess_id
@@ -26,19 +27,21 @@ namespace :exchange do
 
       #puts "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
 
+
       # query exchangeObjectListForDisplay service
       object_list_for_display = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
                                                         url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
                                                         port: ENV['COLLECTIVEACCESS_PORT'].to_i,
                                                         endpoint: 'exchangeObjectListForDisplay',
                                                         get_params: {
-                                                            q: '*',
+                                                            q: 'ca_objects.access_specific:exchange',
                                                             start: start,
-                                                            limit: 100,
+                                                            limit: limit,
                                                             noCache: Rails.env.development? ? 1 : 0
                                                         }
 
       log.info "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
+
 
       # add 'main' record data with hardcoded mapping
       object_list_for_display.each do |_, value|
@@ -51,41 +54,9 @@ namespace :exchange do
                                      copyright_notes: value['copyright_notes'].present? ? value['copyright_notes'] : '',
                                      body_text: value['body_text'],
                                      subtitle: '',
-                                     resource_type: 1,
+                                     resource_type: Resource::COLLECTION_OBJECT,
                                      user_id: User.where(email: 'admin@exchange.umma.umich.edu').first.id
-        end
-      end
-
-      # query indexing data service
-      object_list_for_search = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
-                                                       url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
-                                                       port: ENV['COLLECTIVEACCESS_PORT'].to_i,
-                                                       endpoint: 'exchangeObjectListForSearch',
-                                                       get_params: {
-                                                           q: '*',
-                                                           start: start,
-                                                           limit: 100,
-                                                           noCache: Rails.env.development? ? 1 : 0
-                                                       }
-
-      log.info "Got response with size #{object_list_for_search.size}"
-
-      # add indexing data
-      object_list_for_search.each do |_, value|
-        if value.is_a?(Hash) && value['collectiveaccess_id'].present?
-          log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
-          #Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first.update(indexing_data: value)
-
-          h = value.except("media").merge({
-            resource_type: Resource::RESOURCE,
-            user_id: user_id,
-            copyright_notes: value['copyright_notes'].present? ? value['copyright_notes'] : ''
-
-          })
-
-          r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).
-              first_or_create
-          r.update(h)
+          r =  Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first
 
           if (value['media'])
             i = 1;
@@ -108,15 +79,38 @@ namespace :exchange do
               end
             end
           end
+        end
+      end
+
+      # query indexing data service
+      object_list_for_search = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
+                                                       url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
+                                                       port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+                                                       endpoint: 'exchangeObjectListForSearch',
+                                                       get_params: {
+                                                           q: 'ca_objects.access_specific:exchange',
+                                                           start: start,
+                                                           limit: limit,
+                                                           noCache: Rails.env.development? ? 1 : 0
+                                                       }
+
+      log.info "Got response with size #{object_list_for_search.size}"
+
+      # add indexing data
+      object_list_for_search.each do |_, value|
+        if value.is_a?(Hash) && value['collectiveaccess_id'].present?
+          log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
+          Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first.update(indexing_data: JSON.generate(value))
+
 
         end
       end
 
-      start += 100
+      start += limit
 
       # only do one loop run in development. 100 test records.
       if Rails.env.development?
-        break
+      #  break
       end
 
     end while object_list_for_display.size > 1
@@ -133,8 +127,9 @@ namespace :exchange do
       t.__elasticsearch__.create_index! force: true
       t.all.find_in_batches(batch_size: 1000) do |group|
         group_for_bulk = group.map do |a|
-           { index: { _id: a.id, data: a.as_indexed_json }}
+          { index: { _id: a.id, data: a.as_indexed_json }}
         end
+
         t.__elasticsearch__.client.bulk(
             index: index_name,
             type: v,
