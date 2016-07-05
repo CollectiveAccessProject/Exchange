@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <% if((@collections.length == 0) && (@resources.length == 0) && (@collection_objects.length == 0) && (@exhibitions.length == 0) && (@media_files.length == 0)) %>
+    <% if((@collections.length == 0) && (@resources.length == 0) && (@collection_objects.length == 0) && (@exhibitions.length == 0)) %>
         <h2>No results found for <em><%= sanitize(@query) %></em></h2>
     <% else %>
         <h2>Results for <em><%= sanitize(@query) %></em></h2>

@@ -3,17 +3,17 @@
 		<div class="col-sm-12">
 			<div class="pull-right"><button type="button" class="btn btn-noBg" onClick="$('#advancedSearchContainer').slideToggle(); return false;"><i class="fa fa-times-circle fa-3" aria-hidden="true"></i><span class="sr-only">Close</span></button></div>
 			<H3>Advanced Search</H3>
-			<div class="panel panel-default"><div class="panel-body"><form>
+			<div class="panel panel-default"><div class="panel-body"><form action="<%= url_for(action: 'advanced', controller: 'quick_search') %>">
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group">
 							<label class="control-label" for="advType">Item Type</label>
 							<select class="form-control" name="type" id="advType">
-								<option value="" selected="true">All</option>
-								<option value="learning_collection">Learning Collection</option>
-								<option value="resource">Resource</option>
-								<option value="collection_object">UMMA Collection Object</option>
-								<option value="exhibition">UMMA Exhibition</option>
+								<option value="-1" selected="true">All</option>
+								<option value="<%= Resource::COLLECTION %>">Learning Collection</option>
+								<option value="<%= Resource::RESOURCE %>">Resource</option>
+								<option value="<%= Resource::COLLECTION_OBJECT%>">UMMA Collection Object</option>
+								<option value="<%= Resource::EXHIBITION %>">UMMA Exhibition</option>
 							</select>
 						</div>
 					</div>
@@ -49,32 +49,32 @@
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advObjType">Classification/ Object Type</label>
-							<input class="form-control" type="text" name="objType" id="advObjType">
+							<label class="control-label" for="advClassification">Classification/ Object Type</label>
+							<input class="form-control" type="text" name="classification" id="advClassification">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advAddObjType">Additional Classification/ Object Type</label>
-							<input class="form-control" type="text" name="addObjType" id="advAddObjType">
+							<label class="control-label" for="advAdditionalClassification">Additional Classification/ Object Type</label>
+							<input class="form-control" type="text" name="additional_classification" id="advAdditionalClassification">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advMaker">Artist Maker</label>
-							<input class="form-control" type="text" name="maker" id="advMaker">
+							<label class="control-label" for="advArtist">Artist/Maker</label>
+							<input class="form-control" type="text" name="artist" id="advArtist">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advMakerNationality">Artist Maker Nationality</label>
-							<input class="form-control" type="text" name="makerNationality" id="advMakerNationality">
+							<label class="control-label" for="advArtistNationality">Artist Maker Nationality</label>
+							<input class="form-control" type="text" name="artist_nationality" id="advArtistNationality">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advCredit">Credit Line</label>
-							<input class="form-control" type="text" name="credit" id="advCredit">
+							<label class="control-label" for="advCreditLine">Credit Line</label>
+							<input class="form-control" type="text" name="credit_line" id="advCreditLine">
 						</div>
 					</div>
 					<div class="col-sm-3">
@@ -85,25 +85,25 @@
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group text-left">
-							<label class="control-label" for="advOnDisplay"><input type="checkbox" name="onDisplay" id="advOnDisplay"> On Display?</label>
+							<label class="control-label" for="advOnDisplay"><input type="checkbox" name="on_display" id="advOnDisplay"> On Display?</label>
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advCreated">Date Created</label>
-							<input class="form-control" type="text" name="created" id="advCreated">
+							<label class="control-label" for="advDateCreated">Date Created</label>
+							<input class="form-control" type="text" name="date_created" id="advDateCreated">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advDate">Other Dates</label>
-							<input class="form-control" type="text" name="date" id="advDate">
+							<label class="control-label" for="advOtherDates">Other Dates</label>
+							<input class="form-control" type="text" name="other_dates" id="advOtherDates">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advLocation">Current Location</label>
-							<input class="form-control" type="text" name="location" id="advLocation">
+							<label class="control-label" for="advCurrentLocation">Current Location</label>
+							<input class="form-control" type="text" name="current_location" id="advCurrentLocation">
 						</div>
 					</div>
 					
@@ -115,37 +115,26 @@
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advMaker">Artist Maker</label>
-							<input class="form-control" type="text" name="maker" id="advMaker">
+							<label class="control-label" for="advExhibitionArtist">Artist/Maker</label>
+							<input class="form-control" type="text" name="exhibition_artist" id="advExhibitionArtist">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advMakerNationality">Artist Maker Nationality</label>
-							<input class="form-control" type="text" name="makerNationality" id="advMakerNationality">
+							<label class="control-label" for="advExhibitionArtistNationality">Artist Maker Nationality</label>
+							<input class="form-control" type="text" name="exhibition_artist_nationality" id="advExhibitionArtistNationality">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advCreated">Date Created</label>
-							<input class="form-control" type="text" name="created" id="advCreated">
+							<label class="control-label" for="advExhibitionDates">Exhibition dates</label>
+							<input class="form-control" type="text" name="exhibition_dates" id="advExhibitionDates">
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
-							<label class="control-label" for="advDate">Other Dates</label>
-							<input class="form-control" type="text" name="date" id="advDate">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advLocation">Current Location</label>
-							<input class="form-control" type="text" name="location" id="advLocation">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group text-left">
-							<label class="control-label" for="advOnDisplay"><input type="checkbox" name="onDisplay" id="advOnDisplay"> On Display?</label>		
+							<label class="control-label" for="advLocation">Location</label>
+							<input class="form-control" type="text" name="exhibition_location" id="advLocation">
 						</div>
 					</div>
 				</div>
@@ -166,9 +155,9 @@
 		$("#advType")[0].selectedIndex = 0;
 		$('#advType').change(function() {
 			$('.additionalFields').hide();
-			if ($('#advType').val() == 'collection_object'){
+			if ($('#advType').val() == '<%= Resource::COLLECTION_OBJECT %>'){
 				$('#advancedSearchCollectionObject').slideDown();
-			}else if($('#advType').val() == 'exhibition'){
+			}else if($('#advType').val() == '<%= Resource::EXHIBITION %>'){
 				$('#advancedSearchExhibition').slideDown();
 			}
 		});

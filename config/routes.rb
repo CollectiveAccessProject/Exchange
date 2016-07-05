@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get '/resources/:id/preview' => 'resources#show', mode: :preview,  as: 'resource_preview'
 
   get '/quick_search/query' => 'quick_search#query'
+  get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
   get '/dashboard' => 'dashboard#index'
 
   get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title'

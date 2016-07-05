@@ -57,13 +57,13 @@ class Resource < ActiveRecord::Base
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
-    
-    if (indexing_data) 
-		index_data_hash = JSON.parse(indexing_data)
-		if index_data_hash.is_a? Hash
-		  record = record.merge(index_data_hash)
-		end
-	end
+
+    if (indexing_data)
+      index_data_hash = JSON.parse(indexing_data)
+      if index_data_hash.is_a? Hash
+        record = record.merge(index_data_hash)
+      end
+    end
     record
   end
   serialize :indexing_data
@@ -189,7 +189,7 @@ class Resource < ActiveRecord::Base
         else
           cssFloat = "style=\"float: #{cssFloat}\""
         end
-       body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}>" + mf.sourceable.preview(version.to_sym, width, height) + "<br/>" + mf.caption + "</div>")
+        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}>" + mf.sourceable.preview(version.to_sym, width, height) + "<br/>" + mf.caption + "</div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end
@@ -199,7 +199,7 @@ class Resource < ActiveRecord::Base
     return body_text_proc
   end
 
-  # Simple "quicksearch" of resources (broken out by type) and media files
+  # Simple "quicksearch" of resources (broken out by type)
   # STATIC
   def self.quicksearch(query)
     begin
@@ -247,18 +247,105 @@ class Resource < ActiveRecord::Base
       exhibitions = []
     end
 
-    begin
-      media_files = MediaFile.search(query).map do |r|
-        if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_id: r._source.resource_id }
-        end
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions}
+  end
+
+  # "Advanced" search of resources (broken out by type) and media files
+  # STATIC
+  def self.advancedsearch(params)
+    resource_type = params['type'].to_i
+
+    query_elements = []
+
+    # basic fields
+    if (params['keywords'] && (params['keywords'].length > 0))
+      query_elements.push(params['keywords'])
+    end
+    ['title'].each do |f|
+      if (params[f] && (params[f].length > 0))
+      query_elements.push(f + ':"' + params[f].gsub(/["']+/, '') + '"')
       end
-    rescue
-      media_files = []
     end
 
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, media_files: media_files}
+    case resource_type
+      when Resource::RESOURCE
+        # resource - no extra fields
+      when Resource::COLLECTION
+        # collection - no extra fields
+      when Resource::COLLECTION_OBJECT
+        # collection object
+        ['style', 'medium', 'classification', 'additional_classification', 'artist', 'artist_nationality', 'credit_line',  'places', 'on_display', 'date_created', 'other_dates', 'current_location'].each do |f|
+          if (params[f] && (params[f].length > 0))
+            query_elements.push(f + ':"' + params[f].gsub(/["']+/, '') + '"')
+          end
+        end
+      when Resource::EXHIBITION
+        # exhibition
+      else
+        # no type
+        resource_type = nil
+    end
+    # generate query
+    query = query_elements.join(" AND ")
+puts "QUERY IS " + query
+
+    resources = []
+    collections = []
+    collection_objects = []
+    exhibitions = []
+
+    if ((resource_type == Resource::RESOURCE) || (resource_type.nil?))
+      begin
+        resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
+          if r._source
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          end
+        end
+
+      rescue
+        # no search?
+      end
+    end
+
+    if ((resource_type == Resource::COLLECTION) || (resource_type.nil?))
+      begin
+        collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
+          if r._source
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          end
+        end
+      rescue
+        # no search?
+      end
+    end
+
+    if ((resource_type == Resource::COLLECTION_OBJECT) || (resource_type.nil?))
+      begin
+        collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
+          if r._source
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          end
+        end
+      rescue
+        # no search?
+      end
+    end
+
+    if ((resource_type == Resource::EXHIBITION) || (resource_type.nil?))
+      begin
+        exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
+          if r._source
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          end
+        end
+      rescue
+        # no search?
+      end
+    end
+
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions}
   end
+
 
   def destroy
     if media_files
