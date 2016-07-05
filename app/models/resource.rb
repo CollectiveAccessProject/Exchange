@@ -256,14 +256,21 @@ class Resource < ActiveRecord::Base
     resource_type = params['type'].to_i
 
     query_elements = []
+    query_display = []
+    query_values = {'type' => resource_type }
 
     # basic fields
     if (params['keywords'] && (params['keywords'].length > 0))
       query_elements.push(params['keywords'])
+      query_display.push("Keywords: " + params['keywords'])
+      query_values['keywords'] = params['keywords']
     end
-    ['title'].each do |f|
+    {'title' => 'Title'}.each do |f, l|
       if (params[f] && (params[f].length > 0))
-      query_elements.push(f + ':"' + params[f].gsub(/["']+/, '') + '"')
+        v = params[f].gsub(/["']+/, '')
+      query_elements.push(f + ':"' + v + '"')
+      query_display.push(l + ": " +v)
+        query_values[f] = v
       end
     end
 
@@ -274,20 +281,31 @@ class Resource < ActiveRecord::Base
         # collection - no extra fields
       when Resource::COLLECTION_OBJECT
         # collection object
-        ['style', 'medium', 'classification', 'additional_classification', 'artist', 'artist_nationality', 'credit_line',  'places', 'on_display', 'date_created', 'other_dates', 'current_location'].each do |f|
+        {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Additional Classification/Object Type', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'current_location' => 'Current location'}.each do |f, l|
           if (params[f] && (params[f].length > 0))
-            query_elements.push(f + ':"' + params[f].gsub(/["']+/, '') + '"')
+            v = params[f].gsub(/["']+/, '')
+            query_elements.push(f + ':"' + v + '"')
+            query_display.push(l + ":" +v)
+            query_values[f] = v
           end
         end
       when Resource::EXHIBITION
         # exhibition
+        {'exhibition_artist' => 'Artist', 'exhibition_artist_nationality' => 'Artist nationality', 'exhibition_dates' => 'Exhibiton dates', 'exhibition_location' => 'Location'}.each do |f, l|
+          if (params[f] && (params[f].length > 0))
+            v = params[f].gsub(/["']+/, '')
+            query_elements.push(f + ':"' + v + '"')
+            query_display.push(l + ":" +v)
+            query_values[f] = v
+          end
+        end
       else
         # no type
         resource_type = nil
     end
     # generate query
     query = query_elements.join(" AND ")
-puts "QUERY IS " + query
+    query_for_display = query_display.join("; ")
 
     resources = []
     collections = []
@@ -343,7 +361,7 @@ puts "QUERY IS " + query
       end
     end
 
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions}
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, query_for_display: query_for_display, query_elements: query_elements, query_values: query_values}
   end
 
 

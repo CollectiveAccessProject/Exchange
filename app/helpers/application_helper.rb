@@ -15,4 +15,19 @@ module ApplicationHelper
         raise ArgumentError, "Version #{version} is not valid"
     end
   end
+
+  def last_search_button(session, options=nil)
+    if(session.key?(:last_search_type))
+      text = (options && options.key?(:text)) ? options[:text] : "Back to search"
+      cssClass = (options && options.key?(:class)) ? options[:class] : ""
+      case session[:last_search_type]
+        when 'quick'
+          return  link_to(text, quick_search_url({"q" => session[:last_search_query]}), {class: cssClass})
+        when 'advanced'
+          return  link_to(text, advanced_search_url(session[:last_search_query_values]), {class: cssClass})
+      end
+      return ""
+    end
+
+  end
 end

@@ -11,7 +11,7 @@
      <!-- Editing <%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %>-->
       <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, resource_preview_path(@resource), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
-
+      <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
 
     </H4>
   </div><!-- end col -->

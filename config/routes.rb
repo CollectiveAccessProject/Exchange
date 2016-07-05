@@ -46,7 +46,7 @@ Rails.application.routes.draw do
 
   get '/resources/:id/preview' => 'resources#show', mode: :preview,  as: 'resource_preview'
 
-  get '/quick_search/query' => 'quick_search#query'
+  get '/quick_search/query' => 'quick_search#query', as: 'quick_search'
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
   get '/dashboard' => 'dashboard#index'
 
