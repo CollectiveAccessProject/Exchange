@@ -30,7 +30,7 @@
 						<% break %>
 					<% end %>
 				<% end %>
-				<div class="small text-left">object identifier</div>
+				<div class="small text-left"><%= @resource.subtitle %></div>
     		</div>
     		<div class="col-sm-5 text-left qsResultText">
     			<div class="small"><%= @resource.get_collection_object_field('artist') %> <%= @resource.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>

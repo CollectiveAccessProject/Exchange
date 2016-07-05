@@ -51,7 +51,7 @@ namespace :exchange do
               first_or_create.update title: value['title'],
                                      copyright_notes: value['copyright_notes'].present? ? value['copyright_notes'] : '',
                                      body_text: value['body_text'],
-                                     subtitle: '',
+                                     subtitle: value['subtitle'],
                                      resource_type: Resource::COLLECTION_OBJECT,
                                      user_id: User.where(email: 'admin@exchange.umma.umich.edu').first.id
           r =  Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first
