@@ -27,7 +27,6 @@ namespace :exchange do
 
       #puts "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
 
-
       # query exchangeObjectListForDisplay service
       object_list_for_display = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
                                                         url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
@@ -41,7 +40,6 @@ namespace :exchange do
                                                         }
 
       log.info "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
-
 
       # add 'main' record data with hardcoded mapping
       object_list_for_display.each do |_, value|
@@ -110,7 +108,7 @@ namespace :exchange do
 
       # only do one loop run in development. 100 test records.
       if Rails.env.development?
-      #  break
+        break
       end
 
     end while object_list_for_display.size > 1
