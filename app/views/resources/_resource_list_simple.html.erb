@@ -1,9 +1,14 @@
 <% @resource.resource_hierarchies.each do |rel| %>
 	<div class="collectionContentsItem" data-id="<%= rel.id %>">
-		<%= link_to ((rel.child_resource.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, edit_resource_path(rel.child_resource) %><br/>
-		<% if(rel.child_resource.resource_type == Resource::RESOURCE) %>
-			<% rel.child_resource.media_files.each do |f| %>
-				<% if f.sourceable %>
+   	<%= link_to ((rel.child_resource.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, edit_resource_path(rel.child_resource) %><br/>
+
+    <%= link_to '<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, rel, method: :delete, remote: true, data: {confirm: 'Are you sure you want to remove this resource from the collection?'}, class: 'cornerButton' %>
+
+
+    <% if(rel.child_resource.resource_type == Resource::RESOURCE) %>
+			    <% rel.child_resource.media_files.each do |f| %>
+
+           <% if f.sourceable %>
 					<%= link_to (f.sourceable.preview :thumbnail), edit_resource_path(rel.child_resource) %><br/>
 					<% break %>
 				<% end %>

@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   resources :flickr_links, except: [:index, :show, :new, :edit, :update, :destroy]
   resources :googledocs_links, except: [:index, :show, :new, :edit, :update, :destroy]
 
+  resources :resource_hierarchies
+
   # test for adding comments and tags asynchronously
   match '/resources/add_comment' => 'resources#add_comment', :as => 'add_new_comment_to_resources', :via => [:post]
   match '/resources/add_tag' => 'resources#add_tag', :as => 'add_new_tag_to_resources', :via => [:post]

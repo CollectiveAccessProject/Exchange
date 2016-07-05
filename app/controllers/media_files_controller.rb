@@ -36,9 +36,6 @@ class MediaFilesController < ApplicationController
     respond_to do |format|
       if @media_file.save
 
-        puts "Media File Save Success!"
-        puts @media_file.errors
-
         format.html do
           if @media_file.resource
             redirect_to edit_resource_path(@media_file.resource), notice: 'Media was added.'
@@ -51,7 +48,6 @@ class MediaFilesController < ApplicationController
         format.js
       else
 
-        puts "( Media Files Controller - Media File Save Failure!"
         puts @media_file.errors.full_messages.join(";")
         format.json { render json: @media_file.errors.full_messages.join(";"), status: :unprocessable_entity }
 
