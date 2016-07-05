@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   # add new collection - just a resource with the resource_type preset
   get '/collections/new' => 'resources#new', type: 'collection', as: "new_collection"
-  get '/collections/new/resource/:child_id' => 'resources#new', type: 'collection', as: "new_collection_with_id"
+  get '/collections/new/child_id/:child_id' => 'resources#new', type: 'collection', as: "new_collection_with_id"
 
   # add new resource to collection
   get '/resources/new/collection/:parent_id' => "resources#new", type: 'resource', as: "new_resource_for_collection_with_id"

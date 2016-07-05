@@ -73,12 +73,12 @@ class ResourcesController < ApplicationController
         # TODO: Verify that current user has privs to do this
         if(child_id > 0)
           child = Resource.find(child_id)
-          if (child.user_id == current_user.id)
+         # if (child.user_id == current_user.id)
             prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
             child.save
-          else
+          #else
 
-          end
+          #end
         end
         session[:mode] = :new;
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been added.'}
