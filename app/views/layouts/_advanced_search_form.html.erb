@@ -3,7 +3,7 @@
 		<div class="col-sm-12">
 			<div class="pull-right"><button type="button" class="btn btn-noBg" onClick="$('#advancedSearchContainer').slideToggle(); return false;"><i class="fa fa-times-circle fa-3" aria-hidden="true"></i><span class="sr-only">Close</span></button></div>
 			<H3>Advanced Search</H3>
-			<div class="panel panel-default"><div class="panel-body"><form action="<%= url_for(action: 'advanced', controller: 'quick_search') %>">
+			<div class="panel panel-default"><div class="panel-body"><form action="<%= url_for("/advanced_search/query") %>">
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group">
