@@ -47,6 +47,16 @@ p, ul, li{
 .btn-lg-icon i.fa{
 	font-size:30px;
 }
+.btn-lg i.fa{
+	font-size:20px;
+}
+.dropdown-menu .btn{
+	text-align:left;
+}
+.dropdown-menu .btn-noBg:hover{
+	background-color:$blue !important;
+	color:white !important;
+}
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Oswald', sans-serif;
     font-weight: 700;

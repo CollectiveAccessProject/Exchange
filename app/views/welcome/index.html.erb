@@ -10,12 +10,19 @@
 				</p>
 				<p class="text-center">
 				<% if user_signed_in? %>
-					
-					  <%= link_to('Your Dashboard', '/dashboard', class:'btn btn-default btn-lg btn-green')  %>
-            <br/><br/>
-					  <%= link_to('New Resource', new_resource_path, class:'btn btn-default btn-lg btn-green')  %>
-              &nbsp;&nbsp;&nbsp;
-              <%= link_to('New Collection', new_collection_path, class:'btn btn-default btn-lg btn-green')  %>
+					<div class="btn-toolbar" role="toolbar">
+						<div class="btn-group" role="group">
+							<%= link_to('Your Dashboard', '/dashboard', class:'btn btn-default btn-lg btn-green')  %> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;  		  
+             			</div>
+						<div class="btn-group" role="group">
+							<a class="btn btn-default btn-lg btn-green dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New &nbsp;<i class="fa fa-plus-circle fa-3" aria-hidden="true"></i></a>
+							<ul class="dropdown-menu">
+								<li><%= link_to('New Resource', new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
+								<li><%= link_to('New Collection', new_collection_path, class:'btn btn-xs btn-noBg')  %></li>
+							</ul>
+						</div>
+					</div>
+              
 					
 				<% else %>
 					
