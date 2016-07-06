@@ -1,0 +1,50 @@
+<div id="addChildResourceFormModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addResourceFormLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h2 class="modal-title" id="addResourceFormLabel">Add resource</h2>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+           You can add content to this collection by creating a new resource or
+            searching for an existing one below.
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 30px;">
+          <div class="col-sm-5 col-md-2 col-md-offset-1 text-center">
+            <%=
+              link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create new content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large"
+            %>
+          </div>
+          <div class="col-sm-7 col-md-8 col-md-offset-1 text-center">
+            <div id="add-child-resource-status">
+              <div class="flash-notice" id="add-child-resource-status-message">
+
+              </div>
+            </div>
+
+            <%= form_tag(add_child_resource_path(@resource), remote: true, method: "post", format: :json, class: 'child_resources', id: 'addChildResourceForm') do |f| %>
+            <div class="form-group">
+              <label>Search</label>
+              <%= autocomplete_field_tag(:find_child_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#add_child_resource_id", class:'form-control') %>
+              <%= hidden_field_tag(:add_child_resource_id) %>
+              <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
+            </div>
+            <% end %>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col-md-12 text-right">
+            <br/><a class="" data-dismiss="modal" aria-label="Close">Cancel <i class="fa fa-times"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

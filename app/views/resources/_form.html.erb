@@ -3,7 +3,7 @@
     <div class="panel-body">
 		<div class="row">
 			<div class="col-sm-12">
-				<H3><%= (@resource.id) ? '' : 'New ' %><%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %> Information</H3>
+				<H3><%= (@resource.id) ? '' : 'New ' %><%= @resource.resource_type_for_display %> Information</H3>
 			</div>
 		</div>
 		<div class="row">

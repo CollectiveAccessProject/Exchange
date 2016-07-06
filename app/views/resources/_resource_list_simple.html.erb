@@ -1,11 +1,11 @@
 <% @resource.resource_hierarchies.each do |rel| %>
 	<div class="collectionContentsItem" data-id="<%= rel.id %>">
-   	<%= link_to ((rel.child_resource.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, edit_resource_path(rel.child_resource) %><br/>
+   	<%= link_to ((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, edit_resource_path(rel.child_resource) %><br/>
 
     <%= link_to '<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, rel, method: :delete, remote: true, data: {confirm: 'Are you sure you want to remove this resource from the collection?'}, class: 'cornerButton' %>
 
 
-    <% if(rel.child_resource.resource_type == Resource::RESOURCE) %>
+    <% if(rel.child_resource.is_resource || rel.child_resource.is_collection_object) %>
 			    <% rel.child_resource.media_files.each do |f| %>
 
            <% if f.sourceable %>
@@ -13,13 +13,13 @@
 					<% break %>
 				<% end %>
 			<% end %>
-			<small>Resource with <%= rel.child_resource.media_files.count %> media</small>
+			<small><%= rel.child_resource.resource_type_for_display %> with <%= rel.child_resource.media_files.count %> media</small>
 		<% else %>
-			<a href="#" onCLick="$('.childcollection<%= rel.child_resource.id %>').slideToggle(); return false;"><small>Collection with <%= rel.child_resource.children.count %> items <%= (rel.child_resource.children.count) ? "<i class='fa fa-chevron-circle-down'></i>".html_safe : "" %></small></a>
+			<a href="#" onCLick="$('.childcollection<%= rel.child_resource.id %>').slideToggle(); return false;"><small><%= rel.child_resource.resource_type_for_display %> with <%= rel.child_resource.children.count %> items <%= (rel.child_resource.children.count) ? "<i class='fa fa-chevron-circle-down'></i>".html_safe : "" %></small></a>
 			<% if(rel.child_resource.children.count) %>
 				<div class="childcollection childcollection<%= rel.child_resource.id %>">
 				<% rel.child_resource.children.each do |g| %>
-					<%= link_to ((g.resource_type == Resource::RESOURCE) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + g.title, edit_resource_path(g) %><br/>
+					<%= link_to ((g.is_resource) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + g.title, edit_resource_path(g) %><br/>
 		
 				<% end %>
 				</div>

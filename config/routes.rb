@@ -40,6 +40,8 @@ Rails.application.routes.draw do
   post '/resources/:id/add_related_resource' => 'resources#add_related_resource', as: "add_related_resource"
   get '/resources/:id/remove_related_resource' => 'resources#remove_related_resource', as: "remove_related_resource"
 
+  post '/resources/:id/add_child_resource' => 'resources#add_child_resource', as: "add_child_resource"
+
   get '/resources/:id/set_media_order' => 'resources#set_media_order', as: "set_media_order"
   get '/resources/:id/set_resource_order' => 'resources#set_resource_order', as: "set_resource_order"
 

@@ -163,4 +163,22 @@
                 jQuery("#comments-status").slideUp(250);
             }, 3000);
         });
+
+        //
+        // AJAX add child resource
+        //
+        jQuery(document).on("ajax:success", "#addChildResourceForm", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery('#collection_contents_list').html(data.html);
+                jQuery('#addChildResourceFormModal').modal('hide');
+                jQuery('#add_child_resource_id').val('');
+                jQuery('#find_child_resource_id').val('');
+            }
+            jQuery("#add-child-resource-status").slideDown(250);
+
+            jQuery("#add-child-resource-status-message").html((data && data.status && (data.status == 'ok')) ? "Added resource" : "Could not add resource: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#add-child-resource-status").slideUp(250);
+            }, 3000);
+        });
     });

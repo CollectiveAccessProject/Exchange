@@ -90,6 +90,19 @@ class Resource < ActiveRecord::Base
     return self.resource_type == Resource::EXHIBITION;
   end
 
+  def resource_type_for_display(plural=false)
+    case self.resource_type
+      when Resource::RESOURCE
+        return plural ? "Resources" : "Resource"
+      when Resource::COLLECTION_OBJECT
+        return plural ? "Collection objects" : "Collection object"
+      when Resource::COLLECTION
+        return plural ? "Collections" : "Collection"
+      when Resource::EXHIBITION
+        return plural ? "Exhibitions" : "Exhibition"
+    end
+  end
+
 
   # returns license type as text
   def get_license_type

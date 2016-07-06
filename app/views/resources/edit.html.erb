@@ -59,7 +59,6 @@
     </div><!-- end row -->
   </div><!-- end col -->
   <div class="col-md-2">
-    
       <% if (@resource.is_resource || @resource.is_collection_object) %>
           <!-- Resource media list -->
           <%= render(partial:'media_files/integrated_create_form') %>
@@ -68,16 +67,19 @@
           </div>
           <div class="panel panel-default"><div class="panel-body" id="resource_media_list" data-resource_id="<%= @resource.id %>">
             <%=
-            if (@resource.parents.length == 0)
+           # if (@resource.parents.length == 0)
            	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-        	end
+        	#end
         	%>
            <%= render(partial: "resources/media_list") %>
           </div><!-- end panel-body --></div><!-- end panel -->
       <% else %>
           <!-- Learning collection contents list -->
           <div id="collection_contents_list_heading">
-            <%= link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large" %>
+            <%=
+              #link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large"
+              button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add Content".html_safe, "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
+            %>
           </div>
           <div class="panel panel-default"><div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">
             <%=
@@ -93,6 +95,9 @@
 
 <!-- Resource collection modal -->
 <%= render(partial:'resources/resource_collection_select') %>
+
+<!-- Add resource  modal -->
+<%= render(partial:'resources/add_resource_select') %>
 
 <%
   if((@resource.parents.count == 0) && (@resource.is_resource) && (session['mode'] == 'new'))

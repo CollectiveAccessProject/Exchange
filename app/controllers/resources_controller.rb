@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :remove_comment, :remove_tag, :save_preferences, :add_related_resource, :remove_related_resource, :set_media_order, :set_resource_order]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :remove_comment, :remove_tag, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order]
 
   include CommentableController
   include TaggableController
@@ -213,6 +213,28 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       format.html
       format.json {render :json => resp }
+    end
+  end
+
+
+  def add_child_resource
+    begin
+      # response
+
+      # TODO: Check if user can relate to target
+      add_child_resource_id = params[:add_child_resource_id]
+      puts params.inspect
+      puts "res=" + add_child_resource_id
+
+      prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).first_or_create
+
+      resp = {:status => :ok, :html => render_to_string("resources/_resource_list_simple", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json {render :json => resp, status: :ok }
     end
   end
 
