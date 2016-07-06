@@ -201,6 +201,7 @@ $white:#FFFFFF;
 	margin-bottom:10px;
 	.collectionDetailContentsItem{
 		margin-bottom:10px;
+		line-height:1em;
 		a{
 			font-weight:500;
 			font-size:13px;
@@ -208,6 +209,8 @@ $white:#FFFFFF;
 		img{
 			width:100%;
 			height:auto;
+			max-height:250px;
+			object-fit: contain;
 		}
 		small{
 			font-size:11px;
