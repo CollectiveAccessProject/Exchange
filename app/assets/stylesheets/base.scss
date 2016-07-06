@@ -479,6 +479,22 @@ select.input-sm{
 		background-color:white;
 	}
 }
+.note-toolbar{
+	background-color:white !important;
+	.btn-group{
+		margin-top:0px !important;
+		margin-right:0px 5px 0px 5px;
+		.note-btn{
+			color:$blue !important;
+			background-color:white;
+			margin:0px !important;
+			padding:5px 5px 0px 5px;
+		}
+		.open > .note-btn.dropdown-toggle, .open > .note-btn.dropdown-toggle:hover{
+			background-color:white !important;
+		}
+	}
+}
 .formatting_options label{
 	font-weight:normal;
 }
