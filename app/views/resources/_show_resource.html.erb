@@ -176,7 +176,7 @@
 <% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
 	<div class="row">
 	  <div class="col-md-12">
-		<H5>Add your <%= (@resource.settings(:user_interaction).allow_comments > 0) ? "comment" : "" %> <%= ((@resource.settings(:user_interaction).allow_comments > 0) && (@resource.settings(:user_interaction).allow_tags > 0)) ? "tags" : "" %> <%= (@resource.settings(:user_interaction).allow_tags > 0) ? "tags" : "" %></H5>
+		<H5>Add your <%= (@resource.settings(:user_interaction).allow_comments > 0) ? "comment" : "" %> <%= ((@resource.settings(:user_interaction).allow_comments > 0) && (@resource.settings(:user_interaction).allow_tags > 0)) ? " and " : "" %> <%= (@resource.settings(:user_interaction).allow_tags > 0) ? "tags" : "" %></H5>
 			<div class="row">
 		<% if (@resource.settings(:user_interaction).allow_comments > 0) %>
 			  <div class="col-sm-6">
