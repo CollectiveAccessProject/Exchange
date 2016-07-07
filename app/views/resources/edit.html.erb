@@ -8,7 +8,17 @@
 	  	@resource.title
 	  end
       %>
-     <!-- Editing <%= (@resource.resource_type == Resource::RESOURCE) ? 'Resource' : 'Collection' %>-->
+      <%=
+            if (@resource.parents.length == 0)
+           	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + ((@resource.is_resource || @resource.is_collection_object) ? "Add to collection" : "Organize"), "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+        	end
+        	%>
+        	 <%= 
+        	 	if (@resource.is_collection || @resource.is_exhibition)
+        	 	#button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "New sub-collection", "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+        	 link_to "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "New sub-collection", new_subcollection_with_id_path(@resource.id), {"class": "btn btn-noBg btn-xs"} 
+        	end
+        	%>
       <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, resource_preview_path(@resource), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
       <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
@@ -66,11 +76,6 @@
           <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Media'), "href": "#", "class": "btn btn-default btn-large", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
           </div>
           <div class="panel panel-default"><div class="panel-body" id="resource_media_list" data-resource_id="<%= @resource.id %>">
-            <%=
-           # if (@resource.parents.length == 0)
-           	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-        	#end
-        	%>
            <%= render(partial: "resources/media_list") %>
           </div><!-- end panel-body --></div><!-- end panel -->
       <% else %>
@@ -82,11 +87,6 @@
             %>
           </div>
           <div class="panel panel-default"><div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">
-            <%=
-            if (@resource.parents.length == 0)
-           	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + ((@resource.resource_type == Resource::RESOURCE) ? "Add to collection" : "Make sub-collection"), "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-        	end
-        	%>
             <%= render(partial: "resources/resource_list_simple") %>
           </div><!-- end panel-body --></div><!-- end panel -->
       <% end %>
