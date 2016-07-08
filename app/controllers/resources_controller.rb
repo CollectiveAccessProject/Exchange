@@ -223,8 +223,6 @@ class ResourcesController < ApplicationController
 
       # TODO: Check if user can relate to target
       add_child_resource_id = params[:add_child_resource_id]
-      puts params.inspect
-      puts "res=" + add_child_resource_id
 
       prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).first_or_create
 
