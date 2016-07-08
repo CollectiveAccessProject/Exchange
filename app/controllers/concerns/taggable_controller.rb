@@ -19,13 +19,14 @@ module TaggableController
         res
       rescue
         flash[:alert] = tag.errors.full_messages.join('; ')
+          return false
       ensure
         if (!dont_redirect)
           redirect_to :action => :show, :id => model.id
         end
       end
     end
-    return false
+    return true
   end
 
   private
