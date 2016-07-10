@@ -7,6 +7,7 @@ class Resource < ActiveRecord::Base
   has_many :children, -> { order 'resource_hierarchies.rank' }, through: 'resource_hierarchies', source: :child_resource
 
   has_many :media_files, -> { order 'media_files.rank' }
+  has_many :links
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
@@ -376,7 +377,6 @@ class Resource < ActiveRecord::Base
 
     return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, query_for_display: query_for_display, query_elements: query_elements, query_values: query_values}
   end
-
 
   def destroy
     if media_files

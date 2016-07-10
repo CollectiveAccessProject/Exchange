@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :remove_comment, :remove_tag, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order]
 
   include CommentableController
   include TaggableController
@@ -176,6 +176,37 @@ class ResourcesController < ApplicationController
     t.destroy
 
     resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
+  # add new link
+  def add_link
+    # TODO: make sure user is allowed to do this for this resource
+    params.permit(links: [:url, :caption])
+   puts params.inspect
+    link = Link.new({url: params[:link][:url], caption: params[:link][:caption], resource_id: @resource.id})
+
+    if(link.save)
+      resp = {status: :ok, html: render_to_string("resources/_links", layout: false)}
+    else
+      resp = {status: :err, error: link.errors.full_messages.join('; ')}
+    end
+
+    respond_to do |format|
+      format.json { render json: resp }
+      format.html { redirect_to resource_path(@resource), notice: 'Added link' }
+    end
+  end
+
+  def remove_link
+    # TODO: make sure user is allowed to do this for this resource
+    t = Link.where(id: params[:link_id], resource_id: @resource.id).first
+    t.destroy
+
+    resp = {:status => :ok, :html => render_to_string("resources/_links", layout: false)}
 
     respond_to do |format|
       format.json { render json: resp }

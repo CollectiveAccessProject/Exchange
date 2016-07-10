@@ -165,6 +165,33 @@
         });
 
         //
+        // AJAX links
+        //
+        jQuery(document).on("ajax:success", "#addLinksForm", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_links").html(data.html)
+            }
+            jQuery("#links-status").slideDown(250);
+
+            jQuery("#links-status-message").html((data && data.status && (data.status == 'ok')) ? "Added link" : "Could not add link: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#links-status").slideUp(250);
+            }, 3000);
+        });
+
+        jQuery(document).on("ajax:success", ".linkRemoveLink", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_links").html(data.html)
+            }
+            jQuery("#links-status").slideDown(250);
+
+            jQuery("#links-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed link" : "Could not remove link: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#links-status").slideUp(250);
+            }, 3000);
+        });
+
+        //
         // AJAX add child resource
         //
         jQuery(document).on("ajax:success", "#addChildResourceForm", function(e, data) {

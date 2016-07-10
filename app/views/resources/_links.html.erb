@@ -1,0 +1,35 @@
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <%= form_tag '/resources/add_link', remote: true, "data-type": :json, id: :addLinksForm do %>
+        <div id="links-status">
+          <div class="flash-notice" id="links-status-message">
+
+          </div>
+        </div>
+        <%= hidden_field_tag 'id', @resource.id %>
+        <div class="form-group">
+          <label>Link</label>
+          <%= text_field_tag 'link[url]', nil, class:'form-control', placeholder: "http://" %>
+          <label>Caption</label>
+          <%= text_field_tag 'link[caption]', nil, class:'form-control' %>
+        </div>
+        <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+    <% end %>
+
+    <% if @resource.links.count > 0 %>
+		<div class="relatedContent">
+			<H4><%= @resource.links.count %> Link<%= ((@resource.links.count > 1) ? "s" : "") %></H4>
+			<% @resource.links.each do |c| %>
+				<div>
+				  <%= c.url %><small>
+          <%= if (c.caption && (c.caption.length > 0))
+                "(" + c.caption + ")"
+            end
+          %></small>
+				  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_link_from_resources_path(@resource) + "?link_id=" + c.id.to_s, {remote: true, class: :linkRemoveLink}) %>
+				</div>
+			<% end %>
+        </div>
+    <% end %>
+  </div><!-- end panel-body -->
+</div><!-- end panel -->
