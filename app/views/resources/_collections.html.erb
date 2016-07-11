@@ -11,9 +11,10 @@
           <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_parent_path(@resource.id, c.id), {remote: true, class: :collectionsRemoveLink}) %>
 
         </div>
-
 			<% end %>
-        </div>
+    </div>
+    <% else %>
+        <H4>Resource is not in a collection</H4>
     <% end %>
   </div><!-- end panel-body -->
 </div><!-- end panel -->

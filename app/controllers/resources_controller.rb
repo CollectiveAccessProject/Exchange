@@ -216,12 +216,16 @@ class ResourcesController < ApplicationController
   def remove_parent
     # TODO: make sure user is allowed to do this for this resource
     if (r = ResourceHierarchy.where(:child_resource_id => params[:id], :resource_id => params[:parent_id]).first)
-      r.destroy
+      if (r.destroy)
 
-      @available_collections = get_available_collections(@resource) # regenerate list of available collections to reflect the delete
-      resp = {:status => :ok, :html => render_to_string("resources/_collections", layout: false), :header => render_to_string("resources/_resource_parent_display_header", layout: false), :resource_collection_select => render_to_string('resources/_resource_collection_select', layout: false), :collection_count => ResourceHierarchy.where(:child_resource_id => params[:id]).count}
-    else
+       @available_collections = get_available_collections(@resource) # regenerate list of available collections to reflect the delete
+       resp = {:status => :ok, :html => render_to_string("resources/_collections", layout: false), :header => render_to_string("resources/_resource_parent_display_header", layout: false), :resource_collection_select => render_to_string('resources/_resource_collection_select', layout: false), :collection_count => ResourceHierarchy.where(:child_resource_id => params[:id]).count}
+      else
         resp = {status: :err, error: r.errors.full_messages.join('; ')}
+      end
+
+    else
+        resp = {status: :err, error: "No relationship found"}
     end
 
     respond_to do |format|

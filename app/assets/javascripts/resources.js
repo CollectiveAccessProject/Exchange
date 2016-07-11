@@ -200,6 +200,7 @@
             if(data.status == 'ok') {
                 jQuery("#tab_collections").html(data.html)
             }
+
             jQuery("#collection-status").slideDown(250);
 
             jQuery("#collection-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed from collection" : "Could not remove from collection: " + data.error);
