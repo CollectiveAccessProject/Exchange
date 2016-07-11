@@ -17,6 +17,30 @@ class Resource < ActiveRecord::Base
 
   belongs_to :user
 
+  # resource type constants
+  RESOURCE = 1
+  LEARNING_COLLECTION = 2
+  COLLECTION = 2
+  COLLECTION_OBJECT = 3
+  EXHIBITION = 4
+
+  has_settings :class_name => 'ResourceSettingObject'  do |s|
+    s.key :media_formatting, :defaults => { :mode => :slideshow }
+    s.key :text_placement,  :defaults => { :placement => :below}
+    s.key :text_formatting,  :defaults => { :show_all => 1, :collapse => 0 }
+    s.key :user_interaction,  :defaults => { :allow_comments => 1, :allow_tags => 1, :allow_responses => 1, :display_responses_on_separate_page => 1 }
+  end
+
+  #
+  #
+  #
+  @@settings_by_type = [
+      {}, # not used
+      {:media_formatting => [:mode], :text_placement => [:placement], :text_formatting => [:show_all, :collapse], :user_interaction => [:allow_comments, :allow_tags, :allow_responses, :display_responses_on_separate_page]}, # resources
+      {:media_formatting => []}, # collections
+      {:media_formatting => [:mode]}, # collection objects
+      {:media_formatting => [:mode]} # exhibitions
+  ]
 
   # change log
   has_paper_trail
@@ -40,13 +64,6 @@ class Resource < ActiveRecord::Base
   # slug handling
   include SlugModel
   before_validation  :set_slug
-
-  # resource type constants
-  RESOURCE = 1
-  LEARNING_COLLECTION = 2
-  COLLECTION = 2
-  COLLECTION_OBJECT = 3
-  EXHIBITION = 4
 
 
   #
@@ -91,6 +108,17 @@ class Resource < ActiveRecord::Base
     return self.resource_type == Resource::EXHIBITION;
   end
 
+  # return true if type is for item-level "resource-y" behavior (eg. resource or collection object)
+  def is_resource_like
+    return (self.is_resource || self.is_collection_object)
+  end
+
+  # return true if type is for collection-level behavior (eg. collection or exhibition)
+  def is_collection_like
+    return (self.is_collection || self.is_exhibition)
+  end
+
+
   def resource_type_for_display(plural=false)
     case self.resource_type
       when Resource::RESOURCE
@@ -104,6 +132,23 @@ class Resource < ActiveRecord::Base
     end
   end
 
+  # return list of settings valid for this type of resource
+  def available_settings
+    return @@settings_by_type[self.resource_type]
+  end
+
+  def setting_is_valid(group, setting=nil)
+    if(!(@@settings_by_type[self.resource_type]))
+      return false
+    end
+    if(!(@@settings_by_type[self.resource_type][group]))
+      return false
+    end
+    if (setting == nil)
+      return true
+    end
+    return @@settings_by_type[self.resource_type][group].include? setting
+  end
 
   # returns license type as text
   def get_license_type
@@ -159,13 +204,6 @@ class Resource < ActiveRecord::Base
     __elasticsearch__.delete_document
   end
 
-  # settings
-  has_settings :class_name => 'ResourceSettingObject'  do |s|
-    s.key :media_formatting, :defaults => { :mode => :slideshow }
-    s.key :text_placement,  :defaults => { :placement => :below}
-    s.key :text_formatting,  :defaults => { :show_all => 1, :collapse => 0 }
-    s.key :user_interaction,  :defaults => { :allow_comments => 1, :allow_tags => 1, :allow_responses => 1, :display_responses_on_separate_page => 1 }
-  end
 
   # configurable form drop-downs
   def self.resource_types
@@ -282,8 +320,8 @@ class Resource < ActiveRecord::Base
     {'title' => 'Title'}.each do |f, l|
       if (params[f] && (params[f].length > 0))
         v = params[f].gsub(/["']+/, '')
-      query_elements.push(f + ':"' + v + '"')
-      query_display.push(l + ": " +v)
+        query_elements.push(f + ':"' + v + '"')
+        query_display.push(l + ": " +v)
         query_values[f] = v
       end
     end
