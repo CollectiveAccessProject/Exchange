@@ -76,6 +76,22 @@
 		</div>
   </div><!-- end col -->
 <% end %>
+  <% if @resource.links.count > 0 %>
+      <div class="col-sm-3 detailRelatedContentBlock">
+        <H4><%= @resource.links.count %> Link<%= ((@resource.links.count > 1) ? "s" : "") %></H4>
+        <div class="detailRelatedContentBlockScroll">
+        <% @resource.links.each do |c| %>
+            <div>
+              <%= if (c.caption && (c.caption.length > 0))
+                    (c.caption + "<br/>").html_safe
+                  end
+              %>
+              <small><a href="<%= c.url %>" target="_blank" title="<%= c.url %>"><i class='fa fa-external-link' aria-hidden='true'></i> <%= (c.url.length > 35) ? c.url[0..32] + "..." : c.url %></a></small>
+            </div>
+        <% end %>
+        </div>
+      </div>
+  <% end %>
 <% if (@resource.settings(:user_interaction).allow_tags > 0) && (@resource.tags.count > 0) %>
   <div class="col-sm-3 detailRelatedContentBlock"> 
         <H4>Tags</h4>

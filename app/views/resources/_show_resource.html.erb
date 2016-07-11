@@ -223,6 +223,20 @@
 		</div>
 	  </div><!-- end unit -->
 <% end %>
+        <% if @resource.links.count > 0 %>
+            <div class="unit">
+              <H4><%= @resource.links.count %> Link<%= ((@resource.links.count > 1) ? "s" : "") %></H4>
+              <% @resource.links.each do |c| %>
+                  <div>
+                    <%= if (c.caption && (c.caption.length > 0))
+                          (c.caption + "<br/>").html_safe
+                        end
+                    %>
+                    <small><a href="<%= c.url %>" target="_blank" title="<%= c.url %>"><i class='fa fa-external-link' aria-hidden='true'></i> <%= (c.url.length > 24) ? c.url[0..21] + "..." : c.url %></a></small>
+                  </div>
+              <% end %>
+            </div>
+        <% end %>
 <% if(@resource.settings(:user_interaction).allow_tags > 0) %>
 	<% if @resource.tags.count > 0 %>
         <div class="unit">
