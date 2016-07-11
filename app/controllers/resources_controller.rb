@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order]
+  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent]
 
   include CommentableController
   include TaggableController
@@ -48,7 +48,7 @@ class ResourcesController < ApplicationController
     session[:resource_id] = @resource.id
 
     # Get list of available collections
-    @available_collections = Resource.where("resource_type = ? AND user_id = ? AND id <> ?", Resource::LEARNING_COLLECTION, current_user.id, @resource.id).order(title: :asc)
+    @available_collections = get_available_collections(@resource)
   end
 
   # POST /resources
@@ -213,6 +213,22 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def remove_parent
+    # TODO: make sure user is allowed to do this for this resource
+    if (r = ResourceHierarchy.where(:child_resource_id => params[:id], :resource_id => params[:parent_id]).first)
+      r.destroy
+
+      @available_collections = get_available_collections(@resource) # regenerate list of available collections to reflect the delete
+      resp = {:status => :ok, :html => render_to_string("resources/_collections", layout: false), :header => render_to_string("resources/_resource_parent_display_header", layout: false), :resource_collection_select => render_to_string('resources/_resource_collection_select', layout: false), :collection_count => ResourceHierarchy.where(:child_resource_id => params[:id]).count}
+    else
+        resp = {status: :err, error: r.errors.full_messages.join('; ')}
+    end
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
   # save preferences
   def save_preferences
     params.permit(:media_formatting_mode, :text_placement_placement, :text_formatting_show_all, :text_formatting_collapse, :user_interaction_allow_comments, :user_interaction_allow_tags, :user_interaction_allow_responses, :user_interaction_display_responses_on_separate_page)
@@ -361,11 +377,13 @@ class ResourcesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_resource
     @resource = Resource.find(params[:id])
+  end
 
-
-    # TODO: get rid of this; related resources will use AJAX lookup
-    # Get list of available resources and collections (TEMPORARY)
-    @available_resources = Resource.where("user_id = ? AND id <> ?", current_user.id, @resource.id).order(title: :asc)
+  # return collections available to the current user
+  def get_available_collections(resource)
+    ids = resource.parents.pluck(:id)
+    ids.push(resource.id)
+    return Resource.where("resource_type = ? AND user_id = ? AND id NOT IN (?)", Resource::LEARNING_COLLECTION, current_user.id, ids).order(title: :asc)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

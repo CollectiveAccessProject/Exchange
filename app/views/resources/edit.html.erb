@@ -1,23 +1,22 @@
 <div class="row">
   <div class="col-sm-12">
-    <H4>
+    <H4><span id="resource_title_header">
       <%=
 	  if(@resource.parents.first)
-	    link_to raw("Part of: " + @resource.parents.first.title), edit_resource_path(@resource.parents.first), "class": ""
-	  else
+	    render 'resources/resource_parent_display_header'
+	   else
 	  	@resource.title
 	  end
-      %>
+      %></span>
       <%=
-            if (@resource.parents.length == 0)
+           # if (@resource.parents.length == 0)
            	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + ((@resource.is_resource || @resource.is_collection_object) ? "Add to collection" : "Organize"), "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-        	end
+        #	end
         	%>
         	 <%= 
         	 	if (@resource.is_collection || @resource.is_exhibition)
-        	 	#button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "New sub-collection", "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-        	 link_to "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "New sub-collection", new_subcollection_with_id_path(@resource.id), {"class": "btn btn-noBg btn-xs"} 
-        	end
+        	    link_to "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "New sub-collection", new_subcollection_with_id_path(@resource.id), {"class": "btn btn-noBg btn-xs"}
+          	end
         	%>
       <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, resource_preview_path(@resource), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
@@ -52,6 +51,9 @@
           <li>
             <a data-toggle="tab" href="#tab_links"><i class="fa fa-external-link" aria-hidden="true"></i> &nbsp;Links</a>
           </li>
+          <li>
+            <a data-toggle="tab" href="#tab_collections"><i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;Collections</a>
+          </li>
         </ul>
 
         <div class="tab-content">
@@ -69,6 +71,9 @@
           </div>
           <div id="tab_links" class="tab-pane">
             <p><%= render 'resources/links' %></p>
+          </div>
+          <div id="tab_collections" class="tab-pane">
+            <p><%= render 'resources/collections' %></p>
           </div>
         </div>
       </div><!-- end col -->
@@ -100,9 +105,11 @@
 </div><!-- end row -->
 
 <!-- Resource collection modal -->
+<div id="resource_collection_select_container">
 <%= render(partial:'resources/resource_collection_select') %>
+</div>
 
-<!-- Add resource  modal -->
+<!-- Add resource modal -->
 <%= render(partial:'resources/add_resource_select') %>
 
 <%

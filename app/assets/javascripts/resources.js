@@ -186,8 +186,32 @@
             jQuery("#links-status").slideDown(250);
 
             jQuery("#links-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed link" : "Could not remove link: " + data.error);
+
             window.setTimeout(function() {
                 jQuery("#links-status").slideUp(250);
+            }, 3000);
+        });
+
+        //
+        // AJAX collections
+        //
+
+        jQuery(document).on("ajax:success", ".collectionsRemoveLink", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_collections").html(data.html)
+            }
+            jQuery("#collection-status").slideDown(250);
+
+            jQuery("#collection-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed from collection" : "Could not remove from collection: " + data.error);
+            if (data && data.header) {
+                jQuery("#resource_title_header").html(data.header);
+            }
+            if (data && data.resource_collection_select) {
+                jQuery("#resource_collection_select_container").html(data.resource_collection_select);
+            }
+
+            window.setTimeout(function() {
+                jQuery("#collection-status").slideUp(250);
             }, 3000);
         });
 

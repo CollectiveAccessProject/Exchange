@@ -38,6 +38,8 @@ Rails.application.routes.draw do
   match '/resources/:id/remove_comment' => 'resources#remove_comment', :as => 'remove_comment_from_resources', :via => [:get]
   match '/resources/:id/remove_tag' => 'resources#remove_tag', :as => 'remove_tag_from_resources', :via => [:get]
   match '/resources/:id/remove_link' => 'resources#remove_link', :as => 'remove_link_from_resources', :via => [:get]
+  match '/resources/:id/remove_parent/:parent_id' => 'resources#remove_parent', :as => 'remove_parent', :via => [:get]
+
 
   post '/resources/:id/set_parent' => 'resources#update', as: "set_resource_parent_with_id"
   post '/resources/:id/add_related_resource' => 'resources#add_related_resource', as: "add_related_resource"

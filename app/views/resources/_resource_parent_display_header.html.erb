@@ -1,0 +1,5 @@
+<%=
+  if(@resource.parents && @resource.parents.first)
+    (link_to raw("Part of: " + @resource.parents.first.title), edit_resource_path(@resource.parents.first), "class": "") +  (((parent_count = @resource.parents.count) > 1) ? " + " + ((parent_count - 1).to_s) + " more " : "")
+  end
+%>
