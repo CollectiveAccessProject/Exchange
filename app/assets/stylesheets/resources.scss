@@ -94,8 +94,18 @@ $white:#FFFFFF;
 	border-bottom-right-radius:3px;
 	border-bottom-left-radius:3px;
 }
-.modal .nav-tabs .fa{
-	font-size:30px;
+.modal .nav-tabs{
+  .fa {
+    font-size: 20px;
+    margin-right:5px;
+  }
+  a{
+    text-transform:none;
+    font-family:$font-family-sans-serif;
+    font-weight:normal;
+    font-size:14px;
+    color:$gray;
+  }
 }
 .form-group label.inline{
 	display:inline;
