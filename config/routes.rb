@@ -59,8 +59,8 @@ Rails.application.routes.draw do
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
   get '/dashboard' => 'dashboard#index'
 
-  get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title_lookup', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'
-  get '/resources/:id/autocomplete_collection_object_title' => 'resources#autocomplete_resource_title_lookup', mode: Resource::COLLECTION_OBJECT, as: 'autocomplete_collection_object_title'
+  get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'
+  get '/resources/:id/autocomplete_collection_object_title' => 'resources#autocomplete_resource_title', mode: Resource::COLLECTION_OBJECT, as: 'autocomplete_collection_object_title'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
