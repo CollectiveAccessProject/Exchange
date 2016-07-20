@@ -10,6 +10,18 @@ class ResourcesController < ApplicationController
   # UI autocomplete on resource title (used by related resources lookup)
   autocomplete :resource, :title, :full => true, :extra_data => [:id]
 
+  def autocomplete_resource_title_lookup
+    params.permit(:mode)
+    autocomplete_resource_title
+  end
+  def get_autocomplete_items(parameters)
+   if (!params[:mode].nil?)
+        super(parameters).where(:resource_type => params[:mode])
+      else
+        super(parameters)
+    end
+  end
+
   # GET /resources
   # GET /resources.json
   def index

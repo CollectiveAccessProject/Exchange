@@ -1,0 +1,16 @@
+<%
+  begin
+    r = Resource.find(plugin_model.resource_id)
+    f = r.media_files.first
+%><%=
+      render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil}
+%>
+    <%=
+      r.title
+    %><%
+  rescue
+%><%=
+      "Media is unavailable"
+%><%
+  end
+%>

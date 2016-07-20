@@ -1,0 +1,16 @@
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <%= fields_for(plugin_model) do |f| %>
+
+        <label for="collectionobjectMedia">UMMA collection object:</label>
+        <%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_object_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collectionobject_link_original_link", class:'form-control') %>
+        <%= hidden_field_tag("collectionobject_link[original_link]") %>
+
+    <div class="form-actions">
+      <% if plugin_model.id %>
+        <%= link_to 'Delete?', plugin_model, method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
+    </div>
+    <% end %>
+  </div>
+</div>
