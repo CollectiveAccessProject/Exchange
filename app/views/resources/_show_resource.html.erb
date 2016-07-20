@@ -11,7 +11,7 @@
   </div><!-- end col -->
 </div><!-- end row -->
 <% parent = @resource.parents.first %>
-<%= render :partial => 'show_parent_heading.html.erb' %>
+<%= render partial: 'show_parent_heading.html.erb' %>
 <div class="row">
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
@@ -45,8 +45,10 @@
 					<%=
 					  # this renders a bootstrap model that is triggered if you click on the preview above
 					  # it's in a partial because it's about a billion nested divs :-)
-					  render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
-					%>
+            if (f.sourceable)
+              render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+					  end
+          %>
 				<% else %>
 					<p><%= f.caption  %></p>
 				<% end %>
@@ -76,8 +78,10 @@
     				<%=
 						  # this renders a bootstrap model that is triggered if you click on the preview above
 						  # it's in a partial because it's about a billion nested divs :-)
-						  render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
-						%>
+              if (f.sourceable)
+			  			  render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+						  end
+            %>
              
 <% 
 					counter = counter + 1
