@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent]
+  before_action :set_resource, only: [:show, :edit, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent]
 
   include CommentableController
   include TaggableController
@@ -13,17 +13,17 @@ class ResourcesController < ApplicationController
   # Filter on type when mode param is set
   def get_autocomplete_items(parameters)
     params.permit(:mode)
-   if (!params[:mode].nil?)
-        super(parameters).where(:resource_type => params[:mode])
-      else
-        super(parameters)
+    if (!params[:mode].nil?)
+      super(parameters).where(:resource_type => params[:mode])
+    else
+      super(parameters)
     end
   end
 
   # GET /resources
   # GET /resources.json
   def index
-    @resources = Resource.all
+    redirect_to(dashboard_url)
   end
 
   # GET /resources/1
@@ -83,9 +83,9 @@ class ResourcesController < ApplicationController
         # TODO: Verify that current user has privs to do this
         if(child_id > 0)
           child = Resource.find(child_id)
-         # if (child.user_id == current_user.id)
-            prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
-            child.save
+          # if (child.user_id == current_user.id)
+          prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
+          child.save
           #else
 
           #end
@@ -126,6 +126,33 @@ class ResourcesController < ApplicationController
       end
 
     end
+  end
+
+  # POST /resources/fork/1
+  def fork
+    # TODO: user can read this? And duplicate it?
+    r  = @resource.dup
+    r.forked_from_resource_id = @resource.id
+    r.user_id = current_user.id
+   if (r.save)
+    redirect_to edit_resource_path(r), notice: "Forked resource"
+   else
+     redirect_to dashboard_path, notice: "Could not fork resource"
+   end
+  end
+
+  def toggle_access
+    # TODO: can user edit this?
+    if (@resource.access == 0)
+      @resource.access = 1
+      @resource.save
+      msg = "Published " + @resource.resource_type_for_display
+    else
+      @resource.access = 0
+      @resource.save
+      msg =  "Unpublished " + @resource.resource_type_for_display
+    end
+    redirect_to dashboard_path, notice: msg
   end
 
   # DELETE /resources/1
@@ -196,7 +223,7 @@ class ResourcesController < ApplicationController
   def add_link
     # TODO: make sure user is allowed to do this for this resource
     params.permit(links: [:url, :caption])
-   puts params.inspect
+    puts params.inspect
     link = Link.new({url: params[:link][:url], caption: params[:link][:caption], resource_id: @resource.id})
 
     if(link.save)
@@ -228,14 +255,14 @@ class ResourcesController < ApplicationController
     if (r = ResourceHierarchy.where(:child_resource_id => params[:id], :resource_id => params[:parent_id]).first)
       if (r.destroy)
 
-       @available_collections = get_available_collections(@resource) # regenerate list of available collections to reflect the delete
-       resp = {:status => :ok, :html => render_to_string("resources/_collections", layout: false), :header => render_to_string("resources/_resource_parent_display_header", layout: false), :resource_collection_select => render_to_string('resources/_resource_collection_select', layout: false), :collection_count => ResourceHierarchy.where(:child_resource_id => params[:id]).count}
+        @available_collections = get_available_collections(@resource) # regenerate list of available collections to reflect the delete
+        resp = {:status => :ok, :html => render_to_string("resources/_collections", layout: false), :header => render_to_string("resources/_resource_parent_display_header", layout: false), :resource_collection_select => render_to_string('resources/_resource_collection_select', layout: false), :collection_count => ResourceHierarchy.where(:child_resource_id => params[:id]).count}
       else
         resp = {status: :err, error: r.errors.full_messages.join('; ')}
       end
 
     else
-        resp = {status: :err, error: "No relationship found"}
+      resp = {status: :err, error: "No relationship found"}
     end
 
     respond_to do |format|
@@ -376,7 +403,7 @@ class ResourcesController < ApplicationController
           break
         end
       else
-       # invalid ids
+        # invalid ids
         resp = {:status => :err, :error => "Invalid id"}
         break
       end

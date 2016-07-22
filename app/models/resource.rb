@@ -424,6 +424,11 @@ class Resource < ActiveRecord::Base
       end
     end
 
+    if resource_hierarchies
+      resource_hierarchies.each do |f|
+        f.destroy
+      end
+    end
     super
   end
 end

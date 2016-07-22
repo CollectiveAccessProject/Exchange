@@ -13,6 +13,11 @@
           # don't show resource type field – consider as immutable
           r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
         %>
+        <%  if(@resource.forked_from_resource_id && (@resource.forked_from_resource_id > 0))  %>
+           <em>Forked from
+           <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
+             </em>
+        <% end %>
 						<%= r.input :title, :input_html => {:rows => 3} %>
 						<%= r.input :subtitle, :input_html => {:rows => 3} %>
 						<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>

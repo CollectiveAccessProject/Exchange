@@ -43,7 +43,12 @@ Rails.application.routes.draw do
 
   post '/resources/:id/set_parent' => 'resources#update', as: "set_resource_parent_with_id"
   post '/resources/:id/add_related_resource' => 'resources#add_related_resource', as: "add_related_resource"
+
+ # TODO: make this POST
   get '/resources/:id/remove_related_resource' => 'resources#remove_related_resource', as: "remove_related_resource"
+  post '/resources/:id/fork' => 'resources#fork', as: "fork_resource"
+  post '/resources/:id/publish' => 'resources#toggle_access', as: "publish_resource"
+
 
   post '/resources/:id/add_child_resource' => 'resources#add_child_resource', as: "add_child_resource"
 
@@ -57,7 +62,7 @@ Rails.application.routes.draw do
 
   get '/quick_search/query' => 'quick_search#query', as: 'quick_search'
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
-  get '/dashboard' => 'dashboard#index'
+  get '/dashboard' => 'dashboard#index', as: 'dashboard'
 
   get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'
   get '/resources/:id/autocomplete_collection_object_title' => 'resources#autocomplete_resource_title', mode: Resource::COLLECTION_OBJECT, as: 'autocomplete_collection_object_title'
