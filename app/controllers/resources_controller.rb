@@ -135,6 +135,20 @@ class ResourcesController < ApplicationController
     r.forked_from_resource_id = @resource.id
     r.user_id = current_user.id
    if (r.save)
+     # dupe media
+     @resource.media_files.each do |m|
+       mf = m.dup
+       mf.resource_id = r.id
+
+       sf = m.sourceable.dup
+       if(sf.save)
+
+        mf.set_slug
+        mf.sourceable_id = sf.id
+
+        mf.save
+       end
+     end
     redirect_to edit_resource_path(r), notice: "Forked resource"
    else
      redirect_to dashboard_path, notice: "Could not fork resource"
@@ -158,6 +172,13 @@ class ResourcesController < ApplicationController
   # DELETE /resources/1
   # DELETE /resources/1.json
   def destroy
+    if (@resource.forked_resources.count > 0)
+      respond_to do |format|
+        format.json { render json: {status: :err, error: 'Cannot delete resource because forks exists'} }
+        format.html { redirect_to resource_path(@resource), notice: 'Cannot delete resource because forks exists' }
+      end
+      return
+    end
     @resource.destroy
     respond_to do |format|
       format.html { redirect_to resources_url, notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been removed.' }

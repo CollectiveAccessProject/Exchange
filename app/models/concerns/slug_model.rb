@@ -1,8 +1,6 @@
 module SlugModel
   extend ActiveSupport::Concern
 
-  private
-
     def set_slug
       if (self.has_attribute?(:title) && self.title)
         slug = self.title.parameterize

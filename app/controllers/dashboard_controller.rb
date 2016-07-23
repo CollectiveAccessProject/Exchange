@@ -32,7 +32,7 @@ class DashboardController < ApplicationController
           t = item.title
           item_type_disp = item.resource_type_for_display
         when 'mediafile'
-          t= h.item.slug
+          t = item.slug
           item = item.resource
           item_type_disp = "Media"
         else
