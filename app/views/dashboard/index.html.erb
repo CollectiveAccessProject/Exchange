@@ -59,24 +59,22 @@
     </H4>
     <div class="dbUnit"><form>
       <div class="row">
-        <div class="col-sm-3">
-          <select class="form-control input-sm" name="sort"><option value="">Sort list</option></select>
+        <div class="col-sm-12">
+          Your last 20 actions
         </div>
       </div><!-- end row -->
     </form></div><!-- end dbUnit -->
     <div class="dbUnit"><HR/></div>
+    <%
+      @activity_history.each do |h|
+    %>
     <div class="dbUnit">
-      <p><span class="small">5/3/2015</span>
-        <br/>Jane Smith commented on <a href="#">Learning Collection</a>
+      <p><span class="small"><%= h[:datetime] %></span>
+        <br/><%= h[:event] %>  <%= !h[:deleted] ? link_to(h[:title], h[:item]) : h[:title] %>  (<%= h[:item_type] %>) <%= time_ago_in_words(h[:created_at]) %> ago
       </p>
       <HR/>
     </div>
-    <div class="dbUnit">
-      <p><span class="small">5/3/2015</span>
-        <br/>Jane Smith commented on <a href="#">Learning Collection</a>
-      </p>
-      <HR/>
-    </div>
+    <% end %>
     <H4>
       <span class="small pull-right">Click on a collection or resource to filter Stats</span>
       Stats
