@@ -9,7 +9,7 @@
         elsif (@child)
           link_to raw("Contains: " + @child.title), edit_resource_path(@child)
         elsif (!@resource.id)
-          (@resource.resource_type == Resource::RESOURCE) ? 'New Resource' : 'New Collection'
+          (@resource.is_resource) ? 'New Resource' : 'New Collection'
         end
       %>
     </H4>

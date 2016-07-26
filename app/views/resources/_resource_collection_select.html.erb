@@ -16,7 +16,7 @@
         </div>
         <div class="row" style="margin-top: 30px;">
           <div class="col-md-12 text-center">
-            <strong>Would you like to organize this <%= (@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection" %> within a Learning Collection?</strong>
+            <strong>Would you like to organize this <%= (@resource.is_resource) ? "Resource" : "Collection" %> within a Learning Collection?</strong>
           </div>
         </div>
         <div class="row" style="margin-top: 30px;">

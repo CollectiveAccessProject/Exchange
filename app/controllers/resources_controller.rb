@@ -91,7 +91,7 @@ class ResourcesController < ApplicationController
           #end
         end
         session[:mode] = :new;
-        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been added.'}
+        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.'}
         format.json { render :show, status: :created, location: @resource }
       else
         format.html { render :new }
@@ -107,7 +107,7 @@ class ResourcesController < ApplicationController
       if (parent_id = params[:parent_id])
         # TODO: Verify that current user has privs to do this
         if (prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create)
-          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
+          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
 
         else
@@ -117,7 +117,7 @@ class ResourcesController < ApplicationController
       else
         if @resource.update(resource_params)
           session[:mode] = :update;
-          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been updated.' }
+          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
         else
           format.html { render :edit }
@@ -181,7 +181,7 @@ class ResourcesController < ApplicationController
     end
     @resource.destroy
     respond_to do |format|
-      format.html { redirect_to resources_url, notice: ((@resource.resource_type == Resource::RESOURCE) ? "Resource" : "Collection") + ' has been removed.' }
+      format.html { redirect_to resources_url, notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been removed.' }
       format.json { head :no_content }
     end
   end

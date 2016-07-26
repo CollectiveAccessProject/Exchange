@@ -47,6 +47,10 @@ class MediaFilesController < ApplicationController
         format.js
       else
         format.json { render json: @media_file.errors.full_messages.join(";"), status: :unprocessable_entity }
+        format.html do
+          redirect_to edit_resource_path(params[:media_file][:resource_id]), notice: 'Media could not be added: ' + @media_file.errors.full_messages.join(";")
+        end
+        format.js
       end
     end
   end

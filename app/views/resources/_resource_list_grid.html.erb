@@ -15,9 +15,9 @@
 		
 		<div class="col-sm-4">
 			<div class="collectionDetailContentsItem" >
-				<%= link_to ((rel.child_resource.resource_type == Resource::RESOURCE) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %><br/>
+				<%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %><br/>
 
-					<% if(rel.child_resource.resource_type == Resource::RESOURCE) %>
+					<% if(rel.child_resource.is_resource) %>
 						<% rel.child_resource.media_files.each do |f| %>
 							<% if f.sourceable %>
 								<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource) %><br/>

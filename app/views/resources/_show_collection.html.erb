@@ -64,7 +64,7 @@
 		<div class="detailRelatedContentBlockScroll">
 		<% @resource.related_resources.each do |r| %>
 			<div>
-			  <%= link_to ((r.related.resource_type == Resource::RESOURCE) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
+			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
 			  <% if (r.caption.length > 0) %>
 			   <br/><small>
 				 <%= r.caption %>

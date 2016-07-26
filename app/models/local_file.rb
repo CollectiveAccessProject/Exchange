@@ -15,6 +15,8 @@ class LocalFile < ActiveRecord::Base
     [/\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime']
 
   def set_thumbnail
+    # TODO: convert non-image formats to images before setting as thumbnail
+
     self.media_file.thumbnail = File.new(self.file.path(:original))
     self.media_file.save
   end
