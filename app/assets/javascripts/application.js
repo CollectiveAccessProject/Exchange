@@ -19,3 +19,10 @@
 //= require summernote
 //= require plugins/media-item/summernote-ext-media-item
 //= require_tree .
+
+// Add icontains selector to jQuery - case insensitive text search
+$.extend($.expr[":"], {
+    "icontains": function(elem, i, match, array) {
+        return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+    }
+});

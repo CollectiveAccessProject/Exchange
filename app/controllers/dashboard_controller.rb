@@ -41,6 +41,9 @@ class DashboardController < ApplicationController
 
       @activity_history.push({event: event_disp, title: t, item: item, item_type: item_type_disp, datetime: created_at.strftime("%m/%d/%y at %H:%M:%S"), created_at: created_at, deleted: is_delete})
 
+
+      # user favorites
+      @favorites = Favorite.where(user_id: current_user.id)
   end
 
   end

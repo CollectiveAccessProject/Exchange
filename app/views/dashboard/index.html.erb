@@ -20,15 +20,12 @@
     <div class="dbUnit"><form>
       <div class="row">
         <div class="col-sm-4">
-          <input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-        </div>
-        <div class="col-sm-3">
-          <select class="form-control input-sm" name="sort"><option value="">Sort list</option></select>
+          <input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms" id="dashboardSearch"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         </div>
       </div><!-- end row -->
     </form></div><!-- end dbUnit -->
     <div class="dbUnit"><HR/></div>
-    <div class="dbResourceList">
+    <div id="dashboardResourceList" class="dbResourceList">
       <% @resources.each do |resource| %>
           <div class="dbUnit">
             <div><b><%= resource.title %></b> (<%= resource.resource_type_for_display %>) [<%= (resource.access == 1) ? "Published" : "Not published" %>]</div>
@@ -93,56 +90,36 @@
     <div class="dbUnit">
       <div class="row">
         <div class="col-sm-4">
-          <input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-        </div>
-        <div class="col-sm-3">
-          <select class="form-control input-sm" name="sort"><option value="">Sort list</option></select>
-        </div>
-        <div class="col-sm-2">
-          <a href="#" class="small"><b>View All 65</b></a>
+          <input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms" id="favoritesSearch"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         </div>
       </div><!-- end row -->
     </div>
     <div class="dbUnit"><HR/></div>
     <div class="dbUnit">
-
       <div class="row">
-        <div class="col-sm-3">
-          <div class="dbFavorite">
-            <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
-            <%= image_tag('thumbnail.jpg') %>
+        <div id="favoritesList">
+        <%
+          @favorites.each do |f|
+          %>
+        <div class="col-sm-3 dbFavoriteContainer">
+          <div class="dbFavorite" id="dbFavorite<%= f.id %>">
+            <%= link_to("<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>".html_safe, remove_favorite_path(f), remote: true, method: :post, class: "btn btn-default btn-xs dbFavoriteDeleteControl", data: {id: f.id}) %>
+
+            <%=
+              if (m = f.resource.media_files.first)
+                link_to(f.resource.media_files.first.sourceable.preview(:thumbnail), f.resource)
+              else
+                # placeholder
+                "<div class='favorite-placeholder'></div>".html_safe
+              end
+            %>
             <div>
-              Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
+             <%= link_to(f.resource.title, f.resource) %>
             </div>
           </div>
         </div><!--end col -->
-        <div class="col-sm-3">
-          <div class="dbFavorite">
-            <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
-            <%= image_tag('thumbnail.jpg') %>
-            <div>
-              Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
-            </div>
+        <% end %>
           </div>
-        </div><!--end col -->
-        <div class="col-sm-3">
-          <div class="dbFavorite">
-            <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
-            <%= image_tag('thumbnail.jpg') %>
-            <div>
-              Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
-            </div>
-          </div>
-        </div><!--end col -->
-        <div class="col-sm-3">
-          <div class="dbFavorite">
-            <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash aria-hidden="true"></span></a>
-            <%= image_tag('thumbnail.jpg') %>
-            <div>
-              Donec porttitor diam x lorem, eu imperdiet enim scelerisque in
-            </div>
-          </div>
-        </div><!--end col -->
       </div><!-- end row -->
     </div><!-- end dbUnit -->
   </div><!-- end col -->

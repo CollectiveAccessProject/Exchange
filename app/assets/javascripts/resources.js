@@ -233,4 +233,29 @@
                 jQuery("#add-child-resource-status").slideUp(250);
             }, 3000);
         });
+
+        // AJAX favorite/unfavorite
+        //
+        //
+        jQuery(document).on("ajax:success", "#favoriteControl", function (e, data) {
+            if (data.status == 'ok') {
+                jQuery("#favoriteControl").html(data.html)
+            } else {
+                jQuery("#favorite-control-status").slideDown(250).find("#favorite-control-status-message").html(data.message);
+                window.setTimeout(function() {
+                    jQuery("#favorite-control-status").slideUp(250);
+                }, 3000);
+            }
+        });
+
+        jQuery(document).on("ajax:success", "#unfavoriteControl", function (e, data) {
+            if (data.status == 'ok') {
+                jQuery("#favoriteControl").html(data.html);
+            } else {
+                jQuery("#favorite-control-status").slideDown(250).find("#favorite-control-status-message").html(data.message);
+                window.setTimeout(function() {
+                    jQuery("#favorite-control-status").slideUp(250);
+                }, 3000);
+            }
+        });
     });

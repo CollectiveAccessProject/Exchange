@@ -133,6 +133,11 @@ class Resource < ActiveRecord::Base
     end
   end
 
+  def self.is_favorite(user_id, resource_id)
+    favs = Favorite.where({user_id: user_id, resource_id: resource_id})
+    return (favs.count > 0) ? favs.first.id : false
+  end
+
   # return list of settings valid for this type of resource
   def available_settings
     return @@settings_by_type[self.resource_type]

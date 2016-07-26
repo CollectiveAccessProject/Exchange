@@ -67,6 +67,8 @@ Rails.application.routes.draw do
   get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'
   get '/resources/:id/autocomplete_collection_object_title' => 'resources#autocomplete_resource_title', mode: Resource::COLLECTION_OBJECT, as: 'autocomplete_collection_object_title'
 
+  post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
+  post '/favorites/:id/remove' => 'favorites#remove', as: 'remove_favorite'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

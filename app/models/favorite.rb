@@ -1,4 +1,5 @@
 class Favorite < ActiveRecord::Base
-  has_one :resource
-  has_one :user
+  belongs_to :resource, foreign_key: :resource_id
+  belongs_to :user, foreign_key: :user_id
+
 end
