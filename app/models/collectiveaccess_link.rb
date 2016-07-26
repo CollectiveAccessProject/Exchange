@@ -4,6 +4,7 @@ class CollectiveaccessLink < ActiveRecord::Base
 
   validates_with CollectiveaccessLinkValidator
   before_save :extract_key_from_link
+  after_commit :set_thumbnail
 
   def extract_key_from_link
     if original_link
@@ -12,6 +13,12 @@ class CollectiveaccessLink < ActiveRecord::Base
       self.key = /((representation|attribute):([\d:]+))/.match(h.path)
       self.base_url = /^(.*)\/(?=representation|attribute)/.match(original_link)
     end
+  end
+
+  def set_thumbnail
+    # TODO: maybe use native resolution?
+    self.media_file.thumbnail_url = self.base_url + self.key + "/full/!2000,2000/0/default.jpg"
+    self.media_file.save
   end
 
   def get_params

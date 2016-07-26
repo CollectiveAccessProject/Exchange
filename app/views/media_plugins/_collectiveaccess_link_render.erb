@@ -1,6 +1,4 @@
-<%
-url = plugin_model.base_url + plugin_model.key + "/full/!800,800/0/default.jpg"
+<%=
+  size = media_size_for_version(version)
+  image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if plugin_model.media_file.thumbnail.stored?
 %>
-<img
-src="<%= url %>"
-/>
