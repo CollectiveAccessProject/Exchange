@@ -70,7 +70,7 @@
 						if f.sourceable 
 	%>
 						  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-							<%= f.sourceable.preview :full  %>
+							<%= f.sourceable.preview :large  %>
 						  </a>
 						<% end %>
 						<div class="slideshowCaption"><%= f.caption  %></div>
@@ -215,7 +215,7 @@
 		<div class="detailRelatedContentBlockScroll">
 		<% @resource.related_resources.each do |r| %>
 			<div>
-			  <%= link_to ((r.related.resource_type == Resource::RESOURCE) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
+			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
 			  <% if (r.caption.length > 0) %>
 			   <br/><small>
 				 <%= r.caption %>

@@ -1,1 +1,11 @@
-<iframe width='560' height='315' src='https://www.youtube.com/embed/<%= plugin_model.key %>' frameborder='0' allowfullscreen></iframe>
+<%
+  size = media_size_for_version(version)
+
+  if (options && options[:static])
+    %><%= image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if plugin_model.media_file.thumbnail.stored? %><%
+  else
+%>
+    <iframe width='<%= size[:width] %>' height='<%= size[:height] %>' src='https://www.youtube.com/embed/<%= plugin_model.key %>' frameborder='0' allowfullscreen></iframe>
+<%
+  end
+%>

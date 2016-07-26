@@ -44,13 +44,9 @@ class MediaFilesController < ApplicationController
           end
         end
         format.json { render json: {status: :OK, notice: 'Media was added.', media: @media_file }}
-
         format.js
       else
-
-        puts @media_file.errors.full_messages.join(";")
         format.json { render json: @media_file.errors.full_messages.join(";"), status: :unprocessable_entity }
-
       end
     end
   end

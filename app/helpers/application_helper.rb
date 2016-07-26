@@ -2,15 +2,15 @@ module ApplicationHelper
   def media_size_for_version(version)
     case version
       when :icon
-        return {width: 72, height: 72, full: false }
+        return {width: 72, height: 72, area: "72x72" }
       when :thumbnail
-        return {width: 200, height: 160, full: false }
+        return {width: 200, height: 160, area: "200x200" }
       when :medium
-        return {width: 400, height: 400, full: false }
+        return {width: 400, height: 400, area: "400x400" }
       when :large
-        return {width: 1000, height: 1000, full: false }
-      when :full
-        return {width: nil, height: nil, full: true }
+        return {width: 1000, height: 1000, area: "1000x1000" }
+      when :huge
+        return {width: 2000, height: 2000, area: "2000x2000" }
       else
         raise ArgumentError, "Version #{version} is not valid"
     end

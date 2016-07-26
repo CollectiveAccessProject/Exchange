@@ -106,7 +106,7 @@
             <%= link_to("<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>".html_safe, remove_favorite_path(f), remote: true, method: :post, class: "btn btn-default btn-xs dbFavoriteDeleteControl", data: {id: f.id}) %>
 
             <%=
-              if (m = f.resource.media_files.first)
+              if (((m = f.resource.media_files.first)) && (m.sourceable))
                 link_to(f.resource.media_files.first.sourceable.preview(:thumbnail), f.resource)
               else
                 # placeholder

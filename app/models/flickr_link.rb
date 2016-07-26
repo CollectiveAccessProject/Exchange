@@ -5,6 +5,7 @@ class FlickrLink < ActiveRecord::Base
   validates_with FlickrLinkValidator
 
   before_save :extract_key_from_link
+  after_commit :set_thumbnail
 
   def extract_key_from_link
     if original_link
@@ -16,6 +17,18 @@ class FlickrLink < ActiveRecord::Base
       # cut long links down to size
       self.original_link = original_link.slice(0,255)
     end
+  end
+
+  def set_thumbnail
+    # Get list of available photo sizes from Flickr
+    p = flickr.photos.getSizes(photo_id: self.photo_id)
+
+    if (!(version = p.find {|p| p['label'] == 'Original' }))  # try to use the highest resolution original
+      version = p.pop   # otherwise use the last one in the list (presumably the best?)
+    end
+
+    self.media_file.thumbnail_url = version['source']
+    self.media_file.save
   end
 
   def get_params

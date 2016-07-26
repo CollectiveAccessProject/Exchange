@@ -116,7 +116,7 @@
                         if f.sourceable
                       %>
                           <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-                            <%= f.sourceable.preview :full  %>
+                            <%= f.sourceable.preview :large  %>
                           </a>
                       <% end %>
                       <div class="slideshowCaption"><%= f.caption  %></div>

@@ -70,6 +70,9 @@ gem 'simple_form'
 gem 'paperclip', '~> 4.2'
 gem 'paperclip-av-transcoder'
 
+# thumbnail generation
+gem 'dragonfly', '~> 1.0.12'
+
 # comments
 gem 'acts_as_commentable'
 

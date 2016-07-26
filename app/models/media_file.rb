@@ -8,6 +8,12 @@ class MediaFile < ActiveRecord::Base
   # change logging
   has_paper_trail
 
+  # thumbnail
+  include Dragonfly::Model
+  dragonfly_accessor :thumbnail do
+    default 'public/images/no_preview.png'
+  end
+
   # search
   include Elasticsearch::Model
   include Elasticsearch::Model::Callbacks
@@ -53,14 +59,11 @@ class MediaFile < ActiveRecord::Base
             elsif(params[n] && params[n][f] && (params[n][f].length) > 0)
               if (defined? instance.original_link)
                 instance.original_link = params[n][f]
-                 self.sourceable = instance
+                self.sourceable = instance
                 throw :done
               end
             end
-
-
           end
-
         end
       end
     end

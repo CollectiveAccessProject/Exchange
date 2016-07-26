@@ -1,6 +1,16 @@
-<iframe
-  src="https://player.vimeo.com/video/<%= plugin_model.key %>"
-  width='560' height='315' frameborder="0"
-  webkitallowfullscreen mozallowfullscreen allowfullscreen
->
-</iframe>
+<%
+  size = media_size_for_version(version)
+
+  if (options && options[:static])
+%><%= image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if plugin_model.media_file.thumbnail.stored? %><%
+  else
+%>
+    <iframe
+    src="https://player.vimeo.com/video/<%= plugin_model.key %>"
+    width='<%= size[:width] %>' height='<%= size[:height] %>' frameborder="0"
+    webkitallowfullscreen mozallowfullscreen allowfullscreen
+    >
+    </iframe>
+<%
+  end
+%>

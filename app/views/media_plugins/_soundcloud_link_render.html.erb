@@ -1,6 +1,9 @@
+<%
+  size = media_size_for_version(version)
+  %>
 <iframe
-  width="140"
-  height="100"
+  width="<% size[:width] %>"
+  height="<% size[:height] %>"
   scrolling="no"
   frameborder="no"
   src="https://w.soundcloud.com/player/?url=<%= u(plugin_model.original_link) %>&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"

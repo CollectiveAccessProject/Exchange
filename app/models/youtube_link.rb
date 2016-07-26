@@ -3,7 +3,9 @@ class YoutubeLink < ActiveRecord::Base
   has_one :media_file, as: :sourceable
 
   validates_with YoutubeLinkValidator
+
   before_save :extract_key_from_link
+  after_commit :set_thumbnail
 
   def extract_key_from_link
 
@@ -35,6 +37,11 @@ class YoutubeLink < ActiveRecord::Base
       end
 
     end
+  end
+
+  def set_thumbnail
+    self.media_file.thumbnail_url = 'http://img.youtube.com/vi/' + self.key + '/maxresdefault.jpg'
+    self.media_file.save
   end
 
   def get_params

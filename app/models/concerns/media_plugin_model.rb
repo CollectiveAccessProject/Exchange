@@ -22,10 +22,11 @@ module MediaPluginModel
     )
   end
 
-  def render
+  def render(version=nil, options=nil)
+    version = :medium if (version.nil?)
     action_view.render(
         partial: 'media_plugins/' + self.class.to_s.underscore + '_render',
-        locals: { plugin_model: self }
+        locals: { plugin_model: self, version: version, options: options }
     )
   end
 

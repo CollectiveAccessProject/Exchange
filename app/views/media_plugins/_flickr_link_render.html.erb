@@ -1,16 +1,4 @@
-<a
-  data-flickr-embed="true"
-  data-header="true"
-  data-footer="true"
-  href="<%= plugin_model.original_link %>"
-  target="_blank"
->
-  <%=
-    begin
-      # TODO: don't hard code image label in here
-      image_tag flickr.photos.getSizes(photo_id: plugin_model.photo_id).find {|p| p['label'] == 'Medium' }['source']
-    rescue
-      "Flickr image not found"
-    end
-   %>
-</a>
+<%=
+  size = media_size_for_version(version)
+  image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if plugin_model.media_file.thumbnail.stored?
+%>

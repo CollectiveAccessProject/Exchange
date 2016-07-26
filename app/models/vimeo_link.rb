@@ -4,6 +4,7 @@ class VimeoLink < ActiveRecord::Base
 
   validates_with VimeoLinkValidator
   before_save :extract_key_from_link
+  after_commit :set_thumbnail
 
   def extract_key_from_link
     if original_link
@@ -14,6 +15,11 @@ class VimeoLink < ActiveRecord::Base
     end
   end
 
+  def set_thumbnail
+    resp = HTTParty.get("http://vimeo.com/api/v2/video/#{self.key}.json").parsed_response.first
+    self.media_file.thumbnail_url = resp['thumbnail_large']
+    self.media_file.save
+  end
 
   def get_params
     return { :vimeo_link => [:original_link]}

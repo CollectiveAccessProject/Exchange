@@ -1,13 +1,4 @@
 <%=
-    # if we want the 'full'/original version, we leave the first parameter for url() empty
-    version = nil if version == :full
-
-    if /\Aimage\/.*\Z/ =~ plugin_model.file_content_type
-      image_tag plugin_model.file.url(version)
-      # this for some reason crashes my browser right now ... will have to investigate later
-      #elsif /\Avideo\/.*\Z/ =~ file_content_type
-      #video_tag file.url, :size => '600x400', controls: true, autobuffer: true
-    elsif /\Aapplication\/pdf\Z/ =~ plugin_model.file_content_type
-      image_tag plugin_model.file.url(version)
-    end
+  size = media_size_for_version(version)
+  image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if plugin_model.media_file.thumbnail.stored?
 %>
