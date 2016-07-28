@@ -42,6 +42,13 @@ class MediaFile < ActiveRecord::Base
     end
   end
 
+  def get_media_class(media_class)
+    external_media_classes.map do |p|
+      return p if (p.name == media_class)
+    end
+    nil
+  end
+
   def set_sourceable_media(params)
     # Check for params from media plugins
     catch (:done) do

@@ -150,4 +150,20 @@ namespace :exchange do
     Resource.destroy_all
 
   end
+
+
+  desc 'Regenerate media previews'
+  task rebuild_media_previews: :environment do
+      media_files = MediaFile.all.each do|mf|
+
+        if (!(defined? mf.thumbnail.url) || !mf.thumbnail.url || mf.thumbnail.url.include?("no_preview.png"))
+
+          if (sourceable = mf.get_media_class(mf.sourceable_type))
+            puts "No preview for " + mf.id.to_s + " " + mf.sourceable_type + "; reloading"
+            instance = sourceable.find(mf.sourceable_id)
+            instance.set_thumbnail if (instance)
+          end
+        end
+      end
+  end
 end
