@@ -161,7 +161,11 @@ namespace :exchange do
           if (sourceable = mf.get_media_class(mf.sourceable_type))
             puts "No preview for " + mf.id.to_s + " " + mf.sourceable_type + "; reloading"
             instance = sourceable.find(mf.sourceable_id)
-            instance.set_thumbnail if (instance)
+           begin
+            instance.set_thumbnail if (instance && defined? instance.set_thumbnail)
+           rescue
+             puts "Could not load"
+           end
           end
         end
       end
