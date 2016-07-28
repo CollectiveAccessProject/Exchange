@@ -57,20 +57,24 @@ namespace :exchange do
           r =  Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first
 
           if (value['media'])
+          	puts value['title']
             i = 1;
             value['media'].split('|').each do |u|
               if ((key = /representation:([\d]+)/.match(u)))
                 representation_id = key[1]
+                
+                m = nil
                 if ((cl = CollectiveaccessLink.where(key: key[0]).first) && cl.id)
                   m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
-                else
-                  m = MediaFile.new(caption: i.to_s, copyright_notes:'')
+                end
+                if (!m)
+                  m = MediaFile.new(caption: i.to_s, copyright_notes: '')
+                  m.save
                 end
 
-                if (m)
-                  m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
-                  m.update({caption: i.to_s, access: 1, copyright_notes:'', resource_id: r.id})
-                end
+                m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
+                m.update({caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id})
+             
 
                 i += 1
 

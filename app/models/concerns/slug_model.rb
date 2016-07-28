@@ -11,6 +11,7 @@ module SlugModel
       end
 
       slug = '???' if (slug.length == 0)
+      slug = slug[0..100]
 
       slug_stub = slug
       i = 1
