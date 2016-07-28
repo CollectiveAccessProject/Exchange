@@ -68,12 +68,12 @@ namespace :exchange do
                   m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
                 end
                 if (!m)
-                  m = MediaFile.new(caption: i.to_s, copyright_notes: '')
+                  m = MediaFile.new(title: u + ":" + i.to_s, caption: '', copyright_notes: '')
                   m.save
                 end
 
                 m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
-                m.update({caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id})
+                m.update({title: u + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id})
              
 
                 i += 1
