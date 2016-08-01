@@ -106,6 +106,9 @@ $white:#FFFFFF;
     font-size:14px;
     color:$gray;
   }
+  li{
+    text-align:center;
+  }
 }
 .form-group label.inline{
 	display:inline;
@@ -117,6 +120,10 @@ $white:#FFFFFF;
 	padding-top:20px;
 	padding-bottom:20px;
 	font-size:18px;
+}
+#collection_contents_list_heading .btn{
+  font-size:16px;
+  padding-left:0px;
 }
 #resource_media_list, #collection_contents_list{
 	padding:0px;
