@@ -57,20 +57,24 @@ namespace :exchange do
           r =  Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first
 
           if (value['media'])
+          	puts value['title']
             i = 1;
             value['media'].split('|').each do |u|
               if ((key = /representation:([\d]+)/.match(u)))
                 representation_id = key[1]
+                
+                m = nil
                 if ((cl = CollectiveaccessLink.where(key: key[0]).first) && cl.id)
                   m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
-                else
-                  m = MediaFile.new(caption: i.to_s, copyright_notes:'')
+                end
+                if (!m)
+                  m = MediaFile.new(title: u + ":" + i.to_s, caption: '', copyright_notes: '')
+                  m.save
                 end
 
-                if (m)
-                  m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
-                  m.update({caption: i.to_s, access: 1, copyright_notes:'', resource_id: r.id})
-                end
+                m.set_sourceable_media({collectiveaccess_link: { original_link: u}})
+                m.update({title: u + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id})
+             
 
                 i += 1
 
@@ -149,5 +153,26 @@ namespace :exchange do
     ResourceHierarchy.destroy_all
     Resource.destroy_all
 
+  end
+
+
+  desc 'Regenerate media previews'
+  task rebuild_media_previews: :environment do
+      media_files = MediaFile.all.each do|mf|
+
+        if (!(defined? mf.thumbnail.url) || !mf.thumbnail.url || mf.thumbnail.url.include?("no_preview.png"))
+
+          if (sourceable = mf.get_media_class(mf.sourceable_type))
+            puts "No preview for " + mf.id.to_s + " " + mf.sourceable_type + "; reloading"
+            begin
+            instance = sourceable.find(mf.sourceable_id)
+
+            instance.set_thumbnail if (instance && defined? instance.set_thumbnail)
+           rescue
+             puts "Could not load"
+           end
+          end
+        end
+      end
   end
 end
