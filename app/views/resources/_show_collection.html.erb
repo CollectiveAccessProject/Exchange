@@ -27,7 +27,7 @@
 <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
       	<a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
 <% end %>
-		<a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
+        <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
       </div>
     </div>
     <div class="row">
@@ -150,9 +150,3 @@
 		</div><!-- end col -->
 	</div><!-- end row -->
 <% end %>
-
-<div class="row">
-  <div class="col-md-12" id="favoriteControl">
-   <%= render partial: "favorites/favorite_control", locals: { resource: @resource} %>
-  </div>
-</div>

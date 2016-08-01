@@ -560,21 +560,13 @@ select.input-sm{
 	.dbFavorite{
 		font-size:11px;
 		position:relative;
-		clear:left;
 		margin-bottom:10px;
+        line-height:1.1em;
 		img{
-			max-width:150px;
+			width:100%;
 			height:auto;
-			float:left;
-			margin:0px 10px 10px 0px;
+			margin:0px 0px 5px 0px;
 		}
-		a.btn{
-			position:absolute;
-			left:0px;
-			top:0px;
-		}
-		
-		
 	}
 }
 .previewThumbnail{
@@ -722,7 +714,7 @@ li.tagList {
 }
 
 .favorite-placeholder {
-  width: 150px;
   height: 120px;
   background-color: #ccc;
+  margin:0px 0px 5px 0px;
 }

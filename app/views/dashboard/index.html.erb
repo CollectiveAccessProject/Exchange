@@ -85,7 +85,7 @@
 <div class="row">
   <div class="col-sm-12">
     <H4>
-      Favorites
+      <i class='fa fa-bookmark' aria-hidden='true'></i> &nbsp;Favorites
     </H4>
     <div class="dbUnit">
       <div class="row">
@@ -101,9 +101,9 @@
         <%
           @favorites.each do |f|
           %>
-        <div class="col-sm-3 dbFavoriteContainer">
+        <div class="col-sm-2 dbFavoriteContainer">
           <div class="dbFavorite" id="dbFavorite<%= f.id %>">
-            <%= link_to("<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>".html_safe, remove_favorite_path(f), remote: true, method: :post, class: "btn btn-default btn-xs dbFavoriteDeleteControl", data: {id: f.id}) %>
+            <%= link_to("<i class='fa fa-times' aria-hidden='true'></i>".html_safe, remove_favorite_path(f), remote: true, method: :post, class: "cornerButton dbFavoriteDeleteControl", data: {id: f.id}) %>
 
             <%=
               if (((m = f.resource.media_files.first)) && (m.sourceable))

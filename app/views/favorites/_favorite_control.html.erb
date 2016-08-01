@@ -1,12 +1,12 @@
+<%=
+  if (favorite_id = Resource::is_favorite(current_user.id, resource.id))
+    link_to "<i class='fa fa-bookmark' aria-hidden='true'></i>".html_safe, remove_favorite_path(favorite_id), remote: true, method: :post, id: "unfavoriteControl", title: "Unfavorite this " + resource.resource_type_for_display
+  else
+    link_to "<i class='fa fa-bookmark-o' aria-hidden='true'></i>".html_safe, add_favorite_path(resource.id), remote: true, method: :post, id: "favoriteControl", title: "Favorite this " + resource.resource_type_for_display
+  end
+%>
 <div id="favorite-control-status">
   <div class="flash-notice" id="favorite-control-status-message">
 
   </div>
 </div>
-<%=
-  if (favorite_id = Resource::is_favorite(current_user.id, resource.id))
-    link_to "Unfavorite this " + resource.resource_type_for_display, remove_favorite_path(favorite_id), remote: true, method: :post, id: "unfavoriteControl"
-  else
-    link_to "Favorite this " + resource.resource_type_for_display, add_favorite_path(resource.id), remote: true, method: :post, id: "favoriteControl"
-  end
-%>
