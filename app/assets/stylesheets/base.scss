@@ -129,8 +129,16 @@ h4{
 	}
 }
 .scaleImg img{
-	width:100%;
-	height:auto;
+  width:100%;
+  height:auto;
+}
+.modal-body .scaleImg img{
+    max-height:600px;
+    object-fit:contain !important;
+}
+.modal-body iframe{
+  height:400px !important;
+  width: 100% !important;
 }
 .btn{
 	font-family:'Oswald', sans-serif;
@@ -570,7 +578,18 @@ select.input-sm{
 	}
 }
 .previewThumbnail{
-	min-height:210px;
+	min-height:250px;
+  .caption{
+    font-size:11px;
+    padding:5px 0px 0px 0px;
+    max-height:40px;
+    overflow-y:scroll;
+    line-height:1.1em;
+    color:$gray;
+  }
+  iframe{
+    width: 100% !important;
+  }
 }
 #footer {
   position: absolute;
@@ -676,8 +695,14 @@ li.tagList {
 
 
 .mediaEmbed {
-  border: 1px dotted #000000;
   padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin:10px;
+  font-size:11px;
+  img{
+    padding-bottom:0px;
+  }
 }
 
 .mediaEmbedError {

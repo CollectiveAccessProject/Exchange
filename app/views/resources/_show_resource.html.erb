@@ -26,38 +26,55 @@
 		</div>
 	</div>
 <% end %>
-    <div class="row">
+
 <%
 	case @resource.settings(:media_formatting).mode.to_s
 		when "thumbnails"
 %>
-			<% @resource.media_files.each do |f| %>
-			  <div class="col-md-2">
+            <div class="row">
+            <%
+               counter = 0
+               @resource.media_files.each do |f|
+            %>
+                <% if counter == 4
+                    counter = 0
+                %>
+                      </div>
+                      <div class="row">
+                <% end %>
+			  <div class="col-md-3">
 				<% if f.sourceable %>
 					<div class="thumbnail previewThumbnail">
 					  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
 						<%= f.sourceable.preview :thumbnail  %>
 					  </a>
 					  <div class="caption small">
-						<b><%= f.caption  %></b><br/>
+						<%= f.caption  %>
 					  </div>
 					</div>
 					<%=
 					  # this renders a bootstrap model that is triggered if you click on the preview above
 					  # it's in a partial because it's about a billion nested divs :-)
-            if (f.sourceable)
-              render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
-					  end
+                    if (f.sourceable)
+                        render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render(:large), media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+                    end
           %>
 				<% else %>
 					<p><%= f.caption  %></p>
 				<% end %>
 			  </div><!-- end col -->
 <%
-			end
+
+                counter = counter + 1
+            end
+   %>
+            </div><!-- end row -->
+   <%
 		when "slideshow"
 %>
-			<div class="col-sm-6 col-sm-offset-2">
+
+            <div class="row">
+              <div class="col-sm-8 col-sm-offset-2">
 				<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
 					<!-- Wrapper for slides -->
 					<div class="carousel-inner" role="listbox">
@@ -70,7 +87,7 @@
 						if f.sourceable 
 	%>
 						  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-							<%= f.sourceable.preview :medium  %>
+							<%= f.sourceable.preview :large  %>
 						  </a>
 						<% end %>
 						<div class="slideshowCaption"><%= f.caption  %></div>
@@ -103,9 +120,9 @@
 					<% end %>
 				</div><!-- end resourceCarousel -->
 
-			</div><!-- end col -->
+              </div><!-- end col -->
+            </div><!-- end row -->
 		<% end %>
-    </div><!-- end row -->
 <% if @resource.settings(:text_placement).placement.to_s == "below" %>
     <div class="row">
   		<div class="col-md-12">

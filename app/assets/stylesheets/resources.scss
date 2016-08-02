@@ -282,6 +282,9 @@ $white:#FFFFFF;
 		img{
 			width:100%;
 			height:auto;
+          max-height:600px;
+          object-fit:contain;
+
 		}
 		.slideshowCaption{
 			background-color:#FFF;

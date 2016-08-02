@@ -4,7 +4,7 @@ module ApplicationHelper
       when :icon
         return {width: 72, height: 72, area: "72x72" }
       when :thumbnail
-        return {width: 200, height: 160, area: "200x200" }
+        return {width: 240, height: 200, area: "240x200" }
       when :medium
         return {width: 400, height: 400, area: "400x400" }
       when :large
