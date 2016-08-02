@@ -10,12 +10,12 @@
       %></span>
       <%=
            # if (@resource.parents.length == 0)
-           	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + ((@resource.is_resource || @resource.is_collection_object) ? "Add to collection" : "Organize"), "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+           	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
         #	end
         	%>
         	 <%= 
         	 	if (@resource.is_collection || @resource.is_exhibition)
-        	    link_to "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "New sub-collection", new_subcollection_with_id_path(@resource.id), {"class": "btn btn-noBg btn-xs"}
+        	    link_to "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "Add new sub-collection", new_subcollection_with_id_path(@resource.id), {"class": "btn btn-noBg btn-xs"}
           	end
         	%>
       <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, resource_preview_path(@resource), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
@@ -36,10 +36,12 @@
     <div class="row" id="resource_tabs">
       <div class="col-md-12">
         <ul class="nav nav-tabs">
+          <% if(@resource.is_resource) %>
           <li class="active">
             <a data-toggle="tab" href="#tab_formatting"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp;Formatting</a>
           </li>
-          <li>
+          <% end %>
+          <li <%= (@resource.is_resource) ? "" : " class='active'".html_safe  %>>
             <a data-toggle="tab" href="#tab_related"><i class="fa fa-exchange" aria-hidden="true"></i> &nbsp;Related</a>
           </li>
           <li>
@@ -94,7 +96,7 @@
           <div id="collection_contents_list_heading">
             <%=
               #link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large"
-              button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add Content".html_safe, "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
+              button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add Resource".html_safe, "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
             %>
           </div>
           <div class="panel panel-default"><div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">

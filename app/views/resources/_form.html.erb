@@ -30,26 +30,29 @@
 			<div class="col-md-7">
 				<%#= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 14} %>
                 <%= r.input :body_text, :input_html => {}, :as => :summernote %>
-            	<div class="mediaEmbedHelpLink">
-                  <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
-                    <i class="fa fa-question-circle-o" aria-hidden="true"></i> How do I embed media in the body of my resource?
-                  </a>
-                </div>
+            	<% if(@resource.is_resource) %>
+                    <div class="mediaEmbedHelpLink">
+                        <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i> How do I embed media in the body of my resource?
+                        </a>
+                    </div>
 
-            	<div class="mediaEmbedHelp">
-                You can easily embed media using the <em>media item</em> option in the tool bar. First
-               click on the location in the text where the media should appear, then select from the <em>media item</em>
-                list. A placeholder will be inserted into  the body text in the following format:
-            		<blockquote>
-            			&lt;media [name] [version] [width=xxx] [height=yyy] [float=left/right]&gt;
-            			<br/>Ex. <em>&lt;media my-video thumbnail&gt;</em>
-              			<br/>Ex. <em>&lt;media my-video thumbnail width=500 height=300 float=right&gt;</em>
-              		</blockquote>
-             		Names are shown under each media item. Version, width, height and float are optional.
-                <br/>
-                <br/>
-                You may also enter these directory into the text if desired.
-            </div>
+            	    <div class="mediaEmbedHelp">
+                        You can easily embed media using the <em>media item</em> option in the tool bar. First
+                        click on the location in the text where the media should appear, then select from the <em>media item</em>
+                        list. A placeholder will be inserted into  the body text in the following format:
+            		    <blockquote>
+            			    &lt;media [name] [version] [width=xxx] [height=yyy] [float=left/right]&gt;
+            			    <br/>Ex. <em>&lt;media my-video thumbnail&gt;</em>
+              			    <br/>Ex. <em>&lt;media my-video thumbnail width=500 height=300 float=right&gt;</em>
+              		    </blockquote>
+             		    Names are shown under each media item. Version, width, height and float are optional.
+                        <br/>
+                        <br/>
+                        You may also enter these directory into the text if desired.
+                    </div>
+                  <% end %>
+
 						<div class="pull-right"><%= r.button :submit, "Save" %></div>
 			</div><!-- end col -->
 		</div><!-- end row -->

@@ -27,7 +27,7 @@
 <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
       	<a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
 <% end %>
-		<a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
+        <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
       </div>
     </div>
     <div class="row">
@@ -82,11 +82,7 @@
         <div class="detailRelatedContentBlockScroll">
         <% @resource.links.each do |c| %>
             <div>
-              <%= if (c.caption && (c.caption.length > 0))
-                    (c.caption + "<br/>").html_safe
-                  end
-              %>
-              <small><a href="<%= c.url %>" target="_blank" title="<%= c.url %>"><i class='fa fa-external-link' aria-hidden='true'></i> <%= (c.url.length > 35) ? c.url[0..32] + "..." : c.url %></a></small>
+              <a href="<%= c.url %>" target="_blank" title="<%= c.url %>"><i class='fa fa-external-link' aria-hidden='true'></i> <%= (c.caption && (c.caption.length > 0)) ? c.caption : ((c.url.length > 20) ? c.url[0..17] + "..." : c.url) %></a>
             </div>
         <% end %>
         </div>
@@ -154,9 +150,3 @@
 		</div><!-- end col -->
 	</div><!-- end row -->
 <% end %>
-
-<div class="row">
-  <div class="col-md-12" id="favoriteControl">
-   <%= render partial: "favorites/favorite_control", locals: { resource: @resource} %>
-  </div>
-</div>
