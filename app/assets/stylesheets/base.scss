@@ -743,3 +743,15 @@ li.tagList {
   background-color: #ccc;
   margin:0px 0px 5px 0px;
 }
+
+/* WYSIWYG editor media list */
+.media-item-thumb img {
+  width: 120px;
+}
+
+#dropdown-media {
+  width: 150px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-right: 10px;
+}
