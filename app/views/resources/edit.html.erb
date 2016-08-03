@@ -118,26 +118,9 @@
   if((@resource.parents.count == 0) && (@resource.is_resource) && (session['mode'] == 'new'))
       # Trigger modal on save if no parent is set for resources (not collections)
 %>
-
     <script type="text/javascript">
     	jQuery("#selectResourceCollectionForm").modal();
-        jQuery('.summernote').summernote({
-            height: 300,
-            toolbar: [
-              ['style', ['bold', 'italic', 'underline', 'clear']],
-              ['font', ['fontname', 'strikethrough', 'superscript', 'subscript']],
-              ['fontsize', ['fontsize']],
-              ['color', ['color']],
-              ['para', ['ul', 'ol', 'paragraph']],
-              ['height', ['height']],
-              ['insert', ['picture', 'link', 'video', 'table', 'hr', 'mediaitem']]
-            ],
-
-            buttons : {mediaitem: MediaItemButton }
-        });
     </script>
-    <script type="text/javascript" src="/assets/plugins/media-item/summernote-ext-media-item.js"></script>
-
 <%
   end
 %>

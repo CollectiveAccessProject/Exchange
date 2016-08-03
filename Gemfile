@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.0'
+gem 'rails', '4.2.6'
 # Use jdbcsqlite3 as the database for Active Record
 #gem 'activerecord-jdbcsqlite3-adapter'
 gem 'mysql2', '~> 0.3.18'
@@ -29,7 +29,6 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 # bootstrap
 gem 'bootstrap-sass', '~> 3.2'
-gem 'bootstrap-wysihtml5-rails'
 
 # summernote alternative to boostrap-wysihtml5
 gem 'summernote-rails'
