@@ -40,8 +40,13 @@ class YoutubeLink < ActiveRecord::Base
   end
 
   def set_thumbnail
-    self.media_file.thumbnail_url = 'http://img.youtube.com/vi/' + self.key + '/maxresdefault.jpg'
-    self.media_file.save
+  	begin
+   		self.media_file.thumbnail_url = 'http://img.youtube.com/vi/' + self.key + '/maxresdefault.jpg'
+    	self.media_file.save
+    rescue
+    	self.media_file.thumbnail_url = 'http://img.youtube.com/vi/' + self.key + '/mqdefault.jpg'
+    	self.media_file.save
+    end
   end
 
   def get_params
