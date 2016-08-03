@@ -161,6 +161,9 @@ $white:#FFFFFF;
 		display:none;
 		margin-left:15px;
 	}
+	iframe{
+		width:100% !important;
+	}
 }
 .relatedResources, .relatedContent{
 	margin-top:15px;
@@ -235,6 +238,9 @@ $white:#FFFFFF;
 		small{
 			font-size:11px;
 		}
+		iframe{
+			width:100% !important;
+		}
 	}
 }
 #detailParentInfoPanel{
@@ -279,6 +285,7 @@ $white:#FFFFFF;
 #resourceCarousel{
 	margin-bottom:30px;
 	.carousel-inner{
+		min-height:100px;
 		img{
 			width:100%;
 			height:auto;
@@ -294,7 +301,14 @@ $white:#FFFFFF;
 			position:relative;
 			z-index:1000;
 		}
+		iframe{
+			width:100% !important;
+		}
 	}
+}
+.collectionObjectDetailText{
+	font-size:12px;
+	line-height:1.2em;
 }
 .resourceSidePanel{
 	line-height:1.2em;

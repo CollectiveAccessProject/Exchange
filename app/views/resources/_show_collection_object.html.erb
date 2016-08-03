@@ -64,98 +64,50 @@
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
 
+    <H3>UMMA Collection Object</H3>
     <H2><%= @resource.title %></H2>
-
-    <H3><%= @resource.subtitle %></H3>
-    <% if @resource.settings(:text_placement).placement.to_s == "above" %>
-        <div class="row">
-          <div class="col-md-12">
-            <p><%= @resource.parsed_body_text.html_safe %></p>
-          </div>
-        </div>
-    <% end %>
     <div class="row">
-      <%
-        case @resource.settings(:media_formatting).mode.to_s
-          when "thumbnails"
-      %>
-          <% @resource.media_files.each do |f| %>
-              <div class="col-md-2">
-                <% if f.sourceable %>
-                    <div class="thumbnail previewThumbnail">
-                      <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-                        <%= f.sourceable.preview :thumbnail  %>
-                      </a>
-                      <div class="caption small">
-                        <b><%= f.caption  %></b><br/>
-                      </div>
-                    </div>
-                    <%=
-                      # this renders a bootstrap model that is triggered if you click on the preview above
-                      # it's in a partial because it's about a billion nested divs :-)
-                      render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
-                    %>
-                <% else %>
-                    <p><%= f.caption  %></p>
-                <% end %>
-              </div><!-- end col -->
-          <%
-            end
-            when "slideshow"
-          %>
-          <div class="col-sm-8 col-sm-offset-2">
-            <div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
-              <!-- Wrapper for slides -->
-              <div class="carousel-inner" role="listbox">
-                <%
-                  counter = 1
-                  @resource.media_files.each do |f|
-                %>
-                    <div class="item <%= (counter == 1) ? 'active' : '' %>">
-                      <%
-                        if f.sourceable
-                      %>
-                          <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-                            <%= f.sourceable.preview :large  %>
-                          </a>
-                      <% end %>
-                      <div class="slideshowCaption"><%= f.caption  %></div>
-                      <%=
-                        # this renders a bootstrap model that is triggered if you click on the preview above
-                        # it's in a partial because it's about a billion nested divs :-)
-                        render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
-                      %>
-                    </div>
-                <%
-                  counter = counter + 1
-                  end
-                %>
-              </div><!-- end carousel-inner -->
-              <%
-                if @resource.media_files.count > 1
-              %>
-                  <!-- Left and right controls -->
-                  <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                  </a>
-              <% end %>
-            </div><!-- end resourceCarousel -->
-
-          </div><!-- end col -->
-      <% end %>
-    </div><!-- end row -->
-    <% if @resource.settings(:text_placement).placement.to_s == "below" %>
-        <div class="row">
-          <div class="col-md-12">
-            <p><%= @resource.parsed_body_text.html_safe %></p>
-          </div>
-        </div>
-    <% end %>
+		<div class="col-sm-8">
+			<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+			  <!-- Wrapper for slides -->
+					  <div class="carousel-inner" role="listbox">
+						<%
+						  counter = 1
+						  @resource.media_files.each do |f|
+						%>
+							<div class="item <%= (counter == 1) ? 'active' : '' %>">
+							  <%
+								if f.sourceable
+							  %>
+								  <%= f.sourceable.preview :large  %>
+								  <!--<div class="slideshowCaption"><%= f.caption.html_safe  %></div>-->
+								<% end %>
+							</div>
+						<%
+						  counter = counter + 1
+						  end
+						%>
+					  </div><!-- end carousel-inner -->
+					  <%
+						if @resource.media_files.count > 1
+					  %>
+						  <!-- Left and right controls -->
+						  <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						  </a>
+						  <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						  </a>
+					  <% end %>
+			</div><!-- end resourceCarousel -->
+		</div><!-- end col -->
+		<div class="col-sm-4 collectionObjectDetailText">
+			<%= @resource.parsed_body_text.html_safe %>
+		</div>
+	</div><!-- end row -->
+    
     <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
         <div class="row" id="detailComments">
           <div class="col-md-12">
@@ -227,31 +179,6 @@
           <a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
         </div>
 
-        <% if(parent && parent.resource_hierarchies && (parent.resource_hierarchies.count > 1)) %>
-            <div class="unit">
-              <H4><small><%= parent.resource_hierarchies.count %> item<%= (parent.resource_hierarchies.count == 1) ? "" : "s" %> in this collection</small></H4>
-              <div class="row resourceGrid">
-                <% parent.resource_hierarchies.each do |rel| %>
-                    <div class="col-sm-4">
-                      <% if(rel.child_resource.is_resource) %>
-                          <% if(rel.child_resource.media_files.count > 0) %>
-                              <% rel.child_resource.media_files.each do |f| %>
-                                  <% if f.sourceable %>
-                                      <%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
-                                      <% break %>
-                                  <% end %>
-                              <% end %>
-                          <% else %>
-                              <%= link_to '<i class="fa fa-picture-o" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
-                          <% end %>
-                      <% else %>
-                          <%= link_to "<i class='fa fa-folder-o'></i>".html_safe, resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
-                      <% end %>
-                    </div><!-- end col -->
-                <% end %>
-              </div><!-- end row -->
-            </div><!-- end unit -->
-        <% end %>
         <% if @resource.related_resources.count > 0 %>
             <div class="unit">
               <H4><%= @resource.related_resources.count %> Related</H4>
