@@ -162,7 +162,7 @@ class Resource < ActiveRecord::Base
   end
 
   def get_collection_object_field(f, options=nil)
-    if (self.is_collection_object)
+    if (self.is_collection_object && indexing_data)
       indexing_data_hash = JSON.parse(indexing_data)
 
       val = indexing_data_hash[f]

@@ -33,7 +33,7 @@ namespace :exchange do
                                                         port: ENV['COLLECTIVEACCESS_PORT'].to_i,
                                                         endpoint: 'exchangeObjectListForDisplay',
                                                         get_params: {
-                                                            q: 'ca_objects.access_specific:exchange',
+                                                            q: 'ca_objects.idno:2014/2.241 OR ca_objects.idno:1954/1.151 OR ca_objects.idno:2010/1/169.53 OR ca_objects.idno:2010/1.275 OR ca_objects.idno:1983/1.248 OR ca_objects.idno:2014/2.168 OR ca_objects.idno:2013/2.222 OR ca_objects.idno:1988/1.155 OR ca_objects.idno:2011/2.200 OR ca_objects.idno:1998/1.164 OR ca_objects.idno:2005/1.324 OR ca_objects.idno:1997/1.206 OR ca_objects.idno:1954/1.536 OR ca_objects.idno:1961/1.170',
                                                             start: start,
                                                             limit: limit,
                                                             noCache: Rails.env.development? ? 1 : 0
@@ -102,7 +102,9 @@ namespace :exchange do
       object_list_for_search.each do |_, value|
         if value.is_a?(Hash) && value['collectiveaccess_id'].present?
           log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
-          Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first.update(indexing_data: JSON.generate(value))
+          if (r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first)
+          	r.update(indexing_data: JSON.generate(value))
+          end
 
 
         end
