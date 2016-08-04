@@ -89,6 +89,7 @@ class MediaFile < ActiveRecord::Base
       	rescue
       		# noop - sometimes the preview engine (Dragonfly) will throw an exception
       	end
+      	super
     end
 
     begin
