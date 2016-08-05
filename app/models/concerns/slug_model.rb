@@ -10,7 +10,7 @@ module SlugModel
         slug = '???'
       end
 
-      slug = '???' if (slug.length == 0)
+      slug = self.class.name if (slug.length == 0)
       slug = slug[0..100]
 
       slug_stub = slug
