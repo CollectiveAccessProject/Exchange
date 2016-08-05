@@ -85,7 +85,7 @@ class MediaFile < ActiveRecord::Base
   def destroy
     if sourceable
     	begin
-      		sourceable.destroy
+      		#sourceable.destroy
       	rescue
       		# noop - sometimes the preview engine (Dragonfly) will throw an exception
       	end

@@ -423,12 +423,6 @@ class Resource < ActiveRecord::Base
   end
 
   def destroy
-    if self.media_files
-      self.media_files.each do |f|
-        f.destroy
-      end
-    end
-
     if (r = ResourceHierarchy.where(resource_id: self.id))
       r.each do |f|
         f.destroy
@@ -452,7 +446,7 @@ class Resource < ActiveRecord::Base
         f.destroy
       end
     end
-
+    
     super
   end
 end

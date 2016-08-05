@@ -91,6 +91,8 @@ gem 'immigrant'
 # nice wrapper around flickr API
 gem 'flickraw'
 
+gem 'htmlentities'
+
 # oauth
 gem 'omniauth'
 gem 'omniauth-facebook'
