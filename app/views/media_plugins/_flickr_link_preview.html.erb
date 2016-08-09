@@ -1,4 +1,15 @@
-<%=
+<%
   size = media_size_for_version(version)
+%>
+<span class='previewMedia'>
+<%=
   image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
 %>
+<%
+	if (version.to_s != "icon" && version.to_s != "thumbnail")
+%>
+  		<div class="previewMediaIcon" title="Flickr image"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-flickr" aria-hidden="true"></i></div>
+<%
+	end
+%>
+</span>

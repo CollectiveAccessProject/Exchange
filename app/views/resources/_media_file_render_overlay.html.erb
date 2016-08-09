@@ -32,12 +32,54 @@
 
                 <% end %>
             <% else %>
-
                 <%= media_file.caption %>
                 <br/>
                 License: <%= media_file.get_license_type %>
                 <br/>
                 <%= media_file.copyright_notes %>
+            	Media Source: 
+<%
+				media_source = media_file.get_media_class(media_file.sourceable_type)
+				case media_source.to_s
+				when "CollectionobjectLink"
+%>
+				  UMMA Collection Object
+<%
+				when "FlickrLink"
+%>
+				  Flickr<br/>
+				  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+<%
+				when "GoogledocsLink"
+%>
+				  Googledocs<br/>
+				  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+<%
+				when "YoutubeLink"
+%>
+				  Youtube<br/>
+				  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+<%
+				when "VimeoLink"
+%>
+				  Vimeo<br/>
+				  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+<%
+				when "SoundcloudLink"
+%>
+				  Soundcloud<br/>
+				  Original Link: <%= media_file.sourceable.original_link %>
+<%
+				when "LocalFile"
+%>
+				  Local file upload
+<%
+				when "CollectiveaccessLink"
+%>
+				  UMMA Collection Object
+<%
+				end
+%>
             <% end %>
           </div>
         </div>

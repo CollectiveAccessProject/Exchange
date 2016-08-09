@@ -14,6 +14,7 @@ $black:#000000;
 $white:#FFFFFF;
 .modal.modal-wide .modal-dialog {
   width: 90%;
+  text-align:left;
 }
 .modal-wide .modal-body {
   overflow-y: auto;
@@ -286,6 +287,7 @@ $white:#FFFFFF;
 	margin-bottom:30px;
 	.carousel-inner{
 		min-height:100px;
+		text-align:center;
 		img{
 			width:100%;
 			height:auto;
@@ -355,4 +357,29 @@ $white:#FFFFFF;
 #find_child_resource_id {
   width: 300px;
   display: inline;
+}
+.previewMedia{
+	position:relative;
+	display:inline-block;
+	.previewMediaIcon {
+		position:absolute;
+		top:10px;
+		right:10px;
+		color:#FFFFFF;
+		background-color:$blue;
+		padding:4px;
+		line-height:1em;
+		font-size:12px;
+		z-index:10;
+		-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,1);
+		-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,1);
+		box-shadow: 0px 0px 10px 0px rgba(0,0,0,1);
+		border-radius:3px;
+	}
+	.previewMediaCaption{
+		font-size:11px;
+		background-color:#FFFFFF;
+		text-align:center;
+		color:$gray;
+	}
 }

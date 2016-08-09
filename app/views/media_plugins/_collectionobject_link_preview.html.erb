@@ -2,12 +2,25 @@
   begin
     r = Resource.find(plugin_model.resource_id)
     f = r.media_files.first
-%><%=
+%>
+<span class='previewMedia'>
+<%=
       render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil}
 %>
-    <%=
-      r.title
-    %><%
+<%
+	if (version.to_s != "icon" && version.to_s != "thumbnail")
+%>
+  		<div class="previewMediaIcon" title="UMMA Collection Object"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div>
+		<div class="previewMediaCaption">
+<%=
+      	r.title
+ %>
+		</div>
+<%
+	end
+%>
+</span>
+    <%
   rescue
 %><%=
       "Media is unavailable"
