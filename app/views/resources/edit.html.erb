@@ -56,13 +56,18 @@
           <li>
             <a data-toggle="tab" href="#tab_collections"><i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;Collections</a>
           </li>
+          <li>
+            <a data-toggle="tab" href="#tab_access"><i class="fa fa-key" aria-hidden="true"></i> &nbsp;Access</a>
+          </li>
         </ul>
 
         <div class="tab-content">
+          <% if(@resource.is_resource) %>
           <div id="tab_formatting" class="tab-pane active">
             <p><%= render 'resources/formatting_options' %></p>
           </div>
-          <div id="tab_related" class="tab-pane">
+          <% end %>
+          <div id="tab_related" class="tab-pane <%= (!@resource.is_resource) ? "active" : "" %>">
             <p><%= render 'resources/related' %></p>
           </div>
           <div id="tab_tags" class="tab-pane">
@@ -76,6 +81,9 @@
           </div>
           <div id="tab_collections" class="tab-pane">
             <p><%= render 'resources/collections' %></p>
+          </div>
+          <div id="tab_access" class="tab-pane">
+            <p><%= render 'resources/access' %></p>
           </div>
         </div>
       </div><!-- end col -->
