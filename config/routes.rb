@@ -70,6 +70,10 @@ Rails.application.routes.draw do
   post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
   post '/favorites/:id/remove' => 'favorites#remove', as: 'remove_favorite'
 
+  # user admin
+  get '/users/:id' => 'users#edit'
+  resources :users
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

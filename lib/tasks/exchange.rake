@@ -184,6 +184,21 @@ namespace :exchange do
 					end
 				end
 			end
-		end
-	end
+    end
+    end
+
+	desc 'Add admin role to user with specified email address'
+	task add_admin_to_user: :environment do
+		 user_names = $ARGV.slice(1, ($ARGV.length) -1)
+
+    user_names.each do |n|
+      if (u = User.where(email: n).first)
+				u.add_role :admin
+        puts "[INFO] Added admin role to #{n}"
+      else
+        puts "[ERROR] No user found with email #{n}"
+      end
+    end
+
+  end
 end

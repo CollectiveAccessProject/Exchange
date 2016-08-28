@@ -68,6 +68,22 @@ class Resource < ActiveRecord::Base
 
 
   #
+  # Access control
+  #
+  def can(action, user_id)
+
+    # owner can do anything
+    return true if (self.user_id == user_id)
+
+    # is user in ACL?
+
+    # is user in group that has access to this resource?
+
+
+    return false
+  end
+
+  #
   # Search indexing
   #
 
