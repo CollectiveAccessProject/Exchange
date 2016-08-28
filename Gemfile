@@ -56,6 +56,9 @@ gem 'collectiveaccess'
 # authentication
 gem 'devise', '~> 4.2'
 
+# user roles
+gem "rolify"
+
 # user authorization
 gem 'pundit'
 
