@@ -755,3 +755,35 @@ li.tagList {
   overflow-y: auto;
   margin-right: 10px;
 }
+
+/*Independent scrolling for user guide/docs*/
+
+.guide_row {
+    display: flex;
+    overflow: hidden;
+    height: 100vh;
+    position: relative;
+    backface-visibility: hidden;
+    will-change: overflow;
+}
+
+.guide_col {
+    overflow: auto;
+    height: auto;
+    padding: .5rem;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+}
+
+.guide_padding {
+    padding-bottom: 25px;
+}
+
+.int_link:before {
+    display:block;
+    content: " ";
+    height: 110px;
+    margin-top: -110px;
+    visibility:hidden;
+}
+

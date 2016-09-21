@@ -9,6 +9,9 @@ Rails.application.routes.draw do
 
   resources :resources, :groups
 
+  # add user guide and other pages in About
+  get '/user_guide' => 'about#user_guide'
+
   # add new collection - just a resource with the resource_type preset
   get '/collections/new' => 'resources#new', type: 'collection', as: "new_collection"
   get '/collections/new/child_id/:child_id' => 'resources#new', type: 'collection', as: "new_collection_with_id"
