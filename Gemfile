@@ -100,5 +100,8 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-shibboleth'
 gem 'dotenv-rails'
 
+# Intro Tour
+gem 'bootstrap-tour-rails'
+
 # old fashioned text file logging for maintenance scripts
 require 'logger'

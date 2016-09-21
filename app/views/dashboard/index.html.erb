@@ -4,7 +4,7 @@
   </div>
   <div class="col-sm-2 text-right">
     <H1>
-      <div class="btn-group" role="group">
+      <div class="btn-group" role="group" id="new_materials">
         <a class="btn btn-default btn-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New &nbsp;<i class="fa fa-plus-circle fa-3" aria-hidden="true"></i></a>
         <ul class="dropdown-menu">
           <li><%= link_to('New Resource', new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
@@ -15,7 +15,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-6 tour-collections-resources">
     <H4>Your Learning Collections/Resources</H4>
     <div class="dbUnit"><form>
       <div class="row">
@@ -49,7 +49,7 @@
       <% end %>
     </div>
   </div><!-- end col -->
-  <div class="col-sm-6">
+  <div class="col-sm-6 tour-activity">
     <H4>
       Your Activity
     </H4>
@@ -83,7 +83,7 @@
   </div><!-- end col -->
 </div><!-- end row -->
 <div class="row">
-  <div class="col-sm-12">
+  <div class="col-sm-12 tour-favorites">
     <H4>
       <i class='fa fa-bookmark' aria-hidden='true'></i> &nbsp;Favorites
     </H4>
@@ -125,3 +125,62 @@
     </div><!-- end dbUnit -->
   </div><!-- end col -->
 </div><!-- end row -->
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		exch_tour = new Tour({
+			name:"ExchangeTour",
+			steps: [{
+				title: 'Welcome to the Exchange',
+				content: 'The Exchange gives you tools to explore, create and manage sets of resources so that you can use them to learn, teach and collaborate!<br/><br/>All of the tools of the Exchange are available from here, your <strong>Dashboard</strong><br/><br/>Click "Next" to take a tour of the available tools and options in the Exchange, or else feel free to explore the site! A <a href="/user_guide" target="_blank">User Guide</a> is available for reference on creating and editing materials in the Exchange.',
+				orphan: true
+			},{
+				title: 'The Dashboard',
+				element: '.tour-dashboard',
+				placement: 'top',
+				content: 'The Dashboard provides an overview of your current materials, recent activity, saved items and collaborations. From here you can create new materials, edit existing ones, share them and search for other users (or your own!) materials<br/><br/>Lets break down each of these options by their sections.',
+				orphan: true
+			},{
+				title: 'Create a New Resource or Collection',
+				element: '#new_materials',
+				placement: 'left',
+				content: 'Resources and Collections are the core of the Exchange so get started by creating your first materials!<br/><br/>Collections provide organization and description, grouping together Resources and other Collections.<br/><br/>Resources describe specific objects and events, and can have images, video and audio files depicting them.<br/><br/>Learn more about <a href="/user_guide#resource_new" target="_blank">Resources</a> and <a href="/user_guide#collection_new" target="_blank">Collections</a>'
+			},{
+				title: 'Find a Resource or Collection',
+				element: '.tour-search-form',
+				placement: 'left',
+				content: 'The Exchange also allows you to search for other user’s Resources and Collections.<br/></br/>If you find something you like you can copy (or “fork”) it and edit it for your own needs and projects.<br/><br/>The search bar also shows you the materials you’ve created as well as artworks from the UMMA Collections you can add as Media.<br/><br/>More information is available on <a href="/user_guide#basic_search" target="_blank">Search and Advanced Search</a>'
+			},{
+				title: 'Your Collections &amp; Resources',
+				element: '.tour-collections-resources',
+				placement: 'right',
+				content: 'Once you’ve created or forked Collections and Resources, they will appear in this column. From here you can open them for editing, preview their layout and share them with other users or publish them to the web!<br/><br/>The search bar at top allows you to quickly find any materials you have created.<br/><br/>Materials can also be deleted from this section'
+			},{
+				title: 'Your Activity',
+				element: '.tour-activity',
+				placement: 'left',
+				content: 'Here you will be able to see your recent activity and return to recent Resources and Collections by clicking any item listed in the activity log'
+			},{
+				title: 'Favorites',
+				element: '.tour-favorites',
+				placement: 'top',
+				content: 'Clicking the favorite flag on any Collection or Resource will add it to your favorites. Track ongoing work, save the work of other’s for future reference or use this however best suits your needs!'
+			},{
+				title: 'Getting Started!',
+				orphan: true,
+				content: 'That’s it! Get started by creating a Collection or Resource, or by searching for what other users have created and go from there!<br/><br/>For more information on the tools and options in the Exchange see our <a href="/user_guide" target="_blank">User Guide</a> at any time for an in depth explanation.'
+			}],
+			container: "body",
+			debug: true,
+			backdrop: true,
+			orphan: false,
+			template: '<div class="popover tour"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-navigation"><button class="btn btn-default" data-role="end">End tour</button><button class="btn btn-default" data-role="prev">« Prev</button><span data-role="separator">\t</span><button class="btn btn-default" data-role="next">Next »</button></div></div>'
+		});
+		localStorage.clear();
+		
+		exch_tour.init();
+		if (!Cookies.get('toured')){
+			exch_tour.start();
+			Cookies.set('toured', true, {expires: 1/288});
+		}
+});
+</script>

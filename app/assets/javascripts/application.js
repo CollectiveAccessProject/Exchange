@@ -15,6 +15,8 @@
 //= require jquery.ui.all
 //= require autocomplete-rails
 //= require bootstrap-sprockets
+//= require bootstrap-tour
+//= require cookie
 //= require summernote
 //= require plugins/media-item/summernote-ext-media-item
 //= require_tree .
