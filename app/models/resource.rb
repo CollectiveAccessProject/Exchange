@@ -10,6 +10,9 @@ class Resource < ActiveRecord::Base
   has_many :links
   has_many :favorites
 
+  has_many :resources_users
+  has_many :users, through: 'resources_users'
+
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
 

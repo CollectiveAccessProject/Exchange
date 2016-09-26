@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent]
+  before_action :set_resource, only: [:show, :edit, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
 
   include CommentableController
   include TaggableController
@@ -10,6 +10,9 @@ class ResourcesController < ApplicationController
   # UI autocomplete on resource title (used by related resources lookup)
   autocomplete :resource, :title, :full => true, :extra_data => [:id]
 
+  # UI autocomplete on user name/email (used by user lookup)
+  autocomplete :user, :name, :full => true, :extra_data => [:id]
+
   # Filter on type when mode param is set
   def get_autocomplete_items(parameters)
     params.permit(:mode)
@@ -18,6 +21,16 @@ class ResourcesController < ApplicationController
     else
       super(parameters)
     end
+  end
+
+  # Override user name/email autocomplete to match on both name and email (sigh)
+  def autocomplete_user_name
+    term = params[:term]
+    u = User.where(
+        'LOWER(users.name) LIKE ? OR LOWER(users.email) LIKE ?',
+        "%#{term}%", "%#{term}%"
+    ).order(:id).all
+    render :json => u.map { |user| {:id => user.id, :label => user.name + " (" + user.email + ")", :value => user.name + " (" + user.email + ")"} }
   end
 
   # GET /resources
@@ -44,10 +57,10 @@ class ResourcesController < ApplicationController
     # Set child, if set, for display purposes in "new" form
     @child = nil
     if ((child_id = params[:child_id].to_i) > 0)
-      @child  = Resource.find(child_id)
+      @child = Resource.find(child_id)
     end
 
-    @resource.resource_type = (params['type'] == 'collection') ? Resource::LEARNING_COLLECTION : Resource::RESOURCE  # preset type
+    @resource.resource_type = (params['type'] == 'collection') ? Resource::LEARNING_COLLECTION : Resource::RESOURCE # preset type
   end
 
   # GET /resources/1/edit
@@ -59,6 +72,7 @@ class ResourcesController < ApplicationController
 
     # Get list of available collections
     @available_collections = get_available_collections(@resource)
+
   end
 
   # POST /resources
@@ -81,7 +95,7 @@ class ResourcesController < ApplicationController
 
         # Set resource under newly created collection or resource
         # TODO: Verify that current user has privs to do this
-        if(child_id > 0)
+        if (child_id > 0)
           child = Resource.find(child_id)
           # if (child.user_id == current_user.id)
           prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
@@ -91,7 +105,7 @@ class ResourcesController < ApplicationController
           #end
         end
         session[:mode] = :new;
-        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.'}
+        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.' }
         format.json { render :show, status: :created, location: @resource }
       else
         format.html { render :new }
@@ -131,28 +145,28 @@ class ResourcesController < ApplicationController
   # POST /resources/fork/1
   def fork
     # TODO: user can read this? And duplicate it?
-    r  = @resource.dup
+    r = @resource.dup
     r.forked_from_resource_id = @resource.id
     r.user_id = current_user.id
-   if (r.save)
-     # dupe media
-     @resource.media_files.each do |m|
-       mf = m.dup
-       mf.resource_id = r.id
+    if (r.save)
+      # dupe media
+      @resource.media_files.each do |m|
+        mf = m.dup
+        mf.resource_id = r.id
 
-       sf = m.sourceable.dup
-       if(sf.save)
+        sf = m.sourceable.dup
+        if (sf.save)
 
-        mf.set_slug
-        mf.sourceable_id = sf.id
+          mf.set_slug
+          mf.sourceable_id = sf.id
 
-        mf.save
-       end
-     end
-    redirect_to edit_resource_path(r), notice: "Forked resource"
-   else
-     redirect_to dashboard_path, notice: "Could not fork resource"
-   end
+          mf.save
+        end
+      end
+      redirect_to edit_resource_path(r), notice: "Forked resource"
+    else
+      redirect_to dashboard_path, notice: "Could not fork resource"
+    end
   end
 
   def toggle_access
@@ -164,7 +178,7 @@ class ResourcesController < ApplicationController
     else
       @resource.access = 0
       @resource.save
-      msg =  "Unpublished " + @resource.resource_type_for_display
+      msg = "Unpublished " + @resource.resource_type_for_display
     end
     redirect_to dashboard_path, notice: msg
   end
@@ -189,7 +203,7 @@ class ResourcesController < ApplicationController
   # add new comment
   def add_comment
     # TODO: make sure user is allowed to do this for this resource
-    if(super(@resource, true))
+    if (super(@resource, true))
       resp = {status: :ok, html: render_to_string("resources/_comments", layout: false)}
     else
       resp = {status: :err, error: flash[:alert]}
@@ -216,7 +230,7 @@ class ResourcesController < ApplicationController
   # add new tag
   def add_tag
     # TODO: make sure user is allowed to do this for this resource
-    if(super(@resource, true))
+    if (super(@resource, true))
       resp = {status: :ok, html: render_to_string("resources/_tags", layout: false)}
     else
       resp = {status: :err, error: flash[:alert]}
@@ -247,7 +261,7 @@ class ResourcesController < ApplicationController
     puts params.inspect
     link = Link.new({url: params[:link][:url], caption: params[:link][:caption], resource_id: @resource.id})
 
-    if(link.save)
+    if (link.save)
       resp = {status: :ok, html: render_to_string("resources/_links", layout: false)}
     else
       resp = {status: :err, error: link.errors.full_messages.join('; ')}
@@ -321,7 +335,7 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json {render :json => resp }
+      format.json { render :json => resp }
     end
   end
 
@@ -341,7 +355,7 @@ class ResourcesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {render :json => resp, status: :ok }
+      format.json { render :json => resp, status: :ok }
     end
   end
 
@@ -360,7 +374,7 @@ class ResourcesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {render :json => resp, status: :ok }
+      format.json { render :json => resp, status: :ok }
     end
   end
 
@@ -370,13 +384,13 @@ class ResourcesController < ApplicationController
       # TODO: Check if user can delete this
       to_resource_id = params[:related]
       RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id).destroy_all
-      resp = {:status => :ok, :html => render_to_string("resources/_related", layout: false) }
+      resp = {:status => :ok, :html => render_to_string("resources/_related", layout: false)}
     rescue StandardError => ex
       resp = {:status => :err, :error => ex.message}
     end
 
     respond_to do |format|
-      format.json {render :json => resp }
+      format.json { render :json => resp }
     end
   end
 
@@ -401,7 +415,7 @@ class ResourcesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {render :json => resp }
+      format.json { render :json => resp }
     end
   end
 
@@ -431,7 +445,50 @@ class ResourcesController < ApplicationController
     end
 
     respond_to do |format|
-      format.json {render :json => resp }
+      format.json { render :json => resp }
+    end
+  end
+
+  #
+  # User access list
+  #
+  def add_user_access
+    # response
+    begin
+      # only owner can add user access
+      if (@resource.user_id != current_user.id)
+      #  raise "Not owner"
+      end
+
+      to_user_id = params[:to_user_id]
+      access_type = params[:access_type]
+      prel = ResourcesUser.where(resource_id: @resource.id, user_id: to_user_id, access: access_type).first_or_create
+
+      resp = {:status => :ok, :html => render_to_string("resources/_access", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp, status: :ok }
+    end
+  end
+
+  def remove_user_access
+    begin
+      # only owner can add user access
+      if (@resource.user_id != current_user.id)
+        #  raise "Not owner"
+      end
+      user_id = params[:user_id]
+      ResourcesUser.where(resource_id: @resource.id, user_id: user_id).destroy_all
+      resp = {:status => :ok, :html => render_to_string("resources/_access", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
     end
   end
 

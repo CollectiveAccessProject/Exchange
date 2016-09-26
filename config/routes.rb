@@ -69,6 +69,14 @@ Rails.application.routes.draw do
 
   get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'
   get '/resources/:id/autocomplete_collection_object_title' => 'resources#autocomplete_resource_title', mode: Resource::COLLECTION_OBJECT, as: 'autocomplete_collection_object_title'
+  get '/resources/:id/autocomplete_user_name' => 'resources#autocomplete_user_name', as: 'autocomplete_user_name'
+
+  # resource user access list
+  post '/resources/:id/add_user_access' => 'resources#add_user_access', as: "add_user_access"
+  # TODO: make this POST
+  get '/resources/:id/remove_resource_user_access' => 'resources#remove_user_access', as: "remove_resource_user_access"
+
+
 
   post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
   post '/favorites/:id/remove' => 'favorites#remove', as: 'remove_favorite'

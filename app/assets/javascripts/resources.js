@@ -258,4 +258,31 @@
                 }, 3000);
             }
         });
+
+        // AJAX user access control
+        jQuery(document).on("ajax:success", "#resourceUserAccessElements", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_access").html(data.html)
+            }
+            jQuery("#access-user-status").slideDown(250);
+
+            jQuery("#access-user-status-message").html((data && data.status && (data.status == 'ok')) ? "Added user" : "Could not add user: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#access-user-status").slideUp(250);
+            }, 3000);
+
+        });
+
+        jQuery(document).on("ajax:success", ".resourceUserAccessRemoveLink", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_access").html(data.html)
+            }
+            jQuery("#access-user-status").slideDown(250);
+
+            jQuery("#access-user-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed user" : "Could not remove user: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#access-user-status").slideUp(250);
+            }, 3000);
+
+        });
     });

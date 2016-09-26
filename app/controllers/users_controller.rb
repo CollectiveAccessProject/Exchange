@@ -2,6 +2,8 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
   before_action :verify_access
 
+  respond_to :html, :json
+
   def verify_access
     raise StandardError, "Not allowed" if (!current_user.has_role? :admin)
   end
