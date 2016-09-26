@@ -73,6 +73,7 @@
             </div>
 
             <% @resource.resources_users.each do |l|
+              next
               next if (!l.user)
             %>
                 <div>
