@@ -36,12 +36,12 @@
     <div class="row" id="resource_tabs">
       <div class="col-md-12">
         <ul class="nav nav-tabs">
-          <% if(@resource.is_resource) %>
+          <% # if(@resource.is_resource) %>
           <li class="active">
             <a data-toggle="tab" href="#tab_formatting"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp;Formatting</a>
           </li>
-          <% end %>
-          <li <%= (@resource.is_resource) ? "" : " class='active'".html_safe  %>>
+          <% # end %>
+          <li><!-- # (@resource.is_resource) ? "" : " class='active'".html_safe  -->
             <a data-toggle="tab" href="#tab_related"><i class="fa fa-exchange" aria-hidden="true"></i> &nbsp;Related</a>
           </li>
           <li>
@@ -62,12 +62,13 @@
         </ul>
 
         <div class="tab-content">
-          <% if(@resource.is_resource) %>
+          <% # if(@resource.is_resource) %>
           <div id="tab_formatting" class="tab-pane active">
             <p><%= render 'resources/formatting_options' %></p>
           </div>
-          <% end %>
-          <div id="tab_related" class="tab-pane <%= (!@resource.is_resource) ? "active" : "" %>">
+          <% # end %>
+          <div id="tab_related" class="tab-pane">
+          <!--<div id="tab_related" class="tab-pane (!@resource.is_resource) ? "active" : """>-->
             <p><%= render 'resources/related' %></p>
           </div>
           <div id="tab_tags" class="tab-pane">
@@ -90,6 +91,17 @@
     </div><!-- end row -->
   </div><!-- end col -->
   <div class="col-md-2">
+  	  <% if (@resource.is_resource || @resource.is_collection_object) %>
+  	  	<h6><a href="#" data-toggle="popover" data-placement="left" data-content="Click and drag the Media Files in this column to set their order of appearance. The first Media File will display as the preview image for the Resource"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Media Files</a></h6>
+  	  <% end %>
+  	  <% if (@resource.is_collection) %>
+  	    <h6><a href="#" data-toggle="popover" data-placement="left" data-content="Click and drag the Resources in this column to set their order of appearance. The first Resource will display as the preview image for the Collection"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Resources</a></h6>
+  	  <% end %>
+  	  <script>
+	     $('#mediatip').ready(function(){
+ 		$('[data-toggle="popover"]').popover();
+	     });
+	  </script>
       <% if (@resource.is_resource || @resource.is_collection_object) %>
           <!-- Resource media list -->
           <%= render(partial:'media_files/integrated_create_form') %>
@@ -107,7 +119,10 @@
               button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add Resource".html_safe, "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
             %>
           </div>
-          <div class="panel panel-default"><div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">
+	   
+          <div class="panel panel-default">
+	     
+		<div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">
             <%= render(partial: "resources/resource_list_simple") %>
           </div><!-- end panel-body --></div><!-- end panel -->
       <% end %>

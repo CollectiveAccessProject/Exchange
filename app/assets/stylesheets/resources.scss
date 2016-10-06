@@ -248,6 +248,9 @@ $white:#FFFFFF;
 	margin-top:-20px;
 	display:none;
 }
+.hiddenParentPanel{
+	display:none;
+}
 .detailRelatedContentBlock{
 	margin:20px 0px 20px 0px;
 	.detailRelatedContentBlockScroll{
@@ -269,6 +272,9 @@ $white:#FFFFFF;
 			}
 		}
 	}
+}
+#detailTags{
+	margin-top: 10px;
 }
 .detailComments{
 	margin-bottom:20px;
@@ -361,6 +367,10 @@ $white:#FFFFFF;
 .previewMedia{
 	position:relative;
 	display:inline-block;
+	img{
+		width:100%;
+		height:auto;
+	}
 	.previewMediaIcon {
 		position:absolute;
 		top:10px;

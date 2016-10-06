@@ -5,13 +5,17 @@
    	<%= link_to ((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, edit_resource_path(rel.child_resource) %><br/>
 
     <% if(rel.child_resource.is_resource || rel.child_resource.is_collection_object) %>
-			    <% rel.child_resource.media_files.each do |f| %>
+		  <% if (rel.child_resource.media_files.count > 0) %> 
+		   <% rel.child_resource.media_files.each do |f| %>
 
            <% if f.sourceable %>
 					<%= link_to (f.sourceable.preview :thumbnail), edit_resource_path(rel.child_resource) %><br/>
 					<% break %>
 				<% end %>
 			<% end %>
+		   <% else %>
+		    <%= link_to '<i class="fa fa-picture-o fa-4x fa-align-center" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %><br/>
+		    <% end %>
 			<small><%= rel.child_resource.resource_type_for_display %> with <%= rel.child_resource.media_files.count %> media</small>
 		<% else %>
 			<a href="#" onCLick="$('.childcollection<%= rel.child_resource.id %>').slideToggle(); return false;"><small><%= rel.child_resource.resource_type_for_display %> with <%= rel.child_resource.children.count %> items <%= (rel.child_resource.children.count) ? "<i class='fa fa-chevron-circle-down'></i>".html_safe : "" %></small></a>

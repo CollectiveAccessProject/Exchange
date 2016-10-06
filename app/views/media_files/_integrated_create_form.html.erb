@@ -21,9 +21,9 @@
               </div>
 
 
-              <%= f.input :caption %>
+              <%= f.input :caption, :as => :summernote %>
               <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
-              <%= f.input :copyright_notes %>
+              <%= f.input :copyright_notes, :as => :summernote %>
               <%= f.input :access, as: :select, include_blank: false %>
 
 			  <ul class="nav nav-tabs">

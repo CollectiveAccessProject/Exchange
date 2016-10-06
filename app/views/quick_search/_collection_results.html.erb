@@ -1,6 +1,7 @@
 <% 
 	i = 0
 	col = 0
+	thumb = false
 %>
 <% @collections.each do |r|
 	  i = i+1
@@ -17,12 +18,32 @@
 
     <div class="col-sm-2 qsResult qsResultText">
     	<%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + r[:title], resource_preview_path(r[:id]) %>
-		<% @resource = Resource.find(r[:id]) %>
-<%=
-		if(@resource.resource_hierarchies.count)
-			"<div class='small indent'>Contains #{@resource.resource_hierarchies.count}".html_safe + ((@resource.resource_hierarchies.count == 1) ? " item" : " items") + "</div>".html_safe
-		end
-%>
+    	<br/>
+		<% @resource = Resource.find(r[:id]) %>		
+
+		<% if(@resource.resource_hierarchies.count) %>
+			<% @resource.resource_hierarchies.each do |rel| %>
+				<% if(rel.child_resource.is_resource) %>
+					<% rel.child_resource.media_files.each do |f| %>
+						<% if f.sourceable %>
+							<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.resource_id) %><br/>
+							<% thumb = true %>
+							<% break %>
+						<% end %>
+					<% end %>
+					<% if(thumb == true) %>
+						<% break %>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+		<% if(thumb == false) %>	
+			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(@resource) %><br/>
+		<% end %>
+		<%=	"<div class='small'>Contains #{@resource.resource_hierarchies.count}".html_safe + ((@resource.resource_hierarchies.count == 1) ? " item" : " items") + "</div>".html_safe %>
+		<%= "<div class='small'><h5>Author</h5> #{@resource.user.name} <h5>Last Updated</h5> #{time_ago_in_words(@resource.updated_at)} ago".html_safe %>
+		</div>
+		<% thumb = false %>
     </div>
 <% 
 		if(col == 6)
@@ -31,8 +52,9 @@
 			<div class="row">
 <%
 		end 
-	end
 %>
+<% end %>
+
 	</div><!-- end row -->
 <%=
 	if(@resources.count > 12)

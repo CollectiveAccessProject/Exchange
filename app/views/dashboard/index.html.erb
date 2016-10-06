@@ -36,7 +36,7 @@
               <div class="btn-group">
                 <a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><%= link_to '<span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Fork'.html_safe, fork_resource_path(resource), class:'btn btn-xs btn-noBg', method: :post %></li>
+                  <li><%= link_to '<span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy and Customize'.html_safe, fork_resource_path(resource), class:'btn btn-xs btn-noBg', method: :post %></li>
                   <li><%= link_to '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> '.html_safe + ((resource.access == 0) ? "Publish" : "Unpublish"), publish_resource_path(resource), class:'btn btn-xs btn-noBg', method: :post %></li>
                   <!--	<li><a href="#" class="btn btn-xs btn-noBg"><span class="glyphicon glyphicon-share aria-hidden="true"></span> Share</a></li>-->
                   <li role="separator" class="divider"></li>

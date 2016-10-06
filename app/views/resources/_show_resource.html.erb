@@ -1,3 +1,7 @@
+
+<% parent = @resource.parents.first %>
+<%= render partial: 'show_parent_heading.html.erb' %>
+
 <div class="row">
   <div class="col-sm-12">
     <H4>
@@ -10,8 +14,7 @@
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
-<% parent = @resource.parents.first %>
-<%= render partial: 'show_parent_heading.html.erb' %>
+
 <div class="row">
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
@@ -47,8 +50,40 @@
 								  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
 									<%= f.sourceable.preview :thumbnail  %>
 								  </a>
+								</div>
+<%=
+								# this renders a bootstrap model that is triggered if you click on the preview above
+								# it's in a partial because it's about a billion nested divs :-)
+								render partial: 'media_file_render_overlay', locals: { media: f.sourceable.render(:large), media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+%>
+						  </div><!-- end col -->
+<%
+				
+                		counter = counter + 1
+                	end
+            	end
+   %>
+            </div><!-- end row -->
+        
+        <% when "thumbnailsCaption" %>
+            <div class="row">
+<%
+				counter = 0
+				@resource.media_files.each do |f|
+               		if f.sourceable
+            			if counter == 4
+                    		counter = 0
+%>
+                      		</div>
+                      		<div class="row">
+                		<% end %>
+						  <div class="col-md-3">
+								<div class="thumbnail previewThumbnail">
+								  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+									<%= f.sourceable.preview :thumbnail  %>
+								  </a>
 								  <div class="caption small">
-									<%= f.caption  %>
+									<%= f.caption.html_safe %>
 								  </div>
 								</div>
 <%=
@@ -121,57 +156,54 @@
 		</div>
 	</div>
 <% end %>
-<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-	<div class="row" id="detailComments">
-	  <div class="col-md-12">
-		<% if @resource.comments.count > 0 %>
-			<H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4>
-			<div class="detailComments">
-			<% @resource.comments.each do |c| %>
-				<div>
-					<%= c.comment %>
-					<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
-				</div>
-			<% end %>
-			</div>
-		<% end %>
-	  </div>
-	</div>
-<% end %>
-<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
 	<div class="row">
 	  <div class="col-md-12">
-		<H5>Add your <%= (@resource.settings(:user_interaction).allow_comments > 0) ? "comment" : "" %> <%= ((@resource.settings(:user_interaction).allow_comments > 0) && (@resource.settings(:user_interaction).allow_tags > 0)) ? " and " : "" %> <%= (@resource.settings(:user_interaction).allow_tags > 0) ? "tags" : "" %></H5>
-			<div class="row">
-		<% if (@resource.settings(:user_interaction).allow_comments > 0) %>
-			  <div class="col-sm-6">
-				<%= form_tag '/resources/add_comment' do %>
-					<%= hidden_field_tag 'id', @resource.id %>
-					<div class="form-group">
-					  <label>Comment</label>
-					  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-					</div>
-					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-				<% end %>
-			  </div><!-- end col -->
+	    <div class="row" id="detailTags">
+		  
+		<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+		  <div class="col-sm-6">
+			<a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
+			<div id="commentPanel" class="detailComments collapse">
+			  <% @resource.comments.each do |c| %>
+				<div>
+				  <%= c.comment %>
+				  <br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+				</div>
+			  <% end %>
+			  <%= form_tag '/resources/add_comment' do %>
+				<%= hidden_field_tag 'id', @resource.id %>
+				<div class="form-group">
+				  <label>Add Comment</label>
+				  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+				</div>
+				  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+			  <% end %>
+			</div>
+		  </div>
 		<% end %>
 		<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
-			  <div class="col-sm-6">
-				<%= form_tag '/resources/add_tag' do %>
-					<%= hidden_field_tag 'id', @resource.id %>
-					<div class="form-group">
-					  <label>Tag</label>
-					  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-					</div>
-					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+			<div class="col-sm-6"> 
+			  <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %></h4></a>
+			  <div id="tagPanel" class="collapse detailComments">
+				<% @resource.tags.each do |t| %>
+				  <%= t.tag %>, 
 				<% end %>
-			  </div><!-- end col -->
-		<% end %>
-			</div><!-- end row -->
-		</div><!-- end col -->
-	</div><!-- end row -->
-<% end %>
-  </div><!-- end col -->
+				<%= form_tag '/resources/add_tag' do %>
+				<%= hidden_field_tag 'id', @resource.id %>
+				<div class="form-group">
+				  <label>Add Tag</label>
+				  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+				</div>
+				<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+				<% end %>
+			  </div>
+			</div>
+		  <% end %>
+	</div>
+  </div>	  
+</div>
+
+</div><!-- end col -->
   <div class="col-sm-2 resourceSidePanel">
     <div class="panel panel-primary">
       <div class="panel-body">
@@ -184,10 +216,10 @@
 			</div>
 		</div>
 		<div class="detailButtonsResource text-center">
-			<a href="#"><i class="fa fa-code-fork" aria-hidden="true"></i></a>
-			<a href="#"><i class="fa fa-share" aria-hidden="true"></i></a>
+			<a href="#" title="Duplicate and Edit"><i class="fa fa-clone" aria-hidden="true"></i></a>
+			<a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
 <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-			<a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+			<a href="#commentButton"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
 <% end %>
           <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
 		</div>
@@ -217,10 +249,10 @@
 			</div><!-- end row -->
 		</div><!-- end unit -->
 <% end %>		
-<% if @resource.related_resources.count > 0 %>
+<%# if @resource.related_resources.count > 0 %>
 	  <div class="unit">
-		<H4><%= @resource.related_resources.count %> Related</H4>
-		<div class="detailRelatedContentBlockScroll">
+		<a role="button" data-toggle="collapse" href="#relatedPanel"><H4><%= @resource.related_resources.count %> Related Resource<%= @resource.related_resources.count == 1 ? '' : 's' %></H4></a>
+		<div id="relatedPanel" class="collapse detailRelatedContentBlockScroll">
 		<% @resource.related_resources.each do |r| %>
 			<div>
 			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
@@ -234,7 +266,7 @@
 		<% end %>
 		</div>
 	  </div><!-- end unit -->
-<% end %>
+<%# end %>
         <% if @resource.links.count > 0 %>
             <div class="unit">
               <H4><%= @resource.links.count %> Link<%= ((@resource.links.count > 1) ? "s" : "") %></H4>
@@ -255,11 +287,15 @@
 		</div>
     <% end %>
 <% end %>
+	<div>
+	  <h4>Created by</h4><%=  @resource.user.name %>
+	  <h4>Last Updated</h4><%= time_ago_in_words(@resource.updated_at) + ' ago' %>
+    </div>
     <% if (@resource.copyright_license) %>
 		<div class="unit">
 		  <h4>Copyright</h4>
 		  <%= @resource.get_license_type %>
-			<% if (@resource.copyright_notes) %>
+			<% if (@resource.copyright_notes.present?) %>
 				(<%= @resource.copyright_notes %>)
 			<% end  %>
 		</div>

@@ -41,7 +41,7 @@ class Resource < ActiveRecord::Base
   @@settings_by_type = [
       {}, # not used
       {:media_formatting => [:mode], :text_placement => [:placement], :text_formatting => [:show_all, :collapse], :user_interaction => [:allow_comments, :allow_tags, :allow_responses, :display_responses_on_separate_page]}, # resources
-      {:media_formatting => []}, # collections
+      {:text_placement => [:placement], :user_interaction => [:allow_comments, :allow_tags, :allow_responses]}, # collections
       {:media_formatting => [:mode]}, # collection objects
       {:media_formatting => [:mode]} # exhibitions
   ]
@@ -190,6 +190,18 @@ class Resource < ActiveRecord::Base
       end
       return val
     end
+  end
+  
+ #
+  # Return collection of resources that reference the currently loaded one
+  # via collectionobject_links
+  #
+  def get_collection_object_references
+    # get ids of collection object links
+    link_ids = CollectionobjectLink.where("resource_id = ?", self.id).pluck(:id)
+    resource_ids = MediaFile.where("sourceable_id IN (?)", link_ids).pluck(:resource_id)
+
+    Resource.find(resource_ids)
   end
 
   # return number of direct children on this resource
@@ -474,7 +486,7 @@ end
 class ResourceSettingObject < RailsSettings::SettingObject
   validate do
     # media_formatting / mode
-    if self.mode.present? && !([:thumbnails, :slideshow, :embed].include? self.mode)
+    if self.mode.present? && !([:thumbnails, :thumbnailsCaption, :slideshow, :embed].include? self.mode)
       raise StandardError, "Media formatting is invalid"
     end
 

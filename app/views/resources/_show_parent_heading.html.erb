@@ -1,15 +1,15 @@
 <%
-	  parent = @resource.parents.first
-	  if(parent)
+ 	i = 1
+ 	@resource.parents.each do |parent|
 %>
 <div class="row">
   <div class="col-sm-12">
-	<H4><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+	<H4><a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
 		Part of:
 <%=
 		link_to raw(parent.title), resource_preview_path(parent), "class": ""
 %>
-			<br/><small><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;">
+			<br/><small><a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;">
 <%=
 		if(parent.resource_hierarchies) 
 			"<small>#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
@@ -17,34 +17,40 @@
 %>
 			 in this learning collection</a></small>
 	</H4>
-  	<div class="panel panel-primary" id="detailParentInfoPanel">
+  	<div class="panel panel-primary hiddenParentPanel" id="detailParentInfoPanel<%= i.to_s %>">
       <div class="panel-body">
 		<div class="row">
 		  <div class="col-sm-5">
 			<div class="detailBodyText"><%= (parent.body_text) ? parent.body_text.html_safe : "" %></div>
 		  </div>
-		  <div class="col-sm-7">
+		  <div class="col-sm-5">
 		   <% if(parent.child_count > 0) %>
 			  <h5><%= (parent.child_count == 1) ? parent.child_count.to_s + " Item" : parent.child_count.to_s + " Items"  %> in this Learning Collection</h5>
 				<%= render :partial => 'resource_list_grid', :locals => {:parent => parent} %>
 			<% end %>
 
-
+		  </div>
+		  <div class="col-sm-2">
 			<% if (parent.copyright_license) %>
 				<p>
 				  <h5>Copyright</h5>
 				  <div><%= parent.get_license_type %>
-					<% if (parent.copyright_notes) %>
+					<% if (parent.copyright_notes.present?) %>
 						(<%= parent.copyright_notes %>)
 					<% end  %>
 					</div>
 				</p>
 			<% end %>
+			<div class="text-left">
+	          <h5>Created by</h5><%=  @resource.user.name %>
+	          <h5>Last Updated</h5><%= time_ago_in_words(@resource.updated_at) %> 
+            </div>
 		  </div><!-- end col -->
 		</div><!-- end row -->
     </div><!-- end panel body --></div><!-- end panel -->
   </div><!-- end col -->
 </div><!-- end row -->
 <%
+	i += 1
 		end
 %>
