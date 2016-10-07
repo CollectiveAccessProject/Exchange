@@ -208,10 +208,10 @@
     <div class="panel panel-primary">
       <div class="panel-body">
 		<div class="row">
-			<div class="col-sm-7 text-left">
+			<div class="col-xs-7 text-left">
 				<a href="#"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous</a>
 			</div>
-			<div class="col-sm-5 text-right">
+			<div class="col-xs-5 text-right">
 				<a href="#">Next <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
 			</div>
 		</div>
@@ -223,32 +223,37 @@
 <% end %>
           <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
 		</div>
+
+		<h4>Part of <%= @resource.parents.count %> Learning Collection<%= (@resource.parents.count == 1) ? "" : "s" %></h4>
 		
-<% if(parent && parent.resource_hierarchies && (parent.resource_hierarchies.count > 1)) %>
-		<div class="unit">		
-		  <H4><small><%= parent.resource_hierarchies.count %> item<%= (parent.resource_hierarchies.count == 1) ? "" : "s" %> in this collection</small></H4>
-			<div class="row resourceGrid">
-		  <% parent.resource_hierarchies.each do |rel| %>
-				<div class="col-sm-4">
-					<% if(rel.child_resource.is_resource) %>
-						<% if(rel.child_resource.media_files.count > 0) %>
-							<% rel.child_resource.media_files.each do |f| %>
-								<% if f.sourceable %>
-									<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
-									<% break %>
-								<% end %>
-							<% end %>
-						<% else %>
-							<%= link_to '<i class="fa fa-picture-o" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
+		<% 
+		panelCount = 0
+		@resource.parents.each do |p| %>
+	<%# if(p.resource_hierarchies && (p.resource_hierarchies.count > 1)) %>
+		<div class="unit">
+		<div class="row">
+			<div class="col-sm-12">		
+		  		<a role="button" data-toggle="collapse" href="#collPanel_<%= panelCount %>">
+		  		<H4><small><%= p.resource_hierarchies.count %> item<%= (p.resource_hierarchies.count == 1) ? "" : "s" %> in <%= p.title %></small></H4></a>
+		  		<div id="collPanel_<%= panelCount %>" class="collapse detailRelatedContentBlockScroll">
+				<% p.resource_hierarchies.each do |rel| %>
+					<div>
+					<small>
+						<% if (rel.child_resource.is_collection) %>
+							<%= link_to "<i class='fa fa-folder-o'></i>".html_safe, resource_preview_path(rel.child_resource) %>
 						<% end %>
-					<% else %>
-						<%= link_to "<i class='fa fa-folder-o'></i>".html_safe, resource_preview_path(rel.child_resource), title:rel.child_resource.title %>
-					<% end %>
-				</div><!-- end col -->
-		  <% end %>
-			</div><!-- end row -->
+						<%= link_to rel.child_resource.title, resource_preview_path(rel.child_resource) %>
+						<br />
+						<%= (rel.child_resource.subtitle.length > 50) ? rel.child_resource.subtitle[0..50] + "..." : rel.child_resource.subtitle %>
+					</small><br/>
+					</div>
+				<% end %>
+				</div>
+			</div><!-- end col -->
+		</div><!-- end row -->
 		</div><!-- end unit -->
-<% end %>		
+		<% panelCount += 1 %>
+		<% end %>		
 <%# if @resource.related_resources.count > 0 %>
 	  <div class="unit">
 		<a role="button" data-toggle="collapse" href="#relatedPanel"><H4><%= @resource.related_resources.count %> Related Resource<%= @resource.related_resources.count == 1 ? '' : 's' %></H4></a>
