@@ -292,8 +292,11 @@ class Resource < ActiveRecord::Base
   # Simple "quicksearch" of resources (broken out by type)
   # STATIC
   def self.quicksearch(query)
+    query_proc = query.dup
+    query_proc.gsub!( /([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
+
     begin
-      resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
+      resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
@@ -305,7 +308,7 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
+      collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
@@ -316,7 +319,7 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
+      collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
@@ -327,7 +330,7 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
+      exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
