@@ -99,6 +99,7 @@
       <div class="row">
         <div id="favoritesList">
         <%
+        if(@favorites) 
           @favorites.each do |f|
           	next if (!f.resource)
           %>
@@ -120,6 +121,7 @@
           </div>
         </div><!--end col -->
         <% end %>
+         <% end %>
           </div>
       </div><!-- end row -->
     </div><!-- end dbUnit -->

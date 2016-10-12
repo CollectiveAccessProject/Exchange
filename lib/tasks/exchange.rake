@@ -17,10 +17,12 @@ namespace :exchange do
 
 			user_id = User.where(email: 'admin@exchange.umma.umich.edu').first.id
 			
-			query = 'ca_objects.access_specific:exchange'		# CA query to use to pull relevant objects
-			#query = 'ca_objects.idno:"2014" OR ca_objects.idno:"1954" OR ca_objects.idno:"2010" OR ca_objects.idno:"2010" OR ca_objects.idno:"1983" OR ca_objects.idno:"2014" OR ca_objects.idno:"2013" OR ca_objects.idno:"1988" OR ca_objects.idno:"2011" OR ca_objects.idno:"1998" OR ca_objects.idno:"2005" OR ca_objects.idno:"1997" OR ca_objects.idno:"1954" OR ca_objects.idno:"1961/1.170"'
+			#query = 'ca_objects.access_specific:exchange'		# CA query to use to pull relevant objects
+			#query = 'ca_objects.idno:"2014" OR ca_objects.idno:"1954" OR ca_objects.idno:"2010" OR ca_objects.idno:"2010" OR ca_objects.idno:"1983" OR ca_objects.idno:"2014" OR ca_objects.idno:"2013" OR ca_objects.idno:"1988" OR ca_objects.idno:"2011" OR ca_objects.idno:"1998" OR ca_objects.idno:"2005" OR ca_objects.idno:"1997" OR ca_objects.idno:"1954" OR ca_objects.idno:"1961/1.170" OR ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248"'
 			#query = 'ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248"'
-			
+			query = 'ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248" OR ca_objects.idno:"1997/1.206" OR ca_objects.idno:"1954/1.536" OR ca_objects.idno:"2008/2.255" OR ca_objects.idno:"1993/2.13.1" OR ca_objects.idno:"2002/2.145" OR ca_objects.idno:"2000/2.158.1" OR ca_objects.idno:"1955/1.89" OR ca_objects.idno:"1949/1.199" OR ca_objects.idno:"1948/1.331"'
+
+
 			start = 0
 			limit = 100
 
@@ -123,9 +125,9 @@ namespace :exchange do
 			start += limit
 
 			# only do one loop run in development. 100 test records.
-			if Rails.env.development?
-				break
-			end
+			#if Rails.env.development?
+			#	break
+			#end
 
 		end while object_list_for_display.size > 1
 
@@ -160,11 +162,25 @@ namespace :exchange do
 			t.destroy_all
 		end
 		MediaFile.destroy_all
+		CollectionobjectLink.destroy_all
+		CollectiveaccessLink.destroy_all
+		FlickrLink.destroy_all
+		GoogledocsLink.destroy_all
+		SoundcloudLink.destroy_all
+		CollectionObjectLink.destroy_all
+		VimeoLink.destroy_all
+		YoutubeLink.destroy_all
 		RelatedResource.destroy_all
 		ResourceHierarchy.destroy_all
+		#ResourceParent.destroy_all
+		Tag.destroy_all
+		Comment.destroy_all
+		Favorite.destroy_all
+		#Setting.destroy_all
+		#Version.destroy_all
+		Link.destroy_all
 		Resource.destroy_all
 	end
-
 
 	desc 'Regenerate media previews'
 		task rebuild_media_previews: :environment do

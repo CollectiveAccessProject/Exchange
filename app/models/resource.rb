@@ -12,6 +12,8 @@ class Resource < ActiveRecord::Base
 
   has_many :resources_users
   has_many :users, through: 'resources_users'
+  
+  has_many :collectionobject_links, through: 'media_files', source: 'sourceable', source_type: 'CollectionobjectLink'
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
@@ -68,7 +70,6 @@ class Resource < ActiveRecord::Base
   # slug handling
   include SlugModel
   before_validation  :set_slug
-
 
   #
   # Access control
@@ -190,6 +191,18 @@ class Resource < ActiveRecord::Base
       end
       return val
     end
+  end
+
+  #
+  # Return collection of resources that reference the currently loaded one
+  # via collectionobject_links
+  #
+  def get_collection_object_references
+    # get ids of collection object links
+    link_ids = CollectionobjectLink.where("resource_id = ?", self.id).pluck(:id)
+    resource_ids = MediaFile.where("sourceable_id IN (?)", link_ids).pluck(:resource_id)
+
+    Resource.find(resource_ids)
   end
 
   # return number of direct children on this resource
