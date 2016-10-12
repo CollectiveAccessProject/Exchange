@@ -20,9 +20,9 @@
                     <div id="form-status">
                       <div class="flash-notice" id="form-status-message"></div>
                     </div>
-                    <%= f.input :caption, :input_html => {:rows => 4} %>
+                    <%= f.input :caption, :input_html => {}, :as => :summernote %>
                     <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
-                    <%= f.input :copyright_notes %>
+                    <%= f.input :copyright_notes, :input_html => {}, :as => :summernote %>
                     <%= f.input :access, as: :select, include_blank: false %>
 
                     <%= hidden_field(:media_file, :resource_id, :value => @resource.id) %>
@@ -32,9 +32,9 @@
 
                 <% end %>
             <% else %>
-                <%= media_file.caption %>
+                <%= media_file.caption.html_safe %>
                 <br/>
-                License: <%= media_file.get_license_type %>
+                
                 <br/>
                 <%= media_file.copyright_notes %>
             	Media Source: 
@@ -80,6 +80,8 @@
 <%
 				end
 %>
+			<br/>
+            <%= media_file.get_license_type %>
             <% end %>
           </div>
         </div>
