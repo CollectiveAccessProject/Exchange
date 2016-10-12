@@ -12,6 +12,8 @@ class Resource < ActiveRecord::Base
 
   has_many :resources_users
   has_many :users, through: 'resources_users'
+  
+  has_many :collectionobject_links, through: 'media_files', source: 'sourceable', source_type: 'CollectionobjectLink'
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
@@ -68,7 +70,6 @@ class Resource < ActiveRecord::Base
   # slug handling
   include SlugModel
   before_validation  :set_slug
-
 
   #
   # Access control
@@ -204,6 +205,18 @@ class Resource < ActiveRecord::Base
     Resource.find(resource_ids)
   end
 
+  #
+  # Return collection of resources that reference the currently loaded one
+  # via collectionobject_links
+  #
+  def get_collection_object_references
+    # get ids of collection object links
+    link_ids = CollectionobjectLink.where("resource_id = ?", self.id).pluck(:id)
+    resource_ids = MediaFile.where("sourceable_id IN (?)", link_ids).pluck(:resource_id)
+
+    Resource.find(resource_ids)
+  end
+
   # return number of direct children on this resource
   # @param type Resource type to restrict count to (Resource::RESOURCE, Resource::LEARNING_COLLECTION, Resource::COLLECTION_OBJECT or Resource::EXHIBITION); if omitted resources of all types are counted
   # @return int
@@ -291,8 +304,14 @@ class Resource < ActiveRecord::Base
   # Simple "quicksearch" of resources (broken out by type)
   # STATIC
   def self.quicksearch(query)
+    query_proc = query.dup
+
+    # Quote parts of query that appear to be identifiers
+    query_proc.gsub!(/([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
+    query_proc.gsub!(/["]{2}/, '"')
+
     begin
-      resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
+      resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
@@ -304,7 +323,7 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
+      collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
@@ -315,7 +334,7 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
+      collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
@@ -326,7 +345,7 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
+      exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
         end
