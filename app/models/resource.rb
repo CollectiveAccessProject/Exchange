@@ -293,7 +293,10 @@ class Resource < ActiveRecord::Base
   # STATIC
   def self.quicksearch(query)
     query_proc = query.dup
-    query_proc.gsub!( /([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
+
+    # Quote parts of query that appear to be identifiers
+    query_proc.gsub!(/([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
+    query_proc.gsub!(/["]{2}/, '"')
 
     begin
       resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
