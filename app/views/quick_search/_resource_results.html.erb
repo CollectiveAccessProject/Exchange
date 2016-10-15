@@ -28,8 +28,11 @@
 		<% if(thumb == false) %>
 			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(r[:id]) %><br/>
 		<% end %>
-    	<%= link_to r[:title], resource_preview_path(r[:id]) %>
-    	<%= "<div class='small text-left'><h5>Author</h5> #{@resource.user.name} <h5>Last Updated</h5> #{time_ago_in_words(@resource.updated_at)} ago".html_safe %>
+		<div class="text-left qsResultText">
+    		<%= link_to r[:title], resource_preview_path(r[:id]) %>
+    		<div class="qsMoreCaption">
+    			<%= "<div class='small'><b>Author</b> #{@resource.user.name}</div><div class='small'><b>Last Updated</b> #{time_ago_in_words(@resource.updated_at)} ago</div>".html_safe %>
+    		</div>
     	</div>
     	<% thumb = false %>
     </div>

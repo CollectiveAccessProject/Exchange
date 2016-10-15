@@ -6,9 +6,11 @@
       <% if (params['mode'] == :preview) %>
           Previewing Learning Collection
       <% end %>
-      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
-      <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
-      <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
+      <div class="headingButtons">
+      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
+      <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs' %>
+      <%= last_search_button(session, {'class': 'btn btn-default btn-xs'}) %>
+	  </div>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -29,7 +31,7 @@
 		  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>  
 			<div class="col-sm-12">
 		  <% else %>
-			<div class="col-sm-6">
+			<div class="col-sm-4">
 		  <% end %>
 			<div class="detailBodyText">
 				<%= (@resource.body_text) ? @resource.body_text.html_safe : "" %>
@@ -38,12 +40,16 @@
 		  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>  
 			<div class="col-sm-12">
 		  <% else %>
-			<div class="col-sm-6">
+			<div class="col-sm-8">
 		  <% end %>
 		   <% if(@resource.child_count > 0) %>
 			  <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Item" : @resource.child_count.to_s + " Items"  %> in this Learning Collection</h5>
-
-				<%= render :partial => "resource_list_grid" %>
+				<% if (@resource.settings(:text_placement).placement.to_s == "above") 
+					col = 3
+				else
+					col = 4
+				end %>
+				<%= render :partial => "resource_list_grid", locals: { width: col} %>
 			<% end %>
         </div>
       </div>
@@ -64,7 +70,7 @@
       <div class="row">
         <div class="text-right col-sm-12">
 	      <h5>Created by</h5><%=  @resource.user.name %>
-	      <h5>Last Updated</h5><%= time_ago_in_words(@resource.updated_at) %> 
+	      <h5>Last Updated</h5><%= time_ago_in_words(@resource.updated_at) + ' ago' %> 
         <% if (@resource.copyright_license) %>
           <h5>Copyright</h5>
           <div><%= @resource.get_license_type %>

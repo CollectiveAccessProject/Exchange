@@ -23,11 +23,18 @@ body {
 	color: #8a898a;
 	line-height: 1.35em;
 }
+@media (min-width: 768px) and (max-width: 992px) {
+  /* line 10, /usr/local/rvm/gems/ruby-2.3.1/gems/bootstrap-sass-3.3.7/assets/stylesheets/bootstrap/_grid.scss */
+  .container {
+    width: 100%;
+  }
+}
 a:hover{
 	background:inherit;
 }
 a, a:focus{
 	outline: 0;
+	text-decoration:none;
 }
 p, ul, li{
 	font-family: $font-family-sans-serif;
@@ -86,8 +93,9 @@ h4{
 	text-transform:capitalize;
 	padding:10px 10px 10px 10px;
 	margin-top:0px;
-	a{
+	a, a:active, a:focus{
 		color:$gray;
+		text-decoration:none;
 	}
 	a:hover{
 		text-decoration:none;
@@ -96,7 +104,8 @@ h4{
 		color:$gray !important;
 		background:transparent;
 		border:0px;
-		margin-left:10px;
+		padding-left:10px;
+		padding-top:0px;
 	}
 	.btn-default:hover{
 		color:$blue !important;
@@ -107,6 +116,18 @@ h4{
 		text-transform:none;
 		padding-top:5px;
 		font-size:11px;
+	}
+	.headingButtons{
+		float:right;
+	}
+}
+@media(max-width: 768px){
+	h4 .headingButtons{
+		float:none;
+	}
+	h4 .headingButtons .btn-default{
+		padding-left:0px;
+		padding-top:10px;
 	}
 }
 .rowLessPadding{
@@ -156,23 +177,48 @@ h4{
 	background-color:$green !important;
 }
 .featureBox{
-	margin-left:0px;
 	margin-right:0px;
+	margin-left:0px;
 	background-color:$yellow;
-	.col-sm-6{
-		padding:0px 15px 0px 0px;
+	.col-md-6{
+		padding:0px;
 		.featureBoxText{
-			padding:70px 50px 0px 50px;
+			padding:15px;
 			p{
 				margin-top:20px;
 				color:#000000;
 				font-size: .9em;
-			}		
+			}
+			a, a:visited{
+				color:$blue;
+			}	
 		}
 	}
 	img{
 		width:100%;
 		height:auto;
+	}
+}
+@media(max-width:992px){
+	.featureBox{
+		max-width:500px;
+		margin-right:auto;
+		margin-left:auto;
+	}
+}
+@media(min-width: 768px){
+	.featureBox .col-md-6 .featureBoxText{
+		padding:20px 50px 0px 50px;
+	}
+}
+@media(max-width: 768px){
+	.featureBox .col-md-6 .featureBoxText .btn{
+		margin-bottom:20px;
+	}
+}
+@media(min-width: 1200px){
+	.featureBox .col-md-6 .featureBoxText{
+		padding:70px 50px 0px 50px;
 	}
 }
 .navbar-header{
@@ -353,6 +399,12 @@ h4{
 		letter-spacing: 1px;
 		padding:25px 20px 25px 20px;
 	}
+	@media (min-width: 768px) and (max-width: 992px) {
+		a{
+			font-size:13px;
+			padding:25px 10px 25px 10px;
+		}
+	}
 	.navTitle{
 		float:left;
 		padding:0px 0px 2px 3px;
@@ -370,6 +422,11 @@ h4{
 				font-weight: 400;
 				line-height:auto;
 				padding:0px !important;
+			}
+		}
+		@media(min-width:768px) and (max-width:1024px){
+			a{
+				font-size:30px;
 			}
 		}
 		a:hover{
@@ -579,6 +636,8 @@ select.input-sm{
 }
 .previewThumbnail{
 	min-height:250px;
+	text-align:center;
+	padding:10px;
   .caption{
     font-size:11px;
     padding:5px 0px 0px 0px;
@@ -767,9 +826,10 @@ li.tagList {
 }
 
 .guide_col {
-    overflow: auto;
-    height: auto;
-    padding: .5rem;
+    overflow-y: scroll;
+    /* height: auto;
+   padding: .5rem; */
+    height: 100vh;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: none;
 }

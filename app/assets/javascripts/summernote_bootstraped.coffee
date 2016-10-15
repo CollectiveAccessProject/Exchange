@@ -19,7 +19,7 @@ $ ->
           exchangeLoadMediaForSummernote()
       }
       
-  $('#media_file_caption, #media_file_copyright_notes').each -> 
+  $('#media_file_caption, #media_file_copyright_notes, #resource_title, #resource_subtitle').each -> 
     $(this).summernote
       height : 75,
       toolbar : [

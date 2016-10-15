@@ -1,56 +1,74 @@
 <%
- 	i = 1
- 	@resource.parents.each do |parent|
+ 	i = 1;
+	if(@resource.parents.count > 0)
 %>
 <div class="row">
   <div class="col-sm-12">
-	<H4><a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+	<H4>
+	<!--<a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>-->
 		Part of:
-<%=
-		link_to raw(parent.title), resource_preview_path(parent), "class": ""
+<%
+ 	@resource.parents.each do |parent|
 %>
-			<br/><small><a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;">
+		<a href="#" onClick="$('.hiddenParentPanel').hide(); $('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;"><%= raw(parent.title) %></a>
 <%=
 		if(parent.resource_hierarchies) 
-			"<small>#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
-  end
+			" <small>(#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ') + ")</small>".html_safe
+		end
+%><%=
+		if(i < @resource.parents.count)
+			", "
+		end
 %>
-			 in this learning collection</a></small>
+<%
+		i += 1
+	end
+%>
 	</H4>
+<%
+ 	i = 1
+ 	@resource.parents.each do |parent|
+%>
   	<div class="panel panel-primary hiddenParentPanel" id="detailParentInfoPanel<%= i.to_s %>">
-      <div class="panel-body">
+      <div class="panel-body collection_summary_panel">
+      	<div class="row">
+		  <div class="col-sm-12">
+      		<a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').hide(); return false;" class="btn btn-noBg btn-lg-icon pull-right"><i class="fa fa-close" aria-hidden="true"></i></a>
+		  	<H5><%= link_to raw(parent.title) + " <i class='fa fa-external-link'></i>".html_safe, resource_preview_path(parent), "class": "" %></H5>
+		  </div>
+		</div>
 		<div class="row">
 		  <div class="col-sm-5">
 			<div class="detailBodyText"><%= (parent.body_text) ? parent.body_text.html_safe : "" %></div>
+			<p>
+				<% if (parent.copyright_license) %>
+				
+					  <h5>Copyright</h5>
+					  <div><%= parent.get_license_type %>
+						<% if (parent.copyright_notes.present?) %>
+							(<%= parent.copyright_notes %>)
+						<% end  %>
+						</div>
+				<% end %>
+				<h5>Created by</h5><div><%=  @resource.user.name %></div>
+				<h5>Last Updated</h5><div><%= time_ago_in_words(@resource.updated_at) %></div>
+	        </p>
 		  </div>
-		  <div class="col-sm-5">
+		  <div class="col-sm-7 collection_summary_resources">
 		   <% if(parent.child_count > 0) %>
 			  <h5><%= (parent.child_count == 1) ? parent.child_count.to_s + " Item" : parent.child_count.to_s + " Items"  %> in this Learning Collection</h5>
 				<%= render :partial => 'resource_list_grid', :locals => {:parent => parent} %>
 			<% end %>
 
 		  </div>
-		  <div class="col-sm-2">
-			<% if (parent.copyright_license) %>
-				<p>
-				  <h5>Copyright</h5>
-				  <div><%= parent.get_license_type %>
-					<% if (parent.copyright_notes.present?) %>
-						(<%= parent.copyright_notes %>)
-					<% end  %>
-					</div>
-				</p>
-			<% end %>
-			<div class="text-left">
-	          <h5>Created by</h5><%=  @resource.user.name %>
-	          <h5>Last Updated</h5><%= time_ago_in_words(@resource.updated_at) %> 
-            </div>
-		  </div><!-- end col -->
 		</div><!-- end row -->
     </div><!-- end panel body --></div><!-- end panel -->
+<%
+	i += 1
+		end
+%>
   </div><!-- end col -->
 </div><!-- end row -->
 <%
-	i += 1
 		end
 %>

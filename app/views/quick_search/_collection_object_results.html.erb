@@ -17,40 +17,27 @@
 		end
 %>
     <div class="col-md-2 qsResult">
-    	<div class="row">
-    		<div class="col-sm-12 qsResultText">
-    			<%# link_to r[:title], resource_preview_path(r[:id]) %>
-    		</div>
-    	</div>
-    	<div class="row">
-    		<div class="col-sm-12">
-				<% @resource = Resource.find(r[:id]) %>
-				<% @resource.media_files.each do |f| %>
-					<% if f.sourceable %>
-						<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
-						<% thumb = true %>
-						<% break %>
-					<% end %>
-				<% end %>
-				<% if(thumb == false) %>	
-					<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(@resource) %><br/>
-				<% end %>
+		<% @resource = Resource.find(r[:id]) %>
+		<% @resource.media_files.each do |f| %>
+			<% if f.sourceable %>
+				<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
+				<% thumb = true %>
+				<% break %>
+			<% end %>
+		<% end %>
+		<% if(thumb == false) %>	
+			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(@resource) %><br/>
+		<% end %>
+		<div class="text-left qsResultText">
+			<div class="small"><%= @resource.get_collection_object_field('artist') %> <%= @resource.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
+			<%= link_to r[:title], resource_preview_path(r[:id]) %>
+			<div class="qsMoreCaption">
+				<div class="small"><%= @resource.get_collection_object_field('date_created') %></div>
+				<div class="small"><i><%= @resource.get_collection_object_field('credit_line') %></i></div>
+				<div class="small text-left"><%= @resource.subtitle %></div>
 			</div>
 		</div>
-		<br/>
-		<div class="row">
-			<div class="col-sm-12 text-left qsResultText">
-				<div class="small"><%= @resource.get_collection_object_field('artist') %> <%= @resource.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
-				<%= link_to r[:title], resource_preview_path(r[:id]) %>
-				<hr/>
-				<div class="small"><%= @resource.get_collection_object_field('date_created') %></div>
-				<br />
-				<div class="small"><i><%= @resource.get_collection_object_field('credit_line') %></i></div>
-				<br />
-				<div class="small text-left"><%= @resource.subtitle %></div>
-    		</div>
-    		<% thumb = false %>
-    	</div>
+		<% thumb = false %>
     </div>
     
 <% 

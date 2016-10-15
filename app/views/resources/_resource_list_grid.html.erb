@@ -5,6 +5,9 @@
 		resource = @resource
 	end
 	i = 0
+	if !defined?(width)
+		width = 4
+	end
 %>
 <% if resource.resource_hierarchies.count %>
 	<div class="row collectionDetailContents">
@@ -13,9 +16,9 @@
 		i = i+1
 %>
 		
-		<div class="col-sm-4">
+		<div class="col-sm-<%= width %>">
 			<div class="collectionDetailContentsItem" >
-				<%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %><br/>
+				<div class='titleOver'><%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %></div>
 
 					<% if(rel.child_resource.is_resource) %>
 					  <% if (rel.child_resource.media_files.count > 0) %>
@@ -28,10 +31,10 @@
 					  <% else %>
 						<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %><br/>
 					  <% end %>
-						<small>Resource with <%= rel.child_resource.media_files.count %> media</small>
 					<% else %>
 						<% if(rel.child_resource.children.count) %>
 								<% thumb = 0 %>
+								<% placeholder = "" %>
 								<% rel.child_resource.children.each do |g| %>
 								  <% if(g.media_files.count > 0) %>	
 									<% g.media_files.each do |f| %>
@@ -46,17 +49,23 @@
 									   end
 									%>
 								  <% else %>
-									<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center" thumbPlaceholder aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %><br/>
-									<% thumb = 1 %>	
+									<% placeholder = link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %>	
 								  <% end %>
 								<% end %>
+							<% if(thumb == 0 && placeholder != "") %>
+								<%= placeholder + "<br/>".html_safe %>
+							<% end %>
 						<% end %>
-						<small>Collection with <%= rel.child_resource.children.count %> item<%= (rel.child_resource.children.count == 1) ? "" : "s" %></small>
 					<% end %>
 			</div>
+			<% if(rel.child_resource.is_resource) %>
+				<small>Resource with <%= rel.child_resource.media_files.count %> media</small>
+			<% else %>
+				<small>Collection with <%= rel.child_resource.children.count %> item<%= (rel.child_resource.children.count == 1) ? "" : "s" %></small>
+			<% end %>
 		</div>
 <%
-		if (i == 3)
+		if (i == (12/width))
 			i = 0
 %>
 			</div><!-- end row -->

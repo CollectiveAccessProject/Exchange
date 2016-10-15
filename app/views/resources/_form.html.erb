@@ -75,8 +75,8 @@
            <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
              </em>
         <% end %>
-						<%= r.input :title, :input_html => {:rows => 3} %>
-						<%= r.input :subtitle, :input_html => {:rows => 3} %>
+						<%= r.input :title, :input_html => {}, :as => :summernote %>
+						<%= r.input :subtitle, :input_html => {}, :as => :summernote %>
 						<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
 						<%= r.input :copyright_notes %>
 						<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
@@ -89,12 +89,12 @@
                 <%= r.input :body_text, :input_html => {}, :as => :summernote %>
             	<% if(@resource.is_resource) %>
                     <div class="mediaEmbedHelpLink">
-                        <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
+                        <a role="button" data-toggle="collapse" href="#mediaEmbedPanel">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i> How do I embed media in the body of my resource?
                         </a>
                     </div>
 
-            	    <div class="mediaEmbedHelp">
+            	    <div id="mediaEmbedPanel" class="collapse mediaEmbedHelp">
                         You can easily embed media using the <em>media item</em> option in the tool bar. First
                         click on the location in the text where the media should appear, then select from the <em>media item</em>
                         list. A placeholder will be inserted into  the body text in the following format:

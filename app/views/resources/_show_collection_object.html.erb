@@ -4,9 +4,11 @@
       <% if (params['mode'] == :preview) %>
           Previewing UMMA Collection Object
       <% end %>
-      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
+      <div class="headingButtons">
+      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
       <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
       <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
+      </div>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -180,6 +182,14 @@
             		<% rel_resource.each do |v| %>
                     <div>
                       <%= link_to v.title, resource_preview_path(v.id) %>
+                      <% if(v.parents.count > 0) %>
+                      	<br />
+                      	<% if(v.parents.count == 1) %>
+                      	  <%= "(Part of: " + v.parents.first.title + ")" %>
+                      	<% else %>
+                      	  <%= "(Part of " + v.parents.count.to_s + " Learning Collections)" %>
+                      	<% end %>
+                      <% end %>
                     </div>
                 <% end %>
               </div>
