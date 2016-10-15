@@ -52,6 +52,7 @@
 		  <div class="row">
 		    <div class="col-md-6">
 		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+          <%= r.input :author_name  %>
 		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
 		    </div>
 		    <div class="col-md-6">

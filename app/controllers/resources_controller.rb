@@ -509,7 +509,7 @@ class ResourcesController < ApplicationController
   def resource_params
     params.require(:resource).permit(
         :slug, :title, :resource_type, :subtitle, :source_type, :source,
-        :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
+        :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :author_name
     )
   end
 end
