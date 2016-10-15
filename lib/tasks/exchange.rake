@@ -17,10 +17,10 @@ namespace :exchange do
 
 			user_id = User.where(email: 'admin@exchange.umma.umich.edu').first.id
 			
-			#query = 'ca_objects.access_specific:exchange'		# CA query to use to pull relevant objects
+			query = 'ca_objects.access_specific:exchange'		# CA query to use to pull relevant objects
 			#query = 'ca_objects.idno:"2014" OR ca_objects.idno:"1954" OR ca_objects.idno:"2010" OR ca_objects.idno:"2010" OR ca_objects.idno:"1983" OR ca_objects.idno:"2014" OR ca_objects.idno:"2013" OR ca_objects.idno:"1988" OR ca_objects.idno:"2011" OR ca_objects.idno:"1998" OR ca_objects.idno:"2005" OR ca_objects.idno:"1997" OR ca_objects.idno:"1954" OR ca_objects.idno:"1961/1.170" OR ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248"'
 			#query = 'ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248"'
-			query = 'ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248" OR ca_objects.idno:"1997/1.206" OR ca_objects.idno:"1954/1.536" OR ca_objects.idno:"2008/2.255" OR ca_objects.idno:"1993/2.13.1" OR ca_objects.idno:"2002/2.145" OR ca_objects.idno:"2000/2.158.1" OR ca_objects.idno:"1955/1.89" OR ca_objects.idno:"1949/1.199" OR ca_objects.idno:"1948/1.331"'
+			#query = 'ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248" OR ca_objects.idno:"1997/1.206" OR ca_objects.idno:"1954/1.536" OR ca_objects.idno:"2008/2.255" OR ca_objects.idno:"1993/2.13.1" OR ca_objects.idno:"2002/2.145" OR ca_objects.idno:"2000/2.158.1" OR ca_objects.idno:"1955/1.89" OR ca_objects.idno:"1949/1.199" OR ca_objects.idno:"1948/1.331"'
 
 
 			start = 0
