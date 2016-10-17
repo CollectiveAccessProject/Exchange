@@ -31,7 +31,14 @@
 		<div class="text-left qsResultText">
     		<%= link_to r[:title], resource_preview_path(r[:id]) %>
     		<div class="qsMoreCaption">
-    			<%= "<div class='small'><b>Author</b> #{@resource.user.name}</div><div class='small'><b>Last Updated</b> #{time_ago_in_words(@resource.updated_at)} ago</div>".html_safe %>
+    		<%
+    			if @resource.author_name && @resource.author_name != ''
+	    			user_author = @resource.author_name
+	  			else
+	  				user_author = @resource.user.name
+	  			end
+	  		%>
+    			<%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{time_ago_in_words(@resource.updated_at)} ago</div>".html_safe %>
     		</div>
     	</div>
     	<% thumb = false %>

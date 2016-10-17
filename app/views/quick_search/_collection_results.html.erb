@@ -42,8 +42,15 @@
 			<% end %>
 			<div class="qsResultText">
 			<%=	"<div class='small'><i>Contains #{@resource.resource_hierarchies.count}".html_safe + ((@resource.resource_hierarchies.count == 1) ? " item" : " items") + "</i></div>".html_safe %>
+			<%
+    			if @resource.author_name && @resource.author_name != ''
+	    			user_author = @resource.author_name
+	  			else
+	  				user_author = @resource.user.name
+	  			end
+	  		%>
 			<div class="qsMoreCaption">
-				<%= "<div class='small'><b>Author</b> #{@resource.user.name}</div><div class='small'><b>Last Updated</b> #{time_ago_in_words(@resource.updated_at)} ago</div>".html_safe %>
+				<%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{time_ago_in_words(@resource.updated_at)} ago</div>".html_safe %>
 			</div>
 		</div>
 		<% thumb = false %>

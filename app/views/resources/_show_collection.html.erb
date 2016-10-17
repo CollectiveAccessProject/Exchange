@@ -69,7 +69,11 @@
       
       <div class="row">
         <div class="text-right col-sm-12">
-	      <h5>Created by</h5><%=  @resource.user.name %>
+	      <% if @resource.author_name && @resource.author_name != '' %>
+			<h5>Created by</h5><%= @resource.author_name %>
+		  <% else %>
+			<h5>Created by</h5><%= @resource.user.name %>
+		  <% end %>
 	      <h5>Last Updated</h5><%= time_ago_in_words(@resource.updated_at) + ' ago' %> 
         <% if (@resource.copyright_license) %>
           <h5>Copyright</h5>

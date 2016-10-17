@@ -50,8 +50,12 @@
 						<% end  %>
 						</div>
 				<% end %>
-				<h5>Created by</h5><div><%=  @resource.user.name %></div>
-				<h5>Last Updated</h5><div><%= time_ago_in_words(@resource.updated_at) %></div>
+				<% if parent.author_name && parent.author_name != '' %>
+				  <h5>Created by</h5><%= parent.author_name %>
+				<% else %>
+				  <h5>Created by</h5><%= parent.user.name %>
+				<% end %>
+				<h5>Last Updated</h5><div><%= time_ago_in_words(parent.updated_at) %></div>
 	        </p>
 		  </div>
 		  <div class="col-sm-7 collection_summary_resources">
