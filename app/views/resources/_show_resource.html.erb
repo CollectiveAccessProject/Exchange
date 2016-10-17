@@ -59,6 +59,15 @@
 <% end %>
 
 <%
+	# generate count of publically available media files
+	# need to enforce access control
+	available_media = 0
+	@resource.media_files.each do |f|
+		if f.access == 1
+			available_media = available_media + 1
+		end
+	end
+			
 	case @resource.settings(:media_formatting).mode.to_s
 		when "thumbnails"
 %>
@@ -67,37 +76,39 @@
 				counter = 0
 				@resource.media_files.each do |f|
                		if f.sourceable
-            			if counter == 4
-                    		counter = 0
+						if f.access == 1
+							if counter == 4
+								counter = 0
 %>
-                      		</div>
-                      		<div class="row">
-                		<% end %>
-						  <div class="col-md-3">
-								<div class="thumbnail previewThumbnail">
-								  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-									<%= f.sourceable.preview :thumbnail  %>
-								  </a>
 								</div>
+								<div class="row">
+							<% end %>
+							  <div class="col-md-3">
+									<div class="thumbnail previewThumbnail">
+									  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+										<%= f.sourceable.preview :thumbnail  %>
+									  </a>
+									</div>
 <%
-						begin
-							media_display = f.sourceable.render(:large)
-						rescue
-							media_display = f.sourceable.preview :large	
-						end
+							begin
+								media_display = f.sourceable.render(:large)
+							rescue
+								media_display = f.sourceable.preview :large	
+							end
 %>	
 <%=
-								# this renders a bootstrap model that is triggered if you click on the preview above
-								# it's in a partial because it's about a billion nested divs :-)
-								render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+									# this renders a bootstrap model that is triggered if you click on the preview above
+									# it's in a partial because it's about a billion nested divs :-)
+									render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
 %>
-						  </div><!-- end col -->
+							  </div><!-- end col -->
 <%
 				
-                		counter = counter + 1
-                	end
+							counter = counter + 1
+						end
+					end
             	end
-   %>
+%>
             </div><!-- end row -->
         
         <% when "thumbnailsCaption" %>
@@ -105,45 +116,47 @@
 <%
 				counter = 0
 				@resource.media_files.each do |f|
-               		if f.sourceable
-            			if counter == 4
-                    		counter = 0
+					if f.access == 1
+						if f.sourceable
+							if counter == 4
+								counter = 0
 %>
-                      		</div>
-                      		<div class="row">
-                		<% end %>
-						  <div class="col-md-3">
-								<div class="thumbnail previewThumbnail">
-								  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-									<%= f.sourceable.preview :thumbnail  %>
-								  </a>
-								  <div class="caption small">
-									<%= f.caption.html_safe %>
-								  </div>
 								</div>
+								<div class="row">
+							<% end %>
+							  <div class="col-md-3">
+									<div class="thumbnail previewThumbnail">
+									  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+										<%= f.sourceable.preview :thumbnail  %>
+									  </a>
+									  <div class="caption small">
+										<%= f.caption.html_safe %>
+									  </div>
+									</div>
 <%
-						begin
-							media_display = f.sourceable.render(:large)
-						rescue
-							media_display = f.sourceable.preview :large	
-						end
+							begin
+								media_display = f.sourceable.render(:large)
+							rescue
+								media_display = f.sourceable.preview :large	
+							end
 %>	
 <%=
-								# this renders a bootstrap model that is triggered if you click on the preview above
-								# it's in a partial because it's about a billion nested divs :-)
-								render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+									# this renders a bootstrap model that is triggered if you click on the preview above
+									# it's in a partial because it's about a billion nested divs :-)
+									render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
 %>
-						  </div><!-- end col -->
+							  </div><!-- end col -->
 <%
 				
-                		counter = counter + 1
-                	end
+							counter = counter + 1
+						end
+					end
             	end
-   %>
+%>
             </div><!-- end row -->
-   <%
+<%
 		when "slideshow"
-		  if @resource.media_files.count > 0
+		  if available_media > 0
 %>
 
             <div class="row">
@@ -154,37 +167,39 @@
 <%
 				  counter = 1
 				  @resource.media_files.each do |f| 
-				  	if f.sourceable 
+					if f.access == 1
+						if f.sourceable 
 %>
-						<div class="item <%= (counter == 1) ? 'active' : '' %>">
-								<a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-									<%= f.sourceable.preview :large  %>
-								</a>
-							<div class="captionContainer">
-								<div class="slideshowCaption"><%= f.caption.html_safe  %></div>
-    						</div>
-    					</div>		
+							<div class="item <%= (counter == 1) ? 'active' : '' %>">
+									<a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
+										<%= f.sourceable.preview :large  %>
+									</a>
+								<div class="captionContainer">
+									<div class="slideshowCaption"><%= f.caption.html_safe  %></div>
+								</div>
+							</div>		
 <%
-						begin
-							media_display = f.sourceable.render :large
-						rescue
-							media_display = f.sourceable.preview :large	
-						end
+							begin
+								media_display = f.sourceable.render :large
+							rescue
+								media_display = f.sourceable.preview :large	
+							end
 %>					
 <%=
-						# this renders a bootstrap model that is triggered if you click on the preview above
-						# it's in a partial because it's about a billion nested divs :-)
+							# this renders a bootstrap model that is triggered if you click on the preview above
+							# it's in a partial because it's about a billion nested divs :-)
 						
-			  			render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+							render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
 %>
 <%
-						counter = counter + 1
+							counter = counter + 1
+						end
 					end
 				end
 %>
 					</div><!-- end carousel-inner -->
 <%
-					if @resource.media_files.count > 1
+					if available_media > 1
 %>
 					  <!-- Left and right controls -->
 					  <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">

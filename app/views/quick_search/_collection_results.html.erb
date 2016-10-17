@@ -26,9 +26,11 @@
 					<% if(rel.child_resource.is_resource) %>
 						<% rel.child_resource.media_files.each do |f| %>
 							<% if f.sourceable %>
-								<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.resource_id) %><br/>
-								<% thumb = true %>
-								<% break %>
+								<% if f.access == 1 %>								
+									<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.resource_id) %><br/>
+									<% thumb = true %>
+									<% break %>
+								<% end %>
 							<% end %>
 						<% end %>
 						<% if(thumb == true) %>

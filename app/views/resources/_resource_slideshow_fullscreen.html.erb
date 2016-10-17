@@ -11,22 +11,32 @@
 					<div class="col-sm-12 jumboPadding">
 						<div id="slideCarousel" class="carousel slide modalCarousel" data-ride="carousel" data-interval="false">
 						<!-- Wrapper for slides -->
-						<div class="carousel-inner" role="listbox">
+						<div class="carousel-inner scaleImg" role="listbox">
 		<%
 					  counter = 1
 					  @resource.media_files.each do |f| 
-						if f.sourceable 
+						if f.sourceable
+							if f.access == 1
+							 
 		%>
-							<div class="item <%= (counter == 1) ? 'active' : '' %>">
-								<div class="carouselImageHeight">
-									<%= f.sourceable.preview :huge  %>
-								</div>
-								<div class="captionContainer">
-									<div class="slideshowCaption"><%= f.caption.html_safe  %></div>
-								</div>
-							</div>		
 		<%
-							counter = counter + 1
+								begin
+									media_display = f.sourceable.render :large
+								rescue
+									media_display = f.sourceable.preview :large	
+								end
+		%>	
+								<div class="item <%= (counter == 1) ? 'active' : '' %>">
+									<div class="carouselImageHeight">
+										<%= media_display %>
+									</div>
+									<div class="captionContainer">
+										<div class="slideshowCaption"><%= f.caption.html_safe  %></div>
+									</div>
+								</div>		
+		<%
+								counter = counter + 1
+							end
 						end
 					end
 		%>

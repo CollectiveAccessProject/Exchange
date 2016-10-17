@@ -20,9 +20,11 @@
     	<% @resource = Resource.find(r[:id]) %>
     	<% @resource.media_files.each do |f| %>
 			<% if f.sourceable %>
-				<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
-				<% thumb = true %>
-				<% break %>
+				<% if f.access == 1 %>
+					<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
+					<% thumb = true %>
+					<% break %>
+				<% end %>
 			<% end %>
 		<% end %>
 		<% if(thumb == false) %>

@@ -21,11 +21,22 @@
 				<div class='titleOver'><%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %></div>
 
 					<% if(rel.child_resource.is_resource) %>
-					  <% if (rel.child_resource.media_files.count > 0) %>
+<%
+						available_media = 0
+						rel.child_resource.media_files.each do |f|
+							if f.access == 1
+								available_media = available_media + 1
+							end
+						end
+%>
+					  <% if (available_media > 0) %>
 						<% rel.child_resource.media_files.each do |f| %>
+
 							<% if f.sourceable %>
-								<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource) %><br/>
-								<% break %>
+								<% if f.access == 1 %>
+									<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource) %><br/>
+									<% break %>
+								<% end %>
 							<% end %>
 						<% end %>
 					  <% else %>
@@ -33,14 +44,13 @@
 					  <% end %>
 					<% else %>
 						<% if(rel.child_resource.children.count) %>
-								<% thumb = 0 %>
-								<% placeholder = "" %>
-								<% rel.child_resource.children.each do |g| %>
-								  <% if(g.media_files.count > 0) %>	
-									<% g.media_files.each do |f| %>
-										<% if f.sourceable %>
+							<% thumb = false %>
+							<% rel.child_resource.children.each do |g| %>
+								<% g.media_files.each do |f| %>
+									<% if f.sourceable %>
+										<% if f.access == 1 %>
 											<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource) %><br/>
-											<% thumb = 1 %>
+											<% thumb = true %>
 											<% break %>
 										<% end %>
 									<% end %>
@@ -48,18 +58,16 @@
 											break
 									   end
 									%>
-								  <% else %>
-									<% placeholder = link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %>	
-								  <% end %>
 								<% end %>
-							<% if(thumb == 0 && placeholder != "") %>
-								<%= placeholder + "<br/>".html_safe %>
+							<% end %>
+							<% if(thumb == false) %>
+								<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %><br/>
 							<% end %>
 						<% end %>
 					<% end %>
 			</div>
 			<% if(rel.child_resource.is_resource) %>
-				<small>Resource with <%= rel.child_resource.media_files.count %> media</small>
+				<small>Resource with <%= available_media %> media</small>
 			<% else %>
 				<small>Collection with <%= rel.child_resource.children.count %> item<%= (rel.child_resource.children.count == 1) ? "" : "s" %></small>
 			<% end %>
