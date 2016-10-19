@@ -19,6 +19,7 @@
 //= require cookie
 //= require summernote
 //= require plugins/media-item/summernote-ext-media-item
+//= require summernote-cleaner
 //= require_tree .
 
 // Add icontains selector to jQuery - case insensitive text search
