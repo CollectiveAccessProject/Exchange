@@ -322,10 +322,10 @@
 			</div>
 		</div>
 		<div class="detailButtonsResource text-center">
-			<a href="#" title="Duplicate and Edit"><i class="fa fa-clone" aria-hidden="true"></i></a>
+			<a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
 			<a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
 <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-			<a href="#commentButton"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+			<a href="#commentButton" onclick="$('#commentPanel').collapse('show')" title="Comment"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
 <% end %>
           <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
 		</div>
@@ -405,8 +405,13 @@
 	    <h4>Created by</h4><%= @resource.author_name %>
 	  <% else %>
 	  	<h4>Created by</h4><%= @resource.user.name %>
+	  <% end %> 
+	  <h4>Last Updated</h4>
+	  <% if (Time.now.to_i - @resource.updated_at.to_i) > 72000 %>
+	    <%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:long) %>
+	  <% else %>
+	    <%= time_ago_in_words(@resource.updated_at) + ' ago' %>
 	  <% end %>
-	  <h4>Last Updated</h4><%= time_ago_in_words(@resource.updated_at) + ' ago' %>
     </div>
     <% if (@resource.copyright_license) %>
 		<div class="unit">

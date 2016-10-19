@@ -74,7 +74,12 @@
 		  <% else %>
 			<h5>Created by</h5><%= @resource.user.name %>
 		  <% end %>
-	      <h5>Last Updated</h5><%= time_ago_in_words(@resource.updated_at) + ' ago' %> 
+	      <h5>Last Updated</h5>
+	      <% if (Time.now.to_i - @resource.updated_at.to_i) > 72000 %>
+	    	<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:long) %>
+	  	  <% else %>
+	    	<%= time_ago_in_words(@resource.updated_at) + ' ago' %>
+	  	  <% end %> 
         <% if (@resource.copyright_license) %>
           <h5>Copyright</h5>
           <div><%= @resource.get_license_type %>

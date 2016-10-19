@@ -51,8 +51,15 @@
 	  				user_author = @resource.user.name
 	  			end
 	  		%>
+	  		<% 
+	  			if (Time.now.to_i - @resource.updated_at.to_i) > 72000
+	   				display_time = @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:long)
+	  			else
+	    			display_time = time_ago_in_words(@resource.updated_at) + ' ago'
+	  			end
+	  		%>
 			<div class="qsMoreCaption">
-				<%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{time_ago_in_words(@resource.updated_at)} ago</div>".html_safe %>
+				<%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
 			</div>
 		</div>
 		<% thumb = false %>
