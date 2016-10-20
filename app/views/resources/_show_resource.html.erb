@@ -24,35 +24,61 @@
     <H2><%= @resource.title %></H2>
     <H3><%= @resource.subtitle %></H3>
 <% if @resource.settings(:text_placement).placement.to_s == "above" %>
-    <% if @resource.settings(:text_formatting).show_all == 1 %>
-    	<% if @resource.parsed_body_text.length > 400 %>
-			<div class="row">
-				<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'col-md-12 textSwap' : 'collapse col-md-12 textSwap' %>" aria-controls="fullTextExpand">
+    <% if @resource.settings(:text_formatting).collapse == 1 %>
+		<% if @resource.parsed_body_text.length > 400 %>
+			<% if @resource.settings(:text_formatting).show_all == 1 %>
+				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
 					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
 				</div>
-				<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse col-md-12 textSwap' : 'col-md-12 textSwap' %>" aria-controls="fullTextExpand">
+				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
 					<p><%= @resource.parsed_body_text.html_safe %></p>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-4 col-md-offset-4 text-center">
-					<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
-						<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'hideText' : 'hideText collapse' %>"><h4><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></h4></div>
-						<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'hideText collapse' : 'hideText' %>"><h4><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></h4></div>
-					</a>
+			<% else %>
+				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+					<p><%= @resource.parsed_body_text.html_safe %></p>
 				</div>
-			</div>
+			<% end %>
 		<% else %>
-			<div class="row">
-				<div class="col-sm-12">
-					<%= @resource.parsed_body_text.html_safe %>
-				</div>
+			<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+				<p><%= @resource.parsed_body_text.html_safe %></p>
 			</div>
 		<% end %>
-	<% else %>
 		<div class="row">
-  			<div class="col-md-12 textSwap">
-    			<p><%= @resource.parsed_body_text.html_safe %></p>
+			<div class="col-md-4 col-md-offset-4 text-center">
+				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
+					<span class="hideText"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+					<span class="hideText collapse"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+				</a>
+			</div>
+		</div>
+	<% else %>
+		<% if @resource.parsed_body_text.length > 400 %>
+			<% if @resource.settings(:text_formatting).show_all == 1 %>
+				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
+				</div>
+				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+					<p><%= @resource.parsed_body_text.html_safe %></p>
+				</div>
+			<% else %>
+				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+					<p><%= @resource.parsed_body_text.html_safe %></p>
+				</div>
+			<% end %>
+		<% else %>
+			<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+				<p><%= @resource.parsed_body_text.html_safe %></p>
+			</div>
+		<% end %>
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4 text-center">
+				
+				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
+					<hr/>
+					<span class="hideText collapse"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+					<span class="hideText"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+					<hr/>
+				</a>
 			</div>
 		</div>
 	<% end %>
@@ -216,8 +242,9 @@
 			</div>
 			<div class="row">
               <div class="col-sm-4 col-sm-offset-4 text-center">
-				<h4><a href="#" data-toggle="modal" data-target="#carousel-full">Fullscreen slideshow</a></h4>	
-				
+              	<hr/>
+				<a href="#" data-toggle="modal" data-target="#carousel-full"><i class="fa fa-desktop"></i> Fullscreen slideshow</a>
+				<hr/>
 				<% # This is in a partial because its a lot of nested divs and duplicates functionality in the main slideshow
 				   # which is potentially confusing %>
 				<%= render partial: 'resource_slideshow_fullscreen' %>
@@ -229,35 +256,60 @@
 		  end
 		 %>
 <% if @resource.settings(:text_placement).placement.to_s == "below" %>
-    <% if @resource.settings(:text_formatting).show_all == 1 %>
+    <% if @resource.settings(:text_formatting).collapse == 1 %>
 		<% if @resource.parsed_body_text.length > 400 %>
-			<div class="row">
-				<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'col-md-12 textSwap' : 'collapse col-md-12 textSwap' %>" aria-controls="fullTextExpand">
+			<% if @resource.settings(:text_formatting).show_all == 1 %>
+				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
 					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
 				</div>
-				<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse col-md-12 textSwap' : 'col-md-12 textSwap' %>" aria-controls="fullTextExpand">
+				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
 					<p><%= @resource.parsed_body_text.html_safe %></p>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-4 col-md-offset-4 text-center">
-					<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
-						<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'hideText' : 'hideText collapse' %>"><h4><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></h4></div>
-						<div class="<%= (@resource.settings(:text_formatting).collapse == 1) ? 'hideText collapse' : 'hideText' %>"><h4><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></h4></div>
-					</a>
+			<% else %>
+				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+					<p><%= @resource.parsed_body_text.html_safe %></p>
 				</div>
-			</div>
+			<% end %>
 		<% else %>
-			<div class="row">
-				<div class="col-sm-12">
-					<%= @resource.parsed_body_text.html_safe %>
-				</div>
+			<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+				<p><%= @resource.parsed_body_text.html_safe %></p>
 			</div>
 		<% end %>
-	<% else %>
 		<div class="row">
-  			<div class="col-md-12 textSwap">
-    			<p><%= @resource.parsed_body_text.html_safe %></p>
+			<div class="col-md-4 col-md-offset-4 text-center">
+				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
+					<span class="hideText"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+					<span class="hideText collapse"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+				</a>
+			</div>
+		</div>
+	<% else %>
+		<% if @resource.parsed_body_text.length > 400 %>
+			<% if @resource.settings(:text_formatting).show_all == 1 %>
+				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
+				</div>
+				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+				<p><%= @resource.parsed_body_text.html_safe %></p>
+			</div>
+			<% else %>
+				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+					<p><%= @resource.parsed_body_text.html_safe %></p>
+				</div>
+			<% end %>
+		<% else %>
+			<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+				<p><%= @resource.parsed_body_text.html_safe %></p>
+			</div>
+		<% end %>
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4 text-center">
+				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
+				<hr/>
+					<span class="hideText collapse"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+					<span class="hideText"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+				<hr/>
+				</a>
 			</div>
 		</div>
 	<% end %>
