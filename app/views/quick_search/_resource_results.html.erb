@@ -1,6 +1,7 @@
 <% 
 	i = 0
 	col = 0
+	thumb = false
 %>
 <% 
 	@resources.each do |r|
@@ -20,10 +21,20 @@
     	<% @resource.media_files.each do |f| %>
 			<% if f.sourceable %>
 				<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
+				<% thumb = true %>
 				<% break %>
 			<% end %>
 		<% end %>
-    	<%= link_to r[:title], resource_preview_path(r[:id]) %>
+		<% if(thumb == false) %>
+			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(r[:id]) %><br/>
+		<% end %>
+		<div class="text-left qsResultText">
+    		<%= link_to r[:title], resource_preview_path(r[:id]) %>
+    		<div class="qsMoreCaption">
+    			<%= "<div class='small'><b>Author</b> #{@resource.user.name}</div><div class='small'><b>Last Updated</b> #{time_ago_in_words(@resource.updated_at)} ago</div>".html_safe %>
+    		</div>
+    	</div>
+    	<% thumb = false %>
     </div>
     
 <% 

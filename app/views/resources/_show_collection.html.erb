@@ -1,56 +1,85 @@
+<%= render :partial => 'show_parent_heading.html.erb' %>
+
 <div class="row">
   <div class="col-sm-12">
     <H4>
       <% if (params['mode'] == :preview) %>
           Previewing Learning Collection
       <% end %>
-      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
-      <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
-      <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
+      <div class="headingButtons">
+      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
+      <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs' %>
+      <%= last_search_button(session, {'class': 'btn btn-default btn-xs'}) %>
+	  </div>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
-<%= render :partial => 'show_parent_heading.html.erb' %>
 <div class="panel panel-default">
   <div class="panel-body">
     <div class="row">
       <div class="col-sm-10">
-        <p id="notice"><%= notice %></p>
+        <div class="row">
+          <div class="col-sm-12">
+			<p id="notice"><%= notice %></p>
 
-        <H2><%= @resource.title %></H2>
+			<H2><%= @resource.title %></H2>
 
-        <H3><%= @resource.subtitle %></H3>
+			<H3><%= @resource.subtitle %></H3>
+      	  </div>
+      	</div>
+        <div class="row">
+		  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>  
+			<div class="col-sm-12">
+		  <% else %>
+			<div class="col-sm-4">
+		  <% end %>
+			<div class="detailBodyText">
+				<%= (@resource.body_text) ? @resource.body_text.html_safe : "" %>
+			</div>
+		  </div>
+		  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>  
+			<div class="col-sm-12">
+		  <% else %>
+			<div class="col-sm-8">
+		  <% end %>
+		   <% if(@resource.child_count > 0) %>
+			  <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Item" : @resource.child_count.to_s + " Items"  %> in this Learning Collection</h5>
+				<% if (@resource.settings(:text_placement).placement.to_s == "above") 
+					col = 3
+				else
+					col = 4
+				end %>
+				<%= render :partial => "resource_list_grid", locals: { width: col} %>
+			<% end %>
+        </div>
+      </div>
       </div>
       <div class="col-sm-2 detailButtons text-right">
-      	<a href="#"><i class="fa fa-code-fork" aria-hidden="true"></i></a>
-      	<a href="#"><i class="fa fa-share" aria-hidden="true"></i></a>
-<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-      	<a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
-<% end %>
-        <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-5">
-        <div class="detailBodyText"><%= (@resource.body_text) ? @resource.body_text.html_safe : "" %></div>
-      </div>
-      <div class="col-sm-7">
-       <% if(@resource.child_count > 0) %>
-          <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Item" : @resource.child_count.to_s + " Items"  %> in this Learning Collection</h5>
-
-            <%= render :partial => "resource_list_grid" %>
-        <% end %>
-
-
+      	<div class="row">
+      	  <div class="col-sm-12">
+			<a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
+			<a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
+	<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+			<a href="#commentButton"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+	<% end %>
+			<span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
+          </div>
+        </div>
+      
+      
+      <div class="row">
+        <div class="text-right col-sm-12">
+	      <h5>Created by</h5><%=  @resource.user.name %>
+	      <h5>Last Updated</h5><%= time_ago_in_words(@resource.updated_at) + ' ago' %> 
         <% if (@resource.copyright_license) %>
-            <p>
-              <h5>Copyright</h5>
-              <div><%= @resource.get_license_type %>
-                <% if (@resource.copyright_notes) %>
-                    (<%= @resource.copyright_notes %>)
-                <% end  %>
-                </div>
-            </p>
+          <h5>Copyright</h5>
+          <div><%= @resource.get_license_type %>
+          <% if (@resource.copyright_notes.present?) %>
+            (<%= @resource.copyright_notes %>)
+          <% end  %>
+          </div>
+        </div>
+	   
         <% end %>
       </div><!-- end col -->
     </div><!-- end row -->
@@ -88,6 +117,7 @@
         </div>
       </div>
   <% end %>
+
 <% if (@resource.settings(:user_interaction).allow_tags > 0) && (@resource.tags.count > 0) %>
   <div class="col-sm-3 detailRelatedContentBlock"> 
         <H4>Tags</h4>
@@ -99,54 +129,58 @@
   </div><!-- end col -->
 <% end %>
 </div>
+</div>
+<!--	<div class="row" id="relatedItems">
+		<div class="col-sm-12">
+			<a role="button" data-toggle="collapse" href="#relatedPanel"><h4>Related Resources and Collections</h4></a>
+		</div>
+	</div>
+-->
+<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
 
+<div class="row" id="detailTags">
 <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-	<div class="row" id="detailComments">
-	  <div class="col-md-12">
-		<% if @resource.comments.count > 0 %>
-			<H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4>
-			<div class="detailComments">
+<!--	<div class="row" id="detailComments"> -->
+	  <div class="col-sm-6">
+		<% # if @resource.comments.count > 0 %>
+			<a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
+			<div id="commentPanel" class="detailComments collapse">
 			<% @resource.comments.each do |c| %>
 				<div>
 					<%= c.comment %>
 					<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
 				</div>
 			<% end %>
+			<%= form_tag '/resources/add_comment' do %>
+				<%= hidden_field_tag 'id', @resource.id %>
+				<div class="form-group">
+				  <label>Add Comment</label>
+				  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+				</div>
+				<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+			<% end %>
 			</div>
-		<% end %>
+		<% # end %>
 	  </div>
+
+<% end %>
+<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+		<div class="col-sm-6"> 
+        		<a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %></h4></a>
+        		<div id="tagPanel" class="collapse detailComments">
+          		<% @resource.tags.each do |t| %>
+             			 <%= t.tag %>, 
+          		<% end %>
+			<%= form_tag '/resources/add_tag' do %>
+				<%= hidden_field_tag 'id', @resource.id %>
+				<div class="form-group">
+				  <label>Add Tag</label>
+				  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+				</div>
+				<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+			<% end %>
+        		</div>
+		</div>
 	</div>
 <% end %>
-<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
-	<div class="row">
-	  <div class="col-md-12">
-		<H5>Add your <%= (@resource.settings(:user_interaction).allow_comments > 0) ? "comment" : "" %> <%= ((@resource.settings(:user_interaction).allow_comments > 0) && (@resource.settings(:user_interaction).allow_tags > 0)) ? "tags" : "" %> <%= (@resource.settings(:user_interaction).allow_tags > 0) ? "tags" : "" %></H5>
-			<div class="row">
-		<% if (@resource.settings(:user_interaction).allow_comments > 0) %>
-			  <div class="col-sm-6">
-				<%= form_tag '/resources/add_comment' do %>
-					<%= hidden_field_tag 'id', @resource.id %>
-					<div class="form-group">
-					  <label>Comment</label>
-					  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-					</div>
-					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-				<% end %>
-			  </div><!-- end col -->
-		<% end %>
-		<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
-			  <div class="col-sm-6">
-				<%= form_tag '/resources/add_tag' do %>
-					<%= hidden_field_tag 'id', @resource.id %>
-					<div class="form-group">
-					  <label>Tag</label>
-					  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-					</div>
-					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-				<% end %>
-			  </div><!-- end col -->
-		<% end %>
-			</div><!-- end row -->
-		</div><!-- end col -->
-	</div><!-- end row -->
 <% end %>

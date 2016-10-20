@@ -4,9 +4,11 @@
       <% if (params['mode'] == :preview) %>
           Previewing UMMA Exhibition
       <% end %>
-      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
+      <div class="headingButtons">
+      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
       <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
       <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
+      </div>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -21,8 +23,8 @@
         <H3><%= @resource.subtitle %></H3>
       </div>
       <div class="col-sm-2 detailButtons text-right">
-        <a href="#"><i class="fa fa-code-fork" aria-hidden="true"></i></a>
-        <a href="#"><i class="fa fa-share" aria-hidden="true"></i></a>
+        <a href="#" title="Duplicate and Edit"><i class="fa fa-code-clone" aria-hidden="true"></i></a>
+        <a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
         <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
             <a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
         <% end %>
@@ -45,7 +47,7 @@
             <p>
             <h5>Copyright</h5>
             <div><%= @resource.get_license_type %>
-              <% if (@resource.copyright_notes) %>
+              <% if (@resource.copyright_notes.empty?) %>
                   (<%= @resource.copyright_notes %>)
               <% end  %>
             </div>

@@ -1,11 +1,12 @@
 <% 
 	i = 0
 	col = 0
+	thumb = false
 %>
 <% 
 	@collection_objects.each do |r|
 	  i = i+1
-	  if i > 8 
+	  if i > 12 
 		break 
 	  end
 	  col = col+1
@@ -15,34 +16,32 @@
 <%
 		end
 %>
-    <div class="col-md-3 qsResult">
-    	<div class="row">
-    		<div class="col-sm-12 qsResultText">
-    			<%= link_to r[:title], resource_preview_path(r[:id]) %>
-    		</div>
-    	</div>
-    	<div class="row rowLessPadding">
-    		<div class="col-sm-7">
-				<% @resource = Resource.find(r[:id]) %>
-				<% @resource.media_files.each do |f| %>
-					<% if f.sourceable %>
-						<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
-						<% break %>
-					<% end %>
-				<% end %>
+    <div class="col-md-2 qsResult">
+		<% @resource = Resource.find(r[:id]) %>
+		<% @resource.media_files.each do |f| %>
+			<% if f.sourceable %>
+				<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
+				<% thumb = true %>
+				<% break %>
+			<% end %>
+		<% end %>
+		<% if(thumb == false) %>	
+			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(@resource) %><br/>
+		<% end %>
+		<div class="text-left qsResultText">
+			<div class="small"><%= @resource.get_collection_object_field('artist') %> <%= @resource.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
+			<%= link_to r[:title], resource_preview_path(r[:id]) %>
+			<div class="qsMoreCaption">
+				<div class="small"><%= @resource.get_collection_object_field('date_created') %></div>
+				<div class="small"><i><%= @resource.get_collection_object_field('credit_line') %></i></div>
 				<div class="small text-left"><%= @resource.subtitle %></div>
-    		</div>
-    		<div class="col-sm-5 text-left qsResultText">
-    			<div class="small"><%= @resource.get_collection_object_field('artist') %> <%= @resource.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
-    			<div class="small"><%= @resource.get_collection_object_field('date_created') %></div>
-    			<hr/>
-    			<div class="small"><i><%= @resource.get_collection_object_field('credit_line') %></i></div>
-    		</div>
-    	</div>
+			</div>
+		</div>
+		<% thumb = false %>
     </div>
     
 <% 
-		if(col == 4)
+		if(col == 6)
 %>
 			</div>
 			<div class="row">

@@ -28,19 +28,25 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                           <div class="form-group">
                             <%= radio_button_tag(:media_formatting_mode, "slideshow", (@resource.settings(:media_formatting).mode == :slideshow)) %>
                             <%= label_tag(:media_formatting_mode_slideshow, "Slideshow", class: 'inline') %>
                           </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                           <div class="form-group">
                             <%= radio_button_tag(:media_formatting_mode, "thumbnails", (@resource.settings(:media_formatting).mode == :thumbnails)) %>
                             <%= label_tag(:media_formatting_mode_thumbnails, "Thumbnails", class: 'inline') %>
                           </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
+                          <div class="form-group">
+                            <%= radio_button_tag(:media_formatting_mode, "thumbnailsCaption", (@resource.settings(:media_formatting).mode == :thumbnailsCaption)) %>
+                            <%= label_tag(:media_formatting_mode_thumbnailsCaption, "Thumbnails with Captions", class: 'inline') %>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
                           <div class="form-group">
                             <%= radio_button_tag(:media_formatting_mode, "embed", (@resource.settings(:media_formatting).mode == :embed)) %>
                             <%= label_tag(:media_formatting_mode_embed, "Embed in text", class: 'inline') %>
@@ -60,8 +66,12 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                                 <%= radio_button_tag(:text_placement_placement, "below", (@resource.settings(:text_placement).placement == :below)) %>
-                                <%= label_tag(:text_placement_below, "Below media", class: 'inline') %>
-                              </div>
+                                <% if(@resource.is_collection) %>
+				  <%= label_tag(:text_placement_below, "Next to media", class: 'inline') %>
+				<% else %>
+				  <%= label_tag(:text_placement_below, "Below media", class: 'inline') %>
+                                <% end %>  
+			    </div>
                             </div>
                             <div class="col-sm-4">
                               <div class="form-group">

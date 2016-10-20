@@ -1,0 +1,90 @@
+<div class="panel panel-primary">
+  <div class="panel-body">
+
+    <div class="row">
+      <div class="col-md-6">
+        <%= form_tag(add_user_access_path(@resource), remote: true, method: "post", format: :json, class: 'resource_user_access', id: 'resourceUserAccessElements') do |f| %>
+            <div id="access-user-status">
+              <div class="flash-notice" id="access-user-status-message">
+
+              </div>
+            </div>
+
+            <h4>Users</h4>
+
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-7">
+              <label>Search for user</label>
+              <%= autocomplete_field_tag(:find_user_id, '', :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no users found.", :size => 40, :id_element => "#to_user_id", class:'form-control') %>
+              <%= hidden_field_tag(:to_user_id) %>
+                </div>
+                <div class="col-md-3">
+                  <label>&nbsp;</label>
+                  <%= select_tag(:access_type, options_for_select(Rails.application.config.x.access_types)) %>
+                  </div>
+                <div class="col-md-2">
+              <%= hidden_field_tag(:id, @resource.id) %>
+              <label>&nbsp;</label>
+                <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
+                </div>
+              </div>
+            </div>
+
+            <% @resource.resources_users.each do |l|
+              next if (!l.user)
+            %>
+               <div>
+                 <%= l.user.name + " (" + l.user.email + ")" %>
+                 <%= "[" + Rails.application.config.x.access_types.find{|key, val| val == l.access }[0]+"]" %>
+                 <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_resource_user_access_path(@resource) + "?user_id=" + l.user.id.to_s, {remote: true, class: :resourceUserAccessRemoveLink}) %>
+               </div>
+            <% end %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= form_tag(add_related_resource_path(@resource), remote: true, method: "post", format: :json, class: 'related_resources', id: 'relatedResourcesElements') do |f| %>
+
+            <div id="access-group-status">
+              <div class="flash-notice" id="access-group-status-message">
+
+              </div>
+            </div>
+
+            <h4>Groups</h4>
+
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-7">
+                  <label>Search for group</label>
+                  <%= autocomplete_field_tag(:find_user_id, '', :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no users found.", :size => 40, :id_element => "#to_user_id", class:'form-control') %>
+                  <%= hidden_field_tag(:to_user_id) %>
+                </div>
+                <div class="col-md-3">
+                  <label>&nbsp;</label>
+                  <%= select_tag(:access_type, options_for_select(Rails.application.config.x.access_types)) %>
+                </div>
+                <div class="col-md-2">
+                  <%= hidden_field_tag(:id, @resource.id) %>
+                  <label>&nbsp;</label>
+                  <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
+                </div>
+              </div>
+            </div>
+
+            <% @resource.resources_users.each do |l|
+              next
+              next if (!l.user)
+            %>
+                <div>
+                  <%= l.user.name + " (" + l.user.email + ")" %>
+                  <%= "[" + Rails.application.config.x.access_types.find{|key, val| val == l.access }[0]+"]" %>
+                  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_resource_user_access_path(@resource) + "?user_id=" + l.user.id.to_s, {remote: true, class: :resourceUserAccessRemoveLink}) %>
+                </div>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+
+  </div><!-- end panel-body -->
+</div><!-- end panel -->

@@ -6,10 +6,10 @@
 				<H3><%= (@resource.id) ? '' : 'New ' %><%= @resource.resource_type_for_display %> Information</H3>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-5">
-
-        <%=
+		<% if @resource.is_resource %>
+		  <div class="row">
+		    <div class="col-md-12">
+		      <%=
           # don't show resource type field – consider as immutable
           r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
         %>
@@ -18,18 +18,13 @@
            <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
              </em>
         <% end %>
-						<%= r.input :title, :input_html => {:rows => 3} %>
-						<%= r.input :subtitle, :input_html => {:rows => 3} %>
-						<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-						<%= r.input :copyright_notes %>
-						<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
-
-            <%= r.input :child_id, :input_html => {:value => params['child_id']}, as: :hidden, include_blank: false %>
-            <%= r.input :parent_id, :input_html => {:value => params['parent_id']}, as: :hidden, include_blank: false %>
-			</div><!-- end col -->
-			<div class="col-md-7">
-				<%#= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 14} %>
-                <%= r.input :body_text, :input_html => {}, :as => :summernote %>
+						<%= r.input :title, :input_html => {:rows => 2} %>
+						<%= r.input :subtitle, :input_html => {:rows => 2} %>
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-md-12">
+		      <%= r.input :body_text, :input_html => {}, :as => :summernote %>
             	<% if(@resource.is_resource) %>
                     <div class="mediaEmbedHelpLink">
                         <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
@@ -52,10 +47,74 @@
                         You may also enter these directory into the text if desired.
                     </div>
                   <% end %>
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-md-6">
+		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+          <%= r.input :author_name  %>
+		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
+		    </div>
+		    <div class="col-md-6">
+		      <%= r.input :copyright_notes, :input_html => {:rows => 4} %>
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-md-12">
+		  	<div class="pull-right"><%= r.button :submit, "Save" %></div>
+		  	</div>
+		  </div>
+		<% else %>
+		<div class="row">
+			<div class="col-md-5">
+        <%=
+          # don't show resource type field – consider as immutable
+          r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
+        %>
+        <%  if(@resource.forked_from_resource_id && (@resource.forked_from_resource_id > 0))  %>
+           <em>Forked from
+           <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
+             </em>
+        <% end %>
+						<%= r.input :title, :input_html => {}, :as => :summernote %>
+						<%= r.input :subtitle, :input_html => {}, :as => :summernote %>
+						<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+						<%= r.input :copyright_notes %>
+						<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
+
+            <%= r.input :child_id, :input_html => {:value => params['child_id']}, as: :hidden, include_blank: false %>
+            <%= r.input :parent_id, :input_html => {:value => params['parent_id']}, as: :hidden, include_blank: false %>
+			</div><!-- end col -->
+			<div class="col-md-7">
+				<%#= r.input :body_text, as: :wysihtml5, :input_html => {:rows => 14} %>
+                <%= r.input :body_text, :input_html => {}, :as => :summernote %>
+            	<% if(@resource.is_resource) %>
+                    <div class="mediaEmbedHelpLink">
+                        <a role="button" data-toggle="collapse" href="#mediaEmbedPanel">
+                        <i class="fa fa-question-circle-o" aria-hidden="true"></i> How do I embed media in the body of my resource?
+                        </a>
+                    </div>
+
+            	    <div id="mediaEmbedPanel" class="collapse mediaEmbedHelp">
+                        You can easily embed media using the <em>media item</em> option in the tool bar. First
+                        click on the location in the text where the media should appear, then select from the <em>media item</em>
+                        list. A placeholder will be inserted into  the body text in the following format:
+            		    <blockquote>
+            			    &lt;media [name] [version] [width=xxx] [height=yyy] [float=left/right]&gt;
+            			    <br/>Ex. <em>&lt;media my-video thumbnail&gt;</em>
+              			    <br/>Ex. <em>&lt;media my-video thumbnail width=500 height=300 float=right&gt;</em>
+              		    </blockquote>
+             		    Names are shown under each media item. Version, width, height and float are optional.
+                        <br/>
+                        <br/>
+                        You may also enter these directory into the text if desired.
+                    </div>
+                  <% end %>
 
 						<div class="pull-right"><%= r.button :submit, "Save" %></div>
 			</div><!-- end col -->
 		</div><!-- end row -->
+		<% end %>
 	</div><!-- end panel-body -->
 </div><!-- end panel -->
 <% end %>

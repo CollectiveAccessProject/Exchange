@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col-sm-12">
+    <H4><span id="resource_title_header">
+      <%=
+        (@user.id > 0) ? "Editing user <em>".html_safe + @user.name + "</em>".html_safe : "Create new user"
+      %></span>
+
+      <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> User list'.html_safe, '/users', class: 'btn btn-default btn-xs pull-right' %>
+    </H4>
+  </div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+  <div class="col-md-10">
+    <div id="resources-status">
+      <div class="flash-notice" id="resources-status-message">
+
+      </div>
+    </div>
+
+    <%= simple_form_for @user do |r| %>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <H3><%= (@user.id) ? 'User' : 'New user' %> details </H3>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+
+                <%= r.input :name, :input_html => {} %>
+                <%= r.input :email, :input_html => {} %>
+                <%= r.input :new_password, :input_html => {} %>
+                <%= r.input :confirm_new_password, :input_html => {} %>
+
+                <div class="form-group roles optional">
+                  <label class="roles optional control-label" for="roles">Roles</label><br/>
+                  <%= select_tag(:roles, options_for_select(@roles_list, @user.roles.pluck("name")), { multiple: true, rows: 3 }) %>
+                </div>
+             </div><!-- end col -->
+              <div class="col-md-6">
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Account created</label></div>
+                  <div class="col-md-6"><%= @user.created_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+               <div class="row form-group">
+                 <div class="col-md-4"><label class="string optional control-label">Login count</label></div>
+                 <div class="col-md-6"><%= @user.sign_in_count %></div>
+               </div>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Last login</label></div>
+                  <div class="col-md-6"><%= @user.current_sign_in_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Last known IP</label></div>
+                  <div class="col-md-6"><%= @user.last_sign_in_ip %></div>
+                </div>
+                </div>
+              <div class="col-md-1">
+                <div class="pull-right"><%= r.button :submit, "Save" %></div>
+              </div><!-- end col -->
+            </div><!-- end row -->
+          </div><!-- end panel-body -->
+        </div><!-- end panel -->
+    <% end %>
+
+
+
+  </div><!-- end row -->
+  </div><!-- end col -->

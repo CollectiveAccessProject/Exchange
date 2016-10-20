@@ -1,13 +1,6 @@
 <%
-  begin
     r = Resource.find(plugin_model.resource_id)
     f = r.media_files.first
 %><%=
   render partial: 'media_plugins/collectiveaccess_link_render', locals: {plugin_model: f.sourceable}
-%><%
-  rescue
-%><%=
-  "Media is unavailable"
-%><%
-  end
 %>
