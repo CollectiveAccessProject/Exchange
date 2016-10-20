@@ -35,7 +35,7 @@ namespace :exchange do
 				#puts "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
 
 				# query exchangeObjectListForDisplay service
-				puts "q=" + query
+				#puts "q=" + query
 				object_list_for_display = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
 					url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
 					port: ENV['COLLECTIVEACCESS_PORT'].to_i,
@@ -53,7 +53,7 @@ namespace :exchange do
 				object_list_for_display.each do |_, value|
 					if value.is_a?(Hash) && value['collectiveaccess_id'].present?
 						log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']}"
-						puts  "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']}"
+						puts  "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} :: #{value['idno']}"
 
 						if (Resource.where(collectiveaccess_id: value['collectiveaccess_id']).
 							first_or_create.update(title: HTMLEntities.new.decode(value['title']),
@@ -61,6 +61,7 @@ namespace :exchange do
 							body_text: HTMLEntities.new.decode(value['body_text']),
 							subtitle: HTMLEntities.new.decode(value['subtitle']),
 							resource_type: Resource::COLLECTION_OBJECT,
+							collection_identifier: value['idno'],
 							collectiveaccess_id: value['collectiveaccess_id'],
 							user_id: user_id))
 							
