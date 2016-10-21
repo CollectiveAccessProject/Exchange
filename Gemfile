@@ -8,7 +8,7 @@ gem 'rails', '4.2.6'
 gem 'mysql2', '~> 0.3.18'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0.6'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
@@ -33,7 +33,7 @@ gem 'bootstrap-sass', '~> 3.2'
 # summernote alternative to boostrap-wysihtml5
 gem 'summernote-rails'
 
-gem 'autoprefixer-rails'
+gem 'autoprefixer-rails', '~> 6.5.1'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -108,5 +108,3 @@ gem 'bootstrap-tour-rails'
 
 # old fashioned text file logging for maintenance scripts
 require 'logger'
-
-gem 'bootstrap-tour-rails'
