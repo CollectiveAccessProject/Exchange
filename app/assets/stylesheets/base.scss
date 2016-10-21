@@ -846,3 +846,10 @@ li.tagList {
     visibility:hidden;
 }
 
+
+/* */
+
+ul.ui-autocomplete {
+	overflow-y: auto !important;
+	max-height: 200px !important;
+}

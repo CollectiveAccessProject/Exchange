@@ -8,10 +8,11 @@ class ResourcesController < ApplicationController
   respond_to :html, :json
 
   # UI autocomplete on resource title (used by related resources lookup)
-  autocomplete :resource, :title, :full => true, :extra_data => [:id]
+  autocomplete :resource, :title, :full => true, :extra_data => [:id, :collection_identifier, :resource_type], :display_value => :get_autocomplete_label
 
   # UI autocomplete on user name/email (used by user lookup)
   autocomplete :user, :name, :full => true, :extra_data => [:id]
+  
 
   # Filter on type when mode param is set
   def get_autocomplete_items(parameters)
@@ -31,6 +32,16 @@ class ResourcesController < ApplicationController
         "%#{term}%", "%#{term}%"
     ).order(:id).all
     render :json => u.map { |user| {:id => user.id, :label => user.name + " (" + user.email + ")", :value => user.name + " (" + user.email + ")"} }
+  end
+  
+   # Override user name/email autocomplete to match on both name and email (sigh)
+  def autocomplete_resource_title
+    term = params[:term]
+    u = Resource.where(
+        'LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?',
+        "%#{term}%", "#{term}%"
+    ).order(:id).all
+    render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l} }
   end
 
   # GET /resources

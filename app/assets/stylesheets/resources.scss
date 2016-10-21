@@ -326,7 +326,7 @@ $white:#FFFFFF;
 #resourceCarousel{
 	margin-bottom:30px;
 	vertical-align: top;
-	height:75vh;
+	max-height:75vh;
 	.carousel-inner{
 		text-align:center;
 		vertical-align: top;
@@ -355,15 +355,14 @@ $white:#FFFFFF;
 	}
 }
 #slideCarousel{
-	padding: 0 5%;
+	padding: 0 15%;
 	vertical-align: top;
 	height:90vh;
-	background-color: #fff;
 	.carousel-inner{
 		text-align:center;
 		vertical-align: top;
-		img{
-			/* width:100%; */
+		iframe, img{
+			width:100%;
 			height:70vh;
 			object-fit:contain !important;
 			vertical-align: top;
@@ -380,8 +379,8 @@ $white:#FFFFFF;
 			overflow:scroll;
 			height:20vh;
 		}
-		iframe{
-			width:100% !important;
+		.control-arrow{
+			color: #10069f;
 		}
 	}
 }
@@ -493,11 +492,11 @@ $white:#FFFFFF;
   top: 0;
   left: 0;
   bottom: 0;
-  width: 15%;
+  width: 5%;
   opacity: 0.7;
   /*filter: alpha(opacity=50); */
   font-size: 20px;
-  color: #fff;
+  color: #8a898a;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   background-color: transparent;
@@ -530,6 +529,7 @@ $white:#FFFFFF;
 		width:100%;
 		padding: 0 !important;
 		margin: 0 !important;
+		background-color: #fff;
 	}
 	.jumboHead{
 		padding: 1% 5%;

@@ -107,6 +107,16 @@ class Resource < ActiveRecord::Base
   end
   serialize :indexing_data
 
+  # Generate display label for resource autocomplete
+  def get_autocomplete_label
+  	label = self.title.strip
+  	label += " (" + self.collection_identifier + ")" if (self.collection_identifier && self.collection_identifier.length > 0)
+  	label += " [COLLECTION]" if (self.is_collection)
+  	label += " [RESOURCE]" if (self.is_resource)
+  	label += " [EXHIBITION]" if (self.is_exhibition)
+  	
+  	label
+  end
 
 
   # return true if resource type is "resource"
