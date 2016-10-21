@@ -5,6 +5,7 @@
 %>
 <% 
 	@resources.each do |r|
+    next if(r[:access] < 1)
 	  i = i+1
 	  if i > 12 
 		break 
@@ -21,17 +22,17 @@
     	<% @resource.media_files.each do |f| %>
 			<% if f.sourceable %>
 				<% if f.access == 1 %>
-					<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
+					<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
 					<% thumb = true %>
 					<% break %>
 				<% end %>
 			<% end %>
 		<% end %>
 		<% if(thumb == false) %>
-			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(r[:id]) %><br/>
+			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r[:id], user_signed_in?) %><br/>
 		<% end %>
 		<div class="text-left qsResultText">
-    		<%= link_to r[:title].html_safe, resource_preview_path(r[:id]) %>
+    		<%= link_to r[:title].html_safe, get_resource_view_path(r[:id], user_signed_in?) %>
     		<div class="qsMoreCaption">
     		<%
     			if @resource.author_name && @resource.author_name != ''

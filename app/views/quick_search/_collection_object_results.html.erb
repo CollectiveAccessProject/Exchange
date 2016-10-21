@@ -5,6 +5,7 @@
 %>
 <% 
 	@collection_objects.each do |r|
+    #next if(r[:access] < 1) # NOTE: disregard access for collection objects (for now) per JT request
 	  i = i+1
 	  if i > 12 
 		break 
@@ -20,17 +21,17 @@
 		<% @resource = Resource.find(r[:id]) %>
 		<% @resource.media_files.each do |f| %>
 			<% if f.sourceable %>
-				<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(r[:id]) %><br/>
+				<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
 				<% thumb = true %>
 				<% break %>
 			<% end %>
 		<% end %>
 		<% if(thumb == false) %>	
-			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(@resource) %><br/>
+			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(@resource, user_signed_in?) %><br/>
 		<% end %>
 		<div class="text-left qsResultText">
 			<div class="small"><%= @resource.get_collection_object_field('artist') %> <%= @resource.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
-			<%= link_to r[:title], resource_preview_path(r[:id]) %>
+			<%= link_to r[:title], get_resource_view_path(r[:id], user_signed_in?) %>
 			<div class="qsMoreCaption">
 				<div class="small"><%= @resource.get_collection_object_field('date_created') %></div>
 				<div class="small"><i><%= @resource.get_collection_object_field('credit_line') %></i></div>

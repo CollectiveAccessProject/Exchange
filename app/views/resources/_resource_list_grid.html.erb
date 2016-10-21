@@ -18,7 +18,7 @@
 		
 		<div class="col-sm-<%= width %>">
 			<div class="collectionDetailContentsItem" >
-				<div class='titleOver'><%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, resource_preview_path(rel.child_resource) %></div>
+				<div class='titleOver'><%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + rel.child_resource.title, get_resource_view_path(rel.child_resource, user_signed_in?) %></div>
 
 					<% if(rel.child_resource.is_resource) %>
 <%
@@ -34,13 +34,13 @@
 
 							<% if f.sourceable %>
 								<% if f.access == 1 %>
-									<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource) %><br/>
+									<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
 									<% break %>
 								<% end %>
 							<% end %>
 						<% end %>
 					  <% else %>
-						<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %><br/>
+						<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
 					  <% end %>
 					<% else %>
 						<% if(rel.child_resource.children.count) %>
@@ -49,7 +49,7 @@
 								<% g.media_files.each do |f| %>
 									<% if f.sourceable %>
 										<% if f.access == 1 %>
-											<%= link_to (f.sourceable.preview :thumbnail), resource_preview_path(rel.child_resource) %><br/>
+											<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
 											<% thumb = true %>
 											<% break %>
 										<% end %>
@@ -61,7 +61,7 @@
 								<% end %>
 							<% end %>
 							<% if(thumb == false) %>
-								<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %><br/>
+								<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
 							<% end %>
 						<% end %>
 					<% end %>

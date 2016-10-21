@@ -323,7 +323,7 @@ class Resource < ActiveRecord::Base
     begin
       resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
         if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
       end
 
@@ -335,7 +335,7 @@ class Resource < ActiveRecord::Base
     begin
       collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
         if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
       end
     rescue
@@ -346,7 +346,7 @@ class Resource < ActiveRecord::Base
     begin
       collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
         if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
       end
     rescue
@@ -357,7 +357,7 @@ class Resource < ActiveRecord::Base
     begin
       exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
         if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
       end
     rescue
@@ -434,7 +434,7 @@ class Resource < ActiveRecord::Base
       begin
         resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
           if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
 
@@ -447,7 +447,7 @@ class Resource < ActiveRecord::Base
       begin
         collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
           if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
       rescue
@@ -459,7 +459,7 @@ class Resource < ActiveRecord::Base
       begin
         collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
           if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
       rescue
@@ -471,7 +471,7 @@ class Resource < ActiveRecord::Base
       begin
         exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
           if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type }
+            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
       rescue

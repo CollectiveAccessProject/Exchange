@@ -7,10 +7,13 @@
           Previewing Learning Collection
       <% end %>
       <div class="headingButtons">
-      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
-      <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs' %>
-      <%= last_search_button(session, {'class': 'btn btn-default btn-xs'}) %>
+        <% if (user_signed_in?) %>
+         <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
+       <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs' %>
+        <% end %>
+        <%= last_search_button(session, {'class': 'btn btn-default btn-xs'}) %>
 	  </div>
+      <br style="clear: both;"/>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -102,7 +105,7 @@
 		<div class="detailRelatedContentBlockScroll">
 		<% @resource.related_resources.each do |r| %>
 			<div>
-			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, resource_preview_path(r.related) %>
+			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, get_resource_view_path(r.related, user_signed_in?) %>
 			  <% if (r.caption.length > 0) %>
 			   <br/><small>
 				 <%= r.caption %>

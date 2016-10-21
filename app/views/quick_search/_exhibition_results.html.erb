@@ -3,6 +3,7 @@
 	col = 0
 %>
 <% @collections.each do |r|
+  next if(r[:access] < 1)
 	  i = i+1
 	  if i > 12 
 		break 
@@ -16,7 +17,7 @@
 %>
 
     <div class="col-sm-2 qsResult qsResultText">
-    	<%= link_to  r[:title], resource_preview_path(r[:id]) %>
+    	<%= link_to  r[:title], get_resource_view_path(r[:id], user_signed_in?) %>
 		<% @resource = Resource.find(r[:id]) %>
 
 		<div class="small">April 4 - June 23, 2016</div>

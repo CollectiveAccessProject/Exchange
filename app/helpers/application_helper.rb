@@ -30,4 +30,8 @@ module ApplicationHelper
     end
 
   end
+
+  def get_resource_view_path(resource, is_logged_in)
+    return is_logged_in ? resource_preview_path(resource) : resource_view_path(resource)
+  end
 end

@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
-  before_filter :authenticate_user!
-  before_action :set_resource, only: [:show, :edit, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
+  before_filter :authenticate_user!, :except => [:view]
+  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
 
   include CommentableController
   include TaggableController
@@ -53,6 +53,18 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
+  end
+
+  # Handle public viewing of resources
+  def view
+
+    # For now we allow public access to *ANY* collection object
+    # regardess of how access is set, per JT's request
+    if((@resource.access == 0) && !@resource.is_collection_object)
+      redirect_to root_path, notice: "That resource is not accessible"
+      return
+    end
+    render :show
   end
 
   # GET /resources/new

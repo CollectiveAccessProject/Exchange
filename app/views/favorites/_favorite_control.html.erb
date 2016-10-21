@@ -1,5 +1,5 @@
 <%=
-  if (favorite_id = Resource::is_favorite(current_user.id, resource.id))
+  if (user_signed_in? && favorite_id = Resource::is_favorite(current_user.id, resource.id))
     link_to "<i class='fa fa-bookmark' aria-hidden='true'></i>".html_safe, remove_favorite_path(favorite_id), remote: true, method: :post, id: "unfavoriteControl", title: "Unfavorite this " + resource.resource_type_for_display
   else
     link_to "<i class='fa fa-bookmark-o' aria-hidden='true'></i>".html_safe, add_favorite_path(resource.id), remote: true, method: :post, id: "favoriteControl", title: "Favorite this " + resource.resource_type_for_display

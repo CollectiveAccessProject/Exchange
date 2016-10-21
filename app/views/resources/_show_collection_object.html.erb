@@ -5,10 +5,14 @@
           Previewing UMMA Collection Object
       <% end %>
       <div class="headingButtons">
-      <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
+        <% if (user_signed_in?) %>
+            <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
+
       <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+        <% end %>
       <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
       </div>
+      <br style="clear: both;"/>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -21,7 +25,7 @@
         <H4><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
           Part of:
           <%=
-            link_to raw(parent.title), resource_preview_path(parent), "class": ""
+            link_to raw(parent.title), get_resource_view_path(parent, user_signed_in?), "class": ""
           %>
           <br/><small><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;">
           <%=
@@ -179,7 +183,7 @@
               <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">      		
             		<% rel_resource.each do |v| %>
                     <div>
-                      <%= link_to v.title, resource_preview_path(v.id) %>
+                      <%= link_to v.title, get_resource_view_path(v.id, user_signed_in?) %>
                       <% if(v.parents.count > 0) %>
                       	<br />
                       	<% if(v.parents.count == 1) %>

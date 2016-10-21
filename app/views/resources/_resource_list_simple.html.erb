@@ -14,7 +14,7 @@
 				<% end %>
 			<% end %>
 		   <% else %>
-		    <%= link_to '<i class="fa fa-picture-o fa-4x fa-align-center" aria-hidden="true"></i>'.html_safe, resource_preview_path(rel.child_resource) %><br/>
+		    <%= link_to '<i class="fa fa-picture-o fa-4x fa-align-center" aria-hidden="true"></i>'.html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
 		    <% end %>
 			<small><%= rel.child_resource.resource_type_for_display %> with <%= rel.child_resource.media_files.count %> media</small>
 		<% else %>
