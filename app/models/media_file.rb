@@ -67,6 +67,14 @@ class MediaFile < ActiveRecord::Base
               if (defined? instance.original_link)
                 instance.original_link = params[n][f]
                 self.sourceable = instance
+                
+                # if (instance.respond_to?(:get_copyright_value)) 
+					license = instance.get_copyright_value
+					if(!license.nil?)
+						self.copyright_license = license
+						self.save
+					end
+				#end
                 throw :done
               end
             end

@@ -13,6 +13,13 @@ class CollectionobjectLink < ActiveRecord::Base
   def extract_key_from_link
     self.resource_id = original_link.to_i
   end
+  
+  def get_copyright_value
+  	if(original_link.to_i)
+  		r = Resource.find(original_link.to_i)
+  		return r.copyright_license
+  	end
+  end
 
   def get_params
     return { :collectionobject_link => [:original_link]}
