@@ -5,7 +5,7 @@
 	  if(@resource.parents.first)
 	    render 'resources/resource_parent_display_header'
 	   else
-	  	@resource.title
+	  	strip_tags(@resource.title)
 	  end
       %></span>
       <%=

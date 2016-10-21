@@ -18,7 +18,7 @@
 
     <div class="col-sm-2 qsResult">
     	
-			<div class="text-left"><%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + r[:title], resource_preview_path(r[:id]) %></div>
+			<div class="text-left"><%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + r[:title].html_safe, resource_preview_path(r[:id]) %></div>
 			<% @resource = Resource.find(r[:id]) %>		
 
 			<% if(@resource.resource_hierarchies.count) %>

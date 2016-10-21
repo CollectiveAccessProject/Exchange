@@ -139,9 +139,7 @@
 			<div class="col-sm-6"> 
 					<a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %></h4></a>
 					<div id="tagPanel" class="collapse detailComments">
-					<% @resource.tags.each do |t| %>
-							 <%= t.tag %>, 
-					<% end %>
+					<%= @resource.tags.map(&:tag).join(", ") %>
 				<%= form_tag '/resources/add_tag' do %>
 					<%= hidden_field_tag 'id', @resource.id %>
 					<div class="form-group">
@@ -177,7 +175,7 @@
         </div>
             <div class="unit">
             <% rel_resource = @resource.get_collection_object_references.map {|v| v} %>
-            <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= rel_resource.count %> Referencing Resource<%= rel_resource.count == 1 ? '' : 's' %></H4></a>
+            <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= rel_resource.count %> Related Resource<%= rel_resource.count == 1 ? '' : 's' %></H4></a>
               <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">      		
             		<% rel_resource.each do |v| %>
                     <div>
@@ -198,9 +196,7 @@
             <% if @resource.tags.count > 0 %>
                 <div class="unit">
                   <H4>Tags</H4>
-                  <% @resource.tags.each do |t| %>
-                      <%= t.tag %>,
-                  <% end %>
+                  <%= @resource.tags.map(&:tag).join(", ") %>
                 </div>
             <% end %>
         <% end %>

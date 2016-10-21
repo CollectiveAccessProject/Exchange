@@ -21,65 +21,35 @@
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
 
-    <H2><%= @resource.title %></H2>
-    <H3><%= @resource.subtitle %></H3>
+    <H2><%= @resource.title.html_safe %></H2>
+    <H3><%= @resource.subtitle.html_safe %></H3>
 <% if @resource.settings(:text_placement).placement.to_s == "above" %>
-    <% if @resource.settings(:text_formatting).collapse == 1 %>
+	<% if @resource.settings(:text_formatting).show_all == 1 %>
 		<% if @resource.parsed_body_text.length > 400 %>
-			<% if @resource.settings(:text_formatting).show_all == 1 %>
-				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
-					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
-				</div>
-				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
-					<p><%= @resource.parsed_body_text.html_safe %></p>
-				</div>
-			<% else %>
-				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
-					<p><%= @resource.parsed_body_text.html_safe %></p>
-				</div>
-			<% end %>
-		<% else %>
-			<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+			<div class="col-md-12 textSwap <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>" aria-controls="fullTextExpand">
+				<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
+			</div>
+			<div class="col-md-12 textSwap <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>" aria-controls="fullTextExpand">
 				<p><%= @resource.parsed_body_text.html_safe %></p>
 			</div>
-		<% end %>
-		<div class="row">
-			<div class="col-md-4 col-md-offset-4 text-center">
-				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
-					<span class="hideText"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-					<span class="hideText collapse"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-				</a>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4 text-center">
+					<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
+						<hr/>
+						<span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show More <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+						<span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>"><i class="fa fa-chevron-up" aria-hidden="true"></i> Show Less <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+						<hr/>
+					</a>
+				</div>
 			</div>
-		</div>
-	<% else %>
-		<% if @resource.parsed_body_text.length > 400 %>
-			<% if @resource.settings(:text_formatting).show_all == 1 %>
-				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
-					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
-				</div>
-				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
-					<p><%= @resource.parsed_body_text.html_safe %></p>
-				</div>
-			<% else %>
-				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
-					<p><%= @resource.parsed_body_text.html_safe %></p>
-				</div>
-			<% end %>
 		<% else %>
 			<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
 				<p><%= @resource.parsed_body_text.html_safe %></p>
 			</div>
 		<% end %>
-		<div class="row">
-			<div class="col-md-4 col-md-offset-4 text-center">
-				
-				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
-					<hr/>
-					<span class="hideText collapse"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-					<span class="hideText"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-					<hr/>
-				</a>
-			</div>
+	<% else %>
+		<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+			<p><%= @resource.parsed_body_text.html_safe %></p>
 		</div>
 	<% end %>
 <% end %>
@@ -187,6 +157,24 @@
 
             <div class="row">
               <div class="col-sm-8 col-sm-offset-2">
+              	<div class="row">
+              		<div class="col-sm-1">
+              			<a href="#resourceCarousel" role="button" data-slide="prev">
+						<i class="control-arrow fa fa-arrow-left fa-2x" aria-hidden="true"></i>
+						<span class="sr-only">Previous</span>
+					  </a>
+					</div>
+					<div class="col-sm-2 text-center">
+						<h4 class="num"></h4>
+						
+					</div>
+					<div class="col-sm-2 col-sm-offset-7 text-right">
+					  <a class="" href="#resourceCarousel" role="button" data-slide="next">
+						<i class="control-arrow fa fa-arrow-right fa-2x" aria-hidden="true"></i>
+						<span class="sr-only">Next</span>
+					  </a>
+              		</div>
+              	</div>
 				<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
 					<!-- Wrapper for slides -->
 					<div class="carousel-inner" role="listbox">
@@ -228,18 +216,27 @@
 					if available_media > 1
 %>
 					  <!-- Left and right controls -->
-					  <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
+					  <!--<a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
 						<span class="control-arrow glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 						<span class="sr-only">Previous</span>
 					  </a>
 					  <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
 						<span class="control-arrow glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 						<span class="sr-only">Next</span>
-					  </a>
+					  </a>-->
 					<% end %>
 				</div><!-- end resourceCarousel -->
 				</div>
 			</div>
+			<script>
+				var totalItems = $('.item').length;
+				$('.num').html('1/'+totalItems+'');
+				$('#resourceCarousel').on('slid.bs.carousel', function() {
+					currentIndex = ($('.active').index() + 2)/2;
+					console.log(currentIndex)
+				   $('.num').html(''+currentIndex+'/'+totalItems+'');
+				});
+			</script>
 			<div class="row">
               <div class="col-sm-4 col-sm-offset-4 text-center">
               	<hr/>
@@ -256,61 +253,32 @@
 		  end
 		 %>
 <% if @resource.settings(:text_placement).placement.to_s == "below" %>
-    <% if @resource.settings(:text_formatting).collapse == 1 %>
+    <% if @resource.settings(:text_formatting).show_all == 1 %>
 		<% if @resource.parsed_body_text.length > 400 %>
-			<% if @resource.settings(:text_formatting).show_all == 1 %>
-				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
-					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
-				</div>
-				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
-					<p><%= @resource.parsed_body_text.html_safe %></p>
-				</div>
-			<% else %>
-				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
-					<p><%= @resource.parsed_body_text.html_safe %></p>
-				</div>
-			<% end %>
-		<% else %>
-			<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
+			<div class="col-md-12 textSwap <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>" aria-controls="fullTextExpand">
+				<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
+			</div>
+			<div class="col-md-12 textSwap <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>" aria-controls="fullTextExpand">
 				<p><%= @resource.parsed_body_text.html_safe %></p>
 			</div>
-		<% end %>
-		<div class="row">
-			<div class="col-md-4 col-md-offset-4 text-center">
-				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
-					<span class="hideText"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-					<span class="hideText collapse"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-				</a>
-			</div>
-		</div>
-	<% else %>
-		<% if @resource.parsed_body_text.length > 400 %>
-			<% if @resource.settings(:text_formatting).show_all == 1 %>
-				<div class="col-md-12 textSwap collapse" aria-controls="fullTextExpand">
-					<p><%= truncate(@resource.parsed_body_text, length: 400, escape: false, separator: "&nbsp;") %></p>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4 text-center">
+					<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
+						<hr/>
+						<span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show More <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+						<span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>"><i class="fa fa-chevron-up" aria-hidden="true"></i> Show Less <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+						<hr/>
+					</a>
 				</div>
-				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
-				<p><%= @resource.parsed_body_text.html_safe %></p>
 			</div>
-			<% else %>
-				<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
-					<p><%= @resource.parsed_body_text.html_safe %></p>
-				</div>
-			<% end %>
 		<% else %>
 			<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
 				<p><%= @resource.parsed_body_text.html_safe %></p>
 			</div>
 		<% end %>
-		<div class="row">
-			<div class="col-md-4 col-md-offset-4 text-center">
-				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText, .textSwap').toggle('slow')">
-				<hr/>
-					<span class="hideText collapse"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show Full Description <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-					<span class="hideText"><i class="fa fa-chevron-up" aria-hidden="true"></i> Hide Full Description <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-				<hr/>
-				</a>
-			</div>
+	<% else %>
+		<div class="col-md-12 textSwap" aria-controls="fullTextExpand">
+			<p><%= @resource.parsed_body_text.html_safe %></p>
 		</div>
 	<% end %>
 <% end %>
@@ -343,9 +311,7 @@
 			<div class="col-sm-6"> 
 			  <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %></h4></a>
 			  <div id="tagPanel" class="collapse detailComments">
-				<% @resource.tags.each do |t| %>
-				  <%= t.tag %>, 
-				<% end %>
+				<%= @resource.tags.map(&:tag).join(", ") %>
 				<%= form_tag '/resources/add_tag' do %>
 				<%= hidden_field_tag 'id', @resource.id %>
 				<div class="form-group">
@@ -385,33 +351,39 @@
 	if(@resource.parents && (@resource.parents.count > 0))
 %>
 		<div class="unit">	
-			<!--<h4>Part of <%= @resource.parents.count %> Learning Collection<%= (@resource.parents.count == 1) ? "" : "s" %></h4>-->
-			<H4>More from this learning collection</H4>
+			
+			<a role="button" data-toggle="collapse" href="#lcPanel"><h4>Part of <%= @resource.parents.count %> Learning Collection<%= (@resource.parents.count == 1) ? "" : "s" %></h4></a>
+			<!--<H4>More from this learning collection</H4>-->
+			
+			<div id="lcPanel" class="collapse scrollList">
+	<% 
+				panelCount = 0
+				@resource.parents.each do |p|
+	%>
 		
-		<% 
-			panelCount = 0
-			@resource.parents.each do |p|
-	 %>
-		
-		  		<div><a role="button" data-toggle="collapse" href="#collPanel_<%= panelCount %>">
-		  		<strong><%= p.title %></strong>: <%= p.resource_hierarchies.count %> Resource<%= (p.resource_hierarchies.count == 1) ? "" : "s" %></small></a></div>
-		  		<div id="collPanel_<%= panelCount %>" class="collapse scrollList">
-				<% p.resource_hierarchies.each do |rel| %>
 					<div>
-					<small>
-						<% if (rel.child_resource.is_collection) %>
-							<%= link_to "<i class='fa fa-folder-o'></i>".html_safe, resource_preview_path(rel.child_resource) %>
-						<% end %>
-						<%= link_to rel.child_resource.title, resource_preview_path(rel.child_resource) %>
-						<br />
-						<%= (rel.child_resource.subtitle.length > 50) ? rel.child_resource.subtitle[0..50] + "..." : rel.child_resource.subtitle %>
-					</small><br/>
+					<strong><%= link_to p.title.html_safe, resource_preview_path(p) %> <i class="fa fa-external-link-square" aria-hidden="true"></i></strong>
+					<br/>
+					<a role="button" data-toggle="collapse" href="#collPanel_<%= panelCount %>">
+					See <%= p.resource_hierarchies.count %> Member Resource<%= (p.resource_hierarchies.count == 1) ? "" : "s" %> <i class="fa fa-angle-double-down" aria-hidden="true"></i></a></div>
+					<div id="collPanel_<%= panelCount %>" class="collapse scrollList">
+					<% p.resource_hierarchies.each do |rel| %>
+						<div>
+						<small>
+							<% if (rel.child_resource.is_collection) %>
+								<%= link_to "<i class='fa fa-folder-o'></i>".html_safe, resource_preview_path(rel.child_resource) %>
+							<% end %>
+							<%= link_to rel.child_resource.title, resource_preview_path(rel.child_resource) %>
+							<br />
+							<%= (rel.child_resource.subtitle.length > 50) ? rel.child_resource.subtitle[0..50] + "..." : rel.child_resource.subtitle %>
+						</small><br/>
+						</div>
+					<% end %>
 					</div>
-				<% end %>
-				</div>
 		
-			<% panelCount += 1 %>
-			<% end %>
+				<% panelCount += 1 %>
+				<% end %>
+			</div>
 		</div><!-- end unit -->	
 	<% end %>	
 <% if @resource.related_resources.count > 0 %>
@@ -446,9 +418,7 @@
 	<% if @resource.tags.count > 0 %>
         <div class="unit">
 			<H4>Tags</H4>
-			<% @resource.tags.each do |t| %>
-			  <%= t.tag %>, 
-			<% end %>
+			<%= @resource.tags.map(&:tag).join(", ") %>
 		</div>
     <% end %>
 <% end %>

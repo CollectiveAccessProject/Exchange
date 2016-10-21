@@ -31,7 +31,7 @@
 			<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, resource_preview_path(r[:id]) %><br/>
 		<% end %>
 		<div class="text-left qsResultText">
-    		<%= link_to r[:title], resource_preview_path(r[:id]) %>
+    		<%= link_to r[:title].html_safe, resource_preview_path(r[:id]) %>
     		<div class="qsMoreCaption">
     		<%
     			if @resource.author_name && @resource.author_name != ''

@@ -22,9 +22,9 @@
           <div class="col-sm-12">
 			<p id="notice"><%= notice %></p>
 
-			<H2><%= @resource.title %></H2>
+			<H2><%= @resource.title.html_safe %></H2>
 
-			<H3><%= @resource.subtitle %></H3>
+			<H3><%= @resource.subtitle.html_safe %></H3>
       	  </div>
       	</div>
         <div class="row">
@@ -131,9 +131,7 @@
   <div class="col-sm-3 detailRelatedContentBlock"> 
         <H4>Tags</h4>
         <div class="detailRelatedContentBlockScroll">
-          <% @resource.tags.each do |t| %>
-              <%= t.tag %>, 
-          <% end %>
+          <%= @resource.tags.map(&:tag).join(", ") %>
         </div>
   </div><!-- end col -->
 <% end %>
@@ -177,9 +175,7 @@
 		<div class="col-sm-6"> 
         		<a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %></h4></a>
         		<div id="tagPanel" class="collapse detailComments">
-          		<% @resource.tags.each do |t| %>
-             			 <%= t.tag %>, 
-          		<% end %>
+          		<%= @resource.tags.map(&:tag).join(", ") %>
 			<%= form_tag '/resources/add_tag' do %>
 				<%= hidden_field_tag 'id', @resource.id %>
 				<div class="form-group">
