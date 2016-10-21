@@ -55,9 +55,31 @@ namespace :exchange do
 						log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']}"
 						puts  "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} :: #{value['idno']}"
 
+						copyright_notes = value['copyright_holder'].present? ? HTMLEntities.new.decode(value['copyright_holder']) : ''
+						copyright_notes += value['copyright_text'].present? ? "\n" + HTMLEntities.new.decode(value['copyright_text']) : ''
+						
+						if(value['copyright_type']) 
+							copyright_license = case(value['copyright_type'].to_s.downcase.strip)
+								when "world"
+									9
+								when "www"
+									9
+								when "no copyright restrictions"
+									7
+								else
+									0
+							end
+							puts "SET COPYRIGHT TO " + value['copyright_type'] + " / " + copyright_license.to_s
+						else
+							copyright_license = 0
+						end
+						
+						puts "notes are " + copyright_notes
+						
 						if (Resource.where(collectiveaccess_id: value['collectiveaccess_id']).
 							first_or_create.update(title: HTMLEntities.new.decode(value['title']),
-							copyright_notes: value['copyright_notes'].present? ? HTMLEntities.new.decode(value['copyright_notes']) : '',
+							copyright_notes: copyright_notes,
+							copyright_license: copyright_license,
 							body_text: HTMLEntities.new.decode(value['body_text']),
 							subtitle: HTMLEntities.new.decode(value['subtitle']),
 							resource_type: Resource::COLLECTION_OBJECT,
