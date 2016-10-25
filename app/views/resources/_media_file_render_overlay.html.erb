@@ -42,7 +42,13 @@
 				case media_source.to_s
 				when "CollectionobjectLink"
 %>
-				  UMMA Collection Object
+<%
+				# construct URL for link to UMMA Catalog
+				r = Resource.find(media_file.sourceable.resource_id)
+				collection_url = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'http://quod.lib.umich.edu/m/musart/x-\1-sl-\2')
+%>
+				  UMMA Collection Object<br/>
+				  Original Link: <a href="<%= collection_url %>" target="_blank"><%= collection_url %></a>
 <%
 				when "FlickrLink"
 %>

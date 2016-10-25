@@ -79,7 +79,7 @@
 		  <% end %>
 	      <h5>Last Updated</h5>
 	      <% if (Time.now.to_i - @resource.updated_at.to_i) > 72000 %>
-	    	<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:long) %>
+	    	<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P") %>
 	  	  <% else %>
 	    	<%= time_ago_in_words(@resource.updated_at) + ' ago' %>
 	  	  <% end %> 
