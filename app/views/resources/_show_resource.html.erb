@@ -190,7 +190,6 @@
 						</div>
 						<div class="col-xs-2 text-center">
 							<h5 class="num"></h5>
-						
 						</div>
 						<div class="col-xs-1 text-center">
 						  <a class="" href="#resourceCarousel" role="button" data-slide="next">
@@ -209,6 +208,7 @@
 					if f.access == 1
 						if f.sourceable 
 %>
+							
 							<div class="item <%= (counter == 1) ? 'active' : '' %>">
 									<a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
 										<%= f.sourceable.preview :large  %>
@@ -260,7 +260,6 @@
 				$('.num').html('1/'+totalItems+'');
 				$('#resourceCarousel').on('slid.bs.carousel', function() {
 					currentIndex = ($('.active').index() + 2)/2;
-					console.log(currentIndex)
 				   $('.num').html(''+currentIndex+'/'+totalItems+'');
 				});
 			</script>

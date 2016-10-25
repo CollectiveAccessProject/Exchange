@@ -3,18 +3,57 @@
     r = Resource.find(plugin_model.resource_id)
     f = r.media_files.first
 %>
+
+<%
+	# construct URL for link to UMMA Catalog
+	
+	collection_id = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'x-\1-sl-\2')
+	collection_url = 'http://quod.lib.umich.edu/m/musart/' + collection_id
+%>
+
 <span class='previewMedia'>
 <%=
       render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil}
 %>
 <%
+	
 	if (version.to_s != "icon" && version.to_s != "thumbnail")
 %>
-  		<div class="previewMediaIcon" title="UMMA Collection Object"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div>
-		<div class="previewMediaCaption">
-<%=
-      	r.title
- %>
+		<div class="previewMediaCaption row">
+			<div class="col-xs-6 previewMediaHalf text-left">
+				<%= r.title %><br/>
+			</div>
+			<div class="col-xs-6 previewMediaHalf text-right">
+				<script>
+				 $(function(){
+					$('.mediaTips_<%= f.id %>').popover({
+						html: true,
+						content: function(){
+							return $('.popover_<%= f.id %>').html();
+						}
+					});
+				 });
+				</script>
+				<div class="mediaTips">
+					<span class="mediaTips_<%= f.id %>" data-toggle="popover" data-trigger="hover" data-placement="top" role="button"><div class="previewMediaIcon" title="UMMA Collection Object"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div></span>
+				</div>
+			  <div class="mediaTipsPopover popover_<%= f.id %>">
+				<div class="row">
+					<div class="col-sm-12 col-md-12">
+						Type<br/>
+						<i class='fa fa-image'></i> Image <br/>
+						<i class='fa fa-video-camera'></i> Video <br/>
+						<br/>
+						Source<br/>
+						<i class='fa fa-institution'></i> UMMA <br/>
+						<i class='fa fa-youtube'></i> Youtube <br/>
+						<i class='fa fa-flickr'></i> Flickr<br/>
+						<i class='fa fa-vimeo'></i> Vimeo<br/>
+						<i class='fa fa-file'></i> Local File<br/>
+					</div>
+				</div>
+			  </div> 
+			</div>
 		</div>
 <%
 	end

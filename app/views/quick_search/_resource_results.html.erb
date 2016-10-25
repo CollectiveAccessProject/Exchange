@@ -43,7 +43,7 @@
 	  		%>
 	  		<% 
 	  			if (Time.now.to_i - @resource.updated_at.to_i) > 72000
-	   				display_time = @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:long)
+	   				display_time = @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P")
 	  			else
 	    			display_time = time_ago_in_words(@resource.updated_at) + ' ago'
 	  			end
