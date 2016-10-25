@@ -853,3 +853,13 @@ ul.ui-autocomplete {
 	overflow-y: auto !important;
 	max-height: 200px !important;
 }
+
+.modal-fullscreen {
+  position: absolute;
+  width: 100% !important;
+  left: 0 !important;
+  top: 0 !important;
+  margin: 0 !important;
+  height: 100% !important;
+  display: none;
+}

@@ -108,3 +108,5 @@ gem 'bootstrap-tour-rails'
 
 # old fashioned text file logging for maintenance scripts
 require 'logger'
+
+gem 'pdfjs_viewer-rails'
