@@ -10,10 +10,28 @@ class LocalFile < ActiveRecord::Base
                     :default_url => '/images/missing.png',
                     :convert_options => { :all => '-auto-orient' }
 
-  # support, images+pdfs and basic mp4-style videos
+  # support the following formats:
+  # .doc
+  # .docx
+  # .jpg
+  # .jpeg
+  # .mov
+  # .mp4
+  # .mp3
+  # .pdf
+  # .png
+  # .ppt
+  # .pptx
+  # .xls
+  # .xlsx
   validates_attachment_content_type :file, :content_type =>
-    [/\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime']
-
+    [
+        /\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime', 'audio/mpeg', 'application/msword',
+        'application/vnd.ms-excel', 'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    ]
   def set_thumbnail
     # TODO: convert non-image formats to images before setting as thumbnail
 
