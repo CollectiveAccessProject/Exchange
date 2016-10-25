@@ -5,12 +5,12 @@
   case
     when "application/pdf"
       begin
-        image = image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
+        image = image_tag plugin_model.media_file.thumbnail.thumb(size[:area], format: 'jpeg', frame: 0).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
         link_to image, PdfjsViewer::Rails::Engine.routes.url_helpers.full_path(file: plugin_model.file.url), target: "_pdf_viewer"
        rescue => e
          e.message
       end
     else
-      image = image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
+      image = image_tag plugin_model.media_file.thumbnail.thumb(size[:area], format: 'jpeg', frame: 0).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
     end
 %>
