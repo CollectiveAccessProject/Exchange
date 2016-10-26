@@ -1,9 +1,11 @@
+<%= link_to("Download " + (MIME::Types[plugin_model.file_content_type].first.friendly), plugin_model.file.url) %>
+<br/>
 <%=
   mimetype = plugin_model.file_content_type
   size = media_size_for_version(version)
 
   case
-    when "application/pdf"
+    when (mimetype == "application/pdf")
       begin
         image = image_tag plugin_model.media_file.thumbnail.thumb(size[:area], format: 'jpeg', frame: 0).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
         link_to image, PdfjsViewer::Rails::Engine.routes.url_helpers.full_path(file: plugin_model.file.url), target: "_pdf_viewer"
@@ -11,6 +13,6 @@
          e.message
       end
     else
-      image = image_tag plugin_model.media_file.thumbnail.thumb(size[:area], format: 'jpeg', frame: 0).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
+      get_file_icon(mimetype: plugin_model.file_content_type, size: 5, image: plugin_model.media_file.thumbnail, version: version)
     end
 %>

@@ -110,3 +110,5 @@ gem 'bootstrap-tour-rails'
 require 'logger'
 
 gem 'pdfjs_viewer-rails'
+
+gem 'mime-types', require: 'mime/types/full'
