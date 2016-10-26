@@ -4,8 +4,8 @@ class LocalFile < ActiveRecord::Base
   after_commit :set_thumbnail
 
   has_attached_file :file, :styles => {
-                              :medium => { :geometry => '300x300>', :format => 'jpg', :time => 10 },
-                              :thumbnail => { :geometry => '100x100>', :format => 'jpg', :time => 10 }
+                             # :medium => { :geometry => '300x300>', :format => 'jpg', :time => 10 },
+                             # :thumbnail => { :geometry => '100x100>', :format => 'jpg', :time => 10 }
                           },
                     :default_url => '/images/missing.png',
                     :convert_options => { :all => '-auto-orient' }
@@ -24,14 +24,15 @@ class LocalFile < ActiveRecord::Base
   # .pptx
   # .xls
   # .xlsx
-  validates_attachment_content_type :file, :content_type =>
+  validates_attachment_content_type :file, presence: true, content_type:
     [
         /\Aimage\/.*\Z/, 'application/pdf', 'video/mp4', 'video/quicktime', 'audio/mpeg', 'application/msword',
         'application/vnd.ms-excel', 'application/vnd.ms-powerpoint',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-    ]
+    ], message: "Invalid file format"
+
   def set_thumbnail
     # TODO: convert non-image formats to images before setting as thumbnail
 
