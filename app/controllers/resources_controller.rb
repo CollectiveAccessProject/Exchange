@@ -98,6 +98,18 @@ class ResourcesController < ApplicationController
 
   end
 
+  def set_roles
+    Rails.application.config.x.user_roles.each do |k,v|
+      next if ((v == :admin))
+
+      if (params[:roles].include? v.to_s)
+        @resource.add_role(v)
+      else
+        @resource.remove_role(v)
+      end
+    end
+  end
+
   # POST /resources
   # POST /resources.json
   def create
@@ -110,6 +122,7 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       if @resource.save
+        set_roles
 
         if (parent_id > 0)
           # TODO: Verify that current user has privs to do this
@@ -140,15 +153,6 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1
   # PATCH/PUT /resources/1.json
   def update
-    Rails.application.config.x.user_roles.each do |k,v|
-      next if ((v == :admin) || (v == :staff))
-
-      if (params[:roles].include? v.to_s)
-        @resource.add_role(v)
-      else
-        @resource.remove_role(v)
-      end
-    end
     respond_to do |format|
       if (parent_id = params[:parent_id])
         # TODO: Verify that current user has privs to do this
@@ -162,6 +166,7 @@ class ResourcesController < ApplicationController
         end
       else
         if @resource.update(resource_params)
+          set_roles
           session[:mode] = :update;
           format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
