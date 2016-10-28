@@ -106,7 +106,8 @@ class Resource < ActiveRecord::Base
         record = record.merge(index_data_hash)
       end
     end
-
+puts "INDEXING!"
+    puts record
     record
   end
   serialize :indexing_data
