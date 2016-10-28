@@ -234,6 +234,10 @@ $white:#FFFFFF;
 		a{
 			font-weight:500;
 			font-size:13px;
+			.thumbPlaceholder{
+				background-color:white !important;
+				padding-top:50px;
+			}
 		}
 		.titleOver{
 			position:absolute;
@@ -334,20 +338,24 @@ $white:#FFFFFF;
 			/* width:100%; */
 			height:50vh;
 			object-fit:contain !important;
-	          	max-height:400px;
+	        max-height:400px;
 			vertical-align: top;
 		}
-		.slideshowCaption{
+		.slideshowCaption, .slideshowCaption, .slideshowCaption, .slideshowCaption p{
 			background-color:#FFF;
-			font-size:13px;
+			font-size:13px !important;
 			padding:5px 0;
 			text-align:center;
 			position:relative;
 			z-index:1000;
+			font{
+				font-family: $font-family-sans-serif !important;
+				font-size:13px !important;
+			  }
 		}
 		.captionContainer{
-			overflow:scroll;
-			height:25vh;
+			overflow-y:auto;
+			max-height:25vh;
 		}
 		iframe{
 			width:100% !important;
@@ -367,16 +375,20 @@ $white:#FFFFFF;
 			object-fit:contain !important;
 			vertical-align: top;
 		}
-		.slideshowCaption{
+		.slideshowCaption, .slideshowCaption, .slideshowCaption, .slideshowCaption p{
 			background-color:#FFF;
-			font-size:13px;
+			font-size:13px !important;
 			padding:10px;
 			text-align:center;
 			position:relative;
 			z-index:1000;
+			font{
+				font-family: $font-family-sans-serif !important;
+				font-size:13px !important;
+			  }
 		}
 		.captionContainer{
-			overflow:scroll;
+			overflow:auto;
 			height:20vh;
 		}
 		.control-arrow{
@@ -504,6 +516,24 @@ $white:#FFFFFF;
 
 /* Carousel Customization */
 
+.carouselNav{
+	margin-bottom:10px;
+	color: $gray;
+	font-size:12px;
+	span{
+		vertical-align:top;
+		width:60px;
+		display:inline-block;
+		text-align:center;
+	}
+	.fa-expand{
+		font-size:18px;
+		padding-top:5px;
+	}
+}
+
+
+
 .carousel-control {
   position: absolute;
   top: 0;
@@ -551,4 +581,14 @@ $white:#FFFFFF;
 	.jumboHead{
 		padding: 1% 5%;
 	}
+}
+
+.textSlider{
+	overflow: hidden;
+	-webkit-transition: all .8s linear;
+	-moz-transition: all .8s linear;
+	-ms-transition: all .8s linear;
+	-o-transition: all .8s linear;
+	transition: all .8s linear;
+
 }
