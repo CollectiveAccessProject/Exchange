@@ -99,10 +99,10 @@ class ResourcesController < ApplicationController
   end
 
   def set_roles
+    r = []
     Rails.application.config.x.user_roles.each do |k,v|
       next if ((v == :admin))
 
-      r = []
       if (params[:roles].include? v.to_s)
         @resource.add_role(v)
         r.push(v.to_s)
@@ -110,6 +110,8 @@ class ResourcesController < ApplicationController
         @resource.remove_role(v)
       end
     end
+    @resource.role = r.join("; ")
+    @resource.save
   end
 
   # POST /resources
