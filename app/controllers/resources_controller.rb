@@ -109,8 +109,6 @@ class ResourcesController < ApplicationController
       else
         @resource.remove_role(v)
       end
-      @resource.roles_as_text = r.join("; ")
-      @resource.save
     end
   end
 
