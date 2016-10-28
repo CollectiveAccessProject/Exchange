@@ -93,7 +93,7 @@
                             <div class="col-sm-12">
                               <div class="form-group">
                                 <%= check_box_tag(:text_formatting_show_all, "show_all", (@resource.settings(:text_formatting).show_all == 1)) %>
-                                <%= label_tag(:text_formatting_show_all, "Only show the first 300 characters of text with link to Read More", class: 'inline') %>
+                                <%= label_tag(:text_formatting_show_all, "Only show the first 10 lines of text with link to Read More", class: 'inline') %>
                               </div>
                             </div>
                           </div>
