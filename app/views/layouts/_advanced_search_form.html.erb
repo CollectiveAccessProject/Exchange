@@ -30,6 +30,19 @@
 						</div>
 					</div>
 				</div><!-- end row -->
+        <div class="row">
+          <div class="form-group">
+            <div class="col-md-1"><label class="control-label" for="roles">Affiliations</label></div>
+          <%=
+            buf = ''
+            Rails.application.config.x.user_roles.each do |k,v|
+              next if (v == :admin)
+              buf += "<div class='col-md-2'>" + (check_box_tag("roles[]", v.to_s, false, {}) + ' ' + k.to_s) + "</div>"
+            end
+            buf.html_safe
+          %>
+          </div>
+        </div>
 				<div class="row additionalFields" id="advancedSearchCollectionObject">
 					<div class="col-sm-12">
 						<HR/><br/>

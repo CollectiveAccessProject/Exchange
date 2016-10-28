@@ -98,6 +98,7 @@ class Resource < ActiveRecord::Base
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
+    record['role'] = self.roles.pluck("name").join("; ")
 
     if (indexing_data)
       index_data_hash = JSON.parse(indexing_data)
@@ -105,6 +106,7 @@ class Resource < ActiveRecord::Base
         record = record.merge(index_data_hash)
       end
     end
+
     record
   end
   serialize :indexing_data
@@ -319,7 +321,7 @@ class Resource < ActiveRecord::Base
     query_proc = query.dup
 
     # Quote parts of query that appear to be identifiers
-    query_proc.gsub!(/([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
+    query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
 
     begin
@@ -393,6 +395,17 @@ class Resource < ActiveRecord::Base
         query_values[f] = v
       end
     end
+    if (params['roles'] && (params['roles'].length > 0))
+      params['roles'].each do |r|
+        query_elements.push("role:\"#{r}\"")
+
+        roles_for_display = Rails.application.config.x.user_roles.select{ |k,v| (v == r.to_sym)}
+        role_for_display = (roles_for_display && roles_for_display.first && roles_for_display.first.first) ? roles_for_display.first.first : "???"
+        query_display.push("Affiliation: " + role_for_display)
+        query_values[r] = true
+      end
+    end
+
 
     case resource_type
       when Resource::RESOURCE
