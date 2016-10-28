@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => { :omniauth_callbacks => 'users/omniauth_callbacks' }
+  devise_for :users, :controllers => {
+        omniauth_callbacks: 'users/omniauth_callbacks',
+        sessions: 'users/sessions',
+        registrations: 'users/registrations'
+  }
 
   devise_scope :user do
     delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
@@ -81,6 +85,8 @@ Rails.application.routes.draw do
 
   post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
   post '/favorites/:id/remove' => 'favorites#remove', as: 'remove_favorite'
+
+
 
   # user admin
   get '/users/:id' => 'users#edit'
