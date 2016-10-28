@@ -78,8 +78,8 @@
 			<h5>Created by</h5><%= @resource.user.name %>
 		  <% end %>
 	      <h5>Last Updated</h5>
-	      <% if (Time.now.to_i - @resource.updated_at.to_i) > 72000 %>
-	    	<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P") %>
+	      <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
+	    	<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
 	  	  <% else %>
 	    	<%= time_ago_in_words(@resource.updated_at) + ' ago' %>
 	  	  <% end %> 

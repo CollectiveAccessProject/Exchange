@@ -53,8 +53,8 @@
 	  			end
 	  		%>
 	  		<% 
-	  			if (Time.now.to_i - @resource.updated_at.to_i) > 72000
-	   				display_time = @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P")
+	  			if (Time.now.to_i - @resource.updated_at.to_i) > 86400
+	   				display_time = @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
 	  			else
 	    			display_time = time_ago_in_words(@resource.updated_at) + ' ago'
 	  			end
