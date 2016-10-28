@@ -140,6 +140,15 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1
   # PATCH/PUT /resources/1.json
   def update
+    Rails.application.config.x.user_roles.each do |k,v|
+      next if ((v == :admin) || (v == :staff))
+
+      if (params[:roles].include? v.to_s)
+        @resource.add_role(v)
+      else
+        @resource.remove_role(v)
+      end
+    end
     respond_to do |format|
       if (parent_id = params[:parent_id])
         # TODO: Verify that current user has privs to do this

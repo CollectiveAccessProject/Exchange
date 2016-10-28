@@ -40,7 +40,11 @@ module Exchange
     config.x.group_types = { basic_group: 1 }
     config.x.access_types = { Published: 1, Unpublished: 0 }
 
-    config.x.user_roles = {"Administrator" => :admin, "Faculty" => :faculty, "Student" => :student}
+    config.x.user_roles = {
+          "Administrator" => :admin, "UMMA staff" => :staff,
+          "University faculty" => :faculty, "University student" => :student,
+          "K-12 teacher" => :k12_teacher, "K-12 learner" => :k12_student
+    }
     config.x.access_types = {"Read access" => 1, "Write access" => 2}
 
     # date/time format used to tags, comments, etc.

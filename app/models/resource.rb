@@ -1,4 +1,6 @@
 class Resource < ActiveRecord::Base
+  rolify
+
   has_many :related_resources
 
   has_many :resources, through: 'related_resources', source: :related
