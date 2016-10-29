@@ -305,7 +305,7 @@ class Resource < ActiveRecord::Base
         else
           cssFloat = "style=\"float: #{cssFloat}\""
         end
-        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}>" + mf.sourceable.preview(version.to_sym, width, height) + "<br/>" + mf.caption + "</div>")
+        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}><a href=\"*\" data-toggle=\"modal\" data-target=\"\##{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(version.to_sym, width, height) + "<br/>" + mf.caption + "</a></div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end
