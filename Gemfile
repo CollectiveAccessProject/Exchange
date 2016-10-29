@@ -112,3 +112,6 @@ require 'logger'
 gem 'pdfjs_viewer-rails'
 
 gem 'mime-types', require: 'mime/types/full'
+
+# truncate html tags properly for collapsing body text
+gem 'truncate_html'

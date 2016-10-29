@@ -12,41 +12,28 @@
 <body>
 
 <!-- Fixed navbar -->
-<nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container" id="ummaHeader">
+<nav class="navbar navbar-default navbar-fixed-top" id="subnavbar">
+  <div class="container">
+  
     <div class="navbar-header">
+    	<div class="navLogo"><%= link_to image_tag('ummaWhiteFade.png').html_safe, root_url, class: '' %></div>
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#exmenu" aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="http://umma.umich.edu/" class="navbar-brand"><%= image_tag('ummaLogo.png').html_safe %></a>
-      <!--<%= link_to image_tag('ummaLogo.jpg')+' The Exchange'.html_safe, root_url, class: 'navbar-brand' %>-->
     </div>
-    <div id="navbar" class="navbar-collapse collapse navbar-right">
-      <ul class="nav navbar-nav">
-        <li><a href="#">Art</a></li>
-        <li><a href="#">Happenings</a></li>
-        <li><a href="#">Learn</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Support</a></li>
-        <li class="firsticon icon"><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
-        <li class="icon"><a href="#"><span class="glyphicon glyphicon-menu-hamburger"></span></a></li>
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div>
   
-  <div id="subnavbar"><div class="container">
-	<div class="navTitle"><%= link_to '<span class="topLine">The</span><br/>Exchange'.html_safe, root_url, class: '' %></div>
-	<div id="exmenu" class="navbar-collapse collapse navbar-right">
+  
+  	<div id="exmenu" class="navbar-collapse collapse navbar-right">
   		<ul class="nav navbar-nav">
-        <li><a href="#">Featured Collections</a></li>
+        <li><a href="#">Featured</a></li>
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About</a>
-		<ul class="dropdown-menu" role="menu">
-			<%= render 'devise/menu/about_items' %>
-		</ul>
-	</li>
+			<ul class="dropdown-menu" role="menu">
+				<%= render 'devise/menu/about_items' %>
+			</ul>
+		</li>
       	<li class="dropdown">
       		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Exchange</a>
       		<ul class="dropdown-menu" role="menu">
@@ -54,6 +41,7 @@
         		<%= render 'devise/menu/login_items' %>
       		</ul>
       	</li>
+		<li><a href="http://umma.umich.edu/">UMMA Home</a></li>
 <% if (current_user && (current_user.has_role?(:admin))) %>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin</a>
@@ -71,7 +59,7 @@
       <% end %>
   	
   	<div style="clear:both;"></div></div><!--/.nav-collapse -->
-  </div><!--/container --></div><!--/.subnavbar -->
+  </div><!--/container -->
 </nav>
 <%= render(partial:'layouts/advanced_search_form') %>
 <div class="container tour-dashboard">
@@ -103,7 +91,7 @@
 </body>
 </html>
 <!-- hide umma nav when scroll down -->
-<script>
+<!--<script>
 jQuery(document).ready(function() {	
 		$(window).scroll(function() {    
 			var scroll = $(window).scrollTop();
@@ -115,4 +103,4 @@ jQuery(document).ready(function() {
 			}
 		});
 });
-</script>
+</script>-->

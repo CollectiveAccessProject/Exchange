@@ -248,10 +248,6 @@
 				   $('.num').html(''+currentIndex+'/'+totalItems+'');
 				});
 			</script>
-				<% # This is in a partial because its a lot of nested divs and duplicates functionality in the main slideshow
-				   # which is potentially confusing %>
-				<%= render partial: 'resource_slideshow_fullscreen' %>
-					
 
 <!--			<div class="row">
               <div class="col-sm-4 col-sm-offset-4 text-center">
@@ -261,10 +257,39 @@
               </div>
             </div>
 -->
-		<% 
-		    end
+		 <% end %>
+		 
+<%
+		when "embed"
+		  if available_media > 0
+			  @resource.media_files.each do |f| 
+				if f.sourceable
+					if f.access == 1
+					 
+%>
+<%
+						begin
+							media_display = f.sourceable.render :large
+						rescue
+							media_display = f.sourceable.preview :large	
+						end
+%>	
+<%=
+						render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }	
+%>
+<%
+					end
+				end
+			end
 		  end
-		 %>
+%>
+		<% end %>
+<%=
+	# This is in a partial because its a lot of nested divs and duplicates functionality in the main slideshow
+	# which is potentially confusing
+	# Placing this partial here makes it avaialable regardless of media format setting
+	render partial: 'resource_slideshow_fullscreen'
+%>
 <% if @resource.settings(:text_placement).placement.to_s == "below" %>
     <% if @resource.settings(:text_formatting).show_all == 1 %>
 		<% if @resource.settings(:text_formatting).collapse == 1 %>

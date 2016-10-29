@@ -76,3 +76,7 @@
 .tour-search-form {
   z-index: 1075;
 }
+.tour-dashboard .panel-heading{
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}

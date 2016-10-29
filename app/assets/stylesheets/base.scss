@@ -9,12 +9,13 @@ $md_gray:#DEDEDE;
 $lt_gray:#eaeaeb;
 $black:#000000;
 $white:#FFFFFF;
+$teal:#419276;
 html{
 	position:relative;
 	min-height: 100%;
 }
 body {
-	padding-top: 180px; 
+	padding-top: 100px; 
 	padding-bottom: 130px;
 	
 	font-family: $font-family-sans-serif;
@@ -35,6 +36,9 @@ a:hover{
 a, a:focus{
 	outline: 0;
 	text-decoration:none;
+}
+a:visited{
+	color: $blue;
 }
 p, ul, li{
 	font-family: $font-family-sans-serif;
@@ -221,11 +225,16 @@ h4{
 		padding:70px 50px 0px 50px;
 	}
 }
+.navbar-toggle {
+	margin-top: 12px;
+}
 .navbar-header{
 	min-height:64px;
 }
 .navbar-header{
-	
+	img{
+		max-width:auto !important;
+	}
 	a.navbar-brand{
 		font-size:18px;
 		font-weight: 700;
@@ -238,24 +247,25 @@ h4{
 			color:$gray;
 		}
 		img{
-			max-width:185px;
+			max-width:auto !important;
 			height:auto;
 			display:inline;
 			margin:0px;
 		}
 	}
-	@media(min-width: 768px){
+/*	@media(min-width: 768px){
 		img{
 			max-width:100px !important;
 		}
 	}
+*/
 	@media(min-width: 1024px){
 		a.navbar-brand{
 			font-size:30px;
 		}
-		img{
+/*		img{
 			max-width:185px !important;
-		}
+		}*/
 	}
 }
 .navbar-form{
@@ -335,6 +345,11 @@ h4{
 	#navbar.navbar-right{
 		margin-right:80px;
 	}
+	.navbar-header{
+		img{
+			max-width:auto !important;
+		}
+	}
 }
 #navbar{
 	a{
@@ -399,34 +414,75 @@ h4{
 		letter-spacing: 1px;
 		padding:25px 20px 25px 20px;
 	}
-	@media (min-width: 768px) and (max-width: 992px) {
+	@media (min-width: 768px) and (max-width: 1200px) {
 		a{
 			font-size:13px;
 			padding:25px 10px 25px 10px;
 		}
 	}
+	.navLogo{
+		float:left;
+		margin:0px 10px 4px -40px;
+		padding:0px;
+		text-align:left;
+		img{
+			height:70px;
+			width:auto;
+			padding:0px;
+			margin:0px;
+			max-width:auto !important;
+		}
+/*		@media(max-width: 1200px){
+			img{
+				height:50px;
+			}
+		}
+*/
+		a{
+			padding:0px !important;
+		}
+	}
+	@media (max-width: 992px) {
+		.navLogo{
+			margin:3px 15px 11px -32px;
+			img{
+				height:60px;
+			}
+		}
+	}
+	@media(max-width: 767px){
+		.navLogo{
+			margin:0px 0px 0px -15px;
+			img{
+				height:55px;
+			}
+		}
+	}
 	.navTitle{
 		float:left;
-		padding:0px 0px 2px 3px;
+		padding:0px;
+		margin-top:20px;
+		text-align:left;
 		a{			
-			color:#FFFFFF;
+			color:$blue;
 			letter-spacing: 0.05em;
 			font-family:$font-family-sans-serif2;
-			font-size:38px;
+			font-size:29px;
 			font-weight: 700;
 			text-transform: uppercase;
-			line-height:auto;
+			line-height:1em;
 			padding:0px !important;
-			.topLine{
+/*			.topLine{
 				font-size:20px;
 				font-weight: 400;
 				line-height:auto;
 				padding:0px !important;
 			}
+*/
 		}
 		@media(min-width:768px) and (max-width:1024px){
 			a{
-				font-size:30px;
+				/*font-size:30px;*/
 			}
 		}
 		a:hover{
@@ -450,7 +506,7 @@ h4{
 		}
 		li:hover, li.dropdown.open{
 			background-color:rgba(255,255,255,0.1);
-			border-bottom:7px solid $bluegray;
+			border-bottom:7px solid $teal;
 			a{
 				padding-bottom: 20px;
 				background-color:transparent;
@@ -641,9 +697,10 @@ select.input-sm{
   .caption{
     font-size:11px;
     padding:5px 0px 0px 0px;
-    overflow-y:scroll;
+    overflow-y:auto;
     line-height:1.1em;
     color:$gray;
+    height:auto;
   }
   iframe{
     width: 100% !important;
@@ -757,9 +814,16 @@ li.tagList {
   border: 1px solid #ddd;
   border-radius: 3px;
   margin:10px;
-  font-size:11px;
+  font-size:11px !important;
+  font-family: $font-family-sans-serif !important;
+  max-width: 25%;
+  line-height:1.2em;
   img{
     padding-bottom:0px;
+  }
+  font{
+  	font-family: $font-family-sans-serif !important;
+  	font-size:11px !important;
   }
 }
 

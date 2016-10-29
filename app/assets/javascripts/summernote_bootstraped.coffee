@@ -26,7 +26,7 @@ $ ->
         icon:'<i class="fa fa-file-text" aria-hidden="true"></i>'
     }
       
-  $('#media_file_caption, #media_file_copyright_notes, #resource_title, #resource_subtitle').each -> 
+  $('#resource_title, #resource_subtitle').each -> 
     $(this).summernote
       height : 75,
       toolbar : [
@@ -38,3 +38,10 @@ $ ->
         ['height', ['height']]
       ]
       
+  $('#media_file_caption, #media_file_copyright_notes').each -> 
+    $(this).summernote
+      height : 75,
+      toolbar : [
+        ['style', [ 'bold', 'italic', 'underline']],
+        ['font', [ 'superscript', 'subscript']]
+      ]
