@@ -115,3 +115,6 @@ gem 'mime-types', require: 'mime/types/full'
 
 # truncate html tags properly for collapsing body text
 gem 'truncate_html'
+
+# hierarchy support for structured tags
+gem 'ancestry'
