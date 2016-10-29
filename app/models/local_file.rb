@@ -2,6 +2,7 @@ class LocalFile < ActiveRecord::Base
   include MediaPluginModel
   has_one :media_file, as: :sourceable
   after_commit :set_thumbnail
+  before_save :fetch_file_by_url
 
   has_attached_file :file, :styles => {
                              # :medium => { :geometry => '300x300>', :format => 'jpg', :time => 10 },
@@ -32,6 +33,13 @@ class LocalFile < ActiveRecord::Base
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ], message: "Invalid file format"
+
+  # Override file with url if provided
+  def fetch_file_by_url
+    if (self.url)
+     self.file = self.url
+    end
+  end
 
   def set_thumbnail
     # TODO: convert non-image formats to images before setting as thumbnail

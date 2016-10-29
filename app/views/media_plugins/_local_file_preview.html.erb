@@ -3,7 +3,7 @@
   get_file_icon(mimetype: plugin_model.file_content_type, size: 5, image: plugin_model.media_file.thumbnail, version: version)
 %>
   <br/>
-  <%= MIME::Types[plugin_model.file_content_type].first.friendly %>
+  <%= MIME::Types[plugin_model.file_content_type].first.friendly if (plugin_model.file_content_type) %>
   <br/>
 <%
 	media_id = plugin_model.media_file.id

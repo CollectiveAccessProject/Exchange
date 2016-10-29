@@ -14,6 +14,7 @@ class Resource < ActiveRecord::Base
 
   has_many :resources_users
   has_many :users, through: 'resources_users'
+  belongs_to :users, class_name: 'User', foreign_key: 'author_id'
   
   has_many :collectionobject_links, through: 'media_files', source: 'sourceable', source_type: 'CollectionobjectLink'
 
@@ -250,6 +251,14 @@ class Resource < ActiveRecord::Base
   # Return list of parents for current resource
   def parents
     return Resource.joins(:resource_hierarchies).where("child_resource_id = ?", self.id)
+  end
+
+  # Return current author name
+  def get_author_name
+    if(self.author_id && (u = User.find(self.author_id)))
+      return u.name + " (" + u.email + ")"
+    end
+    ""
   end
 
   # the automatic elasticsearch callbacks seem to ignore or

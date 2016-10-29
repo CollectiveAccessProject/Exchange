@@ -60,21 +60,21 @@ class MediaFile < ActiveRecord::Base
           field_list.each do |f|
 
             if (instance.respond_to?(:file=) && params.has_key?(:local_file))
-              instance.attributes = params.require(:local_file).permit(:file, :file_fingerprint)
+              instance.attributes = params.require(:local_file).permit(:file, :file_fingerprint, :url)
               self.sourceable = instance
               throw :done
             elsif(params[n] && params[n][f] && (params[n][f].length) > 0)
               if (defined? instance.original_link)
                 instance.original_link = params[n][f]
                 self.sourceable = instance
-                
-                 if (instance.respond_to?(:get_copyright_value)) 
-					license = instance.get_copyright_value
-					if(!license.nil?)
-						self.copyright_license = license
-						self.save
-					end
-				end
+
+                if (instance.respond_to?(:get_copyright_value))
+                  license = instance.get_copyright_value
+                  if(!license.nil?)
+                    self.copyright_license = license
+                    self.save
+                  end
+                end
                 throw :done
               end
             end
@@ -92,12 +92,12 @@ class MediaFile < ActiveRecord::Base
 
   def destroy
     if sourceable
-    	begin
-      		#sourceable.destroy
-      	rescue
-      		# noop - sometimes the preview engine (Dragonfly) will throw an exception
-      	end
-      	super
+      begin
+        #sourceable.destroy
+      rescue
+        # noop - sometimes the preview engine (Dragonfly) will throw an exception
+      end
+      super
     end
 
     begin

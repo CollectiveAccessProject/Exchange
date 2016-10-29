@@ -41,9 +41,10 @@ module Exchange
     config.x.access_types = { Published: 1, Unpublished: 0 }
 
     config.x.user_roles = {
-          "Administrator" => :admin, "UMMA staff" => :staff,
+          "Administrator" => :admin, "UMMA staff" => :staff, "UMMA docent" => :docent,
           "University faculty" => :faculty, "University student" => :student,
-          "K-12 teacher" => :k12_teacher, "K-12 learner" => :k12_student
+          "K-12 teacher" => :k12_teacher, "K-12 learner" => :k12_student,
+          "Museum visitor" => :visitor
     }
     config.x.access_types = {"Read access" => 1, "Write access" => 2}
 

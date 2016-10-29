@@ -51,8 +51,15 @@
 		  </div>
 		  <div class="row">
 		    <div class="col-md-6">
-		      <%= r.input :author_name  %>
-		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+          <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
+          <div class="form-group text optional resource_copyright_notes">
+            <label class="text optional control-label" for="author_id">Author</label>
+            <%= autocomplete_field_tag(:find_user_id, '', :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#author_id", class:'form-control') %>
+           <%= hidden_field_tag(:author_id) %>
+		      </div>
+          <% end %>
+
+            <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
 		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
 		    </div>
 		    <div class="col-md-6">
@@ -99,7 +106,13 @@
 		  </div>
 		  <div class="row">
 		    <div class="col-md-6">
-		      <%= r.input :author_name  %>
+          <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
+              <div class="form-group text optional resource_copyright_notes">
+                <label class="text optional control-label" for="author_id">Author</label>
+                <%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#resource_author_id", class:'form-control') %>
+                <%= hidden_field_tag("resource[author_id]", '', :id => :resource_author_id) %>
+              </div>
+          <% end %>
 		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
 		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
 		    </div>
