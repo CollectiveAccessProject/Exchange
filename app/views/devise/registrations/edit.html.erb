@@ -56,7 +56,7 @@
                     <%=
                       buf = ''
                       Rails.application.config.x.user_roles.each do |k,v|
-                        next if ((v == :admin) || (v == :staff))
+                        next if ((v == :admin) || (v == :staff) || (v == :docent))
                         buf += (check_box_tag("roles[]", v.to_s, roles.include?(v.to_s), {}) + ' ' + k.to_s)
                         buf += "<br/>"
                       end

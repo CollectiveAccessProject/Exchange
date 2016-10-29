@@ -20,7 +20,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # PUT /resource
    def update
      Rails.application.config.x.user_roles.each do |k,v|
-       next if ((v == :admin) || (v == :staff))
+       next if ((v == :admin) || (v == :staff) || (v == :docent))
 
        if (params[:roles].include? v.to_s)
           current_user.add_role(v)
