@@ -2,8 +2,12 @@
   <div class="panel-body">
     <%= fields_for(plugin_model) do |f| %>
 
-        <label for="localMedia">Local file:</label>
-      <%= f.file_field :file, class: "form-control", id: "localMedia"  %>
+        <label for="localMedia">Choose a local file:</label>
+      <%= f.file_field :file, class: "form-control", id: "local_media"  %>
+
+       <p><strong>OR</strong></p>
+        <label for="localFileURL">Fetch file from URL:</label>
+       <%= text_field_tag("local_file[url]", '', id: "local_file_url", class: "form-control") %>
 
     <div class="form-actions">
       <% if plugin_model.id %>

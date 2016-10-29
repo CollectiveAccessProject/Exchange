@@ -1,5 +1,6 @@
 class LocalFilesController < ApplicationController
   include SourceableController
+  require 'open-uri'
   skip_before_action :verify_authenticity_token
 
   # POST /local_files
@@ -19,6 +20,6 @@ class LocalFilesController < ApplicationController
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def local_file_params
-      params.require(:local_file).permit(:file, :file_fingerprint)
+      params.require(:local_file).permit(:file, :file_fingerprint, :url)
     end
 end
