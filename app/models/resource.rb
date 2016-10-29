@@ -253,6 +253,7 @@ class Resource < ActiveRecord::Base
     return Resource.joins(:resource_hierarchies).where("child_resource_id = ?", self.id)
   end
 
+  # Return current author name
   def get_author_name
     if(self.author_id && (u = User.find(self.author_id)))
       return u.name + " (" + u.email + ")"
