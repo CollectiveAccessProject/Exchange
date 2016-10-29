@@ -118,3 +118,5 @@ gem 'truncate_html'
 
 # hierarchy support for structured tags
 gem 'ancestry'
+
+gem 'spreadsheet'

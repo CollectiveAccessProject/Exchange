@@ -240,4 +240,29 @@ namespace :exchange do
     end
 
   end
+
+	desc 'Import Excel-formatted vocabulary'
+	task import_vocabulary: :environment do
+
+		require 'spreadsheet'
+		book = Spreadsheet.open Rails.root.to_s + '/data/vocabulary.xls'
+		sheet1 = book.worksheet 0
+		sheet1.each do |row|
+			term = row[0]
+      next if ((!term) || (term == 'Primary Term'))
+			puts "Importing " + term
+
+      synonyms = row[1] ? row[1].split(/[#]+/) : nil
+      description = row[2] ? row[2] : ''
+      reference_url = row[3] ? row[3] : ''
+
+      vt=VocabularyTerm.where(term: term, description: description, reference_url: reference_url).first_or_create
+
+      if (synonyms && synonyms.length > 0)
+        synonyms.each do |syn|
+          vt.vocabulary_term_synonyms.where(synonym: syn, description: '', reference_url: '').first_or_create
+        end
+      end
+		end
+	end
 end
