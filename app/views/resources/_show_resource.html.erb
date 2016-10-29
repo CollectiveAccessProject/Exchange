@@ -85,7 +85,7 @@
 			available_media = available_media + 1
 		end
 	end
-			
+
 	case @resource.settings(:media_formatting).mode.to_s
 		when "thumbnails"
 %>
@@ -111,9 +111,9 @@
 							begin
 								media_display = f.sourceable.render(:large)
 							rescue
-								media_display = f.sourceable.preview :large	
+								media_display = f.sourceable.preview :large
 							end
-%>	
+%>
 <%=
 									# this renders a bootstrap model that is triggered if you click on the preview above
 									# it's in a partial because it's about a billion nested divs :-)
@@ -121,14 +121,14 @@
 %>
 							  </div><!-- end col -->
 <%
-				
+
 							counter = counter + 1
 						end
 					end
             	end
 %>
             </div><!-- end row -->
-        
+
         <% when "thumbnailsCaption" %>
             <div class="row">
 <%
@@ -155,9 +155,9 @@
 							begin
 								media_display = f.sourceable.render(:large)
 							rescue
-								media_display = f.sourceable.preview :large	
+								media_display = f.sourceable.preview :large
 							end
-%>	
+%>
 <%=
 									# this renders a bootstrap model that is triggered if you click on the preview above
 									# it's in a partial because it's about a billion nested divs :-)
@@ -165,7 +165,7 @@
 %>
 							  </div><!-- end col -->
 <%
-				
+
 							counter = counter + 1
 						end
 					end
@@ -202,31 +202,40 @@
 					<div class="carousel-inner" role="listbox">
 <%
 				  counter = 1
-				  @resource.media_files.each do |f| 
+				  @resource.media_files.each do |f|
 					if f.access == 1
-						if f.sourceable 
+						if f.sourceable
 %>
-							
+
 							<div class="item <%= (counter == 1) ? 'active' : '' %>">
 									<a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-										<%= f.sourceable.preview :large  %>
+
+                    <%=
+                      case
+                        when ((f.sourceable.class.to_s == 'YoutubeLink') || (f.sourceable.class.to_s == 'VimeoLink'))
+                          # render video inline so it's playable
+                          f.sourceable.render :medium
+                        else
+                          f.sourceable.preview :large
+                      end
+                    %>
 									</a>
-								
+
 								<div class="captionContainer">
 									<div class="slideshowCaption"><%= f.caption.html_safe  %></div>
 								</div>
-							</div>		
+							</div>
 <%
 							begin
 								media_display = f.sourceable.render :large
 							rescue
-								media_display = f.sourceable.preview :large	
+								media_display = f.sourceable.preview :large
 							end
-%>					
+%>
 <%=
 							# this renders a bootstrap model that is triggered if you click on the preview above
 							# it's in a partial because it's about a billion nested divs :-)
-						
+
 							render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
 %>
 <%
@@ -258,24 +267,24 @@
             </div>
 -->
 		 <% end %>
-		 
+
 <%
 		when "embed"
 		  if available_media > 0
-			  @resource.media_files.each do |f| 
+			  @resource.media_files.each do |f|
 				if f.sourceable
 					if f.access == 1
-					 
+
 %>
 <%
 						begin
 							media_display = f.sourceable.render :large
 						rescue
-							media_display = f.sourceable.preview :large	
+							media_display = f.sourceable.preview :large
 						end
-%>	
+%>
 <%=
-						render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }	
+						render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
 %>
 <%
 					end
@@ -338,7 +347,7 @@
 	<div class="row">
 	  <div class="col-md-12">
 	    <div class="row" id="detailTags">
-		  
+
 		<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
 		  <div class="col-sm-6">
 			<a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
@@ -361,7 +370,7 @@
 		  </div>
 		<% end %>
 		<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
-			<div class="col-sm-6"> 
+			<div class="col-sm-6">
 			  <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %></h4></a>
 			  <div id="tagPanel" class="collapse detailComments">
 				<%= @resource.tags.map(&:tag).join(", ") %>
@@ -377,7 +386,7 @@
 			</div>
 		  <% end %>
 	</div>
-  </div>	  
+  </div>
 </div>
 
 </div><!-- end col -->
@@ -403,17 +412,17 @@
 <%
 	if(@resource.parents && (@resource.parents.count > 0))
 %>
-		<div class="unit">	
-			
+		<div class="unit">
+
 			<a role="button" data-toggle="collapse" href="#lcPanel"><h4>Part of <%= @resource.parents.count %> Learning Collection<%= (@resource.parents.count == 1) ? "" : "s" %></h4></a>
 			<!--<H4>More from this learning collection</H4>-->
-			
+
 			<div id="lcPanel" class="collapse scrollList">
-	<% 
+	<%
 				panelCount = 0
 				@resource.parents.each do |p|
 	%>
-		
+
 					<div>
 					<strong><%= link_to p.title.html_safe, get_resource_view_path(p, user_signed_in?) %> <i class="fa fa-external-link-square" aria-hidden="true"></i></strong>
 					<br/>
@@ -433,12 +442,12 @@
 						</div>
 					<% end %>
 					</div>
-		
+
 				<% panelCount += 1 %>
 				<% end %>
 			</div>
-		</div><!-- end unit -->	
-	<% end %>	
+		</div><!-- end unit -->
+	<% end %>
 <% if @resource.related_resources.count > 0 %>
 	  <div class="unit">
 		<a role="button" data-toggle="collapse" href="#relatedPanel"><H4><%= @resource.related_resources.count %> Related Resource<%= @resource.related_resources.count == 1 ? '' : 's' %></H4></a>
@@ -480,7 +489,7 @@
 	    <h4>Created by</h4><%= @resource.author_name %>
 	  <% else %>
 	  	<h4>Created by</h4><%= @resource.user.name %>
-	  <% end %> 
+	  <% end %>
 	  <h4>Last Updated</h4>
 	  <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
 	    <%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
