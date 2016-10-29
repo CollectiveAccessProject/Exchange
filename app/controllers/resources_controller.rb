@@ -110,6 +110,8 @@ class ResourcesController < ApplicationController
         @resource.remove_role(v)
       end
     end
+
+    # set role text field to force ElasticSearch indexing (maybe we can get rid of this?)
     @resource.role = r.join("; ")
     @resource.save
   end
@@ -169,6 +171,8 @@ class ResourcesController < ApplicationController
           format.json { render json: @resource.errors, status: :unprocessable_entity }
         end
       else
+        puts "UPDATE!"
+        puts resource_params
         if @resource.update(resource_params)
           set_roles
           session[:mode] = :update;
@@ -548,9 +552,16 @@ class ResourcesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def resource_params
-    params.require(:resource).permit(
-        :slug, :title, :resource_type, :subtitle, :source_type, :source,
-        :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :author_name
-    )
+    if ((current_user.has_role? :admin) || (current_user.has_role? :staff))
+      params.require(:resource).permit(
+          :slug, :title, :resource_type, :subtitle, :source_type, :source,
+          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :author_id
+      )
+    else
+      params.require(:resource).permit(
+          :slug, :title, :resource_type, :subtitle, :source_type, :source,
+          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
+      )
+    end
   end
 end
