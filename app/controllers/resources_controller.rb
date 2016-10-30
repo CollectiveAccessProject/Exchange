@@ -12,6 +12,9 @@ class ResourcesController < ApplicationController
 
   # UI autocomplete on user name/email (used by user lookup)
   autocomplete :user, :name, :full => true, :extra_data => [:id]
+
+  # UI autocomplete on vocabulary terms
+  autocomplete :vocabulary_terms, :term, :full => true, :extra_data => [:id]
   
 
   # Filter on type when mode param is set

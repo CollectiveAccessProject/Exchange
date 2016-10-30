@@ -1,29 +1,66 @@
 <div class="panel panel-primary">
   <div class="panel-body">
-    <%= form_tag '/resources/add_tag', remote: true, "data-type": :json, id: :addTagsForm do %>
-        <div id="tags-status">
-          <div class="flash-notice" id="tags-status-message">
 
-          </div>
-        </div>
-        <%= hidden_field_tag 'id', @resource.id %>
-        <div class="form-group">
-          <label>Tag</label>
-          <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-        </div>
-        <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-    <% end %>
+    <div class="row">
+      <div class="col-md-6">
+        <%= form_tag '/resources/add_tag', remote: true, "data-type": :json, id: :addTagsForm do %>
+            <div id="tags-status">
+              <div class="flash-notice" id="tags-status-message">
 
-    <% if @resource.tags.count > 0 %>
-		<div class="relatedContent">
-			<H4><%= @resource.tags.count %> Tag<%= ((@resource.tags.count > 1) ? "s" : "") %></H4>
-			<% @resource.tags.each do |c| %>
-				<div>
-				  <%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %> (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
-				  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_tag_from_resources_path(@resource) + "?tag_id=" + c.id.to_s, {remote: true, class: :tagRemoveLink}) %>
-				</div>
-			<% end %>
-        </div>
-    <% end %>
+              </div>
+            </div>
+            <%= hidden_field_tag 'id', @resource.id %>
+
+            <h4>Tags</h4>
+            <div class="form-group">
+              <label>Tag</label>
+              <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+            </div>
+            <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+        <% end %>
+
+        <% if @resource.tags.count > 0 %>
+            <div class="relatedContent">
+              <H4><%= @resource.tags.count %> Tag<%= ((@resource.tags.count > 1) ? "s" : "") %></H4>
+              <% @resource.tags.each do |c| %>
+                  <div>
+                    <%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %> (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+                    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_tag_from_resources_path(@resource) + "?tag_id=" + c.id.to_s, {remote: true, class: :tagRemoveLink}) %>
+                  </div>
+              <% end %>
+            </div>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= form_tag '/resources/add_tag', remote: true, "data-type": :json, id: :addTagsForm do %>
+            <div id="terms-status">
+              <div class="flash-notice" id="terms-status-message">
+
+              </div>
+            </div>
+            <%= hidden_field_tag 'id', @resource.id %>
+
+            <h4>Keywords</h4>
+            <div class="form-group">
+              <label>Keyword</label>
+              <%= text_field_tag 'term[term]', nil, class:'form-control' %>
+            </div>
+            <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+        <% end %>
+
+        <% if (false && (@resource.terms.count > 0)) %>
+            <div class="relatedContent">
+              <H4><%= @resource.terms.count %> Tag<%= ((@resource.terms.count > 1) ? "s" : "") %></H4>
+              <% @resource.terms.each do |c| %>
+                  <div>
+                    <%= c.term %><br/>
+                    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_term_from_resources_path(@resource) + "?term-id=" + c.id.to_s, {remote: true, class: :termRemoveLink}) %>
+                  </div>
+              <% end %>
+            </div>
+        <% end %>
+      </div>
+    </div>
+
   </div><!-- end panel-body -->
 </div><!-- end panel -->
