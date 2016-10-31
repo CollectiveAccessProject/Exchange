@@ -6,7 +6,7 @@
 			<H4>Part of <%= @resource.parents.count %> collection<%= ((@resource.parents.count > 1) ? "s" : "") %></H4>
 			<% @resource.parents.each do |c| %>
 				<div>
-				  <%= link_to(c.title, edit_resource_path(c)) %>
+				  <%= link_to(c.title.html_safe, edit_resource_path(c)) %>
           <%= "(" + c.resource_type_for_display + ")" %>
           <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_parent_path(@resource.id, c.id), {remote: true, class: :collectionsRemoveLink}) %>
 

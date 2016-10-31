@@ -371,17 +371,27 @@
 		<% end %>
 		<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
 			<div class="col-sm-6">
-			  <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %></h4></a>
-			  <div id="tagPanel" class="collapse detailComments">
-				<%= @resource.tags.map(&:tag).join(", ") %>
-				<%= form_tag '/resources/add_tag' do %>
-				<%= hidden_field_tag 'id', @resource.id %>
-				<div class="form-group">
-				  <label>Add Tag</label>
-				  <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-				</div>
-				<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-				<% end %>
+				<a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
+				<div id="tagPanel" class="collapse detailComments">
+					<div class="row">
+						<div class="col-sm-8">
+							<h5>Tags</h5>
+							<%= @resource.tags.map(&:tag).join(", ") %>
+							<%= form_tag '/resources/add_tag' do %>
+							<%= hidden_field_tag 'id', @resource.id %>
+							<br/>
+							<div class="form-group">
+						  		<label>Add Tag</label>
+						  		<%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+							</div>
+							<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+							<% end %>
+						</div>
+						<div class="col-sm-4">
+							<h5>Keywords</h5>
+    						<%= @resource.vocabulary_terms.map(&:term).join(", ") %>
+    					</div>
+    				</div>
 			  </div>
 			</div>
 		  <% end %>
@@ -483,8 +493,22 @@
 			<%= @resource.tags.map(&:tag).join(", ") %>
 		</div>
     <% end %>
+    <% if @resource.vocabulary_terms.count > 0 %>
+    	<div class="unit">
+    		<h4>Keywords</h4>
+    		<%= @resource.vocabulary_terms.map(&:term).join(", ") %>
+    	</div>
+    <% end %>
 <% end %>
 	<div>
+	  <% if (@resource.role) %>
+    	<div class="unit">
+    	<h4>Affiliations</h4>
+    	<% @resource.roles.each do |r| %>
+    		<%= r.name %><br/>
+    	<% end %>
+    	</div>
+      <% end %>
 	  <% if @resource.author_name && @resource.author_name != ''  %>
 	    <h4>Created by</h4><%= @resource.author_name %>
 	  <% else %>
