@@ -26,19 +26,7 @@ $ ->
         icon:'<i class="fa fa-file-text" aria-hidden="true"></i>'
     }
       
-  $('#resource_title, #resource_subtitle').each -> 
-    $(this).summernote
-      height : 75,
-      toolbar : [
-        ['style', [ 'bold', 'italic', 'underline', 'clear']],
-        ['font', [ 'fontname', 'strikethrough', 'superscript', 'subscript']],
-        ['fontsize', ['fontsize']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['height', ['height']]
-      ]
-      
-  $('#media_file_caption, #media_file_copyright_notes').each -> 
+  $('#media_file_caption, #media_file_copyright_notes, #resource_copyright_notes, #resource_title, #resource_subtitle').each -> 
     $(this).summernote
       height : 75,
       toolbar : [

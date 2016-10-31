@@ -44,13 +44,13 @@ module ApplicationHelper
         image_size = media_size_for_version(version)
         image_tag image.thumb(image_size[:area], format: 'jpeg', frame: 0).url
       when ((mimetype == "application/vnd.ms-excel") || (mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-        "<i class=\"fa fa-file-excel-o fa-#{size}x\" aria-hidden=\"true\"></i>".html_safe
+        "<div class='iconPadding'><i class=\"fa fa-file-excel-o fa-#{size}x\" aria-hidden=\"true\"></i></div>".html_safe
       when ((mimetype == "application/msword") || (mimetype == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
-        "<i class=\"fa fa-file-word-o fa-#{size}x\" aria-hidden=\"true\"></i>".html_safe
+        "<div class='iconPadding'><i class=\"fa fa-file-word-o fa-#{size}x\" aria-hidden=\"true\"></i></div>".html_safe
       when ((mimetype == "application/vnd.ms-powerpoint") || (mimetype== "application/vnd.openxmlformats-officedocument.presentationml.presentation"))
-        "<i class=\"fa fa-file-powerpoint-o fa-#{size}x\" aria-hidden=\"true\"></i>".html_safe
+        "<div class='iconPadding'><i class=\"fa fa-file-powerpoint-o fa-#{size}x\" aria-hidden=\"true\"></i></div>".html_safe
       else
-        "<i class=\"fa fa-file fa-#{size}x\" aria-hidden=\"true\"></i>".html_safe
+        "<div class='iconPadding'><i class=\"fa fa-file fa-#{size}x\" aria-hidden=\"true\"></i></div>".html_safe
     end
   end
 end
