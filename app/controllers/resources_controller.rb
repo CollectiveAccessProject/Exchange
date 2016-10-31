@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :except => [:view]
-  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_link, :remove_comment, :remove_tag, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
+  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
 
   include CommentableController
   include TaggableController
@@ -14,7 +14,7 @@ class ResourcesController < ApplicationController
   autocomplete :user, :name, :full => true, :extra_data => [:id]
 
   # UI autocomplete on vocabulary terms
-  autocomplete :vocabulary_terms, :term, :full => true, :extra_data => [:id]
+  autocomplete :vocabulary_term, :term, :full => true, :extra_data => [:id]
   
 
   # Filter on type when mode param is set
@@ -45,6 +45,15 @@ class ResourcesController < ApplicationController
         "%#{term}%", "#{term}%"
     ).order(:id).all
     render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l} }
+  end
+
+  def autocomplete_vocabulary_term_term
+    term = params[:term]
+    u = VocabularyTerm.joins("LEFT JOIN vocabulary_term_synonyms ON vocabulary_terms.id = vocabulary_term_synonyms.vocabulary_term_id").where(
+        'LOWER(vocabulary_terms.term) LIKE ? OR LOWER(vocabulary_term_synonyms.synonym) LIKE ?',
+        "%#{term}%", "#{term}%"
+    ).order(:id).distinct
+    render :json => u.map { |r| {:id => r.id, :label => (l = r.term), :value => l} }
   end
 
   # GET /resources
@@ -292,10 +301,42 @@ class ResourcesController < ApplicationController
 
   def remove_tag
     # TODO: make sure user is allowed to do this for this resource
-    t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first
+   if(t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first)
     t.destroy
-
     resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+   else
+     resp = {status: :err, error: "Invalid parameters"}
+   end
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
+  # add new vocabulary term
+  def add_term
+    # TODO: make sure user is allowed to do this for this resource
+
+    if (ResourcesVocabularyTerm.where(vocabulary_term_id: params[:term_id], resource_id: @resource.id).first_or_create)
+      resp = {status: :ok, html: render_to_string("resources/_tags", layout: false)}
+    else
+      resp = {status: :err, error: flash[:alert]}
+    end
+
+    respond_to do |format|
+      format.json { render json: resp }
+      format.html { redirect_to resource_path(@resource), notice: 'Added term' }
+    end
+  end
+
+  def remove_term
+    # TODO: make sure user is allowed to do this for this resource
+    if (t = ResourcesVocabularyTerm.where(vocabulary_term_id: params[:term_id], resource_id: @resource.id).first)
+      t.destroy
+      resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+    else
+      resp = {status: :err, error: "Invalid parameters"}
+    end
 
     respond_to do |format|
       format.json { render json: resp }

@@ -285,4 +285,31 @@
             }, 3000);
 
         });
+
+        // AJAX keywords
+        jQuery(document).on("ajax:success", "#addTermForm", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_tags").html(data.html)
+            }
+            jQuery("#terms-status").slideDown(250);
+
+            jQuery("#terms-status-message").html((data && data.status && (data.status == 'ok')) ? "Added keyword" : "Could not add keyword: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#terms-status").slideUp(250);
+            }, 3000);
+
+        });
+
+        jQuery(document).on("ajax:success", ".termRemoveLink", function(e, data) {
+            if(data.status == 'ok') {
+                jQuery("#tab_tags").html(data.html)
+            }
+            jQuery("#terms-status").slideDown(250);
+
+            jQuery("#terms-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed keyword" : "Could not remove keyword: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#terms-status").slideUp(250);
+            }, 3000);
+
+        });
     });

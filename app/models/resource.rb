@@ -15,7 +15,10 @@ class Resource < ActiveRecord::Base
   has_many :resources_users
   has_many :users, through: 'resources_users'
   belongs_to :users, class_name: 'User', foreign_key: 'author_id'
-  
+
+  has_many :resources_vocabulary_terms, class_name: 'ResourcesVocabularyTerm'
+  has_many :vocabulary_terms, through: :resources_vocabulary_terms, class_name: 'VocabularyTerm'
+
   has_many :collectionobject_links, through: 'media_files', source: 'sourceable', source_type: 'CollectionobjectLink'
 
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'

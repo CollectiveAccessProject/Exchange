@@ -41,9 +41,11 @@ Rails.application.routes.draw do
   # test for adding comments and tags asynchronously
   match '/resources/add_comment' => 'resources#add_comment', :as => 'add_new_comment_to_resources', :via => [:post]
   match '/resources/add_tag' => 'resources#add_tag', :as => 'add_new_tag_to_resources', :via => [:post]
+  match '/resources/add_term' => 'resources#add_term', :as => 'add_new_term_to_resources', :via => [:post]
   match '/resources/add_link' => 'resources#add_link', :as => 'add_new_link_to_resources', :via => [:post]
   match '/resources/:id/remove_comment' => 'resources#remove_comment', :as => 'remove_comment_from_resources', :via => [:get]
   match '/resources/:id/remove_tag' => 'resources#remove_tag', :as => 'remove_tag_from_resources', :via => [:get]
+  match '/resources/:id/remove_term' => 'resources#remove_term', :as => 'remove_term_from_resources', :via => [:get]
   match '/resources/:id/remove_link' => 'resources#remove_link', :as => 'remove_link_from_resources', :via => [:get]
   match '/resources/:id/remove_parent/:parent_id' => 'resources#remove_parent', :as => 'remove_parent', :via => [:get]
 
@@ -75,6 +77,8 @@ Rails.application.routes.draw do
   get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'
   get '/resources/:id/autocomplete_collection_object_title' => 'resources#autocomplete_resource_title', mode: Resource::COLLECTION_OBJECT, as: 'autocomplete_collection_object_title'
   get '/resources/:id/autocomplete_user_name' => 'resources#autocomplete_user_name', as: 'autocomplete_user_name'
+  get '/resources/:id/autocomplete_vocabulary_term_term' => 'resources#autocomplete_vocabulary_term_term', as: 'autocomplete_vocabulary_term_term'
+
 
   # resource user access list
   post '/resources/:id/add_user_access' => 'resources#add_user_access', as: "add_user_access"

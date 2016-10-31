@@ -32,7 +32,7 @@
         <% end %>
       </div>
       <div class="col-md-6">
-        <%= form_tag '/resources/add_tag', remote: true, "data-type": :json, id: :addTagsForm do %>
+        <%= form_tag '/resources/add_term', remote: true, "data-type": :json, id: :addTermForm do %>
             <div id="terms-status">
               <div class="flash-notice" id="terms-status-message">
 
@@ -43,18 +43,19 @@
             <h4>Keywords</h4>
             <div class="form-group">
               <label>Keyword</label>
-              <%= text_field_tag 'term[term]', nil, class:'form-control' %>
+              <%= autocomplete_field_tag(:term, '', :autocomplete_vocabulary_term_term, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#term_id", class:'form-control') %>
+              <%= hidden_field_tag(:term_id) %>
             </div>
             <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
         <% end %>
 
-        <% if (false && (@resource.terms.count > 0)) %>
+        <% if (@resource.vocabulary_terms.count > 0) %>
             <div class="relatedContent">
-              <H4><%= @resource.terms.count %> Tag<%= ((@resource.terms.count > 1) ? "s" : "") %></H4>
-              <% @resource.terms.each do |c| %>
+              <H4><%= @resource.vocabulary_terms.count %> Keyword<%= ((@resource.vocabulary_terms.count > 1) ? "s" : "") %></H4>
+              <% @resource.vocabulary_terms.each do |c| %>
                   <div>
-                    <%= c.term %><br/>
-                    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_term_from_resources_path(@resource) + "?term-id=" + c.id.to_s, {remote: true, class: :termRemoveLink}) %>
+                    <%= c.term %>
+                    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_term_from_resources_path(@resource) + "?term_id=" + c.id.to_s, {remote: true, class: :termRemoveLink}) %>
                   </div>
               <% end %>
             </div>
