@@ -1,4 +1,26 @@
-<%= link_to("Download " + (MIME::Types[plugin_model.file_content_type].first.friendly), plugin_model.file.url) if (plugin_model.file_content_type) %>
+<%
+  file_type = MIME::Types[plugin_model.file_content_type].first.friendly if (plugin_model.file_content_type) 
+  case file_type
+  when 'Adobe Portable Document Format'
+      display_file_type = 'PDF'
+  when /Presentation/
+      display_file_type = 'Presentation'
+  when /Spreadsheet/
+      display_file_type = 'Spreadsheet'
+  when /Image/
+      display_file_type = 'Image'
+  when /Word/
+      display_file_type = 'Text Document'
+  when /Video/
+      display_file_type = 'Video File'
+  when /Audio/
+      display_file_type = 'Audio File'
+  else
+      display_file_type = file_type
+      #display_file_type = 'Unknown File Type'
+  end
+%> 
+<%= link_to("Download " + display_file_type.html_safe, plugin_model.file.url)  %>
 <br/>
 <%=
   mimetype = plugin_model.file_content_type

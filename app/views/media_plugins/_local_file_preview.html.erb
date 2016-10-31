@@ -3,7 +3,29 @@
   get_file_icon(mimetype: plugin_model.file_content_type, size: 5, image: plugin_model.media_file.thumbnail, version: version)
 %>
   <br/>
-  <%= MIME::Types[plugin_model.file_content_type].first.friendly if (plugin_model.file_content_type) %>
+<%
+  file_type = MIME::Types[plugin_model.file_content_type].first.friendly if (plugin_model.file_content_type) 
+  case file_type
+  when 'Adobe Portable Document Format'
+      display_file_type = '<i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF'
+  when /Presentation/
+      display_file_type = '<i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> Presentation'
+  when /Spreadsheet/
+      display_file_type = '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Spreadsheet'
+  when /Image/
+      display_file_type = '<i class="fa fa-file-image-o" aria-hidden="true"></i> Image'
+  when /Word/
+      display_file_type = '<i class="fa fa-file-word-o" aria-hidden="true"></i> Text Document'
+  when /Video/
+      display_file_type = '<i class="fa fa-video-camera" aria-hidden="true"></i> Video File'
+  when /Audio/
+      display_file_type = '<i class="fa fa-file-audio-o" aria-hidden="true"></i> Audio File'
+  else
+      display_file_type = file_type
+      #display_file_type = 'Unknown File Type'
+  end
+%> 
+  <%= display_file_type.html_safe %>
   <br/>
 <%
 	media_id = plugin_model.media_file.id
