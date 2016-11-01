@@ -11,6 +11,8 @@ module ApplicationHelper
         return {width: 1000, height: 1000, area: "1000x1000" }
       when :huge
         return {width: 2000, height: 2000, area: "2000x2000" }
+      when :quarter
+	return {width: '235', height: '235', area: '235x235'} 
       else
         raise ArgumentError, "Version #{version} is not valid"
     end
@@ -52,5 +54,10 @@ module ApplicationHelper
       else
         "<div class='iconPadding'><i class=\"fa fa-file fa-#{size}x\" aria-hidden=\"true\"></i></div>".html_safe
     end
+  end
+  
+  def get_role_for_display(r)
+        roles_for_display = Rails.application.config.x.user_roles.select{ |k,v| (v == r.to_sym)}
+        return (roles_for_display && roles_for_display.first && roles_for_display.first.first) ? roles_for_display.first.first : "???"
   end
 end
