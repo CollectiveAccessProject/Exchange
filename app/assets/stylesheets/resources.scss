@@ -605,6 +605,7 @@ $white:#FFFFFF;
 	width: 100%;
 }
 .moResults{
+	padding: 0;
 	white-space: nowrap;
 }
 
@@ -637,4 +638,10 @@ $white:#FFFFFF;
 		left: 0px;
 		right: 0px;
 	}
+}
+
+#embedModal{
+	width: 50%;
+	margin: auto;
+	margin-top: 30px;
 }

@@ -816,8 +816,8 @@ li.tagList {
   margin:10px;
   font-size:11px !important;
   font-family: $font-family-sans-serif !important;
-  max-width: 25%;
   line-height:1.2em;
+  max-width: 100%;
   img{
     padding-bottom:0px;
   }
@@ -825,6 +825,15 @@ li.tagList {
   	font-family: $font-family-sans-serif !important;
   	font-size:11px !important;
   }
+}
+.embedQuarter{
+	max-width: 25%;
+}
+.embedHalf{
+	max-width: 50%;
+}
+.embedFull{
+	max-width: 100%;
 }
 
 .mediaEmbedError {

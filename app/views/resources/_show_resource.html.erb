@@ -464,7 +464,7 @@
 		<div id="relatedPanel" class="collapse detailRelatedContentBlockScroll">
 		<% @resource.related_resources.each do |r| %>
 			<div>
-			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, get_resource_view_path(r.related, user_signed_in?) %>
+			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) +  r.related.title, get_resource_view_path(r.related, user_signed_in?) %>
 			  <% if (r.caption.length > 0) %>
 			   <br/><small>
 				 <%= r.caption %>
@@ -505,7 +505,7 @@
     	<div class="unit">
     	<h4>Affiliations</h4>
     	<% @resource.roles.each do |r| %>
-    		<%= r.name %><br/>
+    		<%= get_role_for_display(r.name).titleize %><br/>
     	<% end %>
     	</div>
       <% end %>
