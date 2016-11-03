@@ -607,8 +607,8 @@ $white:#FFFFFF;
 .moResults{
 	padding: 0;
 	white-space: nowrap;
+	width: 1000px;
 }
-
 .moRelated{
 	padding: 10px 10px 0 10px;
 	display:inline-block;
@@ -639,9 +639,14 @@ $white:#FFFFFF;
 		right: 0px;
 	}
 }
-
+.related_scroll{
+	margin-top: 50px;
+}
 #embedModal{
 	width: 50%;
 	margin: auto;
 	margin-top: 30px;
+}
+.modal-black{
+	background-color: #000 !important;
 }

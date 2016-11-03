@@ -7,6 +7,7 @@ function embedMedia(slug) {
 	embed = '<media ' + slug[1] + ' version="' + embed_array[0]['value'] + '" caption="' + embed_array[1]['value'] + '" float="' + embed_array[2]['value'] + '">';
 	$('#resource_body_text').summernote('insertText', embed);
 	$('#embedModal').modal('toggle');
+	$('.edit_resource').submit();
 }
 </script>
 

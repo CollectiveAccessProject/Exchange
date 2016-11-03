@@ -1,7 +1,6 @@
 
 <% parent = @resource.parents.first %>
 <%= render partial: 'show_parent_heading.html.erb' %>
-
 <div class="row">
   <div class="col-sm-12">
     <H4>
@@ -176,7 +175,6 @@
 		when "slideshow"
 		  if available_media > 0
 %>
-
             <div class="row">
               <div class="col-sm-8 col-sm-offset-2">
 				<div class="row carouselNav">
@@ -194,12 +192,12 @@
 					<% end %>
 					</div>
 					<div class="col-xs-2 text-left">
-						<a href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-expand"></i></a>
+						<a id="openFullscreen" href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-expand"></i></a>
 					</div>
 				</div>
 				<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
 					<!-- Wrapper for slides -->
-					<div class="carousel-inner" role="listbox">
+					<div id="carouselFocus" class="carousel-inner" role="listbox">
 <%
 				  counter = 1
 				  @resource.media_files.each do |f|
