@@ -5,7 +5,7 @@
     	  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
             <%= f.sourceable.preview :thumbnail %>
 
-    		<small class="slug_<%= f.sourceable.id.to_s %>"><%= f.caption.html_safe %> (<em><%= f.slug %></em>)</small>
+    		<small class="slug_<%= f.sourceable.id.to_s %>"><%= sanitize(f.caption) %> (<em><%= f.slug %></em>)</small>
           </a>
         </div>
         <%=

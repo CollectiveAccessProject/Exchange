@@ -60,7 +60,7 @@
                         buf += (check_box_tag("roles[]", v.to_s, roles.include?(v.to_s), {}) + ' ' + k.to_s)
                         buf += "<br/>"
                       end
-                      buf.html_safe
+                      sanitize(buf)
                     %>
                   </div>
                 </div>

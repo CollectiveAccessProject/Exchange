@@ -30,7 +30,7 @@
           <br/><small><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;">
           <%=
             if(parent.resource_hierarchies)
-              "<small>#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
+              sanitize("<small>#{parent.resource_hierarchies.count} resource") + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
             end
           %>
           in this learning collection</a></small>
@@ -39,7 +39,7 @@
           <div class="panel-body">
             <div class="row">
               <div class="col-sm-5">
-                <div class="detailBodyText"><%= (parent.body_text) ? parent.body_text.html_safe : "" %></div>
+                <div class="detailBodyText"><%= (parent.body_text) ? sanitize(parent.body_text) : "" %></div>
               </div>
               <div class="col-sm-7">
                 <% if(parent.child_count > 0) %>
@@ -86,7 +86,7 @@
 								if f.sourceable
 							  %>
 								  <%= f.sourceable.preview :large  %>
-								  <!--<div class="slideshowCaption"><%= f.caption.html_safe  %></div>-->
+								  <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
 								<% end %>
 							</div>
 						<%
@@ -110,7 +110,7 @@
 			</div><!-- end resourceCarousel -->
 		</div><!-- end col -->
 		<div class="col-sm-4 collectionObjectDetailText">
-			<%= @resource.parsed_body_text.html_safe %>
+			<%= sanitize(@resource.parsed_body_text) %>
 		</div>
 	</div><!-- end row -->
     <div class="row" id="detailTags">

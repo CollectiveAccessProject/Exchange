@@ -28,8 +28,8 @@
     <div id="dashboardResourceList" class="dbResourceList">
       <% @resources.each do |resource| %>
           <div class="dbUnit">
-            <div><b><%= resource.title.html_safe %></b> (<%= resource.resource_type_for_display %>) [<%= (resource.access == 1) ? "Published" : "Not published" %>]</div>
-            <%= ((resource.subtitle.length > 0) ? "<p>" + resource.subtitle.html_safe + "</p>" : "").html_safe %>
+            <div><b><%= sanitize resource.title %></b> (<%= resource.resource_type_for_display %>) [<%= (resource.access == 1) ? "Published" : "Not published" %>]</div>
+            <%= ((resource.subtitle.length > 0) ? sanitize("<p>" + resource.subtitle  + "</p>") : "") %>
             <div>
               <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(resource, user_signed_in?), class:'btn btn-default btn-xs' %>
               <%= link_to '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(resource), class:'btn btn-default btn-xs' %>
@@ -67,7 +67,7 @@
     %>
     <div class="dbUnit">
       <p><span class="small"><%= h[:datetime] %></span>
-        <br/><%= h[:event] %>  <%= !h[:deleted] ? link_to(h[:title], h[:item]) : h[:title] %>  (<%= h[:item_type] %>) <%= time_ago_in_words(h[:created_at]) %> ago
+        <br/><%= h[:event] %>  <%= !h[:deleted] ? link_to(sanitize(h[:title]), h[:item]) : sanitize(h[:title]) %>  (<%= h[:item_type] %>) <%= time_ago_in_words(h[:created_at]) %> ago
       </p>
       <HR/>
     </div>

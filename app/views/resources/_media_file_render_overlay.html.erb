@@ -46,7 +46,7 @@
 
 						<% end %>
 					<% else %>
-						<%= media_file.caption.html_safe %>
+						<%= sanitize(media_file.caption) %>
 						<br/>
 						<br/>
 						<%= media_file.copyright_notes %>
@@ -125,7 +125,7 @@
 										<a href="#" data-dismiss="modal" data-toggle="modal" data-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>">
 										<%= af.sourceable.preview :thumbnail %>
 										<div class="moRelatedCaption">
-											<small class="slug_<%= af.sourceable.id.to_s %>"><%= af.caption.html_safe %></small>
+											<small class="slug_<%= af.sourceable.id.to_s %>"><%= sanitize(af.caption) %></small>
 										</div>
 										</a>
 									</li>

@@ -25,9 +25,9 @@
           <div class="col-sm-12">
 			<p id="notice"><%= notice %></p>
 
-			<H2><%= @resource.title.html_safe %></H2>
+			<H2><%= sanitize(@resource.title) %></H2>
 
-			<H3><%= @resource.subtitle.html_safe %></H3>
+			<H3><%= sanitize(@resource.subtitle) %></H3>
       	  </div>
       	</div>
         <div class="row">
@@ -37,7 +37,7 @@
 			<div class="col-sm-4">
 		  <% end %>
 			<div class="detailBodyText">
-				<%= (@resource.body_text) ? @resource.body_text.html_safe : "" %>
+				<%= (@resource.body_text) ? sanitize(@resource.body_text) : "" %>
 			</div>
 		  </div>
 		  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>  
@@ -105,7 +105,7 @@
 		<div class="detailRelatedContentBlockScroll">
 		<% @resource.related_resources.each do |r| %>
 			<div>
-			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + r.related.title, get_resource_view_path(r.related, user_signed_in?) %>
+			  <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title), get_resource_view_path(r.related, user_signed_in?) %>
 			  <% if (r.caption.length > 0) %>
 			   <br/><small>
 				 <%= r.caption %>

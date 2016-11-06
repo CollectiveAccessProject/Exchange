@@ -76,7 +76,7 @@
               buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, @resource.has_role?(v), {}) + ' ' + k.to_s) + "</div>"
               #buf += + "<br/>"
             end
-            buf.html_safe
+            sanitize(buf)
           %>
           </div>
             </div>
@@ -129,7 +129,7 @@
                 buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, @resource.has_role?(v), {}) + ' ' + k.to_s) + "</div>"
                 #buf += + "<br/>"
               end
-              buf.html_safe
+              sanitize(buf)
             %>
           </div>
         </div>
