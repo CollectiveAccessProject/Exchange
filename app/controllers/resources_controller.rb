@@ -183,8 +183,6 @@ class ResourcesController < ApplicationController
           format.json { render json: @resource.errors, status: :unprocessable_entity }
         end
       else
-        puts "UPDATE!"
-        puts resource_params
         if @resource.update(resource_params)
           set_roles
           session[:mode] = :update;
