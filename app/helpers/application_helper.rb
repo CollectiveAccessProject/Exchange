@@ -65,6 +65,8 @@ module ApplicationHelper
   #
   #
   def get_filters_for_query_builder
+
+    # TODO: cache these values - we shouldn't hit Elastic every time
     agg = Resource.search(
         aggs: {
             artist_types: { terms: { field: :artist_type}},
@@ -76,7 +78,7 @@ module ApplicationHelper
             keywords: { terms: { field: :keyword}}
         }
     )
-    puts "AGG!!"
+
     field_values = {}
     agg.response['aggregations'].each do |aggname, v|
       field_values[aggname] = []
@@ -84,8 +86,7 @@ module ApplicationHelper
         field_values[aggname].push(k['key'])
       end
     end
-    puts field_values.inspect
-    puts "--------------------------------------------------------"
+
     [
         {
             id: "affiliation",
