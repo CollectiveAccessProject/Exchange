@@ -35,16 +35,22 @@
             	    <div class="mediaEmbedHelp">
                         You can easily embed media using the <em>media item</em> option in the tool bar. First
                         click on the location in the text where the media should appear, then select from the <em>media item</em>
-                        list. A placeholder will be inserted into  the body text in the following format:
+                        list. A popup window will prompt you to select from the following options:
+                        <blockquote>
+                        	<strong>-Version: </strong>How wide the image should display (Options are: <em>Full</em>, <em>Half</em>, &amp; <em>Quarter</em>)<br/>
+                        	<strong>-Caption: </strong>Whether or not to include a caption with the media<br/>
+                        	<strong>-Float: </strong>How to align the media, either to the right or left with text wrapping around the image, or as a stand-alone that breaks with text above and below<br/>
+                        </blockquote>
+                        Once embedded the media tag will look like the example below and can be customized by setting the following options 
             		    <blockquote>
-            			    &lt;media [name] [version] [width=xxx] [height=yyy] [float=left/right]&gt;
+            			    &lt;media [name] [version] [width=xxx] [height=yyy] [caption=yes/no] [float=left/right/none]&gt;
             			    <br/>Ex. <em>&lt;media my-video thumbnail&gt;</em>
               			    <br/>Ex. <em>&lt;media my-video thumbnail width=500 height=300 float=right&gt;</em>
               		    </blockquote>
              		    Names are shown under each media item. Version, width, height and float are optional.
                         <br/>
                         <br/>
-                        You may also enter these directory into the text if desired.
+                        You may also enter these directly into the text if desired.
                     </div>
                   <% end %>
 		    </div>
@@ -73,7 +79,7 @@
             buf = ''
             Rails.application.config.x.user_roles.each do |k,v|
               next if (v == :admin)
-              buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, @resource.has_role?(v), {}) + ' ' + k.to_s) + "</div>"
+              buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, @resource.has_role?(v), {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
               #buf += + "<br/>"
             end
             buf.html_safe
@@ -126,7 +132,7 @@
               buf = ''
               Rails.application.config.x.user_roles.each do |k,v|
                 next if (v == :admin)
-                buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, @resource.has_role?(v), {}) + ' ' + k.to_s) + "</div>"
+                buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, @resource.has_role?(v), {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
                 #buf += + "<br/>"
               end
               buf.html_safe

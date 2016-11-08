@@ -3,7 +3,14 @@
     <% if((@collections.length == 0) && (@resources.length == 0) && (@collection_objects.length == 0) && (@exhibitions.length == 0)) %>
         <h2>No results found for <em><%= sanitize(@query) %></em></h2>
     <% else %>
-        <h2>Results for <em><%= sanitize(@query) %></em></h2>
+    	<% if sanitize(@query) =~ /role:[a-zA-Z0-9 _-]+/ %>
+        	<h2>Browsing by <%= sanitize(@query.gsub(/([a-zA-Z]+:)([a-zA-Z0-9 _-]+)/, 'Affiliation: <em>\2</em>'))%></h2>
+        <% elsif sanitize(@query) =~ /author_id:[a-zA-Z0-9 _-]+/ %>
+        	<% author = User.find(@query.split(':')[1]) %>
+        	<h2><%= sanitize(@query.gsub(/([a-zA-Z _-]+:)([a-zA-Z0-9 _-]+)/, 'Resources &amp; Learning Collections Created by: ')) + '<em>'.html_safe + author.name  + '</em>'.html_safe%></h2>
+        <% else %>
+        	<h2>Results for <%= sanitize(@query) %></h2>
+        <% end %>
     <% end %>
   </div>
 </div>

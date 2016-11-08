@@ -41,14 +41,42 @@ exchangeLoadMediaForSummernote = function() {
 jQuery(document).ready(function($) {
     // Create embed on click
     $('.container').on('click', '.dropdown-media-item', function() {
-
-        var re = /\(([^)]+)\)/;
-        slug = re.exec( $(this).find('.media-item-title').html().replace("<em>", "").replace("</em>", "") );
-        embed = '<media ' + slug[1] + ' version="thumbnail" float="left">';
-
-        $('#resource_body_text').summernote('insertText', embed);
-
+	//Create modal for setting embed options
+	var re = /\(([^)]+)\)/;
+	slug = re.exec( $(this).find('.media-item-title').html().replace("<em>", "").replace("</em>", "") );
+	function embedModal(slug){
+		html = '<div id="embedModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"';
+		html += '<div class="modal-dialog">';
+		html += '<div class="modal-content">';
+		html += '<div class="modal-header">';
+		html += '<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>';
+		html += '<h2 class="modal-title">Embed Media Options</h2>';
+		html += '</div>';
+		html += '<div class="modal-body">';
+		html += '<div class="row">';
+		html += '<div class="col-sm-12">';
+		html += '<form id="embedForm" data-async data-target="#mediaItem" method="GET"><div class="form-group"><h4>Embed Size</h4><div class="radio">';
+		html += '<label><input type="radio" name="sizeSetting" id="quarterSetting" value="quarter">Quarter Width</label></div>';
+		html += '<div class="radio"><label><input type="radio" name="sizeSetting" id="halfSetting" value="half">Half Width</label></div>';
+		html += '<div class="radio"><label><input type="radio" name="sizeSetting" id="fullSetting" value="full">Full Width</label></div>';
+		html += '</div>';	
+		html += '<div class="form-group"><h4>Display Caption?</h4><div class="radio">';
+		html += '<label><input type="radio" name="captionSetting" id="captionYes" value="yes">Yes</label></div>';
+		html += '<div class="radio"><label><input type="radio"  name="captionSetting" id="captionNo" value="no">No</label></div>';
+		html += '</div>';
+		html += '<div class="form-group"><h4>Embed Float</h4>';
+		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatLeft" value="left">Left</label></div>';
+		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatRight" value="right">Right</label></div>';
+		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatNone" value="none">None</label></div>';
+		html += '</div>';
+		//Clicking the submit button sends the propera item slug and form data to the embedMeida() function, definited in the _form.hmtl.erb views file
+		html += '<div class="form-group"><input type="button" id="embedCreate" class="btn btn-primary" value="Embed Media" onClick="embedMedia(slug);"/></div>';
+		html += '</form>';
+		html += '</div></div></div></div></div></div>';
+		$('body').append(html);
+		$('#embedModal').modal();
+		$('#embedModal').modal('show');
+	}
+	embedModal();
     });
-
-
 });

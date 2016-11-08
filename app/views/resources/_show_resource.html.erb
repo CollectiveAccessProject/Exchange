@@ -1,7 +1,5 @@
-
 <% parent = @resource.parents.first %>
 <%= render partial: 'show_parent_heading.html.erb' %>
-
 <div class="row">
   <div class="col-sm-12">
     <H4>
@@ -176,7 +174,6 @@
 		when "slideshow"
 		  if available_media > 0
 %>
-
             <div class="row">
               <div class="col-sm-8 col-sm-offset-2">
 				<div class="row carouselNav">
@@ -194,12 +191,12 @@
 					<% end %>
 					</div>
 					<div class="col-xs-2 text-left">
-						<a href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-expand"></i></a>
+						<a id="openFullscreen" href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-expand"></i></a>
 					</div>
 				</div>
 				<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
 					<!-- Wrapper for slides -->
-					<div class="carousel-inner" role="listbox">
+					<div id="carouselFocus" class="carousel-inner" role="listbox">
 <%
 				  counter = 1
 				  @resource.media_files.each do |f|
@@ -376,7 +373,10 @@
 					<div class="row">
 						<div class="col-sm-8">
 							<h5>Tags</h5>
-							<%= @resource.tags.map(&:tag).join(", ") %>
+							<%# @resource.tags.map(&:tag).join(", ") %>
+							<% @resource.tags.each do |t| %>
+								<%= link_to t.tag, '/quick_search/query?utf8=✓&q=' + t.tag %><br/>
+							<% end %>
 							<%= form_tag '/resources/add_tag' do %>
 							<%= hidden_field_tag 'id', @resource.id %>
 							<br/>
@@ -389,7 +389,10 @@
 						</div>
 						<div class="col-sm-4">
 							<h5>Keywords</h5>
-    						<%= @resource.vocabulary_terms.map(&:term).join(", ") %>
+    						<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+    						<% @resource.vocabulary_terms.each do |v| %>
+								<%= link_to v.term, '/quick_search/query?utf8=✓&q=' + v.term %><br/>
+							<% end %>
     					</div>
     				</div>
 			  </div>
@@ -490,30 +493,38 @@
 	<% if @resource.tags.count > 0 %>
         <div class="unit">
 			<H4>Tags</H4>
-			<%= @resource.tags.map(&:tag).join(", ") %>
+			<%# @resource.tags.map(&:tag).join(", ") %>
+			<% @resource.tags.each do |t| %>
+    			<%= link_to t.tag, '/quick_search/query?utf8=✓&q=' + t.tag %><br/>
+    		<% end %>
 		</div>
     <% end %>
     <% if @resource.vocabulary_terms.count > 0 %>
     	<div class="unit">
     		<h4>Keywords</h4>
-    		<%= @resource.vocabulary_terms.map(&:term).join(", ") %>
+    		<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+    		<% @resource.vocabulary_terms.each do |v| %>
+    			<%= link_to v.term, '/quick_search/query?utf8=✓&q=' + v.term %><br/>
+    		<% end %>
     	</div>
     <% end %>
 <% end %>
 	<div>
-	  <% if (@resource.role) %>
+	  <% if @resource.roles.count > 0 %>
     	<div class="unit">
     	<h4>Affiliations</h4>
     	<% @resource.roles.each do |r| %>
-    		<%= r.name %><br/>
+    		<%= link_to get_role_for_display(r.name).titleize, '/quick_search/query?utf8=✓&q=role:' + r.name %><br/>
     	<% end %>
     	</div>
       <% end %>
-	  <% if @resource.author_name && @resource.author_name != ''  %>
-	    <h4>Created by</h4><%= @resource.author_name %>
+      <div class="unit authorLink">
+	  <% if @resource.author_id  %>
+	    <h4>Created by</h4><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author_id:' + @resource.author_id.to_s %>
 	  <% else %>
-	  	<h4>Created by</h4><%= @resource.user.name %>
+	  	<h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author_id:' + @resource.user.id.to_s %>
 	  <% end %>
+	  </div>
 	  <h4>Last Updated</h4>
 	  <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
 	    <%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
@@ -534,3 +545,50 @@
 	</div>
   </div><!-- end col -->
 </div><!-- end row -->
+<script>
+	//These scripts control display and interaction with the slideshows
+	// These functions trigger opening and closing of the FULL-fullscreen slideshow
+	
+   function launchIntoFullscreen(element) {
+	  if(element.requestFullscreen) {
+		element.requestFullscreen();
+	  } else if(element.mozRequestFullScreen) {
+		element.mozRequestFullScreen();
+	  } else if(element.webkitRequestFullscreen) {
+		element.webkitRequestFullscreen();
+	  } else if(element.msRequestFullscreen) {
+		element.msRequestFullscreen();
+	  }
+	}
+
+	// Bind the launch fullscreen option to all links to the fullscreen slideshow
+	// Also set focus on carousel-control to enable keyboard commands onload, delay gives time for element to be visible
+	$('a#openFullscreen, a#modalSlideshow').click(function(){
+		launchIntoFullscreen(document.documentElement); // the whole page
+		setTimeout(function(){
+			$('.carousel-control').focus();
+		}, 500);
+	});
+	
+	function exitFullscreen() {
+	  if(document.exitFullscreen) {
+		document.exitFullscreen();
+	  } else if(document.mozCancelFullScreen) {
+		document.mozCancelFullScreen();
+	  } else if(document.webkitExitFullscreen) {
+		document.webkitExitFullscreen();
+	  }
+	}
+
+	// Exit fullscreen and fullscreen modal with one click
+	// If Esc is used, it will have to be hit twice, once to escape fullscreen and once to close the modal
+	// There seems to be no way around this behavior
+	$('#fullscreenClose').click(function(){
+		exitFullscreen();
+    });
+   // Enforce Esc as key to close the modal
+    $(document).keyup(function(e){
+    	if(e.keyCode === 27)
+        	$("#carousel-full").modal('hide');
+	});
+</script>

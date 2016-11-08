@@ -81,27 +81,62 @@
   <%= yield %>
 </div>
 <div id="footer">
-	<div class="container">
-		&copy; 2016 Regents of the University of Michigan
-		<ul class="pull-right list-inline">
-			<li><a href="http://www.umma.umich.edu/privacy.html">Privacy Policy</a></li>
-		</ul>
+	<div id="footer1">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 enewsletter">
+            <!-- Begin MailChimp Signup Form -->
+
+            <form id="mc-embedded-subscribe-form" method="POST" name="mc-embedded-subscribe-form" class="validate" novalidate>
+				Sign up for our enewsletter
+              <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="enter email address" required>
+                <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="" tabindex="-1" value=""></div>
+                <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button">
+            </form>
+
+            <!--End mc_embed_signup-->
+				</div>
+				<div class="col-sm-6 social">
+					<a href="http://annex.umma.umich.edu/"><i class="fa fa-tumblr"><span class="sr-only">Tumblr</span></i></a>
+					<a href="https://www.flickr.com/photos/umma_museum/"><i class="fa fa-circle"></i><i class="fa fa-circle"></i><span class="sr-only">Flickr</span></a>
+					<a href="https://www.youtube.com/user/UMMAVideos"><i class="fa fa-youtube-play"><span class="sr-only">YouTube</span></i></a>
+					<a href="https://twitter.com/ummamuseum"><i class="fa fa-twitter"><span class="sr-only">Twitter</span></i></a>
+					<a href="https://www.facebook.com/ummamuseum"><i class="fa fa-facebook"><span class="sr-only">Facebook</span></i></a>
+					<a href="http://umich.edu"><%= image_tag('BlockM.png').html_safe %></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="footer2">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-md-12 footer-hours">
+					<div id="footerArrow"><a href="#" onClick="$('#footer1').toggle('slide', {direction: 'down'}, 200); return false;"><i class="fa fa-sort-asc"></i></a></div>
+					Admission to the the museum is always free. <a href="http://umma.umich.edu/plan-your-visit#hours">Hours</a>
+				</div>
+				<div class="col-lg-4 col-md-12">
+					<div class="copyright">
+						Copyright &copy;2016 Regents of the University of Michigan | <a href="http://umma.umich.edu/privacy">Privacy Policy</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
 </body>
 </html>
-<!-- hide umma nav when scroll down -->
-<!--<script>
-jQuery(document).ready(function() {	
-		$(window).scroll(function() {    
-			var scroll = $(window).scrollTop();
-
-			if (scroll >= 30) {
-				$("#ummaHeader").slideUp();
-			} else {
-				$("#ummaHeader").slideDown();
+<!-- show extra footer bar when scroll down -->
+<script>
+	jQuery(document).ready(function() {	
+		$(window).scroll(function() {    			
+			if($(window).scrollTop() + $(window).height() == $(document).height()) {
+	
+				$('#footer1').show("slide", {direction: "down" }, 200);
+			}else{
+				$('#footer1').hide("slide", {direction: "down" }, 200);
 			}
 		});
-});
-</script>-->
+	});
+</script>

@@ -1,17 +1,17 @@
-<div class="modal fade modal-wide" id="carousel-full" tabindex="-1" role="dialog" aria-labelledby="fullCarousel-label" aria-hidden="true">
+<div class="modal fade modal-wide modal-black" id="carousel-full" tabindex="-1" role="dialog" aria-labelledby="fullCarousel-label" aria-hidden="true">
 	<!--<div class="modal-dialog">-->
 		<div id="slideJumbo" class="jumbotron">
 			<div class="container jumboPadding">
 				<div class="row">
-					<div class="col-sm-12 jumboHead modal-header">
-						<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+					<div class="col-sm-12 jumboHead modal-header modal-black">
+						<button id="fullscreenClose" type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
 					</div>
 				</div>			
 				<div class="row">
-					<div class="col-sm-12 jumboPadding">
-						<div id="slideCarousel" class="carousel slide modalCarousel" data-ride="carousel" data-interval="false">
+					<div class="col-sm-12 jumboPadding modal-black">
+						<div id="slideCarousel" class="carousel slide modalCarousel modal-black" data-ride="carousel" data-interval="false" data-keyboard="true">
 						<!-- Wrapper for slides -->
-						<div class="carousel-inner scaleImg" role="listbox">
+						<div class="carousel-inner scaleImg blackCaption" role="listbox">
 		<%
 					  counter = 1
 					  @resource.media_files.each do |f| 
@@ -45,11 +45,11 @@
 						if @resource.media_files.count > 1
 		%>
 						  <!-- Left and right controls -->
-						  <a class="left carousel-control" href="#slideCarousel" role="button" data-slide="prev">
+						  <a id="leftFullCarousel" class="left carousel-control" href="#slideCarousel" role="button" data-slide="prev">
 							<span class="control-arrow glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 							<span class="sr-only">Previous</span>
 						  </a>
-						  <a class="right carousel-control" href="#slideCarousel" role="button" data-slide="next">
+						  <a id="rightFullCarousel" class="right carousel-control" href="#slideCarousel" role="button" data-slide="next">
 							<span class="control-arrow glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 							<span class="sr-only">Next</span>
 						  </a>

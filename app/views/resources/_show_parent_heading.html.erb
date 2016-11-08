@@ -50,8 +50,8 @@
 						<% end  %>
 						</div>
 				<% end %>
-				<% if parent.author_name && parent.author_name != '' %>
-				  <h5>Created by</h5><%= parent.author_name %>
+				<% if parent.author_id %>
+				  <h5>Created by</h5><%= parent.get_author_name.gsub(/\([\S]+\)/, '') %>
 				<% else %>
 				  <h5>Created by</h5><%= parent.user.name %>
 				<% end %>

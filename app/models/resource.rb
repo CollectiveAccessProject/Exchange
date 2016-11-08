@@ -326,24 +326,42 @@ class Resource < ActiveRecord::Base
   def parsed_body_text
     body_text_proc = self[:body_text]
 
-    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
+	matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(caption=\"[A-Za-z]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
 
     matches.each do |m|
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
         version = (((defined? m[2]) && m[2]) ? m[2].sub!("version=", "").gsub!('"', "") : :thumbnail)
         width = ((defined? m[3]) && m[3]) ? m[3].sub!("width=", "").gsub!('"', "") : 160
         height = ((defined? m[4]) && m[4]) ? m[4].sub!("height=", "").gsub!('"', "") : 120
-        cssFloat = ((defined? m[5]) && m[5]) ? m[5].sub!("float=", "").gsub!('"', "") : ""
+        caption = ((defined? m[5]) && m[5]) ? m[5].sub!("caption=", "").gsub!('"', "") : 'yes'
+        cssFloat = ((defined? m[6]) && m[6]) ? m[6].sub!("float=", "").gsub!('"', "") : ""
         if (cssFloat)
           cssFloat.downcase!
         end
-
-        if ((cssFloat.downcase != 'left') && (cssFloat.downcase != 'right'))
+	case version
+	when 'quarter'
+	  prev_version = 'medium'
+	  sizeClass = 'embedQuarter'
+	when 'half'
+	  prev_version = 'large'
+	  sizeClass = 'embedHalf'
+	when 'full'
+	  prev_version = 'large'
+	  sizeClass = 'embedFull'
+	else
+	  prev_version = 'thumbnail'
+        end
+	if ((cssFloat.downcase != 'left') && (cssFloat.downcase != 'right'))
           cssFloat = '';
         else
           cssFloat = "style=\"float: #{cssFloat}\""
         end
-        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed\" #{cssFloat}><a href=\"*\" data-toggle=\"modal\" data-target=\"\##{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(version.to_sym, width, height) + "<br/>" + mf.caption + "</a></div>")
+	if caption == 'yes'
+	  caption_include = mf.caption
+	else
+	  caption_include = ''
+	end
+        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed #{sizeClass}\" #{cssFloat}><a href=\"*\" data-toggle=\"modal\" data-target=\"\##{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(prev_version.to_sym, width, height) + "<br/>" + caption_include + "</a></div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end
