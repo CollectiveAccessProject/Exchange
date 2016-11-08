@@ -78,6 +78,8 @@ gem 'dragonfly', '~> 1.0.12'
 # comments
 gem 'acts_as_commentable'
 
+gem 'will_paginate', '~> 3.1.0'
+
 # elasticsearch
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'

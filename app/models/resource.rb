@@ -18,6 +18,7 @@ class Resource < ActiveRecord::Base
 
   has_many :resources_vocabulary_terms, class_name: 'ResourcesVocabularyTerm'
   has_many :vocabulary_terms, through: :resources_vocabulary_terms, class_name: 'VocabularyTerm'
+  has_many :vocabulary_term_synonyms, through: :vocabulary_terms, class_name: 'VocabularyTermSynonym'
 
   has_many :collectionobject_links, through: 'media_files', source: 'sourceable', source_type: 'CollectionobjectLink'
 
@@ -28,6 +29,8 @@ class Resource < ActiveRecord::Base
   accepts_nested_attributes_for :media_files
 
   belongs_to :user
+
+  after_commit :update_search_index
 
   # resource type constants
   RESOURCE = 1
@@ -68,6 +71,7 @@ class Resource < ActiveRecord::Base
 
   # search (from elasticsearch gem)
   include Elasticsearch::Model
+  #include Elasticsearch::Model::Callbacks
 
   # basic model validations
   validates :slug, uniqueness: 'Slug is already in use'
@@ -97,12 +101,19 @@ class Resource < ActiveRecord::Base
   # Search indexing
   #
 
+  def index_for_search
+    self.__elasticsearch__.index_document
+  end
+  def update_search_index
+    self.__elasticsearch__.update_document
+  end
+
   # get record as indexed json for elasticsearch
   def as_indexed_json(options={})
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
-    record['role'] = self.roles.pluck("name").join("; ")
+
 
     if (indexing_data)
       index_data_hash = JSON.parse(indexing_data)
@@ -110,6 +121,16 @@ class Resource < ActiveRecord::Base
         record = record.merge(index_data_hash)
       end
     end
+
+    # pseudo fields
+    record['author'] = [self.get_author_name(omit_email: true)]
+    record['role'] = record['affiliation'] = self.roles.pluck("name")
+    record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
+    record['tag'] = self.tags.pluck("tag")
+
+    #puts "INDEXING IS"
+    #puts record
+    #puts caller
 
     record
   end
@@ -257,9 +278,14 @@ class Resource < ActiveRecord::Base
   end
 
   # Return current author name
-  def get_author_name
+  #
+  # Options:
+  #   :omit_email = don't return email in addition to name
+  def get_author_name(options = {})
     if(self.author_id && (u = User.find(self.author_id)))
-      return u.name + " (" + u.email + ")"
+      n = u.name
+      n += " (" + u.email + ")"  if(!options || !options[:omit_email])
+      return n
     end
     ""
   end
@@ -329,30 +355,42 @@ class Resource < ActiveRecord::Base
 
   # Simple "quicksearch" of resources (broken out by type)
   # STATIC
-  def self.quicksearch(query)
+  def self.quicksearch(query, options={})
     query_proc = query.dup
+
+    options[:page] = 1 if (!options[:page] || (options[:page] < 1))
 
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
 
     begin
-      resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
+      resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s)
+      if (!options[:models])
+        resources = resources.map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
+        end
+      else
+        resources = resources.records
       end
-
     rescue
       # no search?
       resources = []
     end
 
     begin
-      collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
+      collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s)
+
+      if(!options[:models])
+        collections = collections.map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
+        end
+      else
+        collections = collections.records
       end
     rescue
       # no search?
@@ -360,10 +398,15 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
+      collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s)
+      if (!options[:models])
+        collection_objects = collection_objects.map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
+        end
+      else
+        collection_objects = collection_objects.page(options[:page]).records
       end
     rescue
       # no search?
@@ -371,10 +414,15 @@ class Resource < ActiveRecord::Base
     end
 
     begin
-      exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
+      exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s)
+      if (!options[:models])
+        exhibitions = exhibitions.map do |r|
         if r._source
           { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
         end
+        end
+      else
+        exhibitions = exhibitions.records
       end
     rescue
       # no search?
@@ -386,7 +434,7 @@ class Resource < ActiveRecord::Base
 
   # "Advanced" search of resources (broken out by type) and media files
   # STATIC
-  def self.advancedsearch(params)
+  def self.advancedsearch(params, options={})
     resource_type = params['type'].to_i
 
     query_elements = []

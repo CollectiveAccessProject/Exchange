@@ -115,7 +115,7 @@ class ResourcesController < ApplicationController
     Rails.application.config.x.user_roles.each do |k,v|
       next if ((v == :admin))
 
-      if (params[:roles].include? v.to_s)
+      if (params[:roles] && (params[:roles].include? v.to_s))
         @resource.add_role(v)
         r.push(v.to_s)
       else
@@ -124,8 +124,9 @@ class ResourcesController < ApplicationController
     end
 
     # set role text field to force ElasticSearch indexing (maybe we can get rid of this?)
-    @resource.role = r.join("; ")
-    @resource.save
+    #@resource.role = r.join("; ")
+    #@resource.save
+
   end
 
   # POST /resources
@@ -158,6 +159,7 @@ class ResourcesController < ApplicationController
 
           #end
         end
+
         session[:mode] = :new;
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.' }
         format.json { render :show, status: :created, location: @resource }
@@ -175,6 +177,7 @@ class ResourcesController < ApplicationController
       if (parent_id = params[:parent_id])
         # TODO: Verify that current user has privs to do this
         if (prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create)
+
           format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
 
@@ -186,6 +189,7 @@ class ResourcesController < ApplicationController
         if @resource.update(resource_params)
           set_roles
           session[:mode] = :update;
+
           format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
         else
@@ -235,6 +239,7 @@ class ResourcesController < ApplicationController
       @resource.save
       msg = "Unpublished " + @resource.resource_type_for_display
     end
+    #@resource.update_search_index
     redirect_to dashboard_path, notice: msg
   end
 
@@ -264,6 +269,7 @@ class ResourcesController < ApplicationController
       resp = {status: :err, error: flash[:alert]}
     end
 
+    @resource.update_search_index
     respond_to do |format|
       format.json { render json: resp }
       format.html { redirect_to resource_path(@resource), notice: 'Added comment' }
@@ -275,6 +281,7 @@ class ResourcesController < ApplicationController
     t = Comment.where(id: params[:comment_id], commentable_id: @resource.id, commentable_type: :Resource).first
     t.destroy
 
+    @resource.update_search_index
     resp = {:status => :ok, :html => render_to_string("resources/_comments", layout: false)}
 
     respond_to do |format|
@@ -286,6 +293,7 @@ class ResourcesController < ApplicationController
   def add_tag
     # TODO: make sure user is allowed to do this for this resource
     if (super(@resource, true))
+      @resource.update_search_index
       resp = {status: :ok, html: render_to_string("resources/_tags", layout: false)}
     else
       resp = {status: :err, error: flash[:alert]}
@@ -301,6 +309,8 @@ class ResourcesController < ApplicationController
     # TODO: make sure user is allowed to do this for this resource
    if(t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first)
     t.destroy
+
+    @resource.update_search_index
     resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
    else
      resp = {status: :err, error: "Invalid parameters"}
@@ -316,6 +326,7 @@ class ResourcesController < ApplicationController
     # TODO: make sure user is allowed to do this for this resource
 
     if (ResourcesVocabularyTerm.where(vocabulary_term_id: params[:term_id], resource_id: @resource.id).first_or_create)
+      @resource.update_search_index
       resp = {status: :ok, html: render_to_string("resources/_tags", layout: false)}
     else
       resp = {status: :err, error: flash[:alert]}
@@ -331,6 +342,7 @@ class ResourcesController < ApplicationController
     # TODO: make sure user is allowed to do this for this resource
     if (t = ResourcesVocabularyTerm.where(vocabulary_term_id: params[:term_id], resource_id: @resource.id).first)
       t.destroy
+      @resource.update_search_index
       resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
     else
       resp = {status: :err, error: "Invalid parameters"}
@@ -349,6 +361,7 @@ class ResourcesController < ApplicationController
     link = Link.new({url: params[:link][:url], caption: params[:link][:caption], resource_id: @resource.id})
 
     if (link.save)
+      @resource.update_search_index
       resp = {status: :ok, html: render_to_string("resources/_links", layout: false)}
     else
       resp = {status: :err, error: link.errors.full_messages.join('; ')}
@@ -365,6 +378,7 @@ class ResourcesController < ApplicationController
     t = Link.where(id: params[:link_id], resource_id: @resource.id).first
     t.destroy
 
+    @resource.update_search_index
     resp = {:status => :ok, :html => render_to_string("resources/_links", layout: false)}
 
     respond_to do |format|
@@ -376,7 +390,7 @@ class ResourcesController < ApplicationController
     # TODO: make sure user is allowed to do this for this resource
     if (r = ResourceHierarchy.where(:child_resource_id => params[:id], :resource_id => params[:parent_id]).first)
       if (r.destroy)
-
+        #@resource.update_search_index
         @available_collections = get_available_collections(@resource) # regenerate list of available collections to reflect the delete
         resp = {:status => :ok, :html => render_to_string("resources/_collections", layout: false), :header => render_to_string("resources/_resource_parent_display_header", layout: false), :resource_collection_select => render_to_string('resources/_resource_collection_select', layout: false), :collection_count => ResourceHierarchy.where(:child_resource_id => params[:id]).count}
       else
@@ -455,6 +469,7 @@ class ResourcesController < ApplicationController
       to_resource_id = params[:to_resource_id]
       prel = RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id, caption: params[:caption]).first_or_create
 
+      @resource.update_search_index
       resp = {:status => :ok, :html => render_to_string("resources/_related", layout: false)}
     rescue StandardError => ex
       resp = {:status => :err, :error => ex.message}
@@ -471,6 +486,8 @@ class ResourcesController < ApplicationController
       # TODO: Check if user can delete this
       to_resource_id = params[:related]
       RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id).destroy_all
+
+      @resource.update_search_index
       resp = {:status => :ok, :html => render_to_string("resources/_related", layout: false)}
     rescue StandardError => ex
       resp = {:status => :err, :error => ex.message}

@@ -2,12 +2,12 @@ class QuickSearchController < ApplicationController
   def query
     @query = params[:q]
 
-    res = Resource::quicksearch(@query)
-    @resources = res[:resources]
-    @collections = res[:collections]
+    res = Resource::quicksearch(@query, models: true)
+    @resources = [] #res[:resources]
+    @collections = [] #res[:collections]
     @collection_objects = res[:collection_objects]
-    @exhibitions = res[:exhibitions]
-    @media_files = res[:media_files]
+    @exhibitions = [] #res[:exhibitions]
+    #@media_files = res[:media_files]
 
     session[:last_search_type] = :quick
     session[:last_search_query_display] = @query
@@ -28,7 +28,7 @@ class QuickSearchController < ApplicationController
     @collections = res[:collections]
     @collection_objects = res[:collection_objects]
     @exhibitions = res[:exhibitions]
-    @media_files = res[:media_files]
+    #@media_files = res[:media_files]
 
     @query = res[:query_for_display]
 
