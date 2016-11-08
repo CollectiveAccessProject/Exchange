@@ -138,13 +138,13 @@ class Resource < ActiveRecord::Base
 
   # Generate display label for resource autocomplete
   def get_autocomplete_label
-  	label = self.title.strip
-  	label += " (" + self.collection_identifier + ")" if (self.collection_identifier && self.collection_identifier.length > 0)
-  	label += " [COLLECTION]" if (self.is_collection)
-  	label += " [RESOURCE]" if (self.is_resource)
-  	label += " [EXHIBITION]" if (self.is_exhibition)
-  	
-  	label
+    label = self.title.strip
+    label += " (" + self.collection_identifier + ")" if (self.collection_identifier && self.collection_identifier.length > 0)
+    label += " [COLLECTION]" if (self.is_collection)
+    label += " [RESOURCE]" if (self.is_resource)
+    label += " [EXHIBITION]" if (self.is_exhibition)
+
+    label
   end
 
 
@@ -231,8 +231,8 @@ class Resource < ActiveRecord::Base
       return val
     end
   end
-  
- #
+
+  #
   # Return collection of resources that reference the currently loaded one
   # via collectionobject_links
   #
@@ -326,7 +326,7 @@ class Resource < ActiveRecord::Base
   def parsed_body_text
     body_text_proc = self[:body_text]
 
-	matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(caption=\"[A-Za-z]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
+    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(caption=\"[A-Za-z]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
 
     matches.each do |m|
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
@@ -338,29 +338,29 @@ class Resource < ActiveRecord::Base
         if (cssFloat)
           cssFloat.downcase!
         end
-	case version
-	when 'quarter'
-	  prev_version = 'medium'
-	  sizeClass = 'embedQuarter'
-	when 'half'
-	  prev_version = 'large'
-	  sizeClass = 'embedHalf'
-	when 'full'
-	  prev_version = 'large'
-	  sizeClass = 'embedFull'
-	else
-	  prev_version = 'thumbnail'
+        case version
+          when 'quarter'
+            prev_version = 'medium'
+            sizeClass = 'embedQuarter'
+          when 'half'
+            prev_version = 'large'
+            sizeClass = 'embedHalf'
+          when 'full'
+            prev_version = 'large'
+            sizeClass = 'embedFull'
+          else
+            prev_version = 'thumbnail'
         end
-	if ((cssFloat.downcase != 'left') && (cssFloat.downcase != 'right'))
+        if ((cssFloat.downcase != 'left') && (cssFloat.downcase != 'right'))
           cssFloat = '';
         else
           cssFloat = "style=\"float: #{cssFloat}\""
         end
-	if caption == 'yes'
-	  caption_include = mf.caption
-	else
-	  caption_include = ''
-	end
+        if caption == 'yes'
+          caption_include = mf.caption
+        else
+          caption_include = ''
+        end
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed #{sizeClass}\" #{cssFloat}><a href=\"*\" data-toggle=\"modal\" data-target=\"\##{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(prev_version.to_sym, width, height) + "<br/>" + caption_include + "</a></div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
@@ -382,69 +382,78 @@ class Resource < ActiveRecord::Base
     query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
 
-    begin
-      resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s)
-      if (!options[:models])
-        resources = resources.map do |r|
-        if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+    if (!options[:type] || (options[:type] == 'resource'))
+      begin
+        resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s)
+        if (!options[:models])
+          resources = resources.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
+          end
+        else
+          resources = resources.page(options[:page]).records
         end
-        end
-      else
-        resources = resources.records
+      rescue
+        # no search?
+        resources = []
       end
-    rescue
-      # no search?
-      resources = []
     end
 
-    begin
-      collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s)
 
-      if(!options[:models])
-        collections = collections.map do |r|
-        if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+    if (!options[:type] || (options[:type] == 'collection'))
+      begin
+        collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s)
+
+        if(!options[:models])
+          collections = collections.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
+          end
+        else
+          collections = collections.page(options[:page]).records
         end
-        end
-      else
-        collections = collections.records
+      rescue
+        # no search?
+        collections = []
       end
-    rescue
-      # no search?
-      collections = []
     end
 
-    begin
-      collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s)
-      if (!options[:models])
-        collection_objects = collection_objects.map do |r|
-        if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+    if (!options[:type] || (options[:type] == 'collection_object'))
+      begin
+        collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s)
+        if (!options[:models])
+          collection_objects = collection_objects.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
+          end
+        else
+          collection_objects = collection_objects.page(options[:page]).records
         end
-        end
-      else
-        collection_objects = collection_objects.page(options[:page]).records
+      rescue
+        # no search?
+        collection_objects = []
       end
-    rescue
-      # no search?
-      collection_objects = []
     end
 
-    begin
-      exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s)
-      if (!options[:models])
-        exhibitions = exhibitions.map do |r|
-        if r._source
-          { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+    if (!options[:type] || (options[:type] == 'exhibition'))
+      begin
+        exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s)
+        if (!options[:models])
+          exhibitions = exhibitions.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
+          end
+        else
+          exhibitions = exhibitions.page(options[:page]).records
         end
-        end
-      else
-        exhibitions = exhibitions.records
+      rescue
+        # no search?
+        exhibitions = []
       end
-    rescue
-      # no search?
-      exhibitions = []
     end
 
     return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions}
@@ -599,7 +608,7 @@ class Resource < ActiveRecord::Base
         f.destroy
       end
     end
-    
+
     super
   end
 end

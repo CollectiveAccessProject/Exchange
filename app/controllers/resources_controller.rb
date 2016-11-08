@@ -161,7 +161,7 @@ class ResourcesController < ApplicationController
         end
 
         session[:mode] = :new;
-        
+
         @resource.index_for_search
 
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.' }

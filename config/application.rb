@@ -50,5 +50,8 @@ module Exchange
 
     # date/time format used to tags, comments, etc.
     config.x.timestamp_format = '%B %e %Y @ %l:%M %p'
+
+    # maximum number of search results per page
+    WillPaginate.per_page = config.x.max_search_results_per_page = 12
   end
 end
