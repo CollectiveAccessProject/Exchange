@@ -534,54 +534,79 @@ class Resource < ActiveRecord::Base
 
     if ((resource_type == Resource::RESOURCE) || (resource_type.nil?))
       begin
-        resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).map do |r|
+        resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s)
+        if (!options[:models])
+        resources.map do |r|
           if r._source
             { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
+        else
+          resources = resources.page(options[:page]).records
+        end
 
       rescue
         # no search?
+        resources = []
       end
     end
 
     if ((resource_type == Resource::COLLECTION) || (resource_type.nil?))
       begin
-        collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).map do |r|
+        collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s)
+        if (!options[:models])
+        collections.map do |r|
           if r._source
             { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
+        else
+          collections = collections.page(options[:page]).records
+        end
       rescue
         # no search?
+        collections = []
       end
     end
 
     if ((resource_type == Resource::COLLECTION_OBJECT) || (resource_type.nil?))
       begin
-        collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).map do |r|
+
+        collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s)
+        if (!options[:models])
+        collection_objects.map do |r|
           if r._source
             { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
+        else
+          collection_objects = collection_objects.page(options[:page]).records
+        end
       rescue
         # no search?
+        collection_objects = []
       end
     end
 
     if ((resource_type == Resource::EXHIBITION) || (resource_type.nil?))
       begin
-        exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).map do |r|
+        exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s)
+        if (!options[:models])
+        exhibitions.map do |r|
           if r._source
             { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
           end
         end
+        else
+          exhibitions = exhibitions.page(options[:page]).records
+        end
       rescue
         # no search?
+        exhibitions = []
       end
     end
 
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, query_for_display: query_for_display, query_elements: query_elements, query_values: query_values}
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, query_for_display: query_for_display, query_elements: query_elements, query_values: query_values, query: query}
   end
 
   def destroy

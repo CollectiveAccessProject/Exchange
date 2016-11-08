@@ -30,40 +30,34 @@ class QuickSearchController < ApplicationController
 
 
   def advanced
-    params.permit(:type,
-                  :title, :keywords, :style, :medium, :classification, :additional_classification,
-                  :artist, :artist_nationality, :credit_line, :places, :on_display,
-                  :date_created, :other_dates, :current_location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location
-    )
-
-    res = Resource::advancedsearch(params)
-    @resources = res[:resources]
-    @collections = res[:collections]
-    @collection_objects = res[:collection_objects]
-    @exhibitions = res[:exhibitions]
-
-    @query = res[:query_for_display]
-
-    # Set last search
-    session[:last_search_type] = :advanced
-    session[:last_search_query_display] = @query
-    session[:last_search_query_elements] = res[:query_elements]
-    session[:last_search_query] = res[:query_elements].join(" AND ")
-    session[:last_search_query_values] = res[:query_values]
+    setup(advanced:true)
   end
 
 
   #
   # Setup results for quicksearch and paging handler
   #
-  private def setup
+  private def setup(options=nil)
     params.permit(:query, :q, :page, :type)
     @query = params[:q] if (!(@query = params[:query]))
     @page = params[:page].to_i
     @page = 1 if (@page < 1)
     @type = params[:type]   # restrict search to a specific result type (resources, collections, collection_objects, exhibitions)
 
-    res = Resource::quicksearch(@query, models: true, page: @page, type: @type)
+    if (options && options[:advanced])
+      params.permit(:type,
+                    :title, :keywords, :style, :medium, :classification, :additional_classification,
+                    :artist, :artist_nationality, :credit_line, :places, :on_display,
+                    :date_created, :other_dates, :current_location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location
+      )
+      res = Resource::advancedsearch(params, models: true, page: @page, type: @type)
+
+      @query = res[:query]
+      @query_for_display = res[:query_for_display]
+    else
+      res = Resource::quicksearch(@query, models: true, page: @page, type: @type)
+    end
+
 
     case
       when (@type == 'resource')
@@ -125,12 +119,20 @@ class QuickSearchController < ApplicationController
         @exhibitions_page = @page
     end
 
-
-    session[:last_search_type] = :quick
+    if (options && options[:advanced])
+    session[:last_search_type] = :advanced
+    session[:last_search_query_display] = @query
+    session[:last_search_query_elements] = res[:query_elements]
+    session[:last_search_query] = res[:query_elements].join(" AND ")
+    session[:last_search_query_values] = res[:query_values]
+    else
+      session[:last_search_type] = :quick
     session[:last_search_query_display] = @query
     session[:last_search_query_elements] = [@query]
     session[:last_search_query] = @query
     session[:last_search_query_values] = {:query => @query}
+    end
+
   end
 
 end

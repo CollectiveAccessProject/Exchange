@@ -1,57 +1,21 @@
 <div class="row">
   <div class="col-md-12">
-    <% if((@collections.count == 0) && (@resources.count == 0) && (@collection_objects.count == 0) && (@exhibitions.count == 0) ) %>
-        <h2>No results found for <em><%= sanitize(@query) %></em></h2>
+    <% if((@collections.total_entries == 0) && (@resources.total_entries == 0) && (@collection_objects.total_entries == 0) && (@exhibitions.total_entries == 0) ) %>
+        <h2>No results found for <em><%= sanitize(@query_for_display) %></em></h2>
     <% else %>
-        <h2>Results for <em><%= sanitize(@query) %></em></h2>
+        <h2>Results for <em><%= sanitize(@query_for_display) %></em></h2>
     <% end %>
   </div>
 </div>
-<% if(@collections.count > 0) %>
-    <div class="row">
-      <div class="col-sm-12">
-        <h4><%= @collections.count %> Learning Collection<%= (@collections.count == 1) ? "" : "s" %></h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
+<% if(@collections.total_entries > 0) %>
         <%= render :partial => "quick_search/collection_results" %>
-      </div>
-    </div>
 <% end %>
-<% if(@resources.count > 0) %>
-    <div class="row">
-      <div class="col-sm-12">
-        <h4><%= @resources.count %> Resource<%= (@resources.count == 1) ? "" : "s" %></h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <%= render :partial => "quick_search/resource_results" %>
-      </div>
-    </div>
+<% if(@resources.total_entries > 0) %>
+    <%= render :partial => "quick_search/resource_results" %>
 <% end %>
-<% if(@exhibitions.count > 0) %>
-    <div class="row">
-      <div class="col-sm-12">
-        <h4><%= @exhibitions.count %> UMMA Exhibition<%= (@exhibitions.count == 1) ? "" : "s" %></h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <%= render :partial => "quick_search/exhibition_results" %>
-      </div>
-    </div>
+<% if(@exhibitions.total_entries > 0) %>
+    <%= render :partial => "quick_search/exhibition_results" %>
 <% end %>
-<% if(@collection_objects.count > 0) %>
-    <div class="row">
-      <div class="col-sm-12">
-        <h4><%= @collection_objects.count %> UMMA Collection Object<%= (@collection_objects.count == 1) ? "" : "s" %></h4>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <%= render :partial => "quick_search/collection_object_results" %>
-      </div>
-    </div>
+<% if(@collection_objects.total_entries > 0) %>
+    <%= render :partial => "quick_search/collection_object_results" %>
 <% end %>
