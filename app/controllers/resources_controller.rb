@@ -161,6 +161,9 @@ class ResourcesController < ApplicationController
         end
 
         session[:mode] = :new;
+        
+        @resource.index_for_search
+
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.' }
         format.json { render :show, status: :created, location: @resource }
       else
@@ -189,6 +192,8 @@ class ResourcesController < ApplicationController
         if @resource.update(resource_params)
           set_roles
           session[:mode] = :update;
+
+          @resource.index_for_search
 
           format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
