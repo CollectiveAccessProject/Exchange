@@ -122,3 +122,4 @@ gem 'truncate_html'
 gem 'ancestry'
 
 gem 'spreadsheet'
+gem 'jquery_query_builder-rails'

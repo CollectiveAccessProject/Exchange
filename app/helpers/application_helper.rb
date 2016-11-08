@@ -12,7 +12,7 @@ module ApplicationHelper
       when :huge
         return {width: 2000, height: 2000, area: "2000x2000" }
       when :quarter
-	return {width: '235', height: '235', area: '235x235'} 
+        return {width: '235', height: '235', area: '235x235'}
       else
         raise ArgumentError, "Version #{version} is not valid"
     end
@@ -55,9 +55,144 @@ module ApplicationHelper
         "<div class='iconPadding'><i class=\"fa fa-file fa-#{size}x\" aria-hidden=\"true\"></i></div>".html_safe
     end
   end
-  
+
   def get_role_for_display(r)
-        roles_for_display = Rails.application.config.x.user_roles.select{ |k,v| (v == r.to_sym)}
-        return (roles_for_display && roles_for_display.first && roles_for_display.first.first) ? roles_for_display.first.first : "???"
+    roles_for_display = Rails.application.config.x.user_roles.select{ |k,v| (v == r.to_sym)}
+    return (roles_for_display && roles_for_display.first && roles_for_display.first.first) ? roles_for_display.first.first : "???"
+  end
+
+  #
+  #
+  #
+  def get_filters_for_query_builder
+    agg = Resource.search(
+        aggs: {
+            artist_types: { terms: { field: :artist_type}},
+           # place_types: { terms: { field: :place_type}},
+            #artist_nationality: { terms: { field: :artist_nationality}},
+            classification: { terms: { field: :classification}},
+            medium: { terms: { field: :medium}},
+            support: { terms: { field: :support}},
+            keywords: { terms: { field: :keyword}}
+        }
+    )
+    puts "AGG!!"
+    field_values = {}
+    agg.response['aggregations'].each do |aggname, v|
+      field_values[aggname] = []
+      v["buckets"].each do |k|
+        field_values[aggname].push(k['key'])
+      end
+    end
+    puts field_values.inspect
+    puts "--------------------------------------------------------"
+    [
+        {
+            id: "affiliation",
+            field: "affiliation",
+            label: "Affiliation",
+            type: "string",
+            input: "select",
+            values: Rails.application.config.x.user_roles.invert
+        }, {
+            id: "author",
+            field: "author",
+            label: "Author",
+            type: "string"
+        }, {
+            id: "keyword",
+            field: "keyword",
+            label: "Keyword",
+            type: "string",
+            input: "select",
+            values: field_values["keywords"]
+        },
+        {
+            id: "tag",
+            field: "tag",
+            label: "Tag",
+            type: "string"
+        },
+        {
+            id: "idno",
+            field: "idno",
+            label: "Collection object identifier",
+            type: "string"
+        },
+        {
+            id: "title",
+            field: "title",
+            label: "Title",
+            type: "string"
+        },
+        {
+            id: "artist",
+            field: "artist",
+            label: "Artist name",
+            type: "string"
+        },
+        {
+            id: "artist_nationality",
+            field: "artist_nationality",
+            label: "Artist nationality",
+            type: "string"
+        },
+        {
+            id: "artist_type",
+            field: "artist_type",
+            label: "Artist type",
+            type: "string",
+            input: "select",
+            values: field_values["artist_types"]
+        },
+        {
+            id: "places",
+            field: "places",
+            label: "Place names",
+            type: "string"
+        },
+        {
+            id: "date_created",
+            field: "date_created",
+            label: "Date created",
+            type: "string"
+        },
+        {
+            id: "credit_line",
+            field: "credit_line",
+            label: "Credit line",
+            type: "string"
+        },
+        {
+            id: "medium",
+            field: "medium",
+            label: "Medium",
+            type: "string",
+            input: "select",
+            values: field_values["medium"]
+        },
+        {
+            id: "support",
+            field: "support",
+            label: "Support",
+            type: "string",
+            input: "select",
+            values: field_values["support"]
+        },
+        {
+            id: "Classification",
+            field: "classification",
+            label: "Object classification",
+            type: "string",
+            input: "select",
+            values: field_values["classification"]
+        },
+        {
+            id: "style",
+            field: "style",
+            label: "Style or movement",
+            type: "string"
+        }
+    ]
   end
 end

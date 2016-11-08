@@ -1,178 +1,211 @@
 <div class="container" id="advancedSearchContainer">
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="pull-right"><button type="button" class="btn btn-noBg" onClick="$('#advancedSearchContainer').slideToggle(); return false;"><i class="fa fa-times-circle fa-3" aria-hidden="true"></i><span class="sr-only">Close</span></button></div>
-			<H3>Advanced Search</H3>
-			<div class="panel panel-default"><div class="panel-body"><form action="<%= url_for("/advanced_search/query") %>">
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="form-group">
-							<label class="control-label" for="advType">Item Type</label>
-							<select class="form-control" name="type" id="advType">
-								<option value="-1" selected="true">All</option>
-								<option value="<%= Resource::COLLECTION %>">Learning Collection</option>
-								<option value="<%= Resource::RESOURCE %>">Resource</option>
-								<option value="<%= Resource::COLLECTION_OBJECT%>">UMMA Collection Object</option>
-								<option value="<%= Resource::EXHIBITION %>">UMMA Exhibition</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="form-group">
-							<label class="control-label" for="advTitle">Title</label>
-							<input class="form-control" type="text" name="title" id="advTitle">
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="form-group">
-							<label class="control-label" for="advKeywords">Keywords</label>
-							<input class="form-control" type="text" name="keywords" id="advKeywords">
-						</div>
-					</div>
-				</div><!-- end row -->
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="pull-right"><button type="button" class="btn btn-noBg" onClick="$('#advancedSearchContainer').slideToggle(); return false;"><i class="fa fa-times-circle fa-3" aria-hidden="true"></i><span class="sr-only">Close</span></button></div>
+      <H3>Advanced Search</H3>
+      <div class="panel panel-default"><div class="panel-body"><form action="<%= url_for("/advanced_search/query") %>">
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="advType">Item Type</label>
+              <select class="form-control" name="type" id="advType">
+                <option value="-1" selected="true">All</option>
+                <option value="<%= Resource::COLLECTION %>">Learning Collection</option>
+                <option value="<%= Resource::RESOURCE %>">Resource</option>
+                <option value="<%= Resource::COLLECTION_OBJECT%>">UMMA Collection Object</option>
+                <option value="<%= Resource::EXHIBITION %>">UMMA Exhibition</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="advTitle">Title</label>
+              <input class="form-control" type="text" name="title" id="advTitle">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="advKeywords">Keywords</label>
+              <input class="form-control" type="text" name="keywords" id="advKeywords">
+            </div>
+          </div>
+        </div><!-- end row -->
         <div class="row">
           <div class="form-group">
             <div class="col-md-12"><label class="control-label" for="roles">Affiliations</label></div>
-          <%=
-            buf = ''
-            Rails.application.config.x.user_roles.each do |k,v|
-              next if (v == :admin)
-              buf += "<div class='col-md-2'>" + check_box_tag("roles[]", v.to_s, false, {id: "roles_" + v.to_s}) + ' ' + k.to_s + "</div>"
-            end
-            buf.html_safe
-          %>
+            <%=
+              buf = ''
+              Rails.application.config.x.user_roles.each do |k,v|
+                next if (v == :admin)
+                buf += "<div class='col-md-2'>" + check_box_tag("roles[]", v.to_s, false, {id: "roles_" + v.to_s}) + ' ' + k.to_s + "</div>"
+              end
+              buf.html_safe
+            %>
           </div>
         </div>
-				<div class="row additionalFields" id="advancedSearchCollectionObject">
-					<div class="col-sm-12">
-						<HR/><br/>
-						<H3>UMMA Collection Object Additional Fields</H3>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advStyle">Style, Group, Movement</label>
-							<input class="form-control" type="text" name="style" id="advStyle">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advMedium">Medium and Support</label>
-							<input class="form-control" type="text" name="medium" id="advMedium">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advClassification">Classification/ Object Type</label>
-							<input class="form-control" type="text" name="classification" id="advClassification">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advAdditionalClassification">Additional Classification/ Object Type</label>
-							<input class="form-control" type="text" name="additional_classification" id="advAdditionalClassification">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advArtist">Artist/Maker</label>
-							<input class="form-control" type="text" name="artist" id="advArtist">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advArtistNationality">Artist Maker Nationality</label>
-							<input class="form-control" type="text" name="artist_nationality" id="advArtistNationality">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advCreditLine">Credit Line</label>
-							<input class="form-control" type="text" name="credit_line" id="advCreditLine">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advPlaces">Related Places</label>
-							<input class="form-control" type="text" name="places" id="advPlaces">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group text-left">
-							<label class="control-label" for="advOnDisplay"><input type="checkbox" name="on_display" id="advOnDisplay"> On Display?</label>
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advDateCreated">Date Created</label>
-							<input class="form-control" type="text" name="date_created" id="advDateCreated">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advOtherDates">Other Dates</label>
-							<input class="form-control" type="text" name="other_dates" id="advOtherDates">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advCurrentLocation">Current Location</label>
-							<input class="form-control" type="text" name="current_location" id="advCurrentLocation">
-						</div>
-					</div>
-					
-				</div>
-				<div class="row additionalFields" id="advancedSearchExhibition">
-					<div class="col-sm-12">
-						<HR/><br/>
-						<H3>UMMA Exhibition Additional Fields</H3>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advExhibitionArtist">Artist/Maker</label>
-							<input class="form-control" type="text" name="exhibition_artist" id="advExhibitionArtist">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advExhibitionArtistNationality">Artist Maker Nationality</label>
-							<input class="form-control" type="text" name="exhibition_artist_nationality" id="advExhibitionArtistNationality">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advExhibitionDates">Exhibition dates</label>
-							<input class="form-control" type="text" name="exhibition_dates" id="advExhibitionDates">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label class="control-label" for="advLocation">Location</label>
-							<input class="form-control" type="text" name="exhibition_location" id="advLocation">
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12 text-center">
-						<br/><input class="btn btn-default" value="Search" type="submit"></input>
-					</div>
-				</div>
-			</form></div></div>
-		</div>
-	</div>
-	<div class="fullDivideWrapper">
-		<div class="fullDivide"></div>
-	</div><br/><br/>
+        <div class="row additionalFields" id="advancedSearchCollectionObject">
+          <div class="col-sm-12">
+            <HR/><br/>
+            <H3>UMMA Collection Object Additional Fields</H3>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advStyle">Style, Group, Movement</label>
+              <input class="form-control" type="text" name="style" id="advStyle">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advMedium">Medium and Support</label>
+              <input class="form-control" type="text" name="medium" id="advMedium">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advClassification">Classification/ Object Type</label>
+              <input class="form-control" type="text" name="classification" id="advClassification">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advAdditionalClassification">Additional Classification/ Object Type</label>
+              <input class="form-control" type="text" name="additional_classification" id="advAdditionalClassification">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advArtist">Artist/Maker</label>
+              <input class="form-control" type="text" name="artist" id="advArtist">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advArtistNationality">Artist Maker Nationality</label>
+              <input class="form-control" type="text" name="artist_nationality" id="advArtistNationality">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advCreditLine">Credit Line</label>
+              <input class="form-control" type="text" name="credit_line" id="advCreditLine">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advPlaces">Related Places</label>
+              <input class="form-control" type="text" name="places" id="advPlaces">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group text-left">
+              <label class="control-label" for="advOnDisplay"><input type="checkbox" name="on_display" id="advOnDisplay"> On Display?</label>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advDateCreated">Date Created</label>
+              <input class="form-control" type="text" name="date_created" id="advDateCreated">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advOtherDates">Other Dates</label>
+              <input class="form-control" type="text" name="other_dates" id="advOtherDates">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advCurrentLocation">Current Location</label>
+              <input class="form-control" type="text" name="current_location" id="advCurrentLocation">
+            </div>
+          </div>
+
+        </div>
+        <div class="row additionalFields" id="advancedSearchExhibition">
+          <div class="col-sm-12">
+            <HR/><br/>
+            <H3>UMMA Exhibition Additional Fields</H3>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advExhibitionArtist">Artist/Maker</label>
+              <input class="form-control" type="text" name="exhibition_artist" id="advExhibitionArtist">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advExhibitionArtistNationality">Artist Maker Nationality</label>
+              <input class="form-control" type="text" name="exhibition_artist_nationality" id="advExhibitionArtistNationality">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advExhibitionDates">Exhibition dates</label>
+              <input class="form-control" type="text" name="exhibition_dates" id="advExhibitionDates">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advLocation">Location</label>
+              <input class="form-control" type="text" name="exhibition_location" id="advLocation">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <br/><input class="btn btn-default" value="Search" type="submit"></input>
+          </div>
+        </div>
+      </form></div></div>
+    </div>
+  </div>
+  <div class="fullDivideWrapper">
+    <div class="fullDivide"></div>
+  </div><br/><br/>
 </div><!-- end advancedSearchContainer -->
 <script type="text/javascript">
-	$(document).ready(function(){
-		$("#advType")[0].selectedIndex = 0;
-		$('#advType').change(function() {
-			$('.additionalFields').hide();
-			if ($('#advType').val() == '<%= Resource::COLLECTION_OBJECT %>'){
-				$('#advancedSearchCollectionObject').slideDown();
-			}else if($('#advType').val() == '<%= Resource::EXHIBITION %>'){
-				$('#advancedSearchExhibition').slideDown();
-			}
-		});
-	});
+  $(document).ready(function(){
+    $("#advType")[0].selectedIndex = 0;
+    $('#advType').change(function() {
+      $('.additionalFields').hide();
+      if ($('#advType').val() == '<%= Resource::COLLECTION_OBJECT %>'){
+        $('#advancedSearchCollectionObject').slideDown();
+      }else if($('#advType').val() == '<%= Resource::EXHIBITION %>'){
+        $('#advancedSearchExhibition').slideDown();
+      }
+    });
+  });
 </script>
+
+<div class="container" id="queryBuilderContainer">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="pull-right"><button type="button" class="btn btn-noBg" onClick="$('#queryBuilderContainer').slideToggle(); return false;"><i class="fa fa-times-circle fa-3" aria-hidden="true"></i><span class="sr-only">Close</span></button></div>
+      <H3>Query builder</H3>
+      <div class="panel panel-default"><div class="panel-body"><form id="queryBuilderForm" action="<%= url_for("/quick_search/query") %>">
+        <div id="builderUI"></div>
+        <script>
+          $(document).ready(function() {
+          $('#builderUI').queryBuilder({
+            operators: ['equal'],
+            filters: <%= get_filters_for_query_builder.to_json.html_safe %>
+          });
+            $("#queryBuilderForm").on("submit", function(e) {
+              var q = $('#builderUI').queryBuilder('getESQueryStringQuery');
+              if (!q) {
+                e.preventDefault();
+                return false;
+              }
+              $("#queryBuilderFormQ").val(q);
+              return true;
+            });
+          });
+        </script>
+        <input type="submit" value="Search"/>
+        <input type="hidden" id="queryBuilderFormQ" name="q" value=""/>
+      </form>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

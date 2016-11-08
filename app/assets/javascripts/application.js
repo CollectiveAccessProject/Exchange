@@ -13,6 +13,9 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
+//= require jquery.extendext
+//= require doT
+//= require query-builder
 //= require autocomplete-rails
 //= require bootstrap-sprockets
 //= require bootstrap-tour
@@ -20,6 +23,7 @@
 //= require summernote
 //= require plugins/media-item/summernote-ext-media-item
 //= require summernote-cleaner
+//= require query-builder-elasticsearch
 //= require_tree .
 
 // Add icontains selector to jQuery - case insensitive text search
