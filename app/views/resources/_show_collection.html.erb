@@ -72,11 +72,13 @@
       
       <div class="row">
         <div class="text-right col-sm-12">
-	      <% if @resource.author_name && @resource.author_name != '' %>
-			<h5>Created by</h5><%= @resource.author_name %>
+          <div class="unit authorLink">
+	      <% if @resource.author_id %>
+			<h5>Created by</h5><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author_id:' + @resource.author_id.to_s %>
 		  <% else %>
 			<h5>Created by</h5><%= @resource.user.name %>
 		  <% end %>
+	      </div>
 	      <h5>Last Updated</h5>
 	      <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
 	    	<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
@@ -134,7 +136,32 @@
   <div class="col-sm-3 detailRelatedContentBlock"> 
         <H4>Tags</h4>
         <div class="detailRelatedContentBlockScroll">
-          <%= @resource.tags.map(&:tag).join(", ") %>
+          <%# @resource.tags.map(&:tag).join(", ") %>
+          
+          <% 
+          	first = true
+          	@resource.tags.each do |t|
+          %>
+          	<%= first == true ? '' : ', ' %>
+			<%= link_to t.tag, '/quick_search/query?utf8=✓&q=' + t.tag %>
+			<% first = false %>
+		  <% end %>
+        </div>
+  </div><!-- end col -->
+<% end %>
+<% if (@resource.settings(:user_interaction).allow_tags > 0) && (@resource.vocabulary_terms.count > 0) %>
+  <div class="col-sm-3 detailRelatedContentBlock"> 
+        <H4>Keywords</h4>
+        <div class="detailRelatedContentBlockScroll">
+          <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+          <% 
+          	first = true
+          	@resource.vocabulary_terms.each do |v|
+          %>
+          	<%= first == true ? '' : ', ' %>
+			<%= link_to v.term, '/quick_search/query?utf8=✓&q=' + v.term %>
+			<% first = false %>
+		  <% end %>
         </div>
   </div><!-- end col -->
 <% end %>
@@ -181,7 +208,10 @@
 			<div class="row">
 				<div class="col-sm-8">
 					<h5>Tags</h5>
-					<%= @resource.tags.map(&:tag).join(", ") %>
+					<%# @resource.tags.map(&:tag).join(", ") %>
+					<% @resource.tags.each do |t| %>
+						<%= link_to t.tag, '/quick_search/query?utf8=✓&q=' + t.tag %><br/>
+					<% end %>
 					<%= form_tag '/resources/add_tag' do %>
 					<%= hidden_field_tag 'id', @resource.id %>
 					<br/>
@@ -194,7 +224,10 @@
 				</div>
 				<div class="col-sm-4">
 					<h5>Keywords</h5>
-					<%= @resource.vocabulary_terms.map(&:term).join(", ") %>
+					<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+					<% @resource.vocabulary_terms.each do |v| %>
+						<%= link_to v.term, '/quick_search/query?utf8=✓&q=' + v.term %><br/>
+					<% end %>
 				</div>
 			</div>
 	  </div>

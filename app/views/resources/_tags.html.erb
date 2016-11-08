@@ -24,7 +24,7 @@
               <H4><%= @resource.tags.count %> Tag<%= ((@resource.tags.count > 1) ? "s" : "") %></H4>
               <% @resource.tags.each do |c| %>
                   <div>
-                    <%= c.tag %><br/><small>&mdash; by <i><%= c.user_name %> (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+                    <%= link_to c.tag, '/quick_search/query?utf8=✓&q=' + c.tag, target: "_blank" %><br/><small>&mdash; by <i><%= c.user_name %> (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
                     <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_tag_from_resources_path(@resource) + "?tag_id=" + c.id.to_s, {remote: true, class: :tagRemoveLink}) %>
                   </div>
               <% end %>
@@ -54,7 +54,7 @@
               <H4><%= @resource.vocabulary_terms.count %> Keyword<%= ((@resource.vocabulary_terms.count > 1) ? "s" : "") %></H4>
               <% @resource.vocabulary_terms.each do |c| %>
                   <div>
-                    <%= c.term %>
+                    <%= link_to c.term, '/quick_search/query?utf8=✓&q=' + c.term, target: "_blank" %>
                     <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_term_from_resources_path(@resource) + "?term_id=" + c.id.to_s, {remote: true, class: :termRemoveLink}) %>
                   </div>
               <% end %>

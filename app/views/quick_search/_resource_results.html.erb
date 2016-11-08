@@ -35,8 +35,8 @@
     		<%= link_to r[:title].html_safe, get_resource_view_path(r[:id], user_signed_in?) %>
     		<div class="qsMoreCaption">
     		<%
-    			if @resource.author_name && @resource.author_name != ''
-	    			user_author = @resource.author_name
+    			if @resource.author_id
+	    			user_author = @resource.get_author_name.gsub(/\([\S]+\)/, '')
 	  			else
 	  				user_author = @resource.user.name
 	  			end

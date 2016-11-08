@@ -1,17 +1,17 @@
-<div class="modal fade modal-wide" id="carousel-full" tabindex="-1" role="dialog" aria-labelledby="fullCarousel-label" aria-hidden="true">
+<div class="modal fade modal-wide modal-black" id="carousel-full" tabindex="-1" role="dialog" aria-labelledby="fullCarousel-label" aria-hidden="true">
 	<!--<div class="modal-dialog">-->
 		<div id="slideJumbo" class="jumbotron">
 			<div class="container jumboPadding">
 				<div class="row">
-					<div class="col-sm-12 jumboHead modal-header">
-						<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+					<div class="col-sm-12 jumboHead modal-header modal-black">
+						<button id="fullscreenClose" type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
 					</div>
 				</div>			
-				<div class="row modal-black">
-					<div class="col-sm-12 jumboPadding">
-						<div id="slideCarousel" class="carousel slide modalCarousel" data-ride="carousel" data-interval="false" data-keyboard="true">
+				<div class="row">
+					<div class="col-sm-12 jumboPadding modal-black">
+						<div id="slideCarousel" class="carousel slide modalCarousel modal-black" data-ride="carousel" data-interval="false" data-keyboard="true">
 						<!-- Wrapper for slides -->
-						<div class="carousel-inner scaleImg" role="listbox">
+						<div class="carousel-inner scaleImg blackCaption" role="listbox">
 		<%
 					  counter = 1
 					  @resource.media_files.each do |f| 
@@ -31,7 +31,7 @@
 										<%= media_display %>
 									</div>
 									<div class="captionContainer">
-										<div class="slideshowCaption"><%= f.caption.html_safe  %></div>
+										<div class="slideshowCaption jumboCaption"><%= f.caption.html_safe  %></div>
 									</div>
 								</div>		
 		<%

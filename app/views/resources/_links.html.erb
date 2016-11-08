@@ -23,11 +23,11 @@
 			<H4><%= @resource.links.count %> Link<%= ((@resource.links.count > 1) ? "s" : "") %></H4>
 			<% @resource.links.each do |c| %>
 				<div>
-				  <%= c.url %><small>
-          <%= if (c.caption && (c.caption.length > 0))
-                "(" + c.caption + ")"
+          <% if (c.caption && (c.caption.length > 0))
+                caption_text = ' (' + c.caption + ') '
             end
-          %></small>
+          %>
+          <%= link_to c.url + caption_text, c.url, target: "_blank" %>
 				  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_link_from_resources_path(@resource) + "?link_id=" + c.id.to_s, {remote: true, class: :linkRemoveLink}) %>
 				</div>
 			<% end %>

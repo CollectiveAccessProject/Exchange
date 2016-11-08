@@ -46,8 +46,8 @@
 			<div class="qsResultText">
 			<%=	"<div class='small'><i>Contains #{@resource.resource_hierarchies.count}".html_safe + ((@resource.resource_hierarchies.count == 1) ? " item" : " items") + "</i></div>".html_safe %>
 			<%
-    			if @resource.author_name && @resource.author_name != ''
-	    			user_author = @resource.author_name
+    			if @resource.author_id
+	    			user_author = @resource.get_author_name.gsub(/\([\S]+\)/, '')
 	  			else
 	  				user_author = @resource.user.name
 	  			end
