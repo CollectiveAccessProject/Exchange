@@ -37,9 +37,9 @@
             buf = ''
             Rails.application.config.x.user_roles.each do |k,v|
               next if (v == :admin)
-              buf += "<div class='col-md-2'>" + (check_box_tag("roles[]", v.to_s, false, {}) + ' ' + k.to_s) + "</div>"
+              buf += "<div class='col-md-2'>" + check_box_tag("roles[]", v.to_s, false, {id: "roles_" + v.to_s}) + ' ' + k.to_s + "</div>"
             end
-            sanitize(buf)
+            buf.html_safe
           %>
           </div>
         </div>
