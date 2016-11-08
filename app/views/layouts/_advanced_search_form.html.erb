@@ -39,7 +39,7 @@
               next if (v == :admin)
               buf += "<div class='col-md-2'>" + (check_box_tag("roles[]", v.to_s, false, {}) + ' ' + k.to_s) + "</div>"
             end
-            buf.html_safe
+            sanitize(buf)
           %>
           </div>
         </div>

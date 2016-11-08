@@ -31,7 +31,7 @@
 										<%= media_display %>
 									</div>
 									<div class="captionContainer">
-										<div class="slideshowCaption jumboCaption"><%= f.caption.html_safe  %></div>
+										<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>
 									</div>
 								</div>		
 		<%

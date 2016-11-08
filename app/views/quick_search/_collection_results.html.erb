@@ -19,7 +19,7 @@
 
     <div class="col-sm-2 qsResult">
     	
-			<div class="text-left"><%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + r[:title].html_safe, get_resource_view_path(r[:id], user_signed_in?) %></div>
+			<div class="text-left"><%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + sanitize(r[:title]), get_resource_view_path(r[:id], user_signed_in?) %></div>
 			<% @resource = Resource.find(r[:id]) %>		
 
 			<% if(@resource.resource_hierarchies.count) %>
@@ -60,7 +60,7 @@
 	  			end
 	  		%>
 			<div class="qsMoreCaption">
-				<%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
+				<%= sanitize("<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>") %>
 			</div>
 		</div>
 		<% thumb = false %>

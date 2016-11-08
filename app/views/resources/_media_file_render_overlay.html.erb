@@ -46,7 +46,7 @@
 
 						<% end %>
 					<% else %>
-						<%= media_file.caption.html_safe %>
+						<%= sanitize(media_file.caption) %>
 						<br/>
 						<br/>
 						<%= media_file.copyright_notes %>

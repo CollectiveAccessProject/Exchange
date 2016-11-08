@@ -60,8 +60,8 @@
           <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
           <div class="form-group text optional resource_copyright_notes">
             <label class="text optional control-label" for="author_id">Author</label>
-            <%= autocomplete_field_tag(:find_user_id, '', :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#author_id", class:'form-control') %>
-           <%= hidden_field_tag(:author_id) %>
+            <%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#resource_author_id", class:'form-control') %>
+           <%= hidden_field_tag("resource[author_id]") %>
 		      </div>
           <% end %>
 
