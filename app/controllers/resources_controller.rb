@@ -115,7 +115,7 @@ class ResourcesController < ApplicationController
     Rails.application.config.x.user_roles.each do |k,v|
       next if ((v == :admin))
 
-      if (params[:roles].include? v.to_s)
+      if (params[:roles] && (params[:roles].include? v.to_s))
         @resource.add_role(v)
         r.push(v.to_s)
       else
