@@ -330,7 +330,7 @@ class ResourcesController < ApplicationController
   def add_term
     # TODO: make sure user is allowed to do this for this resource
 
-    if (ResourcesVocabularyTerm.where(vocabulary_term_id: params[:term_id], resource_id: @resource.id).first_or_create)
+    if (ResourcesVocabularyTerm.where(vocabulary_term_id: params[:term_id], resource_id: @resource.id, user_id: current_user.id, ip: request.remote_ip).first_or_create)
       @resource.update_search_index
       resp = {status: :ok, html: render_to_string("resources/_tags", layout: false)}
     else
