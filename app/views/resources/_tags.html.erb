@@ -52,10 +52,10 @@
         <% if (@resource.vocabulary_terms.count > 0) %>
             <div class="relatedContent">
               <H4><%= @resource.vocabulary_terms.count %> Keyword<%= ((@resource.vocabulary_terms.count > 1) ? "s" : "") %></H4>
-              <% @resource.vocabulary_terms.each do |c| %>
+              <% @resource.resources_vocabulary_terms.each do |c| %>
                   <div>
-                    <%= link_to c.term, '/quick_search/query?utf8=✓&q=' + c.term, target: "_blank" %>
-                    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_term_from_resources_path(@resource) + "?term_id=" + c.id.to_s, {remote: true, class: :termRemoveLink}) %>
+                    <%= link_to c.vocabulary_terms.term, '/quick_search/query?utf8=✓&q=' + c.vocabulary_terms.term, target: "_blank" %><br/><small>&mdash; by <i><%= c.user_id ? c.user.name : "anonymous" %> (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+                    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_term_from_resources_path(@resource) + "?term_id=" + c.vocabulary_terms.id.to_s, {remote: true, class: :termRemoveLink}) %>
                   </div>
               <% end %>
             </div>
