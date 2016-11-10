@@ -190,8 +190,8 @@
 						  </a>
 					<% end %>
 					</div>
-					<div class="col-xs-2 text-left">
-						<a id="openFullscreen" href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-expand"></i></a>
+					<div class="col-xs-2 text-right">
+						<a id="openFullscreen" href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link fa-2x"></i></a>
 					</div>
 				</div>
 				<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
@@ -250,7 +250,8 @@
 				var totalItems = $('.item').length;
 				$('.num').html('1/'+totalItems+'');
 				$('#resourceCarousel').on('slid.bs.carousel', function() {
-					currentIndex = ($('.active').index() + 2)/2;
+					currentIndex = ($('div.active').index() + 2)/2;
+					console.log($('div.active').index());
 				   $('.num').html(''+currentIndex+'/'+totalItems+'');
 				});
 			</script>
@@ -374,8 +375,15 @@
 						<div class="col-sm-8">
 							<h5>Tags</h5>
 							<%# @resource.tags.map(&:tag).join(", ") %>
-							<% @resource.tags.each do |t| %>
-								<%= link_to t.tag, '/quick_search/query?utf8=✓&q=' + t.tag %><br/>
+<%				
+							tag_array = []
+							@resource.tags.each do |t|
+								tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id }
+							end 
+							tag_array.sort_by!{|a| a[:t_tag]}
+							tag_array.each do |l|
+%>
+								<%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %> <small> &mdash; by <em><%= l[:t_user] %></em></small><br/>
 							<% end %>
 							<%= form_tag '/resources/add_tag' do %>
 							<%= hidden_field_tag 'id', @resource.id %>
@@ -387,13 +395,22 @@
 							<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
 							<% end %>
 						</div>
+					<% if @resource.vocabulary_terms.count > 0 %>
 						<div class="col-sm-4">
 							<h5>Keywords</h5>
     						<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-    						<% @resource.vocabulary_terms.each do |v| %>
-								<%= link_to v.term, '/quick_search/query?utf8=✓&q=' + v.term %><br/>
+<%				
+							key_array = []
+							@resource.vocabulary_terms.each do |v|
+								key_array << { :v_term => v.term.capitalize, :v_user => v.user.name }
+							end 
+							key_array.sort_by!{|a| a[:v_term]}
+							key_array.each do |l|
+%>
+								<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><small> &mdash; by <em><%= l[:v_user] %></em></small><br/>
 							<% end %>
     					</div>
+    				<% end %>
     				</div>
 			  </div>
 			</div>
@@ -494,18 +511,34 @@
         <div class="unit">
 			<H4>Tags</H4>
 			<%# @resource.tags.map(&:tag).join(", ") %>
-			<% @resource.tags.each do |t| %>
-    			<%= link_to t.tag, '/quick_search/query?utf8=✓&q=' + t.tag %><br/>
-    		<% end %>
+<%				
+				tag_array = []
+				@resource.tags.each do |t|
+					tag_array << { :t_tag => t.tag.capitalize }
+    			end 
+				tag_array.sort_by!{|a| a[:t_tag]}
+				tag_array.each do |l|
+%>
+					<%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
+				<% end %>
+    		
+    		
 		</div>
     <% end %>
     <% if @resource.vocabulary_terms.count > 0 %>
     	<div class="unit">
     		<h4>Keywords</h4>
     		<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-    		<% @resource.vocabulary_terms.each do |v| %>
-    			<%= link_to v.term, '/quick_search/query?utf8=✓&q=' + v.term %><br/>
-    		<% end %>
+<%				
+			key_array = []
+			@resource.vocabulary_terms.each do |v|
+				key_array << { :v_term => v.term.capitalize }
+			end 
+			key_array.sort_by!{|a| a[:v_term]}
+			key_array.each do |l|
+%>
+				<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
+			<% end %>
     	</div>
     <% end %>
 <% end %>
@@ -520,9 +553,9 @@
       <% end %>
       <div class="unit authorLink">
 	  <% if @resource.author_id  %>
-	    <h4>Created by</h4><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author_id:' + @resource.author_id.to_s %>
+	    <h4>Created by</h4><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author:' + @resource.get_author_name.gsub(/\([\S]+\)/, '') %>
 	  <% else %>
-	  	<h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author_id:' + @resource.user.id.to_s %>
+	  	<h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:' + @resource.user.name %>
 	  <% end %>
 	  </div>
 	  <h4>Last Updated</h4>
@@ -546,6 +579,15 @@
   </div><!-- end col -->
 </div><!-- end row -->
 <script>
+
+	 $(function(){
+		$('.mediaTipsTrigger').popover({
+			html: true,
+			content: function(){
+				return $('.mediaTipsPopover').html();
+			}
+		});
+	 });
 	//These scripts control display and interaction with the slideshows
 	// These functions trigger opening and closing of the FULL-fullscreen slideshow
 	

@@ -24,18 +24,8 @@
 				<%= r.title %><br/>
 			</div>
 			<div class="col-xs-6 previewMediaHalf text-right">
-				<script>
-				 $(function(){
-					$('.mediaTips_<%= f.id %>').popover({
-						html: true,
-						content: function(){
-							return $('.popover_<%= f.id %>').html();
-						}
-					});
-				 });
-				</script>
 				<div class="mediaTips">
-					<span class="mediaTips_<%= f.id %>" data-toggle="popover" data-trigger="hover" data-placement="top" role="button"><div class="previewMediaIcon" title="UMMA Collection Object"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div></span>
+					<span class="mediaTips_<%= f.id %> mediaTipsTrigger" data-toggle="popover" data-trigger="hover" data-placement="top" role="button"><div class="previewMediaIcon" title="UMMA Collection Object"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div></span>
 				</div>
 			  <div class="mediaTipsPopover popover_<%= f.id %>">
 				<div class="row">

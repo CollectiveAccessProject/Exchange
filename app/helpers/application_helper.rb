@@ -75,7 +75,8 @@ module ApplicationHelper
             classification: { terms: { field: :classification}},
             medium: { terms: { field: :medium}},
             support: { terms: { field: :support}},
-            keywords: { terms: { field: :keyword}}
+            keywords: { terms: { field: :keyword}},
+            style: { terms: { field: :style}}
         }
     )
 
@@ -192,7 +193,9 @@ module ApplicationHelper
             id: "style",
             field: "style",
             label: "Style or movement",
-            type: "string"
+            type: "string",
+            input: "select",
+            values: field_values["style"]
         }
     ]
   end

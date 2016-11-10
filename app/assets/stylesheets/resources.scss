@@ -405,6 +405,12 @@ $white:#FFFFFF;
 	}
 	.blackCaption{
 		.item {
+			.captionContainer{
+				.slideshowCaption, .slideshowCaption p{
+					background-color: #000;
+					color: #fff;
+				}
+			}
 			.carouselImageHeight{
 				a{
 					color: #fff;

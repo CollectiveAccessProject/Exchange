@@ -1,6 +1,10 @@
 <%
  	i = 1;
 	if(@resource.parents.count > 0)
+		parent_ids = []
+		@resource.parents.each do |parent|
+			parent_ids.push(parent.id)
+		end
 %>
 <div class="row">
   <div class="col-sm-12">
@@ -9,19 +13,23 @@
 		Part of:
 <%
  	@resource.parents.each do |parent|
+ 		if(!session[:last_collection] || !parent_ids.include?(session[:last_collection]) || parent.id == session[:last_collection])
 %>
-		<a href="#" onClick="$('.hiddenParentPanel').hide(); $('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;"><%= raw(parent.title) %></a>
+			<a href="#" onClick="$('.hiddenParentPanel').hide(); $('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;"><%= raw(parent.title) %></a>
 <%=
-		if(parent.resource_hierarchies) 
-			" <small>(#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ') + ")</small>".html_safe
-		end
+			if(parent.resource_hierarchies) 
+				" <small>(#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ') + ")</small>".html_safe
+			end
 %><%=
-		if(i < @resource.parents.count)
-			", "
-		end
+			if(!session[:last_collection] || !parent_ids.include?(session[:last_collection]))
+				if(i < @resource.parents.count)
+					", "
+				end
+			end
 %>
 <%
-		i += 1
+			i += 1
+		end
 	end
 %>
 	</H4>

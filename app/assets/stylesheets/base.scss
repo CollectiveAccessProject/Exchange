@@ -740,6 +740,7 @@ select.input-sm{
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: 999;
 	#footer1{
 		background-color:#191a1b;
 		display:none;

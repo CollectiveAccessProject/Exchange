@@ -145,7 +145,17 @@
 				<div class="row">
 					<div class="col-sm-8">
 						<h5>Tags</h5>
-						<%= @resource.tags.map(&:tag).join(", ") %>
+						<%# @resource.tags.map(&:tag).join(", ") %>
+<%				
+						tag_array = []
+						@resource.tags.each do |t|
+							tag_array << { :t_tag => t.tag.capitalize }
+						end 
+						tag_array.sort_by!{|a| a[:t_tag]}
+						tag_array.each do |l|
+%>
+							<%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
+						<% end %>
 						<%= form_tag '/resources/add_tag' do %>
 						<%= hidden_field_tag 'id', @resource.id %>
 						<br/>
@@ -156,10 +166,22 @@
 						<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
 						<% end %>
 					</div>
+				<% if @resource.vocabulary_terms.count > 0 %>
 					<div class="col-sm-4">
 						<h5>Keywords</h5>
-						<%= @resource.vocabulary_terms.map(&:term).join(", ") %>
+						<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+<%				
+						key_array = []
+						@resource.vocabulary_terms.each do |v|
+							key_array << { :v_term => v.term.capitalize }
+						end 
+						key_array.sort_by!{|a| a[:v_term]}
+						key_array.each do |l|
+%>
+							<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
+						<% end %>
 					</div>
+				<% end %>
 				</div>
 		  </div>
 		</div>
@@ -209,13 +231,33 @@
             <% if @resource.tags.count > 0 %>
                 <div class="unit">
                   <H4>Tags</H4>
-                  <%= @resource.tags.map(&:tag).join(", ") %>
+                  <%# @resource.tags.map(&:tag).join(", ") %>
+<%				
+					tag_array = []
+					@resource.tags.each do |t|
+						tag_array << { :t_tag => t.tag.capitalize }
+					end 
+					tag_array.sort_by!{|a| a[:t_tag]}
+					tag_array.each do |l|
+%>
+						<%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
+					<% end %>
                 </div>
             <% end %>
             <% if @resource.vocabulary_terms.count > 0 %>
 				<div class="unit">
 					<h4>Keywords</h4>
-					<%= @resource.vocabulary_terms.map(&:term).join(", ") %>
+					<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+<%				
+					key_array = []
+					@resource.vocabulary_terms.each do |v|
+						key_array << { :v_term => v.term.capitalize }
+					end 
+					key_array.sort_by!{|a| a[:v_term]}
+					key_array.each do |l|
+%>
+						<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
+					<% end %>
 				</div>
 			<% end %>
         <% end %>
