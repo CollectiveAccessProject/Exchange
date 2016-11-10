@@ -65,6 +65,12 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
+  
+  	if(@resource.is_collection)
+    	#session for last collection so can attribute parent when resource has multiple parent collections
+    	session[:last_collection] = @resource.id
+    end
+  
   end
 
   # Handle public viewing of resources
