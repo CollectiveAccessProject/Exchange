@@ -206,7 +206,7 @@
 		<a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
 		<div id="tagPanel" class="collapse detailComments">
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<h5>Tags</h5>
 					<%# @resource.tags.map(&:tag).join(", ") %>
 <%				
@@ -230,23 +230,24 @@
 					<% end %>
 				</div>
 			<% if @resource.vocabulary_terms.count > 0 %>
-				<div class="col-sm-4">
+				<div class="col-sm-6">
 					<h5>Keywords</h5>
 					<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
 <%				
 					key_array = []
-					@resource.vocabulary_terms.each do |v|
-						key_array << { :v_term => v.term.capitalize }
+					@resource.resources_vocabulary_terms.each do |v|
+						v_user = User.find(v.user_id)
+						key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => v_user.name }
 					end 
 					key_array.sort_by!{|a| a[:v_term]}
 					key_array.each do |l|
-%>
-						<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
-					<% end %>
+	%>
+						<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><small> &mdash; by <em><%= l[:v_user_name] %></em></small><br/>
 				</div>
 			<% end %>
 			</div>
 	  </div>
 	</div>
+<% end %>
 <% end %>
 <% end %>

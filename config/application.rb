@@ -41,15 +41,15 @@ module Exchange
     config.x.access_types = { Published: 1, Unpublished: 0 }
 
     config.x.user_roles = {
-          "Administrator" => :admin, "UMMA staff" => :staff, "UMMA docent" => :docent,
-          "University faculty" => :faculty, "University student" => :student,
-          "K-12 teacher" => :k12_teacher, "K-12 learner" => :k12_student,
-          "Museum visitor" => :visitor
+          "Administrator" => :admin, "UMMA Staff" => :staff, "UMMA Docent" => :docent,
+          "University Faculty" => :faculty, "University Student" => :student,
+          "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,
+          "Museum Visitor" => :visitor
     }
-    config.x.access_types = {"Read access" => 1, "Write access" => 2}
+    #config.x.access_types = {"Read access" => 1, "Write access" => 2}
 
     # date/time format used to tags, comments, etc.
-    config.x.timestamp_format = '%B %e %Y @ %l:%M %p'
+    config.x.timestamp_format = '%B %e %Y @ %l:%M %P'
 
     # maximum number of search results per page
     WillPaginate.per_page = config.x.max_search_results_per_page = 12

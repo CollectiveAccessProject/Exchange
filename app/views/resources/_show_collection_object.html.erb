@@ -172,13 +172,14 @@
 						<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
 <%				
 						key_array = []
-						@resource.vocabulary_terms.each do |v|
-							key_array << { :v_term => v.term.capitalize }
+						@resource.resources_vocabulary_terms.each do |v|
+							v_user = User.find(v.user_id)
+							key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => v_user.name }
 						end 
 						key_array.sort_by!{|a| a[:v_term]}
 						key_array.each do |l|
 %>
-							<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
+							<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><small> &mdash; by <em><%= l[:v_user_name] %></em></small><br/>
 						<% end %>
 					</div>
 				<% end %>
@@ -250,8 +251,8 @@
 					<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
 <%				
 					key_array = []
-					@resource.vocabulary_terms.each do |v|
-						key_array << { :v_term => v.term.capitalize }
+					@resource.resources_vocabulary_terms.each do |v|
+						key_array << { :v_term => v.vocabulary_terms.term.capitalize }
 					end 
 					key_array.sort_by!{|a| a[:v_term]}
 					key_array.each do |l|

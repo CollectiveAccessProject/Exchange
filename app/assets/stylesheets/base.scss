@@ -1084,3 +1084,41 @@ ul.ui-autocomplete {
   height: 100% !important;
   display: none;
 }
+
+/* Query builder */
+
+#queryBuilderContainer{
+	.query-builder > .rules-group-container{
+		border:0px !important;
+		background-color:transparent;
+	}
+	.btn-success{
+		color:$green;
+		background-color:transparent;
+	}
+	.btn-danger{
+		background-color:transparent;
+		color:red;
+	}
+	.btn-primary.active{
+		background-color:$blue;
+	}
+	.btn-primary{
+		background-color:$gray;
+	}
+	.form-control{
+		height:auto;
+		font-size:12px;
+		padding:3px;
+	}
+	.rules-group-container{
+		background-color:white;
+		border:0px;
+		border:1px solid $lt_gray;
+	}
+	.rule-container{
+		background-color:$md_gray;
+		border:1px solid $lt_gray;
+	}
+
+}
