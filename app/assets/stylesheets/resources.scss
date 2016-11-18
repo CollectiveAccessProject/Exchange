@@ -710,3 +710,8 @@ $white:#FFFFFF;
 		background-color: #000 !important;
 	}
 }
+
+/* User Guide Styles */
+dd > .alert, p > .alert, dt > .alert{
+	padding: 0 10px;
+}
