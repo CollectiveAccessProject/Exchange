@@ -100,7 +100,7 @@
 						<li class="list-group-item"><a href="#granting_privledges">Granting edit priviledges to user/group</a></li>
 						<li class="list-group-item"><a href="#shared_res_coll">Working on shared Resources/Collections</a></li>
 						<li class="list-group-item"><a href="#forking_res_coll">Forking existing Resources/Collections</a></li>
-						<li class="list-group-item"><a href="#web_publishing">Publishing to the Web</a></li>
+						<li class="list-group-item"><a href="#web_publishing">Publishing</a></li>
 					</ul>
 				</div>
 				<div class="panel-heading" role="tab" id="search">
@@ -183,15 +183,15 @@
 		
 		<h4>Formatting a Collection<a class="int_link" name="collection_form"></a></h4>
 		<p>Each new collection can be organized and formatted however you see fit by using the text formatting tools on the Edit Collection screen.</p>
-		<p class="guide_padding">In addition to the main body text, there are several fields of <a href="pub_copy_fields">additional publication & copyright data</a> that provide additional information and context to the Collection. These options and tools operate in the same manner for Collections and Resources, please see below for reference on using these sections.</p>
-		<p class="guide_padding">Below the main editing fields, and <a href="related_items">additional tabs</a> provide further formatting options and the ability to relate other Exchange items, link external resources and add comments, tags and keywords. Most important of these options is the <em>Formatting</em> tab, which sets general options for how the item appears in the Exchange. These options are described below</p>
+		<p>In addition to the main body text, there are several fields of <a href="pub_copy_fields">additional publication & copyright data</a> that provide additional information and context to the Collection. These options and tools operate in the same manner for Collections and Resources, please see below for reference on using these sections.</p>
+		<p class="guide_padding">Below the main editing fields <a href="related_items">additional tabs</a> provide further formatting options and the ability to relate other Exchange items, link external resources and add comments, tags and keywords. Most important of these options is the <em>Formatting</em> tab, which sets general options for how the item appears in the Exchange. These options are described below.</p>
 		
 		<h4>Adding Resources<a class="int_link" name="collection_res"></a></h4>
 		<p>Once created, you may add Resources to the new Collection through the right hand column. Clicking Add Resource will open a new screen where you can search for an existing Resource to add to the Collection or create a new Resource.</p>
 		<p class="guide_padding">Once added the first Media Item and and Caption from the Resource will be displayed in the column. All Resources can be dragged and re-ordered here, their order determines the order in which they are displayed on the public page for the Collection.</p>
 		
 		<h4>Adding sub and parent Collections<a class="int_link" name="collection_sub_par"></a></h4>
-		<p>Collections can also be used to add a high level of organization to the materials in your Exchange by combining Collections; adding parent Collections that contain many Sub-Collections. This is done from the top bar of the Edit Collection screen.</p>
+		<p>Collections can also be used to hierarchically organize the materials in your Exchange by combining Collections into parent Collections that contain many Sub-Collections. This is done from the top bar of the Edit Collection screen.</p>
 		<p class="guide_padding">When clicked, you will be able to search for existing Collections and to create new Collections. All Collections work in the same manner with child Resources and Sub-Collections. It is possible for Collections and Resources to have many Collections they are a member of, and Collections can contain as many Collections/Resources as you would like to add.</p>
 		
 		<h4>Previewing<a class="int_link" name="collection_pre"></a></h4>
@@ -216,14 +216,14 @@
 			<li>From the Dashboard as described <a class="int_link" name="dashboard_new">above</a></li>
 			<li>From the Edit Collection screen of any Collection. From the right hand column you can click Add Resource and then select Create New Content to create a new Resource</li>
 		</ol>
-		<p class="guide_padding">When creating a Resource you will be asked if you would like to add the new Resource to a Collection. This is optional, Resources can exist as stand-alone items, or be added to a Collection (or several Collections) at a later time.</p>
+		<p class="guide_padding">When creating a Resource you will be asked if you would like to add the new Resource to a Collection. This is optional; Resources can exist as stand-alone items, or be added to a Collection (or several Collections) at a later time.</p>
 		
 		<h4>Adding Media<a class="int_link" name="resource_media"></a></h4>
-		<p class="guide_padding">Media are the files that depict the subject of the Resource. These can be drawn from the UMMA Collection, your personal computer or one of several popular websites (Flickr, Google Docs, YouTube, Vimeo and SoundCloud. <a href="#">See Below</a>). To add Media, click Add Media in the right hand column. This will open a window where you can upload a media file and associated data fields (<a href="#">see below</a>)</p>
+		<p>Media are the files that depict the subject of the Resource. These can be drawn from the UMMA Collection, your personal computer or one of several popular websites (Flickr, Google Docs, YouTube, Vimeo and SoundCloud. <a href="#">See Below</a>). To add Media, click Add Media in the right hand column. This will open a window where you can upload a media file and associated data fields (<a href="#">see below</a>)</p>
 		
 		<h4>Adding auxiliary data/formatting<a class="int_link" name="resource_form"></a></h4>
 		<p>Similar to Collections, Resources can be formatted using the Edit Resource screen. The body text is edited by using the text formatting tools available.</p>
-		<p>Any Media item can be embedded in the body text through the Media Item button in the body text tools. Media embedding uses a simplified HTML markup with a basic format of <code>&lt;media [slug] [version] [width] [height] [caption] [float]&gt;</code>.<br/><span class="alert alert-danger">The slug identifies the embedded media and CANNOT be edited)</span><br/>The Media Item button will open a form where these options can be customized with the following options:</p>
+		<p>Any Media item can be embedded in the body text through the Media Item button in the body text tools. Media embedding uses a simplified HTML markup with a basic format of <code>&lt;media [slug] [version] [width] [height] [caption] [float]&gt;</code>. (NOTE: The slug identifies the embedded media and CANNOT be edited.) The Media Item button will open a form where these options can be customized with the following options:</p>
 		<dl>
 			<dt>Embed Size</dt>
 			<dd>The size of the embedded media as a percentage of the width of the body text. Valid options are: "Quarter", "Half" and "Full"</dd>
@@ -238,15 +238,17 @@
 		<p>Resources also have several unique options for configuring the display of Media within the Resource. These can be set from the Formatting tab:</p>
 		<dl class="guide_padding">
 			<dt>Slideshow</dt>
-			<dd>This displays Media items as a slideshow with the body text in a column to the right of the Media</dd>
+			<dd>This displays Media items as a slideshow with the body text either above or below (as set in the <strong>Formatting</strong> tab in the editing screen.</dd>
 			<dt>Thumbnails</dt>
 			<dd>This displays a grid of preview images for the Media items associated with a Resource. Each can be opened into a larger view</dd>
+			<dt>Thumbnails with Captions</dt>
+			<dd>Operates the same as the Thumbnails option, but includes the user assigned caption below each preview image.</dd>
 			<dt>Embed in text</dt>
 			<dd>This option disables the automatic display of Media with the Resource, and instead only displays Media where embedded in the body text through the <strong>Media Item</strong> tool.</dd>
 		</dl>
 		
 		<h4>Adding to a Collection<a class="int_link" name="resource_coll"></a></h4>
-		<p class="guide_padding">Once created a Resource can be added to a Collection in the top bar of the Edit Resource screen. Each Resource can be a part of as many Collections as is desired/necessary. The Collections the Resource is a member of can be managed from the Collections tab at the bottom of the Edit Resource screen.</p>
+		<p class="guide_padding">Once created a Resource can be added to a Collection in the top bar of the Edit Resource screen. Each Resource can be a part of as many Collections as is desired/necessary. The Collections the Resource is a member of can be managed from the <strong>Collections</strong> tab at the bottom of the Edit Resource screen.</p>
 		
 		<h4>Previewing<a class="int_link" name="resource_pre"></a></h4>
 		<p class="guide_padding">Once you’ve created a Resource you can click Preview in the upper right hand corner of your screen. This will take you to the public page for the Resource. After reviewing this page you can click Edit to return to the editing screen to make further changes or set the Resource to published.</p>
@@ -279,8 +281,8 @@
 		<h4>Google Docs<a class="int_link" name="google_docs"></a></h4>
 		<p>Google documents (docs, sheets and slides) can be added to the Exchange through one of two methods:</p>
 			<ol class="guide_padding">
-				<li>By providing a link directly to the editable document. To do so please be sure that you have made the document at least viewable (or editable) by the public by setting the sharing options available through the share button in the upper right corner of the Google Docs screen.</li> 
-				<li>By selecting “Publish to the Web” from the File menu. This provides a link to a publicly available webpage of the document that is not editable by the public.</li>
+				<li>By providing a link directly to the editable document. To do so please be sure that you have made the document at least viewable (or editable) by the public by setting the sharing options available through the <strong>Share</strong> button in the upper right corner of the Google Docs screen.</li> 
+				<li>By selecting “Publish to the Web” from the <strong>File</strong> menu. This provides a link to a publicly available webpage of the document that is not editable by the public.</li>
 			</ol>
 		<h4>YouTube<a class="int_link" name="youtube"></a></h4>
 		<p class="guide_padding">Videos hosted on YouTube can be added to the Exchange by providing the main URL to the video. YouTube (and Vimeo) videos will embed as playable videos.</p>
@@ -294,21 +296,37 @@
 		<p class="guide_padding">Audio clips and music can be added as Media through SoundCloud. Adding a SoundCloud file (through a URL) embeds a SoundCloud widget as Media through which the audio file can be played.</p>
 		
 		<h4>Local Files<a class="int_link" name="local_files"></a></h4>
-		<p class="guide_padding">Images and documents can also be uploaded from your computer. These will embed and display similar to the other Media types.</p>
+		<p>Images and documents can also be uploaded from your computer. These will embed and display similar to the other Media types.</p>
+		
+		<p>The following formats are supported as local file uploads:
+		<ul class="guide_padding">
+			<li>DOC/DOCX</li>
+			<li>JPG</li>
+			<li>MOV</li>
+			<li>MP4</li>
+			<li>MP3</li>
+			<li>PDF</li>
+			<li>PNG</li>
+			<li>PPT/PPTX</li>
+			<li>XLS/XLSX</li>
+		</ul>
 		
 		<h2>Collaboration</h2>
-		<h4>Subsections pending access control</h4>
 		<h4>Read/Edit Permissions for Users &amp; Groups<a class="int_link" name="granting_privledges"></a></h4>
-		<p class="guide_padding">At any point after a Resource or Collection has been created access can be granted for other users to view or edit the item. This is done in the <em>Access</em> tab on the Edit item screen, which allows users to set access for both individual users and groups of users.</p>
-		<p class="guide_padding">If the <em>Publication Status</em> of the item is set to "Published" it is visible to anyone using the Exchange, but cannot be edited. To grant the ability to edit to specific users, users can search for their names in the <em>Access</em> tab to grant them edit access.</p>
-		<p class="guide_padding">If the <em>Publication Status</em> of the item is "Unpublished" it is, by default, not visible to other Exchange users. To grant reading or editing access to other users or user groups, users can follow the same procedure above in the <em>Access</em> tab to grant them read or edit access, which can be assigned on a case-by-case basis.</p>
+		<p>At any point after a Resource or Collection has been created access can be granted for other users to view or edit the item. This is done in the <em>Access</em> tab on the Edit item screen, which allows users to set access for both individual users and groups of users.</p>
+		<p>If the <strong>Publication Status</strong> of the item is set to "Published" it is visible to anyone using the Exchange, but cannot be edited. To grant the ability to edit to specific users, users can search for their names in the <strong>Access</strong> tab to grant them edit access.</p>
+		<p class="guide_padding">If the <strong>Publication Status</strong> of the item is "Unpublished" it is, by default, not visible to other Exchange users. To grant reading or editing access to other users or user groups, users can follow the same procedure above in the <strong>Access</strong> tab to grant them read or edit access, which can be assigned on a case-by-case basis.</p>
+		
+		<h4>Publishing <a class="int_link" name="web_publishing"></a></h4>
+		<p>Any <strong>Resource</strong> or <strong>Collection</strong> can be published at any time (to share a final product or a work-in-progress for review) by changing the <strong>Publication Status</strong> to "Published". Once this is set, the URL to the Preview page for any Exchange item can be shared (through email, social media, etc.).</p>
+		<p class="guide_padding">Once published, an item can be made private again simply by changing <strong>Publication Status</strong> back to "Unpublished," this field can be toggled at any time to change the availability of an item. The URL will remain the same, so temporarily blocking access to an item can be done without updating any pages or posts where an item is shared</p>
 		
 		<h2>Searching</h2>
 		<h4>Basic search<a class="int_link" name="basic_search"></a></h4>
 		<p class="guide_padding">The <strong>Basic Search</strong> (available from all pages in the top navigation bar) searches across all fields of Exchange Collections and Resources. This is a useful tool to perform a general search on a topic or quickly locate a item in the Exchange.</p>
 		
 		<h4>Advanced search<a class="int_link" name="advanced_search"></a></h4>
-		<p class="guide_padding">The <strong>Advanced Search</strong> screen provides additional search options depending on the type of Exchange item you would like to search for:</p>
+		<p>The <strong>Advanced Search</strong> screen provides additional search options depending on the type of Exchange item you would like to search for:</p>
 		<dl class="guide_padding">
 			<dt>Collections &amp; Resources</dt>
 			<dd>Can be searched specifically on title and keywords. These results can also be limited by the <strong>Affiliations</strong> associated with each item (e.g. K-12 Educator or UMMA Docent).</dd>
@@ -319,11 +337,11 @@
 		</dl>
 		
 		<h4>Query Builder<a class="int_link" name="query_builder"></a></h4>
-		<p class="guide_padding">The Query Builder provides a visual tool that users can use to create complex and detailed search queries in the Exchange. It allows users to see all of the available fields, and in many cases the available search terms.</p>
+		<p>The Query Builder provides a visual tool that users can use to create complex and detailed search queries in the Exchange. It allows users to see all of the available fields, and in many cases the available search terms.</p>
 
-		<p class="guide_padding">The basis of Queries are individual <strong>Rules</strong>, each of which provides a single search criteria. For example a specific artist or a keyword. If the <strong>Rule</strong> is on a field with a controlled list of terms, only these terms will be available as search criteria.</p>
+		<p>The basis of Queries are individual <strong>Rules</strong>, each of which provides a single search criteria. For example a specific artist or a keyword. If the <strong>Rule</strong> is on a field with a controlled list of terms, only these terms will be available as search criteria.</p>
 
-		<p class="guide_padding">These <strong>Rules</strong> can be combined into <strong>Groups</strong>  that apply them together. Within each <strong>Group</strong> the <strong>Rules</strong> are either applied through AND relationships where they ALL must match a single record for it to be returned in the search or through OR relationships where records will be returned if ANY of the <strong>Rules</strong> match an record.</p>
+		<p>These <strong>Rules</strong> can be combined into <strong>Groups</strong>  that apply them together. Within each <strong>Group</strong> the <strong>Rules</strong> are either applied through AND relationships where they ALL must match a single record for it to be returned in the search or through OR relationships where records will be returned if ANY of the <strong>Rules</strong> match an record.</p>
 
 		<p class="guide_padding">Multiple <strong>Groups</strong> can be added to a single query to create complex searches that are either highly specific (e.g. return items by a specific artist AND which are on paper AND are from the years 1942 OR 1945. This would have the artist and material queries as separate <strong>Rules</strong> and the two year queries together in a <strong>Group</strong>.) or which have a broad reach (e.g. creating a <strong>Group</strong> to search for works by artists from a group of nations).</p>
 		
@@ -339,17 +357,17 @@
 			<dt>Publication Status</dt>
 			<dd>Provides the option to set the newly created Collection to be publicly available. By default this is set to “Unpublished”, and is only visible to the users granted access in the <a href="#related_items">Access</a> tab. If you would like to share your work in progress, or when it is completed, it may be set to “Published”</dd>
 			<dt>Author</dt>
-			<dd>The user assigned author, this allows for authorship of resources to either be attributed to an UMMA user, through a type-ahead search, or to anyone else by simply entering their name.</dd>
+			<dd>Provides the option to add an author to the resource (by default the author is whichever Exchange user created the item). This automatically searches all existing exchange users, any of which can be assigned as the author of the item.</dd>
 			<dt>Affiliations</dt>
 			<dd>The educational affiliation/interest of the Resource/Collection allows other users to identify them by their intended audience. This field is provided to allow users to filter their search results by Affiliation or browse on all Resources/Collections intended for a specific audience</dd>
 		</dl>
 		<h4>Formatting Tab</h4><a class="int_link" name="formatting_tab"></a></h4>
 		<dl class="guide_padding">
-			<dt>Media Formatting <span class="alert alert-warning">Applies only to <a href="resource_new">Resources</a></span></dt>
-			<dd>Governs how associated media are displayed for Resources ONLY. The following options are available
+			<dt>Media Formatting <span class="alert alert-warning">Applies only to <a href="#resource_new">Resources</a></span></dt>
+			<dd>Governs how associated media are displayed for Resources ONLY. The following options are available:
 				<ol>
 					<li><strong>Slideshow:</strong> Displays the media in centered slideshow. A fullscreen slideshow can be opened by clicking the icon in the upper-right corner of the slideshow</li>
-					<li><strong>Thumbnails:</strong> Displays a grid of the media associated with the item. The media displayed in a small, preview format</li>
+					<li><strong>Thumbnails:</strong> Displays a grid of the media associated with the item. The media items are displayed in a small, preview format</li>
 					<li><strong>Thumbnails with Captions:</strong> Operates in the same manner as the Thumbnail option described above, but includes the user-assigned caption, whereas the basic Thumbnail option excludes this text.</li>
 					<li><strong>Embed in Text:</strong> Displays no media by default, the only media displayed are the files embedded in the body text manually by the user through the <a href="resource_media">Embed Media button</a>. The embedded media is then displayed with the user-assigned settings provided through the Embed tool.</li>
 				</ol>
@@ -357,23 +375,23 @@
 			<dt>Text Placement</dt>
 			<dd>
 				<ul>
-					<li><strong>For Resources: </strong>This provides options to place the text either <em>Above</em> or <em>Below</em> the media. (If <em>Embed in Text</em> is selected this has no impact on the display of the Resource</li>
-					<li><strong>For Collections: </strong>This provides the options to place the text to the <em>Left</em> of or <em>Above</em> the Media.</li>
+					<li><strong>For Resources: </strong>This provides options to place the text either <strong>Above</strong> or <strong>Below</strong> the media. (If <strong>Embed in Text</strong> is selected this has no impact on the display of the Resource</li>
+					<li><strong>For Collections: </strong>This provides the options to place the text to the <strong>Left</strong> of or <strong>Above</strong> the Media.</li>
 				</ul>
 			</dd>
-			<dt>Text Formatting <span class="alert alert-warning">Applies only to <a href="resource_new">Resources</a></span></dt>
+			<dt>Text Formatting <span class="alert alert-warning">Applies only to <a href="#resource_new">Resources</a></span></dt>
 			<dd>This provides 2 options that enable users to customize how much text is displayed with the Resource:
 				<ul>
-					<li><strong>Only display the first 10 lines of text: </strong>Collapses the body text so that only the first 10 lines display with a button to read more. This allows users to see the body text and media on a single screen by default if the body text is lengthy. It also provides general formatting flexibility</li>
-					<li><strong>Body text collapsed by default: </strong>Sets whether the body text is collapsed or expanded by default.
+					<li><strong>Only display the first 10 lines of text: </strong>Collapses the body text so that only the first 10 lines display with a button to "Show More". This allows users to see the body text and media on a single screen by default if the body text is lengthy. It also provides general formatting flexibility.</li>
+					<li><strong>Body text collapsed by default: </strong>Sets whether the body text is collapsed or expanded by default.</li>
 				</ul>
 			<dt>User Interactions</dt>
 			<dd>These options control the options that users have in responding and adding to the resource:
 				<ol>
-					<li><strong>Allow Comments:</strong> Enable users to leave free-text comments on items</li>
-					<li><strong>Allow Tags & Keywords:</strong> Enable users to add Tags (free-text terms) or Keywords (terms selected from a controlled list) on items</li>
+					<li><strong>Allow Comments:</strong> Enable users to leave free-text comments on items.</li>
+					<li><strong>Allow Tags & Keywords:</strong> Enable users to add Tags (free-text terms) or Keywords (terms selected from a controlled list) on items.</li>
 					<li><strong>Allow Users to Post Responses:</strong> Enable users to create an item (Resource or Collection) in "response" (see the <a href="#">Collaboration section</a> of this User Guide) with their own content to further, rebut or comment on the content of the current item.</li>
-					<li><strong>Display Responses on a separate page:</strong> Sets display of user-posted Responses to either display on a section with the current item or on a separate page</li>
+					<li><strong>Display Responses on a separate page:</strong> Sets display of user-posted Responses to either display on a section with the current item or on a separate page.</li>
 				</ol>
 		</dl>
 		<h4>Related Items &amp; Context Tabs<a class="int_link" name="related_items"></a></h4>
@@ -381,7 +399,7 @@
 			<dt>Access</dt>
 			<dd>This allows the creator of a Resource/Collection to set who can read and edit it while it its Publication Status is "Unpublished" (or to grant them the ability to edit when it is Published). These permissions can be assigned to individual users, or to groups of users. Find users or user groups by searching in the fields in this tab, which will automatically look up Exchange usernames.</dd>
 			<dt>Related</dt>
-			<dd>This allows users to set either other Collections and Resources as related to the current Collection. This is a more casual relationship than adding the related resource to a Collection and can be used where the materials might be similar or of note for some specific reason (which can be described in the relationship’s caption).</dd>
+			<dd>This allows users to set either other Collections and Resources as related to the current Collection. This is a more casual relationship than adding the related resource to a Collection and can be used where the materials might be similar or of note for some specific reason (which can be described in the Relationship’s caption).</dd>
 			<dt>Tags &amp; Keywords</dt>
 			<dd>Tags are terms that you can assign to the Collection that describe either its purpose or its contents. Once public, all users will be able to add tags to the Collection and they can be managed here.<br/><br/>Keywords perform a similar role to Tags, but are drawn from a controlled list of terms.</dd>
 			<dt>Comments</dt>
@@ -389,7 +407,7 @@
 			<dt>Links</dt>
 			<dd>These are links to external websites, which may contain useful information or further materials pertaining to your Collection. These will appear with the link text you select displayed.</dd>
 			<dt>Collections</dt>
-			<dd>This identifies all Collections that this Collection is a member of. This is useful for quickly seeing the parents of a specific Collection and allowing you to navigate among these various Collections.</dd>
+			<dd>This identifies all Collections that this item is a member of. This is useful for quickly seeing the parents of a specific Collection and allowing you to navigate among these various Collections.</dd>
 		</dl>
 	</div>
 </div>
