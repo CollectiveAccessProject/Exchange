@@ -59,7 +59,7 @@ class UsersController < ApplicationController
      respond_to do |format|
        if (@user.id != current_user.id)
          @user.destroy
-        format.html { redirect_to users_path, notice: sanitize('User ' + name + ' has been removed.') }
+        format.html { redirect_to users_path, notice: ActionController::Base.helpers.sanitize('User ' + name + ' has been removed.') }
        else
          format.html { redirect_to users_path, notice: 'You cannot delete yourself.' }
        end
