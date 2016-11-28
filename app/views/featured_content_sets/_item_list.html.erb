@@ -1,0 +1,56 @@
+<div class="divider">&nbsp;</div>
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <%= form_tag(featured_content_sets_add_set_item_path(@featured_content_set), remote: true, method: "post", format: :json, class: 'set_items', id: 'setItems') do |f| %>
+        <div id="set-items-status">
+          <div class="flash-notice" id="set-items-status-message">
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <label>Search for resource</label>
+              <%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#to_resource_id", class:'form-control') %>
+              <%= hidden_field_tag(:to_resource_id) %>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Title</label>
+              <%= text_field_tag(:title, '', size: 50, class:'form-control') %>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Subtitle</label>
+              <%= text_field_tag(:subtitle, '', size: 50, class:'form-control') %>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <label>&nbsp;</label>
+            <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
+          </div>
+        </div>
+    <% end %>
+    <% if @featured_content_set.featured_content_set_items.count > 0 %>
+        <div class="xx">
+          <H4><%= @featured_content_set.featured_content_set_items.count %> Item(s) in this set</H4>
+          <% @featured_content_set.featured_content_set_items.each do |r| %>
+              <div>
+                <%= link_to ((r.resource.is_resource) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.resource.title), get_resource_view_path(r.resource, user_signed_in?), target: "_blank" %>
+                <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, featured_content_sets_remove_set_item_path(@featured_content_set) + "?related=" + r.resource.id.to_s, {remote: true, class: :setItemsRemove}) %>
+                <% if (r.title.length > 0) %>
+                    <br/><small>
+                <%= r.title %>
+                <%= r.subtitle %>
+              </small>
+                <% end %>
+              </div>
+          <% end %>
+        </div>
+    <% end %>
+
+  </div>
+</div>

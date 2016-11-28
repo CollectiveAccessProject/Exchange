@@ -4,6 +4,10 @@ class FeaturedContentSetsController < ApplicationController
 
   respond_to :html, :json
 
+  # UI autocomplete on resource title (used by related resources lookup)
+  autocomplete :resource, :title, :full => true, :extra_data => [:id, :collection_identifier, :resource_type], :display_value => :get_autocomplete_label
+
+
   def verify_access
     raise StandardError, "Not allowed" if (!current_user.has_role? :admin)
   end
@@ -63,8 +67,55 @@ class FeaturedContentSetsController < ApplicationController
         format.html { redirect_to featured_content_sets_path, notice: ActionController::Base.helpers.sanitize('Featured content set ' + title + ' has been removed.') }
 
     end
+  end
+
+  #
+  # Add set item
+  #
+  def add_set_item
+    begin
+      @featured_content_set = FeaturedContentSet.find(params[:id])
+
+      to_resource_id = params[:to_resource_id]
+      item = FeaturedContentSetItem.where(featured_content_set_id: @featured_content_set.id, resource_id: to_resource_id, title: params[:title], subtitle: params[:subtitle]).first_or_create
+
+      resp = {:status => :ok, :html => render_to_string("featured_content_sets/_item_list", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp, status: :ok }
+    end
 
   end
+
+  #
+  #
+  #
+  def edit_set_item
+
+  end
+
+  #
+  #
+  #
+  def remove_set_item
+    begin
+      @featured_content_set = FeaturedContentSet.find(params[:id])
+      resource_id = params[:related]
+      FeaturedContentSetItem.where(featured_content_set_id: @featured_content_set.id, resource_id: resource_id).destroy_all
+
+      resp = {:status => :ok, :html => render_to_string("featured_content_sets/_item_list", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
+    end
+  end
+
 
   def featured_content_set_params
     params.require(:featured_content_set).permit(
