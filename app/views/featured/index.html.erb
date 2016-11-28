@@ -1,1 +1,12 @@
-Featured sets go here
+<div class="row">
+  <div class="col-md-2">
+    <h2>Featured</h2>
+
+    <% @featured_content_sets.each do |s| %>
+        <%= link_to(s.title, featured_get_set_contents_path(s), { remote: true, class: "loadSet"}) %><br/>
+    <% end %>
+  </div>
+  <div class="col-md-10" id="set_contents">
+
+  </div>
+</div>

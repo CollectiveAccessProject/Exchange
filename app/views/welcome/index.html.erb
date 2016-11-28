@@ -47,7 +47,7 @@
     %>
             <div class="row">
               <div class="col-sm-10 col-sm-offset-2">
-                <%= item.resource.media_files.first.sourceable.preview :large %>
+                <%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
                 <h3><%= (item.title.chop.length > 0) ? item.title : item.resource.title %></H3>
                 <p><%= item.subtitle %></p>
               </div>

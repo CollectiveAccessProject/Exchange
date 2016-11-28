@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2><%= set.title %> </h2>
+    <% if (set.subtitle.chop.length > 0) %>
+        <h4><%= set.subtitle %></h4>
+    <% end %>
+  </div>
+</div>
+<% if (set.body_text.chop.length > 0) %>
+    <div class="row">
+      <div class="col-md-12">
+        <%= set.body_text %>
+      </div>
+    </div>
+<% end %>
+<div class="row">
+  <% items.each do |item| %>
+      <div class="col-md-6">
+        <%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+        <h3><%= (item.title.chop.length > 0) ? item.title : item.resource.title %></H3>
+        <p><%= item.subtitle %></p>
+      </div>
+  <% end %>
+</div>
