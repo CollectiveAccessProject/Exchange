@@ -116,6 +116,32 @@ class FeaturedContentSetsController < ApplicationController
     end
   end
 
+  # set order of media
+  def set_item_order
+    resp = {status: :ok}
+
+    # get current ranks for set items
+    current_items = FeaturedContentSetItem.where(featured_content_set_id: params[:id]).order(:rank)
+    ranks = current_items.pluck(:rank)
+puts "ranks="
+    puts ranks
+
+    params[:ranks].each do |id|
+        puts "SET ID " + id
+      if (i = FeaturedContentSetItem.where(featured_content_set_id: params[:id], resource_id: id).first)
+        i.rank = ranks.shift
+        if (!i.save)
+          resp = {:status => :err, :error => i.errors.full_messages.join('; ')}
+          break
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
+    end
+  end
+
 
   def featured_content_set_params
     params.require(:featured_content_set).permit(

@@ -1,77 +1,65 @@
-	<div class="row featureBox">
-		<div class="col-md-6">
-			<%= image_tag('home_small.jpg') %>
-		</div>
-		<div class="col-md-6">
-			<div class="featureBoxText">
-				<H2>Welcome to UMMA Exchange</H2>
-				<p>
-					Sed interdum nibh sapien, ut finibus tortor vehicula sed. Aliquam erat volutpat. In hac habitasse platea dictumst. Ut eleifend, nulla vel lobortis fringilla, purus magna dictum tortor, ac hendrerit leo turpis in nunc.
-				</p>
-				<p class="text-center">
-				<% if user_signed_in? %>
-					<div class="btn-toolbar" role="toolbar">
-						<div class="btn-group" role="group">
-							<%= link_to('Your Dashboard', '/dashboard', class:'btn btn-default btn-lg btn-green')  %> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;  		  
-             			</div>
-						<div class="btn-group" role="group">
-							<a class="btn btn-default btn-lg btn-green dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New &nbsp;<i class="fa fa-plus-circle fa-3" aria-hidden="true"></i></a>
-							<ul class="dropdown-menu">
-								<li><%= link_to('New Resource', new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
-								<li><%= link_to('New Collection', new_collection_path, class:'btn btn-xs btn-noBg')  %></li>
-							</ul>
-						</div>
-					</div>
-              
-				<p><strong><a href="/user_guide#what_is_Exchange" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> What is UMMA Exchange?</a></strong></p>
-				<% else %>
-					
-					  <%= link_to('Login', new_user_session_path, class:'btn btn-default btn-lg btn-green')  %>
-						&nbsp;&nbsp;&nbsp;
-					  <%= link_to('Register', new_user_registration_path, class:'btn btn-default btn-lg btn-green')  %>
-				<% end %>
-				</p>
-			</div>
-		</div>
-	</div>
-	<div class="fullDivideWrapper"><div class="fullDivide"></div></div>
-	<div class="row hpFeatures">
-		<div class="col-sm-6">
-			<H1>Featured Collections</H1>
-			<div class="row">
-				<div class="col-sm-10 col-sm-offset-2">
-					<%= image_tag('features/2.jpg') %>
-					<h3>Resource title</H3>
-					<p>Aliquam erat volutpat. In hac habitasse platea dictumst.</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-9 col-sm-offset-1">
-					<%= image_tag('features/8.jpg') %>
-					<h3>Resource title</H3>
-					<p>Aliquam erat volutpat. In hac habitasse platea dictumst.</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-6">
-			<div class="row">
-				<div class="col-sm-9 col-sm-offset-1">
-					<%= image_tag('features/6.jpg') %>
-					<h3>Resource title</H3>
-					<p>Aliquam erat volutpat. In hac habitasse platea dictumst.</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-10 col-sm-offset-2">
-					<%= image_tag('features/4.jpg') %>
-					<h3>Resource title</H3>
-					<p>Aliquam erat volutpat. In hac habitasse platea dictumst.</p>
-				</div>
-			</div>
-		</div>
-	</div><!-- end row -->
-	<div class="row">
-		<div class="col-sm-12 text-center">
-			<br/><br/><a href="#" class="btn btn-default btn-lg">More</a>
-		</div>
-	</div>
+<div class="row featureBox">
+  <div class="col-md-6">
+    <%= image_tag('home_small.jpg') %>
+  </div>
+  <div class="col-md-6">
+    <div class="featureBoxText">
+      <H2>Welcome to UMMA Exchange</H2>
+      <p>
+        Sed interdum nibh sapien, ut finibus tortor vehicula sed. Aliquam erat volutpat. In hac habitasse platea dictumst. Ut eleifend, nulla vel lobortis fringilla, purus magna dictum tortor, ac hendrerit leo turpis in nunc.
+      </p>
+      <p class="text-center">
+        <% if user_signed_in? %>
+          <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group" role="group">
+              <%= link_to('Your Dashboard', '/dashboard', class:'btn btn-default btn-lg btn-green')  %> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="btn-group" role="group">
+              <a class="btn btn-default btn-lg btn-green dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New &nbsp;<i class="fa fa-plus-circle fa-3" aria-hidden="true"></i></a>
+              <ul class="dropdown-menu">
+                <li><%= link_to('New Resource', new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
+                <li><%= link_to('New Collection', new_collection_path, class:'btn btn-xs btn-noBg')  %></li>
+              </ul>
+            </div>
+          </div>
+
+          <p><strong><a href="/user_guide#what_is_Exchange" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> What is UMMA Exchange?</a></strong></p>
+      <% else %>
+
+          <%= link_to('Login', new_user_session_path, class:'btn btn-default btn-lg btn-green')  %>
+          &nbsp;&nbsp;&nbsp;
+          <%= link_to('Register', new_user_registration_path, class:'btn btn-default btn-lg btn-green')  %>
+      <% end %>
+      </p>
+    </div>
+  </div>
+</div>
+<div class="fullDivideWrapper"><div class="fullDivide"></div></div>
+<div class="row hpFeatures">
+  <div class="col-sm-6">
+    <%
+      if (@featured_content_set && @featured_content_set.featured_content_set_items)
+    %>
+    <H1>Featured Collections</H1>
+
+    <%
+        @featured_content_set.featured_content_set_items.each do |item|
+    %>
+            <div class="row">
+              <div class="col-sm-10 col-sm-offset-2">
+                <%= item.resource.media_files.first.sourceable.preview :large %>
+                <h3><%= (item.title.chop.length > 0) ? item.title : item.resource.title %></H3>
+                <p><%= item.subtitle %></p>
+              </div>
+            </div>
+
+        <% end %>
+    <% end %>
+
+  </div>
+</div><!-- end row -->
+<!--<div class="row">
+  <div class="col-sm-12 text-center">
+    <br/><br/><a href="#" class="btn btn-default btn-lg">More</a>
+  </div>-->
+</div>

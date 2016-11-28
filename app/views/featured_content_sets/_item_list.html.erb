@@ -35,10 +35,10 @@
         </div>
     <% end %>
     <% if @featured_content_set.featured_content_set_items.count > 0 %>
-        <div class="xx">
+        <div id="set_contents_list">
           <H4><%= @featured_content_set.featured_content_set_items.count %> Item(s) in this set</H4>
           <% @featured_content_set.featured_content_set_items.each do |r| %>
-              <div>
+              <div class="setItem" data-featured_content_set_id="<%= r.featured_content_set_id %>" data-resource_id="<%= r.resource_id %>">
                 <%= link_to ((r.resource.is_resource) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.resource.title), get_resource_view_path(r.resource, user_signed_in?), target: "_blank" %>
                 <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, featured_content_sets_remove_set_item_path(@featured_content_set) + "?related=" + r.resource.id.to_s, {remote: true, class: :setItemsRemove}) %>
                 <% if (r.title.length > 0) %>
@@ -54,3 +54,8 @@
 
   </div>
 </div>
+<script type="text/javascript">
+  jQuery(document).ready(function() {
+    jQuery("#set_contents_list").sortable();
+  });
+</script>

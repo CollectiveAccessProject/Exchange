@@ -101,7 +101,8 @@ Rails.application.routes.draw do
   resources :featured_content_sets
   get '/featured_content_sets/:id/autocomplete_resource_title' => 'featured_content_sets#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_set_resource_title'
   post '/featured_content_sets/:id/add_set_item' => 'featured_content_sets#add_set_item', as: 'featured_content_sets_add_set_item'
-get '/featured_content_sets/:id/remove_set_item' => 'featured_content_sets#remove_set_item', as: 'featured_content_sets_remove_set_item'
+  get '/featured_content_sets/:id/remove_set_item' => 'featured_content_sets#remove_set_item', as: 'featured_content_sets_remove_set_item'
+  get '/featured_content_sets/:id/set_item_order' => 'featured_content_sets#set_item_order'
 
   # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'

@@ -5,5 +5,5 @@ class FeaturedContentSet < ActiveRecord::Base
 
   validates :title, :presence => true
 
-  has_many :featured_content_set_items
+  has_many :featured_content_set_items, -> { order 'featured_content_set_items.rank' }
 end
