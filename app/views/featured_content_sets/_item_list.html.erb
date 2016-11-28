@@ -1,4 +1,3 @@
-<div class="divider">&nbsp;</div>
 <div class="panel panel-primary">
   <div class="panel-body">
     <%= form_tag(featured_content_sets_add_set_item_path(@featured_content_set), remote: true, method: "post", format: :json, class: 'set_items', id: 'setItems') do |f| %>
@@ -35,8 +34,8 @@
         </div>
     <% end %>
     <% if @featured_content_set.featured_content_set_items.count > 0 %>
+        <H4><%= @featured_content_set.featured_content_set_items.count %> Item(s) in this set</H4>
         <div id="set_contents_list">
-          <H4><%= @featured_content_set.featured_content_set_items.count %> Item(s) in this set</H4>
           <% @featured_content_set.featured_content_set_items.each do |r| %>
               <div class="setItem" data-featured_content_set_id="<%= r.featured_content_set_id %>" data-resource_id="<%= r.resource_id %>">
                 <%= link_to ((r.resource.is_resource) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.resource.title), get_resource_view_path(r.resource, user_signed_in?), target: "_blank" %>
@@ -44,7 +43,7 @@
                 <% if (r.title.length > 0) %>
                     <br/><small>
                 <%= r.title %>
-                <%= r.subtitle %>
+                <%= r.subtitle.chop.length > 0 ? "<br/>".html_safe + r.subtitle : "" %>
               </small>
                 <% end %>
               </div>

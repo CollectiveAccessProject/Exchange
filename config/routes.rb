@@ -87,6 +87,7 @@ Rails.application.routes.draw do
   # TODO: make this POST
   get '/resources/:id/remove_resource_user_access' => 'resources#remove_user_access', as: "remove_resource_user_access"
 
+  get '/featured' => 'featured#index', as: 'featured'
 
   post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
   post '/favorites/:id/remove' => 'favorites#remove', as: 'remove_favorite'
