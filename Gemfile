@@ -76,6 +76,7 @@ gem 'paperclip-av-transcoder'
 gem 'dragonfly', '~> 1.0.12'
 
 # comments
+gem 'acts_as_commentable'
 gem 'acts_as_commentable_with_threading'
 
 gem 'will_paginate', '~> 3.1.0'
