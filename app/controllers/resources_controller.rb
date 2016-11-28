@@ -95,6 +95,12 @@ class ResourcesController < ApplicationController
       @new_parent = Resource.find(parent_id)
     end
 
+    # Set response pointer
+    # TODO: does user have access to resource this is in response to?
+    if ((in_response_to_resource_id = params[:in_response_to_resource_id].to_i) > 0)
+      @resource.in_response_to_resource_id = in_response_to_resource_id
+    end
+
     # Set child, if set, for display purposes in "new" form
     @child = nil
     if ((child_id = params[:child_id].to_i) > 0)
@@ -152,6 +158,12 @@ class ResourcesController < ApplicationController
         if (parent_id > 0)
           # TODO: Verify that current user has privs to do this
           prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create
+        end
+
+        # Set response pointer
+        # TODO: does user have access to resource this is in response to?
+        if ((in_response_to_resource_id = params[:in_response_to_resource_id].to_i) > 0)
+          @resource.in_response_to_resource_id = in_response_to_resource_id
         end
 
         # Set resource under newly created collection or resource
@@ -625,12 +637,12 @@ class ResourcesController < ApplicationController
     if ((current_user.has_role? :admin) || (current_user.has_role? :staff))
       params.require(:resource).permit(
           :slug, :title, :resource_type, :subtitle, :source_type, :source,
-          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :author_id
+          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id, :author_id
       )
     else
       params.require(:resource).permit(
           :slug, :title, :resource_type, :subtitle, :source_type, :source,
-          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text
+          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id
       )
     end
   end

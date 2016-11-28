@@ -8,9 +8,9 @@
         <% if (user_signed_in?) %>
             <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
 
-      <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+            <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
         <% end %>
-      <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
+        <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
       </div>
       <br style="clear: both;"/>
     </H4>
@@ -53,7 +53,7 @@
                     <h5>Copyright</h5>
                     <div><%= parent.get_license_type %>
                       <% if (parent.copyright_notes) %>
-                         (<%= parent.copyright_notes %>)
+                          (<%= parent.copyright_notes %>)
                       <% end  %>
                     </div>
                     </p>
@@ -73,121 +73,121 @@
     <!--<H3>UMMA Collection Object</H3>-->
     <H2><%= @resource.title %></H2>
     <div class="row">
-		<div class="col-sm-8">
-			<div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
-			  <!-- Wrapper for slides -->
-					  <div class="carousel-inner" role="listbox">
-						<%
-						  counter = 1
-						  @resource.media_files.each do |f|
-						%>
-							<div class="item <%= (counter == 1) ? 'active' : '' %>">
-							  <%
-								if f.sourceable
-							  %>
-								  <%= f.sourceable.preview :large  %>
-								  <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
-								<% end %>
-							</div>
-						<%
-						  counter = counter + 1
-						  end
-						%>
-					  </div><!-- end carousel-inner -->
-					  <%
-						if @resource.media_files.count > 1
-					  %>
-						  <!-- Left and right controls -->
-						  <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
-							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-							<span class="sr-only">Previous</span>
-						  </a>
-						  <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
-							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-							<span class="sr-only">Next</span>
-						  </a>
-					  <% end %>
-			</div><!-- end resourceCarousel -->
-		</div><!-- end col -->
-		<div class="col-sm-4 collectionObjectDetailText">
-			<%= sanitize(@resource.parsed_body_text) %>
-		</div>
-	</div><!-- end row -->
+      <div class="col-sm-8">
+        <div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner" role="listbox">
+            <%
+              counter = 1
+              @resource.media_files.each do |f|
+            %>
+                <div class="item <%= (counter == 1) ? 'active' : '' %>">
+                  <%
+                    if f.sourceable
+                  %>
+                      <%= f.sourceable.preview :large  %>
+                      <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
+                  <% end %>
+                </div>
+            <%
+              counter = counter + 1
+              end
+            %>
+          </div><!-- end carousel-inner -->
+          <%
+            if @resource.media_files.count > 1
+          %>
+              <!-- Left and right controls -->
+              <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+          <% end %>
+        </div><!-- end resourceCarousel -->
+      </div><!-- end col -->
+      <div class="col-sm-4 collectionObjectDetailText">
+        <%= sanitize(@resource.parsed_body_text) %>
+      </div>
+    </div><!-- end row -->
     <div class="row" id="detailTags">
       <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-	<!--	<div class="row" id="detailComments"> -->
-		  <div class="col-sm-6">
-			<% # if @resource.comments.count > 0 %>
-				<a role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
-				<div id="commentPanel" class="detailComments collapse">
-				<% @resource.comments.each do |c| %>
-					<div>
-						<%= c.comment %>
-						<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
-					</div>
-				<% end %>
-				<%= form_tag '/resources/add_comment' do %>
-					<%= hidden_field_tag 'id', @resource.id %>
-					<div class="form-group">
-					  <label>Add Comment</label>
-					  <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-					</div>
-					<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-				<% end %>
-				</div>
-			<% # end %>
-		  </div>
-	<% end %>
-    <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
-		<div class="col-sm-6">
-			<a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
-			<div id="tagPanel" class="collapse detailComments">
-				<div class="row">
-					<div class="col-sm-8">
-						<h5>Tags</h5>
-						<%# @resource.tags.map(&:tag).join(", ") %>
-<%				
-						tag_array = []
-						@resource.tags.each do |t|
-							tag_array << { :t_tag => t.tag.capitalize }
-						end 
-						tag_array.sort_by!{|a| a[:t_tag]}
-						tag_array.each do |l|
-%>
-							<%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
-						<% end %>
-						<%= form_tag '/resources/add_tag' do %>
-						<%= hidden_field_tag 'id', @resource.id %>
-						<br/>
-						<div class="form-group">
-							<label>Add Tag</label>
-							<%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-						</div>
-						<%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-						<% end %>
-					</div>
-				<% if @resource.vocabulary_terms.count > 0 %>
-					<div class="col-sm-4">
-						<h5>Keywords</h5>
-						<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-<%				
-						key_array = []
-						@resource.resources_vocabulary_terms.each do |v|
-							v_user = User.find(v.user_id)
-							key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => v_user.name }
-						end 
-						key_array.sort_by!{|a| a[:v_term]}
-						key_array.each do |l|
-%>
-							<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><small> &mdash; by <em><%= l[:v_user_name] %></em></small><br/>
-						<% end %>
-					</div>
-				<% end %>
-				</div>
-		  </div>
-		</div>
-	  <% end %>
-	
+          <!--	<div class="row" id="detailComments"> -->
+          <div class="col-sm-6">
+            <% # if @resource.comments.count > 0 %>
+            <a role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
+            <div id="commentPanel" class="detailComments collapse">
+              <% @resource.comments.each do |c| %>
+                  <div>
+                    <%= c.comment %>
+                    <br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+                  </div>
+              <% end %>
+              <%= form_tag '/resources/add_comment' do %>
+                  <%= hidden_field_tag 'id', @resource.id %>
+                  <div class="form-group">
+                    <label>Add Comment</label>
+                    <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+                  </div>
+                  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+              <% end %>
+            </div>
+            <% # end %>
+          </div>
+      <% end %>
+      <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+          <div class="col-sm-6">
+            <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
+            <div id="tagPanel" class="collapse detailComments">
+              <div class="row">
+                <div class="col-sm-8">
+                  <h5>Tags</h5>
+                  <%# @resource.tags.map(&:tag).join(", ") %>
+                  <%
+                    tag_array = []
+                    @resource.tags.each do |t|
+                      tag_array << { :t_tag => t.tag.capitalize }
+                    end
+                    tag_array.sort_by!{|a| a[:t_tag]}
+                    tag_array.each do |l|
+                  %>
+                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
+                  <% end %>
+                  <%= form_tag '/resources/add_tag' do %>
+                      <%= hidden_field_tag 'id', @resource.id %>
+                      <br/>
+                      <div class="form-group">
+                        <label>Add Tag</label>
+                        <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+                      </div>
+                      <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+                  <% end %>
+                </div>
+                <% if @resource.vocabulary_terms.count > 0 %>
+                    <div class="col-sm-4">
+                      <h5>Keywords</h5>
+                      <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+                      <%
+                        key_array = []
+                        @resource.resources_vocabulary_terms.each do |v|
+                          v_user = User.find(v.user_id)
+                          key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => v_user.name }
+                        end
+                        key_array.sort_by!{|a| a[:v_term]}
+                        key_array.each do |l|
+                      %>
+                          <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><small> &mdash; by <em><%= l[:v_user_name] %></em></small><br/>
+                      <% end %>
+                    </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+      <% end %>
+
     </div>
   </div><!-- end col -->
   <div class="col-sm-2 resourceSidePanel">
@@ -209,68 +209,70 @@
           <% end %>
           <a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
         </div>
-            <div class="unit">
-            <% rel_resource = @resource.get_collection_object_references.map {|v| v} %>
-            <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= rel_resource.count %> Related Resource<%= rel_resource.count == 1 ? '' : 's' %></H4></a>
-              <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">      		
-            		<% rel_resource.each do |v| %>
-                    <div>
-                      <%= link_to v.title, get_resource_view_path(v.id, user_signed_in?) %>
-                      <% if(v.parents.count > 0) %>
-                      	<br />
-                      	<% if(v.parents.count == 1) %>
-                      	  <%= "(Part of: " + v.parents.first.title + ")" %>
-                      	<% else %>
-                      	  <%= "(Part of " + v.parents.count.to_s + " Learning Collections)" %>
-                      	<% end %>
+        <div class="unit">
+          <% rel_resource = @resource.get_collection_object_references.map {|v| v} %>
+          <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= rel_resource.count %> Related Resource<%= rel_resource.count == 1 ? '' : 's' %></H4></a>
+          <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">
+            <% rel_resource.each do |v| %>
+                <div>
+                  <%= link_to v.title, get_resource_view_path(v.id, user_signed_in?) %>
+                  <% if(v.parents.count > 0) %>
+                      <br />
+                      <% if(v.parents.count == 1) %>
+                          <%= "(Part of: " + v.parents.first.title + ")" %>
+                      <% else %>
+                          <%= "(Part of " + v.parents.count.to_s + " Learning Collections)" %>
                       <% end %>
-                    </div>
-                <% end %>
-              </div>
-            </div><!-- end unit -->
+                  <% end %>
+                </div>
+            <% end %>
+          </div>
+        </div><!-- end unit -->
         <% if(@resource.settings(:user_interaction).allow_tags > 0) %>
             <% if @resource.tags.count > 0 %>
                 <div class="unit">
                   <H4>Tags</H4>
                   <%# @resource.tags.map(&:tag).join(", ") %>
-<%				
-					tag_array = []
-					@resource.tags.each do |t|
-						tag_array << { :t_tag => t.tag.capitalize }
-					end 
-					tag_array.sort_by!{|a| a[:t_tag]}
-					tag_array.each do |l|
-%>
-						<%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
-					<% end %>
+                  <%
+                    tag_array = []
+                    @resource.tags.each do |t|
+                      tag_array << { :t_tag => t.tag.capitalize }
+                    end
+                    tag_array.sort_by!{|a| a[:t_tag]}
+                    tag_array.each do |l|
+                  %>
+                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
+                  <% end %>
                 </div>
             <% end %>
             <% if @resource.vocabulary_terms.count > 0 %>
-				<div class="unit">
-					<h4>Keywords</h4>
-					<%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-<%				
-					key_array = []
-					@resource.resources_vocabulary_terms.each do |v|
-						key_array << { :v_term => v.vocabulary_terms.term.capitalize }
-					end 
-					key_array.sort_by!{|a| a[:v_term]}
-					key_array.each do |l|
-%>
-						<%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
-					<% end %>
-				</div>
-			<% end %>
+                <div class="unit">
+                  <h4>Keywords</h4>
+                  <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+                  <%
+                    key_array = []
+                    @resource.resources_vocabulary_terms.each do |v|
+                      key_array << { :v_term => v.vocabulary_terms.term.capitalize }
+                    end
+                    key_array.sort_by!{|a| a[:v_term]}
+                    key_array.each do |l|
+                  %>
+                      <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
+                  <% end %>
+                </div>
+            <% end %>
         <% end %>
         <% if (@resource.copyright_license) %>
             <div class="unit">
               <h4>Copyright</h4>
               <%= @resource.get_license_type %>
               <% if (@resource.copyright_notes.present?) %>
-	        (<%= @resource.copyright_notes %>)
+                  (<%= @resource.copyright_notes %>)
               <% end  %>
             </div>
         <% end %>
+
+        <%= render(partial: 'resources/resource_responses', layout: false) %>
       </div>
     </div>
   </div><!-- end col -->

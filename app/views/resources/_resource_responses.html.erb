@@ -1,0 +1,24 @@
+<% if (@resource.in_response_to_resource_id && ((@resource.in_response_to.access == 1) || (@resource.in_response_to.is_collection_object))) %>
+    <div class="unit">
+      <h4>In response to</h4>
+      <%= link_to(sanitize(@resource.in_response_to.title), @resource.in_response_to) %>
+    </div>
+<% end %>
+<% if (@resource.responses && (@resource.responses.length > 0)) %>
+
+    <% buf = '' %>
+    <% @resource.responses.each do |r| %>
+        <%
+          next if ((r.access == 0) && (!r.is_collection_object))
+        %>
+        <%
+          buf += link_to(sanitize(r.title), r)
+        %>
+    <% end %>
+    <% if (buf.chop.length > 0) %>
+        <div class="unit">
+          <h4>Responses</h4>
+          <%= buf %>
+        </div>
+    <% end %>
+<% end %>

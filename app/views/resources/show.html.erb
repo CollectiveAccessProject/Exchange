@@ -9,3 +9,5 @@
     render :partial => "show_exhibition"
   end
 %>
+
+<%= link_to("Respond to this resource", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>

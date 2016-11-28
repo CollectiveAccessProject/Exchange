@@ -12,6 +12,11 @@
           (@resource.is_resource) ? 'New Resource' : 'New Collection'
         end
       %>
+      <%=
+        if (!@resource.in_response_to_resource_id.nil? && (@resource.in_response_to_resource_id > 0))
+          (" (In response to " + link_to( strip_tags(@resource.in_response_to.title), @resource.in_response_to) + ")").html_safe
+        end
+      %>
     </H4>
 	</div><!-- end col -->
 </div><!-- end row -->

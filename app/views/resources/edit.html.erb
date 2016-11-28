@@ -19,7 +19,13 @@ function embedMedia(slug) {
 	   else
 	  	strip_tags(@resource.title)
 	  end
-      %></span>
+      %>
+      <%=
+        if (!@resource.in_response_to_resource_id.nil? && (@resource.in_response_to_resource_id > 0))
+          (" (In response to " + link_to(strip_tags(@resource.in_response_to.title), @resource.in_response_to) + ")").html_safe
+        end
+      %>
+    </span>
       <%=
            # if (@resource.parents.length == 0)
            	 button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
