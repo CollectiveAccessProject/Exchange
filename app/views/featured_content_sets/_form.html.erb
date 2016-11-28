@@ -8,8 +8,11 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <%= r.input :slug %>
+
             <%= r.input :title, :input_html => { rows: 2 } %>
+            <% if (!@featured_content_set.id.nil?) %>
+            <%= r.input :slug %>
+            <% end %>
             <%= r.input :subtitle, :input_html => { rows: 2 } %>
             <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
             <%= r.input :body_text, :input_html => { rows: 8  } %>
