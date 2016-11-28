@@ -1,0 +1,2 @@
+module FeaturedContentSetsHelper
+end

@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-sm-12">
+    <H4><span id="resource_title_header">Editing featured content set <em><%= @featured_content_set.title %></em></span>
+      <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Set list'.html_safe, '/featured_content_sets', class: 'btn btn-default btn-xs pull-right' %>
+    </H4>
+  </div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+  <div class="col-md-12">
+    <div id="resources-status">
+      <div class="flash-notice" id="resources-status-message">
+
+      </div>
+    </div>
+
+    <%= render 'form' %>
+
+  </div><!-- end row -->
+</div><!-- end col -->

@@ -1,0 +1,37 @@
+<%= simple_form_for @featured_content_set do |r| %>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <H3><%= (@featured_content_set.id) ? 'Set' : 'New set' %> details </H3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <%= r.input :title, :input_html => { rows: 2 } %>
+            <%= r.input :subtitle, :input_html => { rows: 2 } %>
+            <%= r.input :body_text, :input_html => { rows: 8  } %>
+            <%=
+              #r.input :rank, :input_html => {}
+            %>
+            <% if(!@featured_content_set.created_at.nil?) %>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Set created</label></div>
+                  <div class="col-md-6"><%= @featured_content_set.created_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+            <% end %>
+            <% if(!@featured_content_set.updated_at.nil?) %>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Set last updated</label></div>
+                  <div class="col-md-6"><%= @featured_content_set.updated_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+            <% end %>
+          </div><!-- end col -->
+        </div><!-- end panel-body -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-right"><%= r.button :submit, "Save" %></div>
+          </div><!-- end col -->
+        </div>
+      </div><!-- end panel -->
+<% end %>

@@ -88,16 +88,19 @@ Rails.application.routes.draw do
   get '/resources/:id/remove_resource_user_access' => 'resources#remove_user_access', as: "remove_resource_user_access"
 
 
-
   post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
   post '/favorites/:id/remove' => 'favorites#remove', as: 'remove_favorite'
-
 
 
   # user admin
   get '/users/:id' => 'users#edit'
   resources :users
 
+  # featured sets admin
+  get '/featured_content_sets' => 'featured_content_sets#index'
+  resources :featured_content_sets
+
+  # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 
   # The priority is based upon order of creation: first created -> highest priority.
