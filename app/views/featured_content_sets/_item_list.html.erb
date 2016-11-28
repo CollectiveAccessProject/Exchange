@@ -39,6 +39,7 @@
           <% @featured_content_set.featured_content_set_items.each do |r| %>
               <div class="setItem" data-featured_content_set_id="<%= r.featured_content_set_id %>" data-resource_id="<%= r.resource_id %>">
                 <%= link_to ((r.resource.is_resource) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.resource.title), get_resource_view_path(r.resource, user_signed_in?), target: "_blank" %>
+                <a href="#" data-toggle="modal" data-target="#item_<%= r.id.to_s %>" class="setItemsEdit"><i class="fa fa-edit" aria-hidden="true"></i></a>
                 <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, featured_content_sets_remove_set_item_path(@featured_content_set) + "?related=" + r.resource.id.to_s, {remote: true, class: :setItemsRemove}) %>
                 <% if (r.title.length > 0) %>
                     <br/><small>
@@ -47,6 +48,7 @@
               </small>
                 <% end %>
               </div>
+              <%= render partial: 'featured_content_sets/edit_item', locals: { modal_id: "item_" + r.id.to_s, item: r} %>
           <% end %>
         </div>
     <% end %>
