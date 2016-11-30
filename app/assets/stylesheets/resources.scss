@@ -183,6 +183,10 @@ $white:#FFFFFF;
 }
 
 /*  DETAIL/PREVIEW */
+.author_show{
+	display: none;
+	font-style: italic;
+}
 .detailButtons{
 	padding-top:10px;
 	a{
