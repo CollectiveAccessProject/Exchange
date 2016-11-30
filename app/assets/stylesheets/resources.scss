@@ -654,13 +654,21 @@ $white:#FFFFFF;
 	-o-transition: all .8s linear;
 	transition: all .8s linear;
 }
+.moWrapper{
+	width: 100%;
+	height: 100%;
+}
 .moContainer{
 	overflow-x: scroll;
 	width: 100%;
+	overflow-y: hidden;
 }
 .moResults{
 	padding: 0;
 	white-space: nowrap;
+}
+.moResults::-webkit-scrollbar, .moContainer::-webkit-scrollbar{
+	display: none;
 }
 .moRelated{
 	padding: 10px 10px 0 10px;
