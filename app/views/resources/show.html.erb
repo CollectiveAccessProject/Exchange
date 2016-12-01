@@ -1,3 +1,15 @@
+<%
+	response_link_text = ""
+	  if (@resource.is_resource)
+		response_link_text = "resource"
+	  elsif(@resource.is_collection)
+	    response_link_text = "learning collection"
+	  elsif(@resource.is_collection_object)
+	    response_link_text = "collection object"
+	  else
+	    response_link_text = "exhibition"
+	  end
+%>
 <%=
   if (@resource.is_resource)
     render :partial => "show_resource"
@@ -9,5 +21,10 @@
     render :partial => "show_exhibition"
   end
 %>
-
-<%= link_to("Respond to this resource", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
+<% if (!@resource.is_resource && (@resource.settings(:user_interaction).allow_responses > 0))  %>
+	<div class="row">
+		<div class="col-sm-12 text-center">
+			<br/><br/><%= link_to("Respond to this " + response_link_text, new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
+		</div>
+	</div>
+<% end %>

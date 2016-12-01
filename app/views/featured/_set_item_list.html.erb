@@ -1,24 +1,33 @@
-<div class="row">
+<div class="row featuredTop">
   <div class="col-md-12">
     <h2><%= set.title %> </h2>
     <% if (set.subtitle.chop.length > 0) %>
-        <h4><%= set.subtitle %></h4>
+        <h3><%= set.subtitle %></h3>
+    <% end %>
+    <% if (set.body_text.chop.length > 0) %>
+        <h4><%= set.body_text %></h4>
     <% end %>
   </div>
 </div>
-<% if (set.body_text.chop.length > 0) %>
-    <div class="row">
-      <div class="col-md-12">
-        <%= set.body_text %>
-      </div>
-    </div>
-<% end %>
 <div class="row">
+<%
+	i = 0
+%>
   <% items.each do |item| %>
-      <div class="col-md-6">
+<%
+		i = i+1;
+%>
+      <div class="col-sm-4 featuredItemCol">
+      	<h3><%= (item.title.chop.length > 0) ? item.title : item.resource.title %></H3>
         <%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
-        <h3><%= (item.title.chop.length > 0) ? item.title : item.resource.title %></H3>
         <p><%= item.subtitle %></p>
       </div>
+<%
+		if ((i % 3) == 0)
+%>
+			</div><div class="row">
+<%
+		end
+%>
   <% end %>
 </div>

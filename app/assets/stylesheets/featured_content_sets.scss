@@ -1,3 +1,72 @@
 // Place all the styles related to the featured_content_sets controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$font-family-sans-serif:'Hind', sans-serif;
+$font-family-sans-serif2:'Oswald', sans-serif;
+$blue:#10069f;
+$gray:#8a898a;
+$bluegray:#337ab7;
+$yellow:#f9ce29;
+$green:#419276;
+$md_gray:#DEDEDE;
+$lt_gray:#eaeaeb;
+$black:#000000;
+$white:#FFFFFF;
+$teal:#419276;
+
+@media (min-width: 992px) {
+	#set_contents{
+		padding-left:50px;
+	}
+}
+#featuredList{
+	.panel-heading{
+		background-color:$blue;
+		a{
+			color:#FFF !important;
+		}
+	}
+}
+.featuredTop{
+	margin-bottom:20px;
+	h3{
+		text-transform:none;
+	}
+	h4{
+		max-height:250px;
+		font-size:13px;
+		line-height:1.2em;
+		overflow-y:scroll;
+		font-weight:normal;
+		font-family: $font-family-sans-serif;
+	}
+}
+.featuredItemCol{
+	margin-bottom:20px;
+	img{
+		width:100%;
+		height:auto;
+	}
+	h3{
+		text-transform:none;
+		font-size:14px;
+	}
+	p{
+		padding-top:5px;
+		font-size:11px;
+	}
+}
+.featuredAdminSetListRow{
+	font-size:13px;
+	div{
+		padding-top:10px;
+		padding-bottom:10px;
+	}
+	div:first-of-type{
+		border-bottom:1px solid $lt_gray;
+	}
+	.btn{
+		margin-top:15px;
+	}	
+}

@@ -560,9 +560,14 @@
           <% if @resource.roles.count > 0 %>
               <div class="unit">
                 <h4>Affiliations</h4>
-                <% @resource.roles.each do |r| %>
-                    <%= link_to get_role_for_display(r.name).titleize, '/quick_search/query?utf8=✓&q=role:' + r.name %><br/>
-                <% end %>
+                <%= 
+                	buf = ''
+                	Rails.application.config.x.user_roles.each do |k,v|
+                		buf += link_to k.to_s, '/quick_search/query?utf8=✓&q=role:' + v.to_s
+                		buf += '<br/>'
+                	end
+                	sanitize(buf)
+                %>
               </div>
           <% end %>
           <div class="unit authorLink">
@@ -592,6 +597,9 @@
         <%= render(partial: 'resources/resource_responses', layout: false) %>
       </div>
     </div>
+<% if (@resource.settings(:user_interaction).allow_responses > 0)  %>
+	<div class="text-center"><%= link_to("Respond to<br/>this resource".html_safe, new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %></div>
+<% end %>
   </div><!-- end col -->
 </div><!-- end row -->
 <script>

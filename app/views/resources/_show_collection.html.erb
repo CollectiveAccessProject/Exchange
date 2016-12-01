@@ -17,91 +17,95 @@
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
+
+
+
 <div class="panel panel-default">
-  <div class="panel-body">
-    <div class="row">
-      <div class="col-sm-10">
-        <div class="row">
-          <div class="col-sm-12">
-            <p id="notice"><%= notice %></p>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-sm-10">
+				<div class="row">
+				  <div class="col-sm-12">
+					<p id="notice"><%= notice %></p>
 
-            <H2><%= sanitize(@resource.title) %></H2>
+					<H2><%= sanitize(@resource.title) %></H2>
 
-            <H3><%= sanitize(@resource.subtitle) %></H3>
-          </div>
-        </div>
-        <div class="row">
-          <% if (@resource.settings(:text_placement).placement.to_s == "above") %>
-              <div class="col-sm-12">
-          <% else %>
-              <div class="col-sm-4">
-          <% end %>
-          <div class="detailBodyText">
-            <%= (@resource.body_text) ? sanitize(@resource.body_text) : "" %>
-          </div>
-          </div>
-          <% if (@resource.settings(:text_placement).placement.to_s == "above") %>
-              <div class="col-sm-12">
-          <% else %>
-              <div class="col-sm-8">
-          <% end %>
-          <% if(@resource.child_count > 0) %>
-              <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Item" : @resource.child_count.to_s + " Items"  %> in this Learning Collection</h5>
-              <% if (@resource.settings(:text_placement).placement.to_s == "above")
-                   col = 3
-                 else
-                   col = 4
-                 end %>
-              <%= render :partial => "resource_list_grid", locals: { width: col} %>
-          <% end %>
-          </div>
-          </div>
-          </div>
-          <div class="col-sm-2 detailButtons text-right">
-            <div class="row">
-              <div class="col-sm-12">
-                <a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
-                <a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
-                <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-                    <a href="#commentButton"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
-                <% end %>
-                <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
-              </div>
-            </div>
+					<H3><%= sanitize(@resource.subtitle) %></H3>
+				  </div>
+				</div>
+				<div class="row">
+				  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>
+					  <div class="col-sm-12">
+				  <% else %>
+					  <div class="col-sm-4">
+				  <% end %>
+					  <div class="detailBodyText">
+						<%= (@resource.body_text) ? sanitize(@resource.body_text) : "" %>
+					  </div>
+				  </div>
+				  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>
+					  <div class="col-sm-12">
+				  <% else %>
+					  <div class="col-sm-8">
+				  <% end %>
+				  <% if(@resource.child_count > 0) %>
+					  <h5><%= (@resource.child_count == 1) ? @resource.child_count.to_s + " Item" : @resource.child_count.to_s + " Items"  %> in this Learning Collection</h5>
+					  <% if (@resource.settings(:text_placement).placement.to_s == "above")
+						   col = 3
+						 else
+						   col = 4
+						 end %>
+					  <%= render :partial => "resource_list_grid", locals: { width: col} %>
+				  <% end %>
+					</div><!-- end col -->
+				</div><!-- end row -->
+      		</div><!-- end col 10 -->
+      		<div class="col-sm-2 detailButtons text-right">
+				<div class="row">
+				  <div class="col-sm-12">
+					<a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
+					<a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
+					<% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+						<a href="#commentButton"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+					<% end %>
+					<span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
+				  </div>
+				</div><!-- end row-->
 
 
-            <div class="row">
-              <div class="text-right col-sm-12">
-                <div class="unit authorLink">
-                  <% if @resource.author_id %>
-                      <h5>Created by</h5><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author:' + @resource.get_author_name.gsub(/\([\S]+\)/, '') %>
-                  <% else %>
-                      <h5>Created by</h5><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:' + @resource.user.name %>
-                  <% end %>
-                </div>
-                <h5>Last Updated</h5>
-                <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
-                    <%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
-                <% else %>
-                    <%= time_ago_in_words(@resource.updated_at) + ' ago' %>
-                <% end %>
-                <% if (@resource.copyright_license) %>
-                    <h5>Copyright</h5>
-                    <div><%= @resource.get_license_type %>
-                      <% if (@resource.copyright_notes.present?) %>
-                          (<%= @resource.copyright_notes %>)
-                      <% end  %>
-                    </div>
-                    </div>
+            	<div class="row">
+				  <div class="text-right col-sm-12">
+						<div class="unit authorLink">
+						  <% if @resource.author_id %>
+							  <h5>Created by</h5><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author:' + @resource.get_author_name.gsub(/\([\S]+\)/, '') %>
+						  <% else %>
+							  <h5>Created by</h5><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:' + @resource.user.name %>
+						  <% end %>
+						</div>
+						<h5>Last Updated</h5>
+						<% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
+							<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
+						<% else %>
+							<%= time_ago_in_words(@resource.updated_at) + ' ago' %>
+						<% end %>
+						<% if (@resource.copyright_license) %>
+							<h5>Copyright</h5>
+							<div><%= @resource.get_license_type %>
+							  <% if (@resource.copyright_notes.present?) %>
+								  (<%= @resource.copyright_notes %>)
+							  <% end  %>
+							</div>
 
-                <% end %>
+						<% end %>
 
-                <%= render(partial: 'resources/resource_responses', layout: false) %>
-                </div><!-- end col -->
-          </div><!-- end row -->
-        </div>
-      </div>
-
+						<%= render(partial: 'resources/resource_responses', layout: false) %>
+				  </div><!-- end col -->
+            	</div><!-- end row -->
+        	</div><!-- end col 2 -->
+      </div><!-- end row -->
+</div><!-- end panel-body --></div><!-- end panel -->
+      
+      
       <div class="row">
         <% if @resource.related_resources.count > 0 %>
             <div class="col-sm-3 detailRelatedContentBlock">
@@ -168,7 +172,6 @@
             </div><!-- end col -->
         <% end %>
       </div>
-    </div>
     <!--	<div class="row" id="relatedItems">
         <div class="col-sm-12">
           <a role="button" data-toggle="collapse" href="#relatedPanel"><h4>Related Resources and Collections</h4></a>
@@ -178,31 +181,31 @@
     <% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
 
         <div class="row" id="detailTags">
-          <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-              <!--	<div class="row" id="detailComments"> -->
-              <div class="col-sm-6">
-                <% # if @resource.comments.count > 0 %>
-                <a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
-                <div id="commentPanel" class="detailComments collapse">
-                  <% @resource.comments.each do |c| %>
-                      <div>
-                        <%= c.comment %>
-                        <br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
-                      </div>
-                  <% end %>
-                  <%= form_tag '/resources/add_comment' do %>
-                      <%= hidden_field_tag 'id', @resource.id %>
-                      <div class="form-group">
-                        <label>Add Comment</label>
-                        <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-                      </div>
-                      <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-                  <% end %>
-                </div>
-                <% # end %>
-              </div>
+		  <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+			  <!--	<div class="row" id="detailComments"> -->
+			  <div class="col-sm-6">
+				<% # if @resource.comments.count > 0 %>
+				<a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
+				<div id="commentPanel" class="detailComments collapse">
+				  <% @resource.comments.each do |c| %>
+					  <div>
+						<%= c.comment %>
+						<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+					  </div>
+				  <% end %>
+				  <%= form_tag '/resources/add_comment' do %>
+					  <%= hidden_field_tag 'id', @resource.id %>
+					  <div class="form-group">
+						<label>Add Comment</label>
+						<%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+					  </div>
+					  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+				  <% end %>
+				</div>
+				<% # end %>
+			  </div>
 
-          <% end %>
+		  <% end %>
           <script>
           	$(document).ready(function(){
 				$('.tag_keyword').hover(
@@ -250,14 +253,15 @@
                             end
                             key_array.sort_by!{|a| a[:v_term]}
                             key_array.each do |l|
-                          %>
+%>
                               <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] %></small></span><br/>
-                        </div>
-                          <% end %>
+
+                           <% end %>
+                        </div><!-- end col -->
                     <% end %>
-                  </div>
-                </div>
-              </div>
+                  </div><!-- end row -->
+                </div><!-- end tagPanel -->
+            </div><!-- end col 6 -->
           <% end %>
-        </div>
+        </div><!-- end row -->
     <% end %>

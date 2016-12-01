@@ -1,6 +1,11 @@
 class FeaturedController < ApplicationController
   def index
     @featured_content_sets = FeaturedContentSet.where(access: 1)
+    @id = params[:id]
+    if(@id)
+    	@set = FeaturedContentSet.where(access: 1, id: params[:id]).first
+    	@set_items = @set.featured_content_set_items
+    end
   end
 
   def get_set_contents

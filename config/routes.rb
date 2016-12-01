@@ -88,6 +88,7 @@ Rails.application.routes.draw do
   get '/resources/:id/remove_resource_user_access' => 'resources#remove_user_access', as: "remove_resource_user_access"
 
   get '/featured' => 'featured#index', as: 'featured'
+  get '/featured/:id' => 'featured#index', as: 'featured_load_feature'
   get '/featured/:id/get_set_contents' => 'featured#get_set_contents', as: 'featured_get_set_contents'
 
   post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
