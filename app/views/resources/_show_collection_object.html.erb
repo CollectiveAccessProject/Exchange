@@ -157,12 +157,12 @@
                   <%
                     tag_array = []
                     @resource.tags.each do |t|
-                      tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id }
+                      tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id, :t_updated => t.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
                     end
                     tag_array.sort_by!{|a| a[:t_tag]}
                     tag_array.each do |l|
                   %>
-                      <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] %></small></span><br/>
+                      <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] + ' (' + l[:t_updated] + ')' %></small></span><br/>
                   <% end %>
                   <%= form_tag '/resources/add_tag' do %>
                       <%= hidden_field_tag 'id', @resource.id %>
@@ -181,13 +181,17 @@
                       <%
                         key_array = []
                         @resource.resources_vocabulary_terms.each do |v|
-                          v_user = User.find(v.user_id)
-                          key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => v_user.name }
+                          if(v.user_id)
+                            v_user = User.find(v.user_id)
+                            k_user_name = v_user.name
+                          end
+                          key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => k_user_name, :v_updated => v.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
+
                         end
                         key_array.sort_by!{|a| a[:v_term]}
                         key_array.each do |l|
                       %>
-                          <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] %></small></span><br/>
+                          <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] + ' (' + l[:v_updated] + ')' %></small></span><br/>
                       <% end %>
                     </div>
                 <% end %>
