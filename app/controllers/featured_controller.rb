@@ -1,16 +1,22 @@
 class FeaturedController < ApplicationController
   def index
     @featured_content_sets = FeaturedContentSet.where(access: 1)
-    @id = params[:id]
-    if(!@id)
+    @slug = params[:slug]
+    if(!@slug)
     	@featured_content_sets.each do |s|
-			@id = s.id
+			@slug = s.slug
 			break
 		end
     end
-    if(@id)
-    	@set = FeaturedContentSet.where(access: 1, id: @id).first
-    	@set_items = @set.featured_content_set_items
+    if(@slug)
+    	@set = FeaturedContentSet.where(access: 1, slug: @slug).first
+    	if(!@set)
+    		@set = FeaturedContentSet.where(access: 1, id: @slug).first
+    	end
+    	if(@set)
+    		@set_items = @set.featured_content_set_items
+    		@id=@set.id
+    	end
     end
   end
 
