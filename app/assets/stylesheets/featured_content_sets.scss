@@ -23,8 +23,17 @@ $teal:#419276;
 #featuredList{
 	.panel-heading{
 		background-color:$blue;
+		position:relative;
+		padding-left:20px;
 		a{
 			color:#FFF !important;
+		}
+		.featureArrow{
+			display:none;
+			font-size:13px;
+			position:absolute;
+			left:5px;
+			top:12px;
 		}
 	}
 }
