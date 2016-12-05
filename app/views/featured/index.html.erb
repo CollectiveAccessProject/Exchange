@@ -1,12 +1,42 @@
 <div class="row">
-  <div class="col-md-2">
-    <h2>Featured</h2>
+  <div class="col-md-3">
+  	<h2>Featured</h2>
+    <div class="panel-group" id="featuredList">
 
-    <% @featured_content_sets.each do |s| %>
-        <%= link_to(s.title, featured_get_set_contents_path(s), { remote: true, class: "loadSet"}) %><br/>
-    <% end %>
+		<% @featured_content_sets.each do |s| %>
+			<div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-triangle-right featureArrow featureArrow<%= s.id %>"></span> <%= link_to(s.title, featured_get_set_contents_path(s), { remote: true, class: "loadSet", :onclick => "highlightSideNav('" + s.id.to_s + "'); return false;"}) %></h3></div>
+		<% end %>
+	</div>
   </div>
-  <div class="col-md-10" id="set_contents">
-
+  <div class="col-md-9" id="set_contents">
+<%
+	if @id
+%>
+	<%= render :partial => 'set_item_list.html.erb', locals: { set: @set, items: @set_items } %>
+<%
+	else
+%>
+		<br/><br/><p><span class="glyphicon glyphicon-arrow-left"></span> Click on a title to start exploring featured resources</p>
+<%
+	end
+%>
   </div>
 </div>
+<script>
+	jQuery(document).ready(function() {	
+<%
+	if @id
+%>
+		$('.featureArrow<%= @id %>').show();
+<%
+	end
+%>
+	});
+	function highlightSideNav(id){
+		$('.featureArrow').hide();
+		$('.featureArrow' + id).show();
+	}
+</script>
+
+
+

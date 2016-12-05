@@ -115,7 +115,7 @@
                         <%=
                           # this renders a bootstrap model that is triggered if you click on the preview above
                           # it's in a partial because it's about a billion nested divs :-)
-                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
                       </div><!-- end col -->
                   <%
@@ -159,7 +159,7 @@
                         <%=
                           # this renders a bootstrap model that is triggered if you click on the preview above
                           # it's in a partial because it's about a billion nested divs :-)
-                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
                       </div><!-- end col -->
                   <%
@@ -233,7 +233,7 @@
                                   # this renders a bootstrap model that is triggered if you click on the preview above
                                   # it's in a partial because it's about a billion nested divs :-)
 
-                                  render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+                                  render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                                 %>
                             <%
                               counter = counter + 1
@@ -282,7 +282,7 @@
                           end
                         %>
                         <%=
-                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false }
+                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
                     <%
                       end
@@ -367,23 +367,31 @@
                 </div>
               </div>
           <% end %>
+          <script>
+          	$(document).ready(function(){
+				$('.tag_keyword').hover(
+				function(){ $(this).next(".author_show").show()},
+				function(){$(this).next(".author_show").hide()}
+				);
+			})
+		  </script>
           <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
               <div class="col-sm-6">
                 <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
                 <div id="tagPanel" class="collapse detailComments">
                   <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-<%= @resource.vocabulary_terms.count > 0 ? '6' : '12' %>">
                       <h5>Tags</h5>
                       <%# @resource.tags.map(&:tag).join(", ") %>
                       <%
                         tag_array = []
                         @resource.tags.each do |t|
-                          tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id }
+                          tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id, :t_updated => t.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
                         end
                         tag_array.sort_by!{|a| a[:t_tag]}
                         tag_array.each do |l|
                       %>
-                          <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %> <small> &mdash; by <em><%= l[:t_user] %></em></small><br/>
+                          <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] + ' (' + l[:t_updated] + ')' %></small></span><br/>
                       <% end %>
                       <%= form_tag '/resources/add_tag' do %>
                           <%= hidden_field_tag 'id', @resource.id %>
@@ -407,13 +415,13 @@
                                 v_user = User.find(v.user_id)
                                 k_user_name = v_user.name
                               end
-                              key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => k_user_name }
+                              key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => k_user_name, :v_updated => v.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
 
                             end
                             key_array.sort_by!{|a| a[:v_term]}
                             key_array.each do |l|
                           %>
-                              <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><small> &mdash; by <em><%= l[:v_user_name] %></em></small><br/>
+                              <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] + ' (' + l[:v_updated] + ')' %></small></span><br/>
                           <% end %>
                         </div>
                     <% end %>
@@ -552,9 +560,14 @@
           <% if @resource.roles.count > 0 %>
               <div class="unit">
                 <h4>Affiliations</h4>
-                <% @resource.roles.each do |r| %>
-                    <%= link_to get_role_for_display(r.name).titleize, '/quick_search/query?utf8=✓&q=role:' + r.name %><br/>
-                <% end %>
+                <%= 
+                	buf = ''
+                	Rails.application.config.x.user_roles.each do |k,v|
+                		buf += link_to k.to_s, '/quick_search/query?utf8=✓&q=role:' + v.to_s
+                		buf += '<br/>'
+                	end
+                	sanitize(buf)
+                %>
               </div>
           <% end %>
           <div class="unit authorLink">

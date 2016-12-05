@@ -4,10 +4,10 @@
 
 <h2>Featured content sets</h2>
 
-<% @featured_content_sets.each do |s| %><div class="row">
-   <div class="col-md-5"><%= s.title  %> (<%= s.slug %>) [<%= (s.access == 1) ? "Published" : "Not published" %>]</div>
-      <div class="col-md-2">
-        <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_featured_content_set_path(s), class: "btn btn-xs btn-default") %>
-        <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, s, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
-      </div>
+<% @featured_content_sets.each do |s| %><div class="row featuredAdminSetListRow">
+	<div class="col-sm-6"><b><%= s.title  %></b><br/>(<%= s.slug %>) [<%= (s.access == 1) ? "Published" : "Not published" %>]</div>
+	<div class="col-sm-3">
+		<%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_featured_content_set_path(s), class: "btn btn-xs btn-default") %>
+		<%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, s, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
+	</div>
 </div><% end %>

@@ -183,6 +183,10 @@ $white:#FFFFFF;
 }
 
 /*  DETAIL/PREVIEW */
+.author_show{
+	display: none;
+	font-style: italic;
+}
 .detailButtons{
 	padding-top:10px;
 	a{
@@ -650,13 +654,23 @@ $white:#FFFFFF;
 	-o-transition: all .8s linear;
 	transition: all .8s linear;
 }
+.moWrapper{
+	height: 140px;
+	overflow: hidden;
+}
 .moContainer{
 	overflow-x: scroll;
 	width: 100%;
+	overflow-y: hidden;
+	position: absolute;
+	left: 0;
 }
 .moResults{
 	padding: 0;
 	white-space: nowrap;
+}
+.moResults::-webkit-scrollbar, .moContainer::-webkit-scrollbar{
+	display: none;
 }
 .moRelated{
 	padding: 10px 10px 0 10px;

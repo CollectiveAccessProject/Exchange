@@ -115,7 +115,7 @@
 			<div class="row">
 				<div class="col-lg-8 col-md-12 footer-hours">
 					<div id="footerArrow"><a href="#" onClick="$('#footer1').toggle('slide', {direction: 'down'}, 200); return false;"><i class="fa fa-sort-asc"></i></a></div>
-					Admission to the the museum is always free. <a href="http://umma.umich.edu/plan-your-visit#hours">Hours</a>
+					<span id='hours'>Admission to the the museum is always free. <a href="http://umma.umich.edu/plan-your-visit#hours">Hours</a></span>
 				</div>
 				<div class="col-lg-4 col-md-12">
 					<div class="copyright">
@@ -126,7 +126,6 @@
 		</div>
 	</div>
 </div>
-
 </body>
 </html>
 <!-- show extra footer bar when scroll down -->
@@ -140,5 +139,7 @@
 				$('#footer1').hide("slide", {direction: "down" }, 200);
 			}
 		});
+		$('#hours').load('http://umma.umich.edu/admin/external-content/footerhours');
+		
 	});
 </script>

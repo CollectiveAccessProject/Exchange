@@ -561,6 +561,11 @@ h4{
 		display:none;
 	}
 }
+@media(min-width:992px){
+	.affiliationItem{
+		width: 14%;
+		}
+}
 
 #queryBuilderContainer{
   display:none;
@@ -657,6 +662,14 @@ select.input-sm{
 	H1{
 		margin-top:50px;
 		margin-bottom:50px;
+		p{
+			padding-top:10px;
+			font-size:20px !Important;
+			color:black;
+			font: $font-family-sans-serif;
+			font-weight:normal;
+			text-transform:none;
+		}
 	}
 	img{
 		width:100%;

@@ -1,6 +1,12 @@
+<%
+	heading_tag = "h4"
+	if(@resource.is_collection)
+		heading_tag = "h5"
+	end
+%>
 <% if (@resource.in_response_to_resource_id && ((@resource.in_response_to.access == 1) || (@resource.in_response_to.is_collection_object))) %>
     <div class="unit">
-      <h4>In response to</h4>
+      <<%= heading_tag %>>In response to</<%= heading_tag %>>
       <%= link_to(sanitize(@resource.in_response_to.title), @resource.in_response_to) %>
     </div>
 <% end %>
@@ -17,8 +23,8 @@
     <% end %>
     <% if (buf.chop.length > 0) %>
         <div class="unit">
-          <h4>Responses</h4>
-          <%= buf %>
+          <<%= heading_tag %>>Responses</<%= heading_tag %>>
+          <%= buf.html_safe %>
         </div>
     <% end %>
 <% end %>

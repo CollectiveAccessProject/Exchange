@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160720155449) do
+ActiveRecord::Schema.define(version: 20161128164735) do
 
   create_table "collectionobject_links", force: :cascade do |t|
     t.integer  "resource_id",   limit: 4,   null: false
@@ -57,6 +57,44 @@ ActiveRecord::Schema.define(version: 20160720155449) do
   add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type", using: :btree
   add_index "comments", ["ip"], name: "index_comments_on_ip", using: :btree
   add_index "comments", ["user_id"], name: "fk_rails_adbfa98bd4", using: :btree
+
+  create_table "favorites", force: :cascade do |t|
+    t.integer  "resource_id", limit: 4, null: false
+    t.integer  "user_id",     limit: 4, null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "favorites", ["resource_id"], name: "index_favorites_on_resource_id", using: :btree
+  add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
+
+  create_table "featured_content_set_items", force: :cascade do |t|
+    t.text     "title",                   limit: 65535,             null: false
+    t.text     "subtitle",                limit: 65535,             null: false
+    t.integer  "featured_content_set_id", limit: 4,                 null: false
+    t.integer  "resource_id",             limit: 4,                 null: false
+    t.integer  "rank",                    limit: 4,     default: 0, null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
+  end
+
+  add_index "featured_content_set_items", ["featured_content_set_id"], name: "index_featured_content_set_items_on_featured_content_set_id", using: :btree
+  add_index "featured_content_set_items", ["resource_id"], name: "index_featured_content_set_items_on_resource_id", using: :btree
+
+  create_table "featured_content_sets", force: :cascade do |t|
+    t.text     "title",      limit: 65535,             null: false
+    t.text     "subtitle",   limit: 65535,             null: false
+    t.text     "body_text",  limit: 65535,             null: false
+    t.string   "slug",       limit: 255,               null: false
+    t.integer  "user_id",    limit: 4
+    t.integer  "rank",       limit: 4,     default: 0, null: false
+    t.integer  "access",     limit: 1,     default: 0, null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+  end
+
+  add_index "featured_content_sets", ["slug"], name: "index_featured_content_sets_on_slug", using: :btree
+  add_index "featured_content_sets", ["user_id"], name: "index_featured_content_sets_on_user_id", using: :btree
 
   create_table "flickr_links", force: :cascade do |t|
     t.integer  "photo_id",      limit: 8,   null: false
@@ -106,6 +144,7 @@ ActiveRecord::Schema.define(version: 20160720155449) do
     t.integer  "file_file_size",    limit: 4
     t.datetime "file_updated_at"
     t.string   "file_fingerprint",  limit: 255
+    t.string   "url",               limit: 255
   end
 
   create_table "media_files", force: :cascade do |t|
@@ -121,6 +160,8 @@ ActiveRecord::Schema.define(version: 20160720155449) do
     t.integer  "sourceable_id",     limit: 4
     t.string   "sourceable_type",   limit: 255
     t.integer  "rank",              limit: 4
+    t.string   "thumbnail_uid",     limit: 255
+    t.string   "title",             limit: 255
   end
 
   add_index "media_files", ["resource_id"], name: "fk_rails_0b5d71f8d5", using: :btree
@@ -135,7 +176,7 @@ ActiveRecord::Schema.define(version: 20160720155449) do
     t.datetime "updated_at",                      null: false
   end
 
-  add_index "related_resources", ["resource_id"], name: "fk_rails_a68c65ab63", using: :btree
+  add_index "related_resources", ["resource_id"], name: "fk_rails_e3bdcff243", using: :btree
   add_index "related_resources", ["to_resource_id"], name: "fk_rails_2eadc87d49", using: :btree
 
   create_table "resource_hierarchies", force: :cascade do |t|
@@ -146,34 +187,83 @@ ActiveRecord::Schema.define(version: 20160720155449) do
     t.integer  "rank",              limit: 4
   end
 
-  add_index "resource_hierarchies", ["child_resource_id"], name: "fk_rails_048b4737a3", using: :btree
-  add_index "resource_hierarchies", ["resource_id"], name: "fk_rails_5f091e1f26", using: :btree
+  add_index "resource_hierarchies", ["child_resource_id"], name: "fk_rails_61957bcd1b", using: :btree
+  add_index "resource_hierarchies", ["resource_id"], name: "fk_rails_0a6edc9d17", using: :btree
+
+  create_table "resource_parents", force: :cascade do |t|
+    t.integer  "parent_resource_id", limit: 4, null: false
+    t.integer  "child_resource_id",  limit: 4, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
 
   create_table "resources", force: :cascade do |t|
-    t.string   "slug",                    limit: 255,                     null: false
-    t.integer  "user_id",                 limit: 4,                       null: false
-    t.integer  "resource_type",           limit: 1,                       null: false
-    t.text     "title",                   limit: 16777215,                null: false
-    t.text     "subtitle",                limit: 16777215,                null: false
-    t.string   "source_type",             limit: 10
-    t.string   "source",                  limit: 255
-    t.integer  "copyright_license",       limit: 1,          default: 0,  null: false
-    t.string   "copyright_notes",         limit: 255,                     null: false
-    t.integer  "access",                  limit: 1,          default: 0,  null: false
-    t.integer  "forked_from_resource_id", limit: 4
-    t.integer  "transition",              limit: 1,          default: 0,  null: false
-    t.integer  "lock_version",            limit: 4,          default: 0,  null: false
-    t.datetime "created_at",                                              null: false
-    t.datetime "updated_at",                                              null: false
-    t.text     "body_text",               limit: 4294967295
-    t.string   "collectiveaccess_id",     limit: 255,        default: ""
-    t.text     "indexing_data",           limit: 16777215
+    t.string   "slug",                       limit: 255,                     null: false
+    t.integer  "user_id",                    limit: 4,                       null: false
+    t.integer  "resource_type",              limit: 1,                       null: false
+    t.text     "title",                      limit: 16777215,                null: false
+    t.text     "subtitle",                   limit: 16777215,                null: false
+    t.string   "source_type",                limit: 10
+    t.string   "source",                     limit: 255
+    t.integer  "copyright_license",          limit: 1,          default: 0,  null: false
+    t.text     "copyright_notes",            limit: 4294967295,              null: false
+    t.integer  "access",                     limit: 1,          default: 0,  null: false
+    t.integer  "forked_from_resource_id",    limit: 4
+    t.integer  "transition",                 limit: 1,          default: 0,  null: false
+    t.integer  "lock_version",               limit: 4,          default: 0,  null: false
+    t.datetime "created_at",                                                 null: false
+    t.datetime "updated_at",                                                 null: false
+    t.text     "body_text",                  limit: 4294967295
+    t.string   "collectiveaccess_id",        limit: 255,        default: ""
+    t.text     "indexing_data",              limit: 16777215
+    t.string   "author_name",                limit: 255
+    t.string   "collection_identifier",      limit: 255
+    t.string   "role",                       limit: 1024
+    t.integer  "author_id",                  limit: 4
+    t.integer  "in_response_to_resource_id", limit: 4
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "fk_rails_8c3d1e0d9a", using: :btree
   add_index "resources", ["resource_type"], name: "index_resources_on_resource_type", using: :btree
   add_index "resources", ["slug"], name: "index_resources_on_slug", using: :btree
   add_index "resources", ["user_id"], name: "fk_rails_ba0e3c0a94", using: :btree
+
+  create_table "resources_roles", id: false, force: :cascade do |t|
+    t.integer "resource_id", limit: 4
+    t.integer "role_id",     limit: 4
+  end
+
+  add_index "resources_roles", ["resource_id", "role_id"], name: "index_resources_roles_on_resource_id_and_role_id", using: :btree
+
+  create_table "resources_users", force: :cascade do |t|
+    t.integer "resource_id", limit: 4
+    t.integer "user_id",     limit: 4
+    t.integer "access",      limit: 1
+  end
+
+  create_table "resources_vocabulary_terms", force: :cascade do |t|
+    t.integer  "resource_id",        limit: 4,  null: false
+    t.integer  "vocabulary_term_id", limit: 4,  null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "user_id",            limit: 4
+    t.string   "ip",                 limit: 15, null: false
+  end
+
+  add_index "resources_vocabulary_terms", ["resource_id"], name: "index_resources_vocabulary_terms_on_resource_id", using: :btree
+  add_index "resources_vocabulary_terms", ["user_id"], name: "index_resources_vocabulary_terms_on_user_id", using: :btree
+  add_index "resources_vocabulary_terms", ["vocabulary_term_id"], name: "index_resources_vocabulary_terms_on_vocabulary_term_id", using: :btree
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "name",          limit: 255
+    t.integer  "resource_id",   limit: 4
+    t.string   "resource_type", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
+  add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
 
   create_table "settings", force: :cascade do |t|
     t.string   "var",         limit: 255,      null: false
@@ -245,13 +335,20 @@ ActiveRecord::Schema.define(version: 20160720155449) do
     t.string   "provider",               limit: 255
     t.string   "uid",                    limit: 255
     t.string   "name",                   limit: 255,              null: false
-    t.boolean  "is_admin",               limit: 1
+    t.boolean  "is_admin"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["provider"], name: "index_users_on_provider", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["uid"], name: "index_users_on_uid", using: :btree
+
+  create_table "users_roles", id: false, force: :cascade do |t|
+    t.integer "user_id", limit: 4
+    t.integer "role_id", limit: 4
+  end
+
+  add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
 
   create_table "versions", force: :cascade do |t|
     t.string   "item_type",  limit: 255,        null: false
@@ -273,6 +370,30 @@ ActiveRecord::Schema.define(version: 20160720155449) do
 
   add_index "vimeo_links", ["key"], name: "index_vimeo_links_on_key", using: :btree
 
+  create_table "vocabulary_term_synonyms", force: :cascade do |t|
+    t.string   "synonym",            limit: 255,               null: false
+    t.integer  "vocabulary_term_id", limit: 4,                 null: false
+    t.text     "description",        limit: 65535,             null: false
+    t.string   "reference_url",      limit: 255,               null: false
+    t.integer  "lock_version",       limit: 4,     default: 0, null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+  end
+
+  add_index "vocabulary_term_synonyms", ["vocabulary_term_id"], name: "index_vocabulary_term_synonyms_on_vocabulary_term_id", using: :btree
+
+  create_table "vocabulary_terms", force: :cascade do |t|
+    t.string   "term",          limit: 255,               null: false
+    t.text     "description",   limit: 65535,             null: false
+    t.string   "reference_url", limit: 255,               null: false
+    t.integer  "lock_version",  limit: 4,     default: 0, null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.string   "ancestry",      limit: 255
+  end
+
+  add_index "vocabulary_terms", ["ancestry"], name: "index_vocabulary_terms_on_ancestry", using: :btree
+
   create_table "youtube_links", force: :cascade do |t|
     t.string   "key",           limit: 16,  null: false
     t.string   "original_link", limit: 255, null: false
@@ -283,8 +404,8 @@ ActiveRecord::Schema.define(version: 20160720155449) do
   add_index "youtube_links", ["key"], name: "index_youtube_links_on_key", using: :btree
 
   add_foreign_key "comments", "users"
+  add_foreign_key "featured_content_set_items", "featured_content_sets"
   add_foreign_key "media_files", "resources"
-  add_foreign_key "related_resources", "resources"
   add_foreign_key "related_resources", "resources"
   add_foreign_key "related_resources", "resources", column: "to_resource_id"
   add_foreign_key "resource_hierarchies", "resources"
