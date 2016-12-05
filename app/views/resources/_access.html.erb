@@ -33,10 +33,12 @@
 
             <% @resource.resources_users.each do |l|
               next if (!l.user)
+              access_display = Rails.application.config.x.access_types.find{|key, val| val == l.access }
+              next if (access_display.nil?)
             %>
                <div>
                  <%= l.user.name + " (" + l.user.email + ")" %>
-                 <%= "[" + Rails.application.config.x.access_types.find{|key, val| val == l.access }[0]+"]" %>
+                 <%= "[" + access_display[0]+"]" %>
                  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_resource_user_access_path(@resource) + "?user_id=" + l.user.id.to_s, {remote: true, class: :resourceUserAccessRemoveLink}) %>
                </div>
             <% end %>
