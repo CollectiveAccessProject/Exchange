@@ -25,7 +25,7 @@
       #display_file_type = 'Unknown File Type'
   end
 %> 
-  <%= display_file_type.html_safe %>
+  <%= display_file_type.nil? ? "Unknown" : display_file_type.html_safe %>
   <br/>
 <%
 	media_id = plugin_model.media_file.id
