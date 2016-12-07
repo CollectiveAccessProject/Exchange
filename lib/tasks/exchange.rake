@@ -91,7 +91,7 @@ namespace :exchange do
 
 						if (value['media'])
 							sourceable_ids = r.media_files.select { |m| m.sourceable_type == 'CollectiveaccessLink' }.map { |a| a.sourceable_id}
-							puts "MEDIA = " + value['title']
+							#puts "MEDIA = " + value['title']
 
 							i = 1;
 							value['media'].split('|').each do |u|
