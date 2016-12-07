@@ -1,6 +1,5 @@
 $ ->
-  $('#resource_body_text').each ->
-
+  $('#resource_body_text, #featured_content_set_body_text').each ->
     $(this).summernote
       height : 300,
       toolbar : [
@@ -26,7 +25,7 @@ $ ->
         icon:'<i class="fa fa-file-text" aria-hidden="true"></i>'
     }
       
-  $('#media_file_caption, #media_file_copyright_notes, #resource_copyright_notes, #resource_title, #resource_subtitle').each -> 
+  $('#media_file_caption, #media_file_copyright_notes, #resource_copyright_notes, #resource_title, #resource_subtitle, #featured_content_set_title, #featured_content_set_subtitle').each -> 
     $(this).summernote
       height : 75,
       toolbar : [

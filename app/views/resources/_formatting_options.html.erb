@@ -12,107 +12,109 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-6">
-            <div class="row">
-              <div class="col-sm-12">
-                <H4>Formatting</H4>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="panel-subbody">
-                  <% if (@resource.setting_is_valid(:media_formatting, :mode)) %>
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <H3>Media formatting</H3>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <%= radio_button_tag(:media_formatting_mode, "slideshow", (@resource.settings(:media_formatting).mode == :slideshow)) %>
-                            <%= label_tag(:media_formatting_mode_slideshow, "Slideshow", class: 'inline') %>
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <%= radio_button_tag(:media_formatting_mode, "thumbnails", (@resource.settings(:media_formatting).mode == :thumbnails)) %>
-                            <%= label_tag(:media_formatting_mode_thumbnails, "Thumbnails", class: 'inline') %>
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <%= radio_button_tag(:media_formatting_mode, "thumbnailsCaption", (@resource.settings(:media_formatting).mode == :thumbnailsCaption)) %>
-                            <%= label_tag(:media_formatting_mode_thumbnailsCaption, "Thumbnails with Captions", class: 'inline') %>
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <%= radio_button_tag(:media_formatting_mode, "embed", (@resource.settings(:media_formatting).mode == :embed)) %>
-                            <%= label_tag(:media_formatting_mode_embed, "Embed in text", class: 'inline') %>
-                          </div>
-                        </div>
-                      </div>
-                  <% end %>
+          <% if @resource.media_files.count > 0 %>
+			  <div class="col-sm-6">
+				<div class="row">
+				  <div class="col-sm-12">
+					<H4>Formatting</H4>
+				  </div>
+				</div>
+				<div class="row">
+				  <div class="col-sm-12">
+					<div class="panel-subbody">
+					  <% if (@resource.setting_is_valid(:media_formatting, :mode)) %>
+						  <div class="row">
+							<div class="col-sm-12">
+							  <H3>Media formatting</H3>
+							</div>
+						  </div>
+						  <div class="row">
+							<div class="col-sm-3">
+							  <div class="form-group">
+								<%= radio_button_tag(:media_formatting_mode, "slideshow", (@resource.settings(:media_formatting).mode == :slideshow)) %>
+								<%= label_tag(:media_formatting_mode_slideshow, "Slideshow", class: 'inline') %>
+							  </div>
+							</div>
+							<div class="col-sm-3">
+							  <div class="form-group">
+								<%= radio_button_tag(:media_formatting_mode, "thumbnails", (@resource.settings(:media_formatting).mode == :thumbnails)) %>
+								<%= label_tag(:media_formatting_mode_thumbnails, "Thumbnails", class: 'inline') %>
+							  </div>
+							</div>
+							<div class="col-sm-3">
+							  <div class="form-group">
+								<%= radio_button_tag(:media_formatting_mode, "thumbnailsCaption", (@resource.settings(:media_formatting).mode == :thumbnailsCaption)) %>
+								<%= label_tag(:media_formatting_mode_thumbnailsCaption, "Thumbnails with Captions", class: 'inline') %>
+							  </div>
+							</div>
+							<div class="col-sm-3">
+							  <div class="form-group">
+								<%= radio_button_tag(:media_formatting_mode, "embed", (@resource.settings(:media_formatting).mode == :embed)) %>
+								<%= label_tag(:media_formatting_mode_embed, "Embed in text", class: 'inline') %>
+							  </div>
+							</div>
+						  </div>
+					  <% end %>
 
-                  <% if (@resource.setting_is_valid(:text_placement)) %>
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <H3>Text placement</H3>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <% if (@resource.setting_is_valid(:text_placement, :placement)) %>
-                            <div class="col-sm-4">
-                              <div class="form-group">
-                                <%= radio_button_tag(:text_placement_placement, "below", (@resource.settings(:text_placement).placement == :below)) %>
-                                <% if(@resource.is_collection) %>
-				  <%= label_tag(:text_placement_below, "Next to media", class: 'inline') %>
-				<% else %>
-				  <%= label_tag(:text_placement_below, "Below media", class: 'inline') %>
-                                <% end %>  
-			    </div>
-                            </div>
-                            <div class="col-sm-4">
-                              <div class="form-group">
-                                <%= radio_button_tag(:text_placement_placement, "above", (@resource.settings(:text_placement).placement == :above)) %>
-                                <%= label_tag(:text_placement_above, "Above media", class: 'inline') %>
-                              </div>
-                        <% end %>
-                        </div>
-                      </div>
-                  <% end %>
-                  <% if (@resource.setting_is_valid(:text_formatting)) %>
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <H3>Text formatting</H3>
-                        </div>
-                      </div>
-                      <% if (@resource.setting_is_valid(:text_formatting, :show_all)) %>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <div class="form-group">
-                                <%= check_box_tag(:text_formatting_show_all, "show_all", (@resource.settings(:text_formatting).show_all == 1)) %>
-                                <%= label_tag(:text_formatting_show_all, "Only show the first 10 lines of text with link to Read More", class: 'inline') %>
-                              </div>
-                            </div>
-                          </div>
-                      <% end %>
-                      <% if (@resource.setting_is_valid(:text_formatting, :collapse)) %>
-                          <div class="row">
-                            <div class="col-sm-12">
-                              <div class="form-group">
-                                <%= check_box_tag(:text_formatting_collapse, "collapse", (@resource.settings(:text_formatting).collapse == 1)) %>
-                                <%= label_tag(:text_formatting_collapse, "Have text collapsed by default", class: 'inline') %>
-                              </div>
-                            </div>
-                          </div>
-                      <% end %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-          </div>
+					  <% if (@resource.setting_is_valid(:text_placement)) %>
+						  <div class="row">
+							<div class="col-sm-12">
+							  <H3>Text placement</H3>
+							</div>
+						  </div>
+						  <div class="row">
+							<% if (@resource.setting_is_valid(:text_placement, :placement)) %>
+								<div class="col-sm-4">
+								  <div class="form-group">
+									<%= radio_button_tag(:text_placement_placement, "below", (@resource.settings(:text_placement).placement == :below)) %>
+									<% if(@resource.is_collection) %>
+					  <%= label_tag(:text_placement_below, "Next to media", class: 'inline') %>
+					<% else %>
+					  <%= label_tag(:text_placement_below, "Below media", class: 'inline') %>
+									<% end %>  
+					</div>
+								</div>
+								<div class="col-sm-4">
+								  <div class="form-group">
+									<%= radio_button_tag(:text_placement_placement, "above", (@resource.settings(:text_placement).placement == :above)) %>
+									<%= label_tag(:text_placement_above, "Above media", class: 'inline') %>
+								  </div>
+							<% end %>
+							</div>
+						  </div>
+					  <% end %>
+					  <% if (@resource.setting_is_valid(:text_formatting)) %>
+						  <div class="row">
+							<div class="col-sm-12">
+							  <H3>Text formatting</H3>
+							</div>
+						  </div>
+						  <% if (@resource.setting_is_valid(:text_formatting, :show_all)) %>
+							  <div class="row">
+								<div class="col-sm-12">
+								  <div class="form-group">
+									<%= check_box_tag(:text_formatting_show_all, "show_all", (@resource.settings(:text_formatting).show_all == 1)) %>
+									<%= label_tag(:text_formatting_show_all, "Only show the first 10 lines of text with link to Read More", class: 'inline') %>
+								  </div>
+								</div>
+							  </div>
+						  <% end %>
+						  <% if (@resource.setting_is_valid(:text_formatting, :collapse)) %>
+							  <div class="row">
+								<div class="col-sm-12">
+								  <div class="form-group">
+									<%= check_box_tag(:text_formatting_collapse, "collapse", (@resource.settings(:text_formatting).collapse == 1)) %>
+									<%= label_tag(:text_formatting_collapse, "Have text collapsed by default", class: 'inline') %>
+								  </div>
+								</div>
+							  </div>
+						  <% end %>
+					  <% end %>
+					</div>
+				  </div>
+				</div>
+			  </div>
+		  <% end %>
           <div class="col-sm-6">
             <% if (@resource.setting_is_valid(:user_interaction)) %>
                 <div class="row">
@@ -128,6 +130,18 @@
                         <%= check_box_tag(:user_interaction_allow_comments, "allow_comments", (@resource.settings(:user_interaction).allow_comments == 1)) %>
                         <%= label_tag(:user_interaction_allow_comments, "Allow comments", class: 'inline') %>
                       </div>
+                      <script>
+                      	// Disabled pending convo with Seth about best way to handle this
+                      	// Should we continue to not load the tab at all, or only hide the tab so that users can toggle it
+                      	// without a page load?
+                      	// Apply to Tags as well?
+    					//
+                      	//$(document).ready(function(){
+                      	//	$('#user_interaction_allow_comments').click(function(){
+                      	//		$('.nav-tabs > li:nth-of-type(7)').toggle();
+                      	//	});
+                      	//});
+                      </script>
                       <% end %>
                       <% if (@resource.setting_is_valid(:user_interaction, :allow_tags)) %>
                       <div class="form-group">
