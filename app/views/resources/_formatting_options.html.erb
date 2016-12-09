@@ -131,16 +131,16 @@
                         <%= label_tag(:user_interaction_allow_comments, "Allow comments", class: 'inline') %>
                       </div>
                       <script>
-                      	// Disabled pending convo with Seth about best way to handle this
-                      	// Should we continue to not load the tab at all, or only hide the tab so that users can toggle it
-                      	// without a page load?
-                      	// Apply to Tags as well?
-    					//
-                      	//$(document).ready(function(){
-                      	//	$('#user_interaction_allow_comments').click(function(){
-                      	//		$('.nav-tabs > li:nth-of-type(7)').toggle();
-                      	//	});
-                      	//});
+                      	$(document).ready(function(){
+                      		$('#user_interaction_allow_comments').click(function(){
+                      			$('.nav-tabs > li:nth-of-type(7)').toggle();
+                      		});
+                      	});
+                      	$(document).ready(function(){
+                      		$('#user_interaction_allow_tags').click(function(){
+                      			$('.nav-tabs > li:nth-of-type(6)').toggle();
+                      		});
+                      	});
                       </script>
                       <% end %>
                       <% if (@resource.setting_is_valid(:user_interaction, :allow_tags)) %>

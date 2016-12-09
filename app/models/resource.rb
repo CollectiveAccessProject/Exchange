@@ -259,6 +259,78 @@ class Resource < ActiveRecord::Base
     Resource.find(resource_ids)
   end
 
+  # 
+  # Return list of Resources created by a single user
+  # Either through the author_id or default user_id
+  #
+  def get_author_resources
+  	# Get the user and author ids for the current resource
+  	author = self.author_id
+    user = self.user_id
+    
+    rel_resource_list = {}
+    # If an author is assigned use that
+    if author
+		Resource.where('author_id=? OR user_id=?', author, author).find_each do |rel_resource|
+			if rel_resource.id != self.id
+				if rel_resource.author_id == author
+					rel_resource_list[rel_resource.id] = rel_resource.title
+				elsif rel_resource.author_id == nil and rel_resource.user_id == user
+					rel_resource_list[rel_resource.id] = rel_resource.title
+				end
+			end
+		end
+	# If not, use the user who created the Resource
+	else
+		Resource.where('author_id=? OR user_id=?', user, user).find_each do |rel_resource|
+			if rel_resource.id != self.id
+				if rel_resource.author_id == user
+					rel_resource_list[rel_resource.id] = rel_resource.title
+				elsif rel_resource.author_id == nil and rel_resource.user_id == user
+					rel_resource_list[rel_resource.id] = rel_resource.title
+				end
+			end
+		end
+	end	
+	return rel_resource_list
+  end
+
+  # 
+  # Get the count of collectionobject-based media files
+  # Options:
+  # :get_hidden = also count the hidden media files
+  #
+  def collectionobject_link_count(options = {})
+    co_count = 0
+    MediaFile.where('sourceable_type=? AND resource_id=?', 'collectionobjectLink', self.id).find_each do |rf|
+	  if rf.access == 1
+	    co_count += 1
+	  elsif options[:get_hidden]
+	  	co_count += 1
+	  end
+    end
+    return co_count
+  end
+
+  # 
+  # Get the Collection Object Resource pages for the sources
+  # of the media files used in this Resource
+  #
+  def media_file_references
+    mf_references = {}
+    
+    self.collectionobject_links.each do |co_link|
+	  co_resource = Resource.find(co_link.resource_id)
+	  
+	  MediaFile.where('sourceable_id=? AND resource_id=?', co_link.id, self.id).find_each do |media_resource|
+	  	if media_resource.access == 1
+	  	  mf_references[co_resource.id] = [co_resource.title, co_resource.collection_identifier]
+	  	end
+	  end
+	end
+	return mf_references
+  end
+
   # return number of direct children on this resource
   # @param type Resource type to restrict count to (Resource::RESOURCE, Resource::LEARNING_COLLECTION, Resource::COLLECTION_OBJECT or Resource::EXHIBITION); if omitted resources of all types are counted
   # @return int

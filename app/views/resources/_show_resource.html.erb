@@ -518,12 +518,22 @@
               </div>
             </div><!-- end unit -->
         <% end %>
+        <div class="unit">
+          <% co_count = @resource.collectionobject_link_count %>
+          <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= co_count.to_s %> Collection Object Source<%= co_count == 1 ? '' : 's' %></H4></a>
+          <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">
+            <% mf_references = @resource.media_file_references %>
+            <% mf_references.each do |mf_key, mf_value| %>
+            	<div><small><%= link_to sanitize(mf_value[0]), get_resource_view_path(mf_key, user_signed_in?) %>(<%= mf_value[1] %>)</small></div>
+            <% end %>
+          </div>
+        </div><!-- end unit -->
         <% if @resource.links.count > 0 %>
             <div class="unit">
               <H4><%= @resource.links.count %> Link<%= ((@resource.links.count > 1) ? "s" : "") %></H4>
               <% @resource.links.each do |c| %>
                   <div>
-                    <a href="<%= c.url %>" target="_blank" title="<%= c.url %>"><i class='fa fa-external-link' aria-hidden='true'></i> <%= (c.caption && (c.caption.length > 0)) ? c.caption : ((c.url.length > 20) ? c.url[0..17] + "..." : c.url) %></a>
+                    <a href="<%= c.url %>" target="_blank" title="<%= c.url %>"><i class='fa fa-link' aria-hidden='true'></i> <%= (c.caption && (c.caption.length > 0)) ? c.caption : ((c.url.length > 20) ? c.url[0..17] + "..." : c.url) %></a>
                   </div>
               <% end %>
             </div>
@@ -565,6 +575,7 @@
             <% end %>
         <% end %>
         <div>
+          <!--Get all associated Affiliations-->
           <% if @resource.roles.count > 0 %>
               <div class="unit">
                 <h4>Affiliations</h4>
@@ -576,15 +587,28 @@
                 	end
                 	sanitize(buf)
                 %>
-              </div>
+              </div><!--end unit-->
           <% end %>
+          <!-- Display the current user or author -->
           <div class="unit authorLink">
             <% if @resource.author_id  %>
-                <h4>Created by</h4><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author:' + @resource.get_author_name.gsub(/\([\S]+\)/, '') %>
+            	<% author_name = @resource.get_author_name(:omit_email => true).to_s %>
+                <h4>Created by</h4><%= link_to author_name, '/quick_search/query?utf8=✓&q=author:' + author_name %>
+                
             <% else %>
                 <h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:' + @resource.user.name %>
             <% end %>
-          </div>
+            	
+            	<br/><br/>
+            	<!--Get all other Resources created by this user-->
+          		<a role="button" data-toggle="collapse" href="#authRefPanel"><p><strong>Other Resources by this Author</strong></p></a>
+          		<div id="authRefPanel" class="collapse detailRelatedContentBlockScroll">
+					<% author_resources = @resource.get_author_resources %>
+					<% author_resources.each do |ar_key, ar_value| %>	
+						<div><small><%= link_to sanitize(ar_value), get_resource_view_path(ar_key, user_signed_in?) %></small></div>
+					<% end %>
+				</div>
+          </div><!-- end unit -->
           <h4>Last Updated</h4>
           <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
               <%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
