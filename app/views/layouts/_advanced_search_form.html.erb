@@ -192,9 +192,9 @@
                     operators: ['equal'],
                     filters: <%= get_filters_for_query_builder.to_json.html_safe %>
                 });
-                console.log(localStorage.getItem('queryBuilderRules'));
-                if (localStorage.getItem('queryBuilderRules')) {
-                    $('#builderUI').queryBuilder('setRules', JSON.parse(localStorage.getItem('queryBuilderRules')));
+
+                if (sessionStorage.getItem('qrules')) {
+                    $('#builderUI').queryBuilder('setRules', JSON.parse(sessionStorage.getItem('qrules')));
                 }
 
                 $("#queryBuilderForm").on("submit", function(e) {
@@ -202,7 +202,7 @@
                     var rules = $('#builderUI').queryBuilder('getRules');
 
                     if (rules && (s = JSON.stringify(rules))){
-                      localStorage.setItem('queryBuilderRules', s);
+                        sessionStorage.setItem('qrules', s);
                     }
 
                     if (!q) {
