@@ -194,6 +194,7 @@
           });
             $("#queryBuilderForm").on("submit", function(e) {
               var q = $('#builderUI').queryBuilder('getESQueryStringQuery');
+              console.log($('#builderUI').getRules());
               if (!q) {
                 e.preventDefault();
                 return false;
