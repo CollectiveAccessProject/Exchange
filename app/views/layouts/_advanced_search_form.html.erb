@@ -34,14 +34,14 @@
           <div class="form-group">
             <div class="col-md-12"><label class="control-label" for="roles">Affiliations</label></div>
             <div class="affiliationRow">
-            <%=
-              buf = ''
-              Rails.application.config.x.user_roles.each do |k,v|
-                next if (v == :admin)
-                buf += "<div class='col-md-2 affiliationItem'>" + check_box_tag("roles[]", v.to_s, false, {id: "roles_" + v.to_s}) + ' ' + k.to_s + "</div>"
-              end
-              buf.html_safe
-            %>
+              <%=
+                buf = ''
+                Rails.application.config.x.user_roles.each do |k,v|
+                  next if (v == :admin)
+                  buf += "<div class='col-md-2 affiliationItem'>" + check_box_tag("roles[]", v.to_s, false, {id: "roles_" + v.to_s}) + ' ' + k.to_s + "</div>"
+                end
+                buf.html_safe
+              %>
             </div>
           </div>
         </div>
@@ -166,17 +166,17 @@
   </div><br/><br/>
 </div><!-- end advancedSearchContainer -->
 <script type="text/javascript">
-  $(document).ready(function(){
-    $("#advType")[0].selectedIndex = 0;
-    $('#advType').change(function() {
-      $('.additionalFields').hide();
-      if ($('#advType').val() == '<%= Resource::COLLECTION_OBJECT %>'){
-        $('#advancedSearchCollectionObject').slideDown();
-      }else if($('#advType').val() == '<%= Resource::EXHIBITION %>'){
-        $('#advancedSearchExhibition').slideDown();
-      }
+    $(document).ready(function(){
+        $("#advType")[0].selectedIndex = 0;
+        $('#advType').change(function() {
+            $('.additionalFields').hide();
+            if ($('#advType').val() == '<%= Resource::COLLECTION_OBJECT %>'){
+                $('#advancedSearchCollectionObject').slideDown();
+            }else if($('#advType').val() == '<%= Resource::EXHIBITION %>'){
+                $('#advancedSearchExhibition').slideDown();
+            }
+        });
     });
-  });
 </script>
 
 <div class="container" id="queryBuilderContainer">
@@ -187,82 +187,93 @@
       <div class="panel panel-default"><div class="panel-body"><form id="queryBuilderForm" action="<%= url_for("/quick_search/query") %>">
         <div id="builderUI"></div>
         <script>
-          $(document).ready(function() {
-          $('#builderUI').queryBuilder({
-            operators: ['equal'],
-            filters: <%= get_filters_for_query_builder.to_json.html_safe %>
-          });
-            $("#queryBuilderForm").on("submit", function(e) {
-              var q = $('#builderUI').queryBuilder('getESQueryStringQuery');
-              console.log($('#builderUI').getRules());
-              if (!q) {
-                e.preventDefault();
-                return false;
-              }
-              $("#queryBuilderFormQ").val(q);
-              return true;
+            $(document).ready(function() {
+                $('#builderUI').queryBuilder({
+                    operators: ['equal'],
+                    filters: <%= get_filters_for_query_builder.to_json.html_safe %>
+                });
+                console.log(localStorage.getItem('queryBuilderRules'));
+                if (localStorage.getItem('queryBuilderRules')) {
+                    $('#builderUI').queryBuilder('setRules', JSON.parse(localStorage.getItem('queryBuilderRules')));
+                }
+
+                $("#queryBuilderForm").on("submit", function(e) {
+                    var q = $('#builderUI').queryBuilder('getESQueryStringQuery');
+                    var rules = $('#builderUI').queryBuilder('getRules');
+
+                    if (rules && (s = JSON.stringify(rules))){
+                      localStorage.setItem('queryBuilderRules', s);
+                    }
+
+                    if (!q) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    $("#queryBuilderFormQ").val(q);
+                    return true;
+                });
             });
-          });
         </script>
         <input type="submit" value="Search"/>
+        <input type="button" value="Reset" onclick="$('#builderUI').queryBuilder('reset'); return false;"/>
         <input type="hidden" id="queryBuilderFormQ" name="q" value=""/>
-      	<div class="pull-right"><a href="#" id="launchQueryGuide"><h6><i class="fa fa-question-circle-o" aria-hidden="true"></i> How to Use the Query Builder</h6></a></div>
+        <div class="pull-right"><a href="#" id="launchQueryGuide"><h6><i class="fa fa-question-circle-o" aria-hidden="true"></i> How to Use the Query Builder</h6></a></div>
       </form>
-      
-      <script type="text/javascript">
-		jQuery(document).ready(function() {
-			var query_tour = new Tour({
-				name:"builderTour",
-				steps: [{
-					title: 'How to Use the Query Builder',
-					content: 'The Query builder gives you the ability to created detailed and accurate search queries by adding terms in through this visual tool. Through this you can see available search terms and add and remove terms to create the best search for your needs. Click "Next" to see how you can create queries!',
-					orphan: true
-				},{
-					title: 'Query Rules',
-					element: '#builderUI_rule_0>.rule-filter-container',
-					placement: 'right',
-					content: 'The builder centers on adding "rules" or individual search terms and describing the relationships between them. Each rule searches a specific term on a specific field. Select the field you would like to search and enter the term to search on in. ',
-					onNext: function (query_tour){ $('#builderUI_rule_0>.rule-filter-container>select').val('keyword'); $('#builderUI_rule_0>.rule-filter-container>select>option:eq(3)').trigger('change'); },
-				},{
-					title: 'Search Value',
-					element: '#builderUI_rule_0>.rule-value-container',
-					placement: 'right',
-					content: 'Depending on the field you select you will be able to either type in your search term, or for fields with controlled lists of terms, you will be provided in a drop-down list to select from.<br/><br/>At this point you can search or choose to continue to add rules to be more specific in your query',
-				},{
-					title: 'Rules and Groups',
-					element: '#builderUI_group_0>.rules-group-header>.group-actions',
-					placement: 'left',
-					content: 'Rules are the basic search queries that each apply to a single field. Groups are multiple rules that can be applied together using either AND or OR to control how they are applied when searching. For example a group could be "support = paper OR support = board". Any number of these individual Rules can be added to a Group.<br/><br/>Multiple groups can then be combined to create more complex searches. The above example could be paired with another group, "Artist Nationality = USA OR Artist Nationality = Candada" to create a query that searches for works created by North American artists on paper or board.<br/><br/>Click either of these buttons to add new Rules or Groups to your query.'
-				},{
-					title: 'Remove a Rule',
-					element: '#builderUI_rule_0>.rule-header>.rule-actions',
-					placement: 'left',
-					content: 'Click "Remove" to delete a Rule (or Group) at any time',
-				},{
-					title: 'Controlling AND &amp; OR',
-					element: '#builderUI_group_0>.rules-group-header>.group-conditions',
-					placement: 'right',
-					content: 'Select either "AND" or "OR" to set how your Rules and Groups relate to each other. These can be toggled during the course of creating a query.<br/><br/>They can be assigned independently to relate Groups and to the Rules within groups. So a set of Rules can be related through AND while the Rules within each group are related through OR.'
-				},{
-					title: 'Submit your Query!',
-					content: 'Once you\'ve created your query hit "Search" to see your results. The query builder is available from every page on the Exchange. See the Exchange <a href="/user_guide" target="_blank">User Guide</a> for more information on the Query Builder and searches in general',
-					orphan: true
-				}],
-				container: "body",
-				debug: true,
-				backdrop: true,
-				orphan: false,
-				template: '<div class="popover tour"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-navigation"><button class="btn btn-default" data-role="end">End tour</button><button class="btn btn-default" data-role="prev">« Prev</button><span data-role="separator">\t</span><button class="btn btn-default" data-role="next">Next »</button></div></div>'
-			});
-			localStorage.clear();
-	
-			query_tour.init();
-			$('#launchQueryGuide').click(function(){
-				query_tour.restart();
-				query_tour.start();
-			});
-	});
-	</script>
+
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                var query_tour = new Tour({
+                    name:"builderTour",
+                    steps: [{
+                        title: 'How to Use the Query Builder',
+                        content: 'The Query builder gives you the ability to created detailed and accurate search queries by adding terms in through this visual tool. Through this you can see available search terms and add and remove terms to create the best search for your needs. Click "Next" to see how you can create queries!',
+                        orphan: true
+                    },{
+                        title: 'Query Rules',
+                        element: '#builderUI_rule_0>.rule-filter-container',
+                        placement: 'right',
+                        content: 'The builder centers on adding "rules" or individual search terms and describing the relationships between them. Each rule searches a specific term on a specific field. Select the field you would like to search and enter the term to search on in. ',
+                        onNext: function (query_tour){ $('#builderUI_rule_0>.rule-filter-container>select').val('keyword'); $('#builderUI_rule_0>.rule-filter-container>select>option:eq(3)').trigger('change'); },
+                    },{
+                        title: 'Search Value',
+                        element: '#builderUI_rule_0>.rule-value-container',
+                        placement: 'right',
+                        content: 'Depending on the field you select you will be able to either type in your search term, or for fields with controlled lists of terms, you will be provided in a drop-down list to select from.<br/><br/>At this point you can search or choose to continue to add rules to be more specific in your query',
+                    },{
+                        title: 'Rules and Groups',
+                        element: '#builderUI_group_0>.rules-group-header>.group-actions',
+                        placement: 'left',
+                        content: 'Rules are the basic search queries that each apply to a single field. Groups are multiple rules that can be applied together using either AND or OR to control how they are applied when searching. For example a group could be "support = paper OR support = board". Any number of these individual Rules can be added to a Group.<br/><br/>Multiple groups can then be combined to create more complex searches. The above example could be paired with another group, "Artist Nationality = USA OR Artist Nationality = Candada" to create a query that searches for works created by North American artists on paper or board.<br/><br/>Click either of these buttons to add new Rules or Groups to your query.'
+                    },{
+                        title: 'Remove a Rule',
+                        element: '#builderUI_rule_0>.rule-header>.rule-actions',
+                        placement: 'left',
+                        content: 'Click "Remove" to delete a Rule (or Group) at any time',
+                    },{
+                        title: 'Controlling AND &amp; OR',
+                        element: '#builderUI_group_0>.rules-group-header>.group-conditions',
+                        placement: 'right',
+                        content: 'Select either "AND" or "OR" to set how your Rules and Groups relate to each other. These can be toggled during the course of creating a query.<br/><br/>They can be assigned independently to relate Groups and to the Rules within groups. So a set of Rules can be related through AND while the Rules within each group are related through OR.'
+                    },{
+                        title: 'Submit your Query!',
+                        content: 'Once you\'ve created your query hit "Search" to see your results. The query builder is available from every page on the Exchange. See the Exchange <a href="/user_guide" target="_blank">User Guide</a> for more information on the Query Builder and searches in general',
+                        orphan: true
+                    }],
+                    container: "body",
+                    debug: true,
+                    backdrop: true,
+                    orphan: false,
+                    template: '<div class="popover tour"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-navigation"><button class="btn btn-default" data-role="end">End tour</button><button class="btn btn-default" data-role="prev">« Prev</button><span data-role="separator">\t</span><button class="btn btn-default" data-role="next">Next »</button></div></div>'
+                });
+                localStorage.clear();
+
+                query_tour.init();
+                $('#launchQueryGuide').click(function(){
+                    query_tour.restart();
+                    query_tour.start();
+                });
+            });
+        </script>
       </div>
       </div>
     </div>
