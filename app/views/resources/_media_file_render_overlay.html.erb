@@ -39,56 +39,42 @@
 									col = CollectionobjectLink.find(media_file.sourceable_id)
 									rc = Resource.find(col.resource_id)
 									cap_fields = JSON.parse(rc.indexing_data)
-									
 									short_caption = sanitize(cap_fields['artist'] + '<br/>' + cap_fields['title'])
-									long_caption = sanitize(cap_fields['artist'] + '<br/>' + cap_fields['title'] + '<br/>' + cap_fields['date_created'] + '<br/>' + cap_fields['medium'] + ' | ' + cap_fields['support'].to_s + '<br/>' + cap_fields['credit_line'] + '<br/>' + cap_fields['idno'])
+									material_fields = ''
+									if cap_fields['support']
+										material_fields = cap_fields['medium'] + ' | ' + cap_fields['support'].to_s
+									else
+										material_fields = cap_fields['medium']
+									end
+									long_caption = sanitize(cap_fields['artist'] + '<br/>' + cap_fields['title'] + '<br/>' + cap_fields['date_created'] + '<br/>' + material_fields + '<br/>' + cap_fields['credit_line'] + '<br/>' + cap_fields['idno'])
 								%>
-								<div id="<%= media_file.id %>_caption_type">
-								<%# f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
+								<div id="<%= media_file.id %>_caption_type" class="captionRadios">
+									<label class="control-label">Caption Type</label><br/>
+									<%= f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
 								</div>
-								<br/>
 								
 								<script>
-									/*
-									function set_caption_display(scope_id, caption_val){
-										if(caption_val == 1){
-											$('.<%= media_file.id %>_caption_display').hide();
-											$('.<%= media_file.id %>_caption_field').show();	
-											$('.<%= media_file.id %>_caption_field .summernote').prop('disabled', false);
-										} else {
-											if(caption_val == 2){
-												var caption_head = '<p>No Caption</p>';
-												var caption_text = ' '
-											} else if(caption_val == 3) {
-												var caption_head = '<h6>Caption</h6><%= short_caption %>';
-												var caption_text = '<%= short_caption %>'
-											} else if(caption_val == 4) {
-												var caption_head = '<h6>Caption</h6><%= long_caption %>';
-												var caption_text = '<%= long_caption %>'
-											}
-											$('.<%= media_file.id %>_caption_display').show().html(caption_head);
-											$('.<%= media_file.id %>_caption_field .summernote').prop('disabled', true);
-											$('.<%= media_file.id %>_caption_field').hide();
-											$('.<%= media_file.id %>_caption_text').hide().html(caption_text);
-										}
-									}
+									var captions = captions || {}
+									captions['<%= media_file.id %>'] = {}
+									captions['<%= media_file.id %>']['short_caption'] = '<%= short_caption %>';
+									captions['<%= media_file.id %>']['long_caption'] = '<%= long_caption %>';
 									$(document).ready(function(){
+										var caption_type = '<%= media_file.caption_type %>';
 										set_caption_display('<%= media_file.id %>', caption_type);
 										$('#<%= media_file.id %>_caption_type').click(function(){
-											caption_val = $("input:radio[name = 'media_file[caption_type]']:checked").val();
+											caption_val = $("#<%= media_file.id %>_caption_type input:radio[name = 'media_file[caption_type]']:checked").val();
 											set_caption_display('<%= media_file.id %>', caption_val);
 										});
 									});
-									*/
+									
 								</script>
 								
-								<div class="<%= media_file.id %>_caption_display">
+								<div class="<%= media_file.id %>_caption_display captionDisplay">
 								</div>
 								<div class="<%= media_file.id %>_caption_field">
 									<%= f.input :caption, :input_html => {}, :as => :summernote %>
 								</div>
-								<div class="<%= media_file.id %>_caption_text">
-								</div>
+									<input id="<%= media_file.id %>_caption_text" type="hidden" name="media_file[caption]" value="">
 							<% else %>
 								<%= f.input :caption, :input_html => {}, :as => :summernote %>
 							<% end %>
@@ -229,3 +215,31 @@
     </div>
   </div>
 </div>
+<script>
+function set_caption_display(scope_id, caption_val){
+	var caption_field = '.' +  scope_id + '_caption_field';
+	var caption_display = '.' +  scope_id + '_caption_display';
+	var caption_text_field = '#' + scope_id + '_caption_text';
+	console.log(caption_val);
+	if(caption_val == 1){
+		$(caption_display).hide();
+		$(caption_field).show();	
+		$(caption_field + ' .summernote').prop('disabled', false);
+	} else {
+		if(caption_val == 2){
+			var caption_head = '<h5>No Caption</h5>';
+			var caption_text = ' ';
+		} else if(caption_val == 3) {
+			var caption_head = captions[scope_id]['short_caption'];
+			var caption_text = captions[scope_id]['short_caption'];
+		} else if(caption_val == 4) {
+			var caption_head = captions[scope_id]['long_caption'];
+			var caption_text = captions[scope_id]['long_caption'];
+		}
+		$(caption_display).show().html(caption_head);
+		$(caption_field + ' .summernote').prop('disabled', true);
+		$(caption_field).hide();
+		$(caption_text_field).prop("value", caption_text);
+	}
+}
+</script>

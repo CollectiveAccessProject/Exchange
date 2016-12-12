@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161128164735) do
+ActiveRecord::Schema.define(version: 20161208220030) do
 
   create_table "collectionobject_links", force: :cascade do |t|
     t.integer  "resource_id",   limit: 4,   null: false
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 20161128164735) do
     t.integer  "rank",              limit: 4
     t.string   "thumbnail_uid",     limit: 255
     t.string   "title",             limit: 255
+    t.integer  "caption_type",      limit: 4
   end
 
   add_index "media_files", ["resource_id"], name: "fk_rails_0b5d71f8d5", using: :btree

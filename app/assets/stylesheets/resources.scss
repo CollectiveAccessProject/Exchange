@@ -735,3 +735,20 @@ $white:#FFFFFF;
 dd > .alert, p > .alert, dt > .alert{
 	padding: 0 10px;
 }
+
+/* MEDIA MODAL - EDITABLE */
+.captionRadios{
+	font-size: 14px;
+	span{
+		padding-right: 10px;
+		input{
+			margin: 0 3px 0 0;
+		}
+	}
+}
+.captionDisplay{
+	padding: 20px;
+	border: 1px solid #a9a9a9;
+	border-radius: 3px;
+	margin-bottom: 20px;
+}
