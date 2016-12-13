@@ -577,8 +577,20 @@
           <!--Get all associated Affiliations-->
           <% if @resource.roles.count > 0 %>
               <div class="unit">
-                <h4>Affiliations</h4>
+                <h4>Created For</h4>
                 <%= 
+                	buf = ''
+                	@resource.roles.each do |r|
+                		Rails.application.config.x.user_roles.each do |k,v|
+                			if r.name == v.to_s
+                				buf += link_to k.to_s, '/quick_search/query?utf8=✓&q=role:' + v.to_s
+                				buf += '<br/>'
+                			end
+                		end
+                	end
+                	sanitize(buf)
+                %>
+                <%# 
                 	buf = ''
                 	Rails.application.config.x.user_roles.each do |k,v|
                 		buf += link_to k.to_s, '/quick_search/query?utf8=✓&q=role:' + v.to_s

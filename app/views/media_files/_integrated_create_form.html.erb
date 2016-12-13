@@ -66,7 +66,7 @@
 </div>
 <script>
 	var short_caption = '<h4>Short Caption</h4><p>Will be formatted as:</p><p>Artist<br/>Title</p>'
-	var long_caption = '<h4>Short Caption</h4><p>Will be formatted as:</p><p>Artist<br/>Title<br/>Date Created<br/>Medium | Support<br/>Credit Line<br/>Catalog Number</p>'
+	var long_caption = '<h4>Long Caption</h4><p>Will be formatted as:</p><p>Artist<br/>Title<br/>Date Created<br/>Medium | Support<br/>Credit Line<br/>Catalog Number</p>'
 	$(document).ready(function(){
 		$('#create-form-caption-display').hide();
 		$('#create-form-radios #media_file_caption_type_1').prop('checked', true);
@@ -82,23 +82,23 @@
 			}
 		});
 		$('#create-form-radios').click(function(){
-			caption_val = $("#create-form-radios input:radio[name = 'media_file[caption_type]']:checked").val();
-			if(caption_val == 1){
+			create_caption_val = $("#create-form-radios input:radio[name = 'media_file[caption_type]']:checked").val();
+			if(create_caption_val == 1){
 				$('#create-form-caption-display').hide();
 				$('#create-form-caption').show();
 				$('#create-form-caption .summernote').prop('disabled', false);
-			} else if(caption_val == 2){
+			} else if(create_caption_val == 2){
 				$('#create-form-caption-display').show().html('<h4>No Caption</h4>');
 				$('#create-form-caption .summernote').prop('disabled', true);
 				$('#create-form-caption-display').show();
 				$('#create-form-caption').hide();
 				var caption_text = ' ';
-			} else if(caption_val == 3) {
+			} else if(create_caption_val == 3) {
 				$('#create-form-caption-display').show().html(short_caption);
 				$('#create-form-caption .summernote').prop('disabled', true);
 				$('#create-form-caption-display').show();
 				$('#create-form-caption').hide();
-			} else if(caption_val == 4) {
+			} else if(create_caption_val == 4) {
 				$('#create-form-caption-display').show().html(long_caption);
 				$('#create-form-caption .summernote').prop('disabled', true);
 				$('#create-form-caption-display').show();
