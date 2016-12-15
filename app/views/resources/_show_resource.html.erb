@@ -398,7 +398,7 @@
                         tag_array.sort_by!{|a| a[:t_tag]}
                         tag_array.each do |l|
                       %>
-                          <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] + ' (' + l[:t_updated] + ')' %></small></span><br/>
+                          <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] + ' (' + l[:t_updated] + ')' %></small></span><br/>
                       <% end %>
                       <%= form_tag '/resources/add_tag' do %>
                           <%= hidden_field_tag 'id', @resource.id %>
@@ -428,7 +428,7 @@
                             key_array.sort_by!{|a| a[:v_term]}
                             key_array.each do |l|
                           %>
-                              <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] + ' (' + l[:v_updated] + ')' %></small></span><br/>
+                              <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] + ' (' + l[:v_updated] + ')' %></small></span><br/>
                           <% end %>
                         </div>
                     <% end %>
@@ -550,7 +550,7 @@
                     tag_array.sort_by!{|a| a[:t_tag]}
                     tag_array.each do |l|
                   %>
-                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
+                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %><br/>
                   <% end %>
 
 
@@ -568,7 +568,7 @@
                     key_array.sort_by!{|a| a[:v_term]}
                     key_array.each do |l|
                   %>
-                      <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
+                      <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term]) + '"' %><br/>
                   <% end %>
                 </div>
             <% end %>

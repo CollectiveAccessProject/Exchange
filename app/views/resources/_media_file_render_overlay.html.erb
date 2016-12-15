@@ -214,32 +214,32 @@
       </div>
     </div>
   </div>
-</div>
-<script>
-function set_caption_display(scope_id, caption_val){
-	var caption_field = '.' +  scope_id + '_caption_field';
-	var caption_display = '.' +  scope_id + '_caption_display';
-	var caption_text_field = '#' + scope_id + '_caption_text';
-	console.log(caption_val);
-	if(caption_val == 1){
-		$(caption_display).hide();
-		$(caption_field).show();	
-		$(caption_field + ' .summernote').prop('disabled', false);
-	} else {
-		if(caption_val == 2){
-			var caption_head = '<h5>No Caption</h5>';
-			var caption_text = ' ';
-		} else if(caption_val == 3) {
-			var caption_head = captions[scope_id]['short_caption'];
-			var caption_text = captions[scope_id]['short_caption'];
-		} else if(caption_val == 4) {
-			var caption_head = captions[scope_id]['long_caption'];
-			var caption_text = captions[scope_id]['long_caption'];
+    <script>
+	function set_caption_display(scope_id, caption_val){
+		var caption_field = '.' +  scope_id + '_caption_field';
+		var caption_display = '.' +  scope_id + '_caption_display';
+		var caption_text_field = '#' + scope_id + '_caption_text';
+		console.log(caption_val);
+		if(caption_val == 1){
+			$(caption_display).hide();
+			$(caption_field).show();	
+			$(caption_field + ' .summernote').prop('disabled', false);
+		} else {
+			if(caption_val == 2){
+				var caption_head = '<h5>No Caption</h5>';
+				var caption_text = ' ';
+			} else if(caption_val == 3) {
+				var caption_head = captions[scope_id]['short_caption'];
+				var caption_text = captions[scope_id]['short_caption'];
+			} else if(caption_val == 4) {
+				var caption_head = captions[scope_id]['long_caption'];
+				var caption_text = captions[scope_id]['long_caption'];
+			}
+			$(caption_display).show().html(caption_head);
+			$(caption_field + ' .summernote').prop('disabled', true);
+			$(caption_field).hide();
+			$(caption_text_field).prop("value", caption_text);
 		}
-		$(caption_display).show().html(caption_head);
-		$(caption_field + ' .summernote').prop('disabled', true);
-		$(caption_field).hide();
-		$(caption_text_field).prop("value", caption_text);
 	}
-}
-</script>
+	</script>
+</div>
