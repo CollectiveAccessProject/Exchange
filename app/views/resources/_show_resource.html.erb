@@ -1,23 +1,20 @@
 <% parent = @resource.parents.first %>
 <%= render partial: 'show_parent_heading.html.erb' %>
-<div class="row">
-  <div class="col-sm-12">
-    <H4>
-      <% if (params['mode'] == :preview) %>
-          Previewing Resource
-      <% end %>
-      <div class='headingButtons'>
-        <% if (user_signed_in?) %>
-            <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
-
-            <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs' %>
-        <% end %>
-        <%= last_search_button(session, {'class': 'btn btn-default btn-xs'}) %>
-      </div>
-      <br style="clear: both;"/>
-    </H4>
-  </div><!-- end col -->
-</div><!-- end row -->
+<% if @resource.check_edit_access(current_user) %>
+	<div class="row">
+	  <div class="col-sm-12">
+		<H4>
+		  <% if (params['mode'] == :preview) %>
+			  Previewing Resource
+		  <% end %>
+			<div class='headingButtons'>
+				<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
+		  </div>
+		  <br style="clear: both;"/>
+		</H4>
+	  </div><!-- end col -->
+	</div><!-- end row -->
+<% end %>
 <div class="row">
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
@@ -445,6 +442,18 @@
     <div class="panel panel-primary">
       <div class="panel-body">
         <div class="row">
+          
+          <div class="col-xs-12 text-left">
+            <% if (user_signed_in?) %>
+              <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard' %>
+            <% end %>
+          </div>
+          <div class="col-xs-12 text-left">
+            <%= last_search_button(session, {'text': '<span class="glyphicon glyphicon-arrow-left aria-hidden="true"></span> Search'.html_safe}) %>
+          </div>
+        </div>
+        <hr/>
+        <div class="row">
           <div class="col-xs-7 text-left">
             <a href="#"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous</a>
           </div>
@@ -452,6 +461,7 @@
             <a href="#">Next <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
+        
         <div class="detailButtonsResource text-center">
           <a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
           <a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>

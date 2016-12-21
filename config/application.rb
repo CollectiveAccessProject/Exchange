@@ -40,13 +40,13 @@ module Exchange
     config.x.group_types = { basic_group: 1 }
     config.x.access_types = { Published: 1, Unpublished: 0 }
 
-    config.x.user_roles = {
-          "Administrator" => :admin, "UMMA Staff" => :staff, "UMMA Docent" => :docent,
-          "University Faculty" => :faculty, "University Student" => :student,
-          "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,
-          "Museum Visitor" => :visitor
-    }
-    #config.x.access_types = {"Read access" => 1, "Write access" => 2}
+   config.x.user_roles = {
+          "Administrator" => :admin, "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,
+          "Museum Visitor" => :visitor, "UMMA Docent" => :docent, "UMMA Staff" => :staff,
+	  "University Faculty" => :faculty, "University Student" => :student
+    } 
+
+    config.x.user_access_types = {"Can View" => 1, "Can Edit" => 2}
 
     # date/time format used to tags, comments, etc.
     config.x.timestamp_format = '%B %e %Y @ %l:%M %P'

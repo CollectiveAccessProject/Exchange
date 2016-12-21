@@ -295,6 +295,23 @@ class Resource < ActiveRecord::Base
 	return rel_resource_list
   end
 
+
+  # 
+  # Check access for currently signed in user
+  # Also automatically grant access if user created or is assigned author of resource
+  # Return false if user does not have assigned access
+  #
+  def check_edit_access(current_user)
+    resUser = ResourcesUser.where(resource_id: self.id, user_id: current_user.id).first
+    if resUser
+      if resUser.access == 2
+        return true
+      end
+    elsif self.user_id == current_user.id or self.author_id == current_user.id
+        return true
+    end
+  end
+
   # 
   # Get the count of collectionobject-based media files
   # Options:

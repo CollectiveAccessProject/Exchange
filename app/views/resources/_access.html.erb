@@ -11,7 +11,6 @@
             </div>
 
             <h4>Users</h4>
-
             <div class="form-group">
               <div class="row">
                 <div class="col-md-7">
@@ -20,8 +19,8 @@
               <%= hidden_field_tag(:to_user_id) %>
                 </div>
                 <div class="col-md-3">
-                  <label>&nbsp;</label>
-                  <%= select_tag(:access_type, options_for_select(Rails.application.config.x.access_types)) %>
+                  <label>&nbsp;</label><br/>
+                  <%= select_tag(:access_type, options_for_select(Rails.application.config.x.user_access_types)) %>
                   </div>
                 <div class="col-md-2">
               <%= hidden_field_tag(:id, @resource.id) %>
@@ -33,12 +32,12 @@
 
             <% @resource.resources_users.each do |l|
               next if (!l.user)
-              access_display = Rails.application.config.x.access_types.find{|key, val| val == l.access }
+              access_display = Rails.application.config.x.user_access_types.find{|key, val| val == l.access }
               next if (access_display.nil?)
             %>
                <div>
                  <%= l.user.name + " (" + l.user.email + ")" %>
-                 <%= "[" + access_display[0]+"]" %>
+                 <%= "[" + access_display[0].to_s+"]" %>
                  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_resource_user_access_path(@resource) + "?user_id=" + l.user.id.to_s, {remote: true, class: :resourceUserAccessRemoveLink}) %>
                </div>
             <% end %>
@@ -63,8 +62,8 @@
                   <%= hidden_field_tag(:to_user_id) %>
                 </div>
                 <div class="col-md-3">
-                  <label>&nbsp;</label>
-                  <%= select_tag(:access_type, options_for_select(Rails.application.config.x.access_types)) %>
+                  <label>&nbsp;</label><br/>
+                  <%= select_tag(:access_type, options_for_select(Rails.application.config.x.user_access_types)) %>
                 </div>
                 <div class="col-md-2">
                   <%= hidden_field_tag(:id, @resource.id) %>
