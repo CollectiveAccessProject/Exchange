@@ -8,7 +8,7 @@ class ResourcesController < ApplicationController
   respond_to :html, :json
 
   # UI autocomplete on resource title (used by related resources lookup)
-  autocomplete :resource, :title, :full => true, :extra_data => [:id, :collection_identifier, :resource_type], :display_value => :get_autocomplete_label
+  autocomplete :resource, :title, :full => true, :extra_data => [:id, :collection_identifier, :resource_type, :indexing_data], :display_value => :get_autocomplete_label
 
   # UI autocomplete on user name/email (used by user lookup)
   autocomplete :user, :name, :full => true, :extra_data => [:id]

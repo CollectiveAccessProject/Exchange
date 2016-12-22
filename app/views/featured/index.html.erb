@@ -4,7 +4,7 @@
     <div class="panel-group" id="featuredList">
 
 		<% @featured_content_sets.each do |s| %>
-			<div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-triangle-right featureArrow featureArrow<%= s.id %>"></span> <%= link_to(s.title, featured_get_set_contents_path(s), { remote: true, class: "loadSet", :onclick => "highlightSideNav('" + s.id.to_s + "'); return false;"}) %></h3></div>
+			<div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-triangle-right featureArrow featureArrow<%= s.id %>"></span> <%= link_to(sanitize(s.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), featured_get_set_contents_path(s), { remote: true, class: "loadSet", :onclick => "highlightSideNav('" + s.id.to_s + "'); return false;"}) %></h3></div>
 		<% end %>
 	</div>
   </div>

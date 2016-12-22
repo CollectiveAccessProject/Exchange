@@ -37,7 +37,7 @@
             <% end %>
             <div class="text-left qsResultText">
               <div class="small"><%= r.get_collection_object_field('artist') %> <%= r.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
-              <%= link_to r[:title], get_resource_view_path(r[:id], user_signed_in?) %>
+              <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
               <div class="qsMoreCaption">
                 <div class="small"><%= r.get_collection_object_field('date_created') %></div>
                 <div class="small"><i><%= r.get_collection_object_field('credit_line') %></i></div>

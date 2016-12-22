@@ -15,7 +15,7 @@
  	@resource.parents.each do |parent|
  		if(!session[:last_collection] || !parent_ids.include?(session[:last_collection]) || parent.id == session[:last_collection])
 %>
-			<a href="#" onClick="$('.hiddenParentPanel').hide(); $('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;"><%= raw(parent.title) %></a>
+			<a href="#" onClick="$('.hiddenParentPanel').hide(); $('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;"><%= sanitize(parent.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></a>
 <%=
 			if(parent.resource_hierarchies) 
 				" <small>(#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ') + ")</small>".html_safe
@@ -42,7 +42,7 @@
       	<div class="row">
 		  <div class="col-sm-12">
       		<a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').hide(); return false;" class="btn btn-noBg btn-lg-icon pull-right"><i class="fa fa-close" aria-hidden="true"></i></a>
-		  	<H5><%= link_to sanitize(parent.title) + " <i class='fa fa-external-link'></i>".html_safe, get_resource_view_path(parent, user_signed_in?), "class": "" %></H5>
+		  	<H5><%= link_to sanitize(parent.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) + " <i class='fa fa-external-link'></i>".html_safe, get_resource_view_path(parent, user_signed_in?), "class": "" %></H5>
 		  </div>
 		</div>
 		<div class="row">

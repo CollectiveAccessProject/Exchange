@@ -25,7 +25,7 @@
         <H4><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
           Part of:
           <%=
-            link_to raw(parent.title), get_resource_view_path(parent, user_signed_in?), "class": ""
+            link_to sanitize(parent.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(parent, user_signed_in?), "class": ""
           %>
           <br/><small><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;">
           <%=
@@ -71,7 +71,7 @@
     <p id="notice"><%= notice %></p>
 
     <!--<H3>UMMA Collection Object</H3>-->
-    <H2><%= @resource.title %></H2>
+    <H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H2>
     <div class="row">
       <div class="col-sm-8">
         <div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
@@ -227,13 +227,13 @@
           <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">
             <% rel_resource.each do |v| %>
                 <div>
-                  <%= link_to v.title, get_resource_view_path(v.id, user_signed_in?) %>
+                  <%= link_to sanitize(v.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(v.id, user_signed_in?) %>
                   <% if(v.parents.count > 0) %>
                       <br />
                       <% if(v.parents.count == 1) %>
-                          <%= "(Part of: " + v.parents.first.title + ")" %>
+                          <%= "(Part of: " + sanitize(v.parents.first.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) + ")" %>
                       <% else %>
-                          <%= "(Part of " + v.parents.count.to_s + " Learning Collections)" %>
+                          <%= "(Part of " + sanitize(v.parents.count.to_s, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) + " Learning Collections)" %>
                       <% end %>
                   <% end %>
                 </div>

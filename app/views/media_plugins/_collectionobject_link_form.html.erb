@@ -3,9 +3,9 @@
     <%= fields_for(plugin_model) do |f| %>
 
         <label for="collectionobjectMedia">UMMA collection object:</label>
-        <%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_object_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collectionobject_link_original_link", class:'form-control') %>
+        <%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_object_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :update_elements => {:indexing_data => "#collectionobject_link_indexing_data", :id => "#collectionobject_link_original_link"}, class:'form-control') %>
         <%= hidden_field_tag("collectionobject_link[original_link]") %>
-
+	<%= hidden_field_tag("collectionobject_link[indexing_data]") %>
     <div class="form-actions">
       <% if plugin_model.id %>
         <%= link_to 'Delete?', plugin_model, method: :delete, data: { confirm: 'Are you sure?' } %>

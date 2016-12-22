@@ -19,8 +19,8 @@
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
 
-    <H2><%= sanitize(@resource.title) %></H2>
-    <H3><%= sanitize(@resource.subtitle) %></H3>
+    <H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H2>
+    <H3><%= sanitize(@resource.subtitle, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H3>
     <% if @resource.settings(:text_placement).placement.to_s == "above" %>
         <% if @resource.settings(:text_formatting).show_all == 1 %>
             <% if @resource.settings(:text_formatting).collapse == 1 %>
@@ -485,7 +485,7 @@
                 %>
 
                     <div>
-                      <strong><%= link_to sanitize(p.title), get_resource_view_path(p, user_signed_in?) %> <i class="fa fa-external-link-square" aria-hidden="true"></i></strong>
+                      <strong><%= link_to sanitize(p.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(p, user_signed_in?) %> <i class="fa fa-external-link-square" aria-hidden="true"></i></strong>
                       <br/>
                       <a role="button" data-toggle="collapse" href="#collPanel_<%= panelCount %>">
                         See <%= p.resource_hierarchies.count %> Included Resource<%= (p.resource_hierarchies.count == 1) ? "" : "s" %> <i class="fa fa-angle-double-down" aria-hidden="true"></i></a></div>
@@ -496,7 +496,7 @@
                               <% if (rel.child_resource.is_collection) %>
                                   <%= link_to "<i class='fa fa-folder-o'></i>".html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %>
                               <% end %>
-                              <%= link_to sanitize(rel.child_resource.title), get_resource_view_path(rel.child_resource, user_signed_in?) %>
+                              <%= link_to sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(rel.child_resource, user_signed_in?) %>
                               <br />
                               <%= (rel.child_resource.subtitle.length > 50) ? rel.child_resource.subtitle[0..50] + "..." : rel.child_resource.subtitle %>
                             </small><br/>
@@ -515,7 +515,7 @@
               <div id="relatedPanel" class="collapse detailRelatedContentBlockScroll">
                 <% @resource.related_resources.each do |r| %>
                     <div>
-                      <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title), get_resource_view_path(r.related, user_signed_in?) %>
+                      <%= link_to ((r.related.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r.related, user_signed_in?) %>
                       <% if (r.caption.length > 0) %>
                           <br/><small>
                       <%= r.caption %>

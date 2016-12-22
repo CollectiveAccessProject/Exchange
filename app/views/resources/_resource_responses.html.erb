@@ -7,7 +7,7 @@
 <% if (@resource.in_response_to_resource_id && ((@resource.in_response_to.access == 1) || (@resource.in_response_to.is_collection_object))) %>
     <div class="unit">
       <<%= heading_tag %>>In response to</<%= heading_tag %>>
-      <%= link_to(sanitize(@resource.in_response_to.title), @resource.in_response_to) %>
+      <%= link_to(sanitize(@resource.in_response_to.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), @resource.in_response_to) %>
     </div>
 <% end %>
 <% if (@resource.responses && (@resource.responses.length > 0)) %>
@@ -18,7 +18,7 @@
           next if ((r.access == 0) && (!r.is_collection_object))
         %>
         <%
-          buf += link_to(sanitize(r.title), r)
+          buf += link_to("<p>".html_safe + sanitize(r.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) + "</p>".html_safe, r)
         %>
     <% end %>
     <% if (buf.chop.length > 0) %>

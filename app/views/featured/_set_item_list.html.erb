@@ -1,11 +1,11 @@
 <div class="row featuredTop">
   <div class="col-md-12">
-    <h2><%= set.title %> </h2>
+    <h2><%= sanitize(set.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %> </h2>
     <% if (set.subtitle.chop.length > 0) %>
-        <h3><%= set.subtitle %></h3>
+        <h3><%= set.subtitle.html_safe %></h3>
     <% end %>
     <% if (set.body_text.chop.length > 0) %>
-        <h4><%= set.body_text %></h4>
+        <h4><%= set.body_text.html_safe %></h4>
     <% end %>
   </div>
 </div>
@@ -18,7 +18,7 @@
 		i = i+1;
 %>
       <div class="col-sm-4 featuredItemCol">
-      	<h3><%= (item.title.chop.length > 0) ? item.title : item.resource.title %></H3>
+      	<h3><%= (item.title.chop.length > 0) ? item.title.html_safe : item.resource.title.html_safe %></H3>
         <%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
         <p><%= item.subtitle %></p>
       </div>

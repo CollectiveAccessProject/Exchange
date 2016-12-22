@@ -38,7 +38,7 @@
                 <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r[:id], user_signed_in?) %><br/>
             <% end %>
             <div class="text-left qsResultText">
-              <%= link_to r[:title].html_safe, get_resource_view_path(r[:id], user_signed_in?) %>
+              <%= link_to sanitize(r[:title].html_safe, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
               <div class="qsMoreCaption">
                 <%
                   if r.author_id

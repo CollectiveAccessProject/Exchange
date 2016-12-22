@@ -51,7 +51,7 @@
         	if(i == 1)
 %>
 				<div class='col-sm-6'>
-				<H1><%= @featured_content_set.title %>
+				<H1><%= sanitize(@featured_content_set.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>
 <% 
 				if (@featured_content_set.subtitle.chop.length > 0)
 %>
@@ -71,7 +71,7 @@
             <div class="row">
               <div class="<%= style.html_safe %>">
                 <%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
-                <h3><%= (item.title.chop.length > 0) ? item.title : item.resource.title %></H3>
+                <h3><%= (item.title.chop.length > 0) ? sanitize(item.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) : sanitize(item.resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H3>
               </div>
             </div>
 <%
