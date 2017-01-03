@@ -12,8 +12,8 @@
           </div>
         </div>
         <div class="row">
-          <% if @resource.media_files.count > 0 %>
-			  <div class="col-sm-6">
+          <%# if @resource.media_files.count > 0 %>
+			  <div class="col-sm-6 mediaDependent">
 				<div class="row">
 				  <div class="col-sm-12">
 					<H4>Formatting</H4>
@@ -114,7 +114,7 @@
 				  </div>
 				</div>
 			  </div>
-		  <% end %>
+		  <%# end %>
           <div class="col-sm-6">
             <% if (@resource.setting_is_valid(:user_interaction)) %>
                 <div class="row">
@@ -177,3 +177,17 @@
     <% end %>
   </div>
 </div>
+<script>
+	$(document).ready(function(){
+		if($('.mediaListIcon').length == 0){
+			$('.mediaDependent').hide();
+		}
+		$('.mediaColumn').bind('DOMSubtreeModified', function(){
+			if($('.mediaListIcon').length > 0){
+				$('.mediaDependent').show();
+			} else {
+				$('.mediaDependent').hide();
+			}
+		});
+	});
+</script>

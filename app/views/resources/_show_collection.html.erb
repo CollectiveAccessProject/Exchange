@@ -89,9 +89,9 @@
 				  <div class="text-right col-sm-12">
 						<div class="unit authorLink">
 						  <% if @resource.author_id %>
-							  <h5>Created by</h5><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author:' + @resource.get_author_name.gsub(/\([\S]+\)/, '') %>
+							  <h5>Created by</h5><%= link_to @resource.get_author_name.gsub(/\([\S]+\)/, ''), '/quick_search/query?utf8=✓&q=author:"' + @resource.get_author_name.gsub(/\([\S]+\)/, '') + '"' %>
 						  <% else %>
-							  <h5>Created by</h5><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:' + @resource.user.name %>
+							  <h5>Created by</h5><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%>
 						  <% end %>
 						</div>
 						<h5>Last Updated</h5>

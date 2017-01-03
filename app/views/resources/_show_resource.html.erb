@@ -615,10 +615,10 @@
           <div class="unit authorLink">
             <% if @resource.author_id  %>
             	<% author_name = @resource.get_author_name(:omit_email => true).to_s %>
-                <h4>Created by</h4><%= link_to author_name, '/quick_search/query?utf8=✓&q=author:' + author_name %>
+                <h4>Created by</h4><%= link_to author_name, '/quick_search/query?utf8=✓&q=author:"' + author_name + '"' %>
                 
             <% else %>
-                <h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:' + @resource.user.name %>
+                <h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%>
             <% end %>
             	
             	<br/><br/>
