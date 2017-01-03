@@ -24,8 +24,11 @@
 				<%= f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
 			  </div>
 			  <div id="create-form-caption">
-              	<%= f.input :caption, :as => :summernote %>
-              </div>
+              			<%= f.input :caption, :as => :summernote %>
+              		  </div>
+			  <input id="create-form-short-caption-text" type="hidden" name="media_file[caption]" value="">
+			  <input id="create-form-long-caption-text" type="hidden" name="media_file[caption]" value="">
+			  <input id="create-form-no-caption-text" type="hidden" name="media_file[caption]" value=" ">
 			  <div id='create-form-caption-display' class="captionDisplay"></div>
               <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
               <%= f.input :copyright_notes, :as => :summernote %>
@@ -87,23 +90,53 @@
 				$('#create-form-caption-display').hide();
 				$('#create-form-caption').show();
 				$('#create-form-caption .summernote').prop('disabled', false);
+				$('#create-form-short-caption-text').prop('disabled', true);
+				$('#create-form-long-caption-text').prop('disabled', true);
+				$('#create-form-no-caption-text').prop('disabled', true);
 			} else if(create_caption_val == 2){
 				$('#create-form-caption-display').show().html('<h4>No Caption</h4>');
 				$('#create-form-caption .summernote').prop('disabled', true);
-				$('#create-form-caption-display').show();
+				//$('#create-form-caption-display').show();
 				$('#create-form-caption').hide();
-				var caption_text = ' ';
+				$('#create-form-short-caption-text').prop('disabled', true);
+				$('#create-form-long-caption-text').prop('disabled', true);
+				$('#create-form-no-caption-text').prop('disabled', false);
 			} else if(create_caption_val == 3) {
 				$('#create-form-caption-display').show().html(short_caption);
 				$('#create-form-caption .summernote').prop('disabled', true);
-				$('#create-form-caption-display').show();
+				//$('#create-form-caption-display').show();
 				$('#create-form-caption').hide();
+				$('#create-form-short-caption-text').prop('disabled', false);
+				$('#create-form-long-caption-text').prop('disabled', true);
+				$('#create-form-no-caption-text').prop('disabled', true);
 			} else if(create_caption_val == 4) {
 				$('#create-form-caption-display').show().html(long_caption);
 				$('#create-form-caption .summernote').prop('disabled', true);
-				$('#create-form-caption-display').show();
+				//$('#create-form-caption-display').show();
 				$('#create-form-caption').hide();
+				$('#create-form-short-caption-text').prop('disabled', true);
+				$('#create-form-long-caption-text').prop('disabled', false);
+				$('#create-form-no-caption-text').prop('disabled', true);
 			}
 		});
 	});
 </script>
+
+<script>
+  	$(document).ready(function(){
+		$('#CollectionobjectLink').bind('railsAutocomplete.select', function(){			
+			var index_data = $('#collectionobject_link_indexing_data').val();
+			var index_parse = jQuery.parseJSON(index_data)
+			var short_caption = index_parse.artists + '<br/>' + index_parse.title
+			$('#create-form-short-caption-text').prop("value", short_caption);
+			var material_fields = ''
+			if(index_parse.support){
+				material_fields = index_parse.medium + ' | ' + index_parse.support
+			} else {
+				material_fields = index_parse.medium
+			}
+			var long_caption = index_parse.artists + '<br/>' + index_parse.title + '<br/>' + index_parse.date_created + '<br/>' + material_fields + '<br/>' + index_parse.credit_line + '<br/>' + index_parse.idno
+			$('#create-form-long-caption-text').prop("value", long_caption);
+		});
+	});
+  </script>

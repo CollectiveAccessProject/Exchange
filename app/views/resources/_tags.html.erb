@@ -2,7 +2,7 @@
   <div class="panel-body">
 
     <div class="row">
-      <div class="col-md-6">
+      <div id="edit_tag_column" class="col-md-6">
         <%= form_tag '/resources/add_tag', remote: true, "data-type": :json, id: :addTagsForm do %>
             <div id="tags-status">
               <div class="flash-notice" id="tags-status-message">

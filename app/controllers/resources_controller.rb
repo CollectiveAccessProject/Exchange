@@ -44,7 +44,7 @@ class ResourcesController < ApplicationController
         'LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?',
         "%#{term}%", "#{term}%"
     ).order(:id).all
-    render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l} }
+    render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
   end
 
   def autocomplete_vocabulary_term_term

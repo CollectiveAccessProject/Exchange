@@ -379,11 +379,15 @@
 				);
 			})
 		  </script>
-          <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
               <div class="col-sm-6">
-                <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
+                <a role="button" data-toggle="collapse" href="#tagPanel"><H4>
+                	<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+                		<%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; 
+                	<% end %>
+                	<%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
                 <div id="tagPanel" class="collapse detailComments">
                   <div class="row">
+                    <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
                     <div class="col-sm-<%= @resource.vocabulary_terms.count > 0 ? '6' : '12' %>">
                       <h5>Tags</h5>
                       <%# @resource.tags.map(&:tag).join(", ") %>
@@ -407,8 +411,9 @@
                           <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
                       <% end %>
                     </div>
+                    <% end %>
                     <% if @resource.resources_vocabulary_terms.count > 0 %>
-                        <div class="col-sm-6">
+                        <div class="col-sm-<%= @resource.settings(:user_interaction).allow_tags > 0 ? '6' : '12' %>">
                           <h5>Keywords</h5>
                           <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
                           <%
@@ -432,7 +437,6 @@
                   </div>
                 </div>
               </div>
-          <% end %>
         </div>
       </div>
     </div>
@@ -566,23 +570,23 @@
 
                 </div>
             <% end %>
-            <% if @resource.vocabulary_terms.count > 0 %>
-                <div class="unit">
-                  <h4>Keywords</h4>
-                  <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-                  <%
-                    key_array = []
-                    @resource.resources_vocabulary_terms.each do |v|
-                      key_array << { :v_term => v.vocabulary_terms.term.capitalize }
-                    end
-                    key_array.sort_by!{|a| a[:v_term]}
-                    key_array.each do |l|
-                  %>
-                      <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term]) + '"' %><br/>
-                  <% end %>
-                </div>
-            <% end %>
         <% end %>
+		<% if @resource.vocabulary_terms.count > 0 %>
+			<div class="unit">
+			  <h4>Keywords</h4>
+			  <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+			  <%
+				key_array = []
+				@resource.resources_vocabulary_terms.each do |v|
+				  key_array << { :v_term => v.vocabulary_terms.term.capitalize }
+				end
+				key_array.sort_by!{|a| a[:v_term]}
+				key_array.each do |l|
+			  %>
+				  <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term]) + '"' %><br/>
+			  <% end %>
+			</div>
+		<% end %>
         <div>
           <!--Get all associated Affiliations-->
           <% if @resource.roles.count > 0 %>
@@ -590,20 +594,17 @@
                 <h4>Created For</h4>
                 <%= 
                 	buf = ''
+                	aff_array = []
                 	@resource.roles.each do |r|
                 		Rails.application.config.x.user_roles.each do |k,v|
                 			if r.name == v.to_s
-                				buf += link_to k.to_s, '/quick_search/query?utf8=✓&q=role:' + v.to_s
-                				buf += '<br/>'
+                				aff_array << { :a_term => k.to_s, :a_val => v.to_s }
                 			end
                 		end
                 	end
-                	sanitize(buf)
-                %>
-                <%# 
-                	buf = ''
-                	Rails.application.config.x.user_roles.each do |k,v|
-                		buf += link_to k.to_s, '/quick_search/query?utf8=✓&q=role:' + v.to_s
+                	aff_array.sort_by!{|a| a[:a_term]}
+                	aff_array.each do |a|
+                		buf += link_to a[:a_term], '/quick_search/query?utf8=✓&q=role:' + a[:a_val]
                 		buf += '<br/>'
                 	end
                 	sanitize(buf)

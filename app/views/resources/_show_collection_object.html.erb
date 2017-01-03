@@ -8,9 +8,9 @@
         <% if (user_signed_in?) %>
             <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
 
-            <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+            <%# link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
         <% end %>
-        <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
+        <%# last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
       </div>
       <br style="clear: both;"/>
     </H4>
@@ -146,36 +146,37 @@
 			);
 		})
 	  </script>
-      <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
           <div class="col-sm-6">
             <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
             <div id="tagPanel" class="collapse detailComments">
               <div class="row">
-                <div class="col-sm-<%= @resource.vocabulary_terms.count > 0 ? '6' : '12' %>">
-                  <h5>Tags</h5>
-                  <%# @resource.tags.map(&:tag).join(", ") %>
-                  <%
-                    tag_array = []
-                    @resource.tags.each do |t|
-                      tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id, :t_updated => t.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
-                    end
-                    tag_array.sort_by!{|a| a[:t_tag]}
-                    tag_array.each do |l|
-                  %>
-                      <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] + ' (' + l[:t_updated] + ')' %></small></span><br/>
-                  <% end %>
-                  <%= form_tag '/resources/add_tag' do %>
-                      <%= hidden_field_tag 'id', @resource.id %>
-                      <br/>
-                      <div class="form-group">
-                        <label>Add Tag</label>
-                        <%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-                      </div>
-                      <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-                  <% end %>
-                </div>
+                <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+					<div class="col-sm-<%= @resource.vocabulary_terms.count > 0 ? '6' : '12' %>">
+					  <h5>Tags</h5>
+					  <%# @resource.tags.map(&:tag).join(", ") %>
+					  <%
+						tag_array = []
+						@resource.tags.each do |t|
+						  tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id, :t_updated => t.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
+						end
+						tag_array.sort_by!{|a| a[:t_tag]}
+						tag_array.each do |l|
+					  %>
+						  <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] + ' (' + l[:t_updated] + ')' %></small></span><br/>
+					  <% end %>
+					  <%= form_tag '/resources/add_tag' do %>
+						  <%= hidden_field_tag 'id', @resource.id %>
+						  <br/>
+						  <div class="form-group">
+							<label>Add Tag</label>
+							<%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
+						  </div>
+						  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+					  <% end %>
+					</div>
+                <% end %>
                 <% if @resource.vocabulary_terms.count > 0 %>
-                    <div class="col-sm-6">
+                    <div class="col-sm-<%= @resource.settings(:user_interaction).allow_tags > 0 ? '6' : '12' %>">
                       <h5>Keywords</h5>
                       <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
                       <%
@@ -198,13 +199,23 @@
               </div>
             </div>
           </div>
-      <% end %>
-
     </div>
   </div><!-- end col -->
   <div class="col-sm-2 resourceSidePanel">
     <div class="panel panel-primary">
       <div class="panel-body">
+        <div class="row">
+          
+          <div class="col-xs-12 text-left">
+            <% if (user_signed_in?) %>
+              <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard' %>
+            <% end %>
+          </div>
+          <div class="col-xs-12 text-left">
+            <%= last_search_button(session, {'text': '<span class="glyphicon glyphicon-arrow-left aria-hidden="true"></span> Search'.html_safe}) %>
+          </div>
+        </div>
+        <hr/>
         <div class="row">
           <div class="col-sm-7 text-left">
             <a href="#"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous</a>
@@ -253,27 +264,27 @@
                     tag_array.sort_by!{|a| a[:t_tag]}
                     tag_array.each do |l|
                   %>
-                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:t_tag]) %><br/>
-                  <% end %>
-                </div>
-            <% end %>
-            <% if @resource.vocabulary_terms.count > 0 %>
-                <div class="unit">
-                  <h4>Keywords</h4>
-                  <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-                  <%
-                    key_array = []
-                    @resource.resources_vocabulary_terms.each do |v|
-                      key_array << { :v_term => v.vocabulary_terms.term.capitalize }
-                    end
-                    key_array.sort_by!{|a| a[:v_term]}
-                    key_array.each do |l|
-                  %>
-                      <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:' + sanitize(l[:v_term]) %><br/>
+                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %><br/>
                   <% end %>
                 </div>
             <% end %>
         <% end %>
+		<% if @resource.vocabulary_terms.count > 0 %>
+			<div class="unit">
+			  <h4>Keywords</h4>
+			  <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+			  <%
+				key_array = []
+				@resource.resources_vocabulary_terms.each do |v|
+				  key_array << { :v_term => v.vocabulary_terms.term.capitalize }
+				end
+				key_array.sort_by!{|a| a[:v_term]}
+				key_array.each do |l|
+			  %>
+				  <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:v_term] + '"') %><br/>
+			  <% end %>
+			</div>
+		<% end %>
         <% if (@resource.copyright_license) %>
             <div class="unit">
               <h4>Copyright</h4>

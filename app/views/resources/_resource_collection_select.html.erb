@@ -32,6 +32,12 @@
 					<%=
 					  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, :title), class:'form-control')
 					%>
+					<script>
+						$(document).ready(function(){
+							var option_str = $('#parent_id option').text();
+							console.log($(option_str).text());
+						});
+					</script>
 					<%= hidden_field_tag(:id, @resource.id) %>
 					</div>
 					<div class="col-sm-2">

@@ -115,13 +115,18 @@
 								<h5>Created For</h5>
 								<%= 
 									buf = ''
+									aff_array = []
 									@resource.roles.each do |r|
 										Rails.application.config.x.user_roles.each do |k,v|
 											if r.name == v.to_s
-												buf += link_to k.to_s, '/quick_search/query?utf8=✓&q=role:' + v.to_s
-												buf += '<br/>'
+												aff_array << { :a_term => k.to_s, :a_val => v.to_s }
 											end
 										end
+									end
+									aff_array.sort_by!{|a| a[:a_term]}
+									aff_array.each do |a|
+										buf += link_to a[:a_term], '/quick_search/query?utf8=✓&q=role:' + a[:a_val]
+										buf += '<br/>'
 									end
 									sanitize(buf)
 								%>
@@ -209,11 +214,11 @@
 				);
 			})
 		  </script>
-          <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
               <div class="col-sm-6">
                 <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
                 <div id="tagPanel" class="collapse detailComments">
                   <div class="row">
+                  <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
                     <div class="col-sm-<%= @resource.vocabulary_terms.count > 0 ? '6' : '12' %>">
                       <h5>Tags</h5>
                       <%
@@ -236,8 +241,9 @@
                           <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
                       <% end %>
                     </div>
+          			<% end %>
                     <% if @resource.vocabulary_terms.count > 0 %>
-                        <div class="col-sm-6">
+                        <div class="col-sm-<%= @resource.settings(:user_interaction).allow_tags > 0 ? '6' : '12' %>">
                           <h5>Keywords</h5>
                           <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
                           <%
@@ -261,6 +267,5 @@
                   </div><!-- end row -->
                 </div><!-- end tagPanel -->
             </div><!-- end col 6 -->
-          <% end %>
         </div><!-- end row -->
     <% end %>
