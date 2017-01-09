@@ -13,7 +13,7 @@
                 <option value="<%= Resource::COLLECTION %>">Learning Collection</option>
                 <option value="<%= Resource::RESOURCE %>">Resource</option>
                 <option value="<%= Resource::COLLECTION_OBJECT%>">UMMA Collection Object</option>
-                <option value="<%= Resource::EXHIBITION %>">UMMA Exhibition</option>
+                <!-- <option value="<%= Resource::EXHIBITION %>">UMMA Exhibition</option>-->
               </select>
             </div>
           </div>
@@ -42,6 +42,33 @@
                 end
                 buf.html_safe
               %>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <div class="col-md-12"><label class="control-label" for="roles">Rating</label>
+              <div class="ratingRow">
+                Between <select class="rating" name="min_rating" id="minRating">
+                <option value="0" selected>0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+                and
+                <select class="rating" name="max_rating" id="maxRating">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5" selected>5</option>
+                </select>
+
+                <img src="/assets/mortarboard_on.png" alt="Mortarboard" width="29" height="20"/>
+              </div>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
     <div class="col-sm-12">
       <a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
       <h4>
-        <%= @collection_objects.total_entries %> UMMA Collection Object<%= (@collection_objects.total_entries == 1) ? "" : "s" %>
+        <%= @collection_objects_count %> UMMA Collection Object<%= (@collection_objects_count == 1) ? "" : "s" %>
         (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
       </h4>
 
@@ -57,7 +57,9 @@
 
             end
           %>
+      <% if (col > 0) %>
       </div><!-- end row -->
+          <% end %>
       <div class='row'><div class='col-sm-3'></div>
         <%=
           if(@collection_objects_needs_previous_paging)

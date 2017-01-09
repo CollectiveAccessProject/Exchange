@@ -132,7 +132,11 @@ class Resource < ActiveRecord::Base
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
     record['tag'] = self.tags.pluck("tag")
 
+    # index idno's of collection objects used as media
     record['related_collection_objects'] = ''
+
+    # index average rating for this resource
+    record['rating'] = avg_rating.to_i
 
     #puts "INDEXING IS"
     #puts record
@@ -288,35 +292,35 @@ class Resource < ActiveRecord::Base
   # Either through the author_id or default user_id
   #
   def get_author_resources
-  	# Get the user and author ids for the current resource
-  	author = self.author_id
+    # Get the user and author ids for the current resource
+    author = self.author_id
     user = self.user_id
-    
+
     rel_resource_list = {}
     # If an author is assigned use that
     if author
-		Resource.where('author_id=? OR user_id=?', author, author).find_each do |rel_resource|
-			if rel_resource.id != self.id
-				if rel_resource.author_id == author
-					rel_resource_list[rel_resource.id] = rel_resource.title
-				elsif rel_resource.author_id == nil and rel_resource.user_id == user
-					rel_resource_list[rel_resource.id] = rel_resource.title
-				end
-			end
-		end
-	# If not, use the user who created the Resource
-	else
-		Resource.where('author_id=? OR user_id=?', user, user).find_each do |rel_resource|
-			if rel_resource.id != self.id
-				if rel_resource.author_id == user
-					rel_resource_list[rel_resource.id] = rel_resource.title
-				elsif rel_resource.author_id == nil and rel_resource.user_id == user
-					rel_resource_list[rel_resource.id] = rel_resource.title
-				end
-			end
-		end
-	end	
-	return rel_resource_list
+      Resource.where('author_id=? OR user_id=?', author, author).find_each do |rel_resource|
+        if rel_resource.id != self.id
+          if rel_resource.author_id == author
+            rel_resource_list[rel_resource.id] = rel_resource.title
+          elsif rel_resource.author_id == nil and rel_resource.user_id == user
+            rel_resource_list[rel_resource.id] = rel_resource.title
+          end
+        end
+      end
+      # If not, use the user who created the Resource
+    else
+      Resource.where('author_id=? OR user_id=?', user, user).find_each do |rel_resource|
+        if rel_resource.id != self.id
+          if rel_resource.author_id == user
+            rel_resource_list[rel_resource.id] = rel_resource.title
+          elsif rel_resource.author_id == nil and rel_resource.user_id == user
+            rel_resource_list[rel_resource.id] = rel_resource.title
+          end
+        end
+      end
+    end
+    return rel_resource_list
   end
 
 
@@ -332,7 +336,7 @@ class Resource < ActiveRecord::Base
         return true
       end
     elsif self.user_id == current_user.id or self.author_id == current_user.id
-        return true
+      return true
     end
   end
 
@@ -344,11 +348,11 @@ class Resource < ActiveRecord::Base
   def collectionobject_link_count(options = {})
     co_count = 0
     MediaFile.where('sourceable_type=? AND resource_id=?', 'collectionobjectLink', self.id).find_each do |rf|
-	  if rf.access == 1
-	    co_count += 1
-	  elsif options[:get_hidden]
-	  	co_count += 1
-	  end
+      if rf.access == 1
+        co_count += 1
+      elsif options[:get_hidden]
+        co_count += 1
+      end
     end
     return co_count
   end
@@ -359,17 +363,17 @@ class Resource < ActiveRecord::Base
   #
   def media_file_references
     mf_references = {}
-    
+
     self.collectionobject_links.each do |co_link|
-	  co_resource = Resource.find(co_link.resource_id)
-	  
-	  MediaFile.where('sourceable_id=? AND resource_id=?', co_link.id, self.id).find_each do |media_resource|
-	  	if media_resource.access == 1
-	  	  mf_references[co_resource.id] = [co_resource.title, co_resource.collection_identifier]
-	  	end
-	  end
-	end
-	return mf_references
+      co_resource = Resource.find(co_link.resource_id)
+
+      MediaFile.where('sourceable_id=? AND resource_id=?', co_link.id, self.id).find_each do |media_resource|
+        if media_resource.access == 1
+          mf_references[co_resource.id] = [co_resource.title, co_resource.collection_identifier]
+        end
+      end
+    end
+    return mf_references
   end
 
   # return number of direct children on this resource
@@ -404,6 +408,14 @@ class Resource < ActiveRecord::Base
       return n
     end
     ""
+  end
+
+  def avg_rating
+    array = Rate.where(rateable_id: self.id, rateable_type: 'Resource').where(dimension: "quality")
+    stars = array.map {|r| r.stars }
+    star_count = stars.count
+    stars_total = stars.inject(0){|sum,x| sum + x }
+    score = stars_total / (star_count.nonzero? || 1)
   end
 
   # the automatic elasticsearch callbacks seem to ignore or
@@ -609,6 +621,18 @@ class Resource < ActiveRecord::Base
       end
     end
 
+    if (params['min_rating'].to_i == params['max_rating'].to_i)
+      d = v = params['min_rating']
+    else
+      v = '[' + params['min_rating'] + ' TO ' + params['max_rating'] + ']'
+      d = "Between " + params['min_rating'] + ' and ' + params['max_rating']
+    end
+
+    query_elements.push('rating:' + v)
+    query_display.push("Rating: " + d)
+    query_values['rating'] = v
+
+
 
     case resource_type
       when Resource::RESOURCE
@@ -642,7 +666,8 @@ class Resource < ActiveRecord::Base
     # generate query
     query = query_elements.join(" AND ")
     query_for_display = query_display.join("; ")
-
+   # puts "q=" + query;
+   # puts "qd=" + query_for_display
     resources = []
     collections = []
     collection_objects = []
@@ -652,18 +677,18 @@ class Resource < ActiveRecord::Base
       begin
         resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s)
         if (!options[:models])
-        resources.map do |r|
-          if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+          resources.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
           end
-        end
         else
           resources = resources.page(options[:page]).records
         end
 
       rescue
         # no search?
-        resources = []
+        resources = options[:models] ?  nil : []
       end
     end
 
@@ -671,17 +696,17 @@ class Resource < ActiveRecord::Base
       begin
         collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s)
         if (!options[:models])
-        collections.map do |r|
-          if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+          collections.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
           end
-        end
         else
           collections = collections.page(options[:page]).records
         end
       rescue
         # no search?
-        collections = []
+        collections = options[:models] ?  nil : []
       end
     end
 
@@ -690,17 +715,17 @@ class Resource < ActiveRecord::Base
 
         collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s)
         if (!options[:models])
-        collection_objects.map do |r|
-          if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+          collection_objects.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
           end
-        end
         else
           collection_objects = collection_objects.page(options[:page]).records
         end
       rescue
         # no search?
-        collection_objects = []
+        collection_objects = options[:models] ?  nil : []
       end
     end
 
@@ -708,17 +733,17 @@ class Resource < ActiveRecord::Base
       begin
         exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s)
         if (!options[:models])
-        exhibitions.map do |r|
-          if r._source
-            { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+          exhibitions.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
           end
-        end
         else
           exhibitions = exhibitions.page(options[:page]).records
         end
       rescue
         # no search?
-        exhibitions = []
+        exhibitions = options[:models] ?  nil : []
       end
     end
 

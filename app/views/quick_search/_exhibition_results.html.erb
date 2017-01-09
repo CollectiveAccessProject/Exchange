@@ -2,7 +2,9 @@
   <div class="row">
     <div class="col-sm-12">
       <a href="#" onClick="$('#exhibitionResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
-      <h4><%= @exhibitions.total_entries %> UMMA Exhibition<%= (@exhibitions.total_entries == 1) ? "" : "s" %></h4>
+      <h4>
+        <%= @exhibitions_count %> UMMA Exhibition<%= (@exhibitions_count == 1) ? "" : "s" %>
+        (page <%= @exhibitions_page.to_s + "/" + @exhibitions_num_pages.to_s %>)</h4>
     </div>
   </div>
   <div class="row" id="exhibitionResultsContainer">
@@ -35,7 +37,9 @@
 		end 
 	end	
 %>
+      <% if (col > 0) %>
 	</div><!-- end row -->
+          <% end %>
       <div class='row'><div class='col-sm-3'></div>
         <%=
           if(@exhibitions_needs_previous_paging)

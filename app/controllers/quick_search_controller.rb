@@ -48,7 +48,8 @@ class QuickSearchController < ApplicationController
       params.permit(:type,
                     :title, :keywords, :style, :medium, :classification, :additional_classification,
                     :artist, :artist_nationality, :credit_line, :places, :on_display,
-                    :date_created, :other_dates, :current_location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location
+                    :date_created, :other_dates, :current_location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location,
+                    :min_rating, :max_rating
       )
       res = Resource::advancedsearch(params, models: true, page: @page, type: @type)
 
@@ -66,6 +67,7 @@ class QuickSearchController < ApplicationController
         @resources_needs_previous_paging = (@page > 1)
         @resources_needs_next_paging = @resources_needs_paging && (@page < @resources_num_pages)
         @resources_page = @page
+        @resources_count = @resources.respond_to?(:total_entries) ? @resources.total_entries : 0
       when (@type == 'collection')
         @collections = res[:collections]
         @collections_needs_paging = (@collections.total_entries > WillPaginate.per_page)
@@ -73,6 +75,7 @@ class QuickSearchController < ApplicationController
         @collections_needs_previous_paging = (@page > 1)
         @collections_needs_next_paging = @collections_needs_paging && (@page < @collections_num_pages)
         @collections_page = @page
+        @collections_count = @collections.respond_to?(:total_entries)  ? @collections.total_entries : 0
       when (@type == 'collection_object')
         @collection_objects = res[:collection_objects]
         @collection_objects_needs_paging = (@collection_objects.total_entries > WillPaginate.per_page)
@@ -80,6 +83,7 @@ class QuickSearchController < ApplicationController
         @collection_objects_needs_previous_paging = (@page > 1)
         @collection_objects_needs_next_paging = @collection_objects_needs_paging && (@page < @collection_objects_num_pages)
         @collection_objects_page = @page
+        @collection_objects_count = @collection_objects.respond_to?(:total_entries) ? @collection_objects.total_entries : 0
       when (@type == 'exhibition')
         @exhibitions = res[:exhibitions]
         @exhibitions_needs_paging = (@exhibitions.total_entries > WillPaginate.per_page)
@@ -87,35 +91,40 @@ class QuickSearchController < ApplicationController
         @exhibitions_needs_previous_paging = (@page > 1)
         @exhibitions_needs_next_paging = @exhibitions_needs_paging && (@page < @exhibitions_num_pages)
         @exhibitions_page = @page
+        @exhibitions_count = @exhibitions.respond_to?(:total_entries) ? @exhibitions.total_entries : 0
       else
         @resources = res[:resources]
-        @resources_needs_paging = (@resources.total_entries > WillPaginate.per_page)
-        @resources_num_pages = (@resources.total_entries / WillPaginate.per_page.to_f).ceil
+        @resources_needs_paging = @resources.respond_to?(:total_entries) ? (@resources.total_entries > WillPaginate.per_page) : false
+        @resources_num_pages = @resources_needs_paging ? (@resources.total_entries / WillPaginate.per_page.to_f).ceil : 1
         @resources_needs_previous_paging = false
         @resources_needs_next_paging = @resources_needs_paging
         @resources_page = @page
+        @resources_count = @resources.respond_to?(:total_entries) ? @resources.total_entries : 0
 
         @collections = res[:collections]
-        @collections_needs_paging = (@collections.total_entries > WillPaginate.per_page)
-        @collections_num_pages = (@collections.total_entries / WillPaginate.per_page.to_f).ceil
+        @collections_needs_paging = @collections.respond_to?(:total_entries) ? (@collections.total_entries > WillPaginate.per_page) : false
+        @collections_num_pages = @collections_needs_paging ? (@collections.total_entries / WillPaginate.per_page.to_f).ceil : 1
         @collections_needs_previous_paging = false
         @collections_needs_next_paging = @collections_needs_paging
         @collections_page = @page
+        @collections_count = @collections.respond_to?(:total_entries)  ? @collections.total_entries : 0
 
         @collection_objects = res[:collection_objects]
-        @collection_objects_needs_paging = (@collection_objects.total_entries > WillPaginate.per_page)
-        @collection_objects_num_pages = (@collection_objects.total_entries / WillPaginate.per_page.to_f).ceil
+        @collection_objects_needs_paging = @collection_objects.respond_to?(:total_entries) ? (@collection_objects.total_entries > WillPaginate.per_page) : false
+        @collection_objects_num_pages = @collection_objects_needs_paging ? (@collection_objects.total_entries / WillPaginate.per_page.to_f).ceil : 1
         @collection_objects_needs_previous_paging = false
         @collection_objects_needs_next_paging = @collection_objects_needs_paging
         @collection_objects_page = @page
+        @collection_objects_count = @collection_objects.respond_to?(:total_entries) ? @collection_objects.total_entries : 0
 
 
         @exhibitions = res[:exhibitions]
-        @exhibitions_needs_paging = (@exhibitions.total_entries > WillPaginate.per_page)
-        @exhibitions_num_pages = (@exhibitions.total_entries / WillPaginate.per_page.to_f).ceil
+        @exhibitions_needs_paging = @exhibitions.respond_to?(:total_entries) ?  (@exhibitions.total_entries > WillPaginate.per_page) : false
+        @exhibitions_num_pages = @exhibitions_needs_paging ? (@exhibitions.total_entries / WillPaginate.per_page.to_f).ceil : 1
         @exhibitions_needs_previous_paging = false
         @exhibitions_needs_next_paging = @exhibitions_needs_paging
         @exhibitions_page = @page
+        @exhibitions_count = @exhibitions.respond_to?(:total_entries) ? @exhibitions.total_entries : 0
     end
 
     if (options && options[:advanced])
@@ -134,10 +143,10 @@ class QuickSearchController < ApplicationController
 
 
     session[:last_search_results] = {
-        resources: res[:resources].pluck(:id),
-        collection_objects: res[:collection_objects].pluck(:id),
-        collections: res[:collections].pluck(:id),
-        exhibitions: res[:exhibitions].pluck(:id)
+        resources: res[:resources].respond_to?(:pluck) ? res[:resources].pluck(:id) : [],
+        collection_objects: res[:collection_objects].respond_to?(:pluck) ? res[:collection_objects].pluck(:id) : [],
+        collections: res[:collections].respond_to?(:pluck) ? res[:collections].pluck(:id) : [],
+        exhibitions: res[:exhibitions].respond_to?(:pluck) ? res[:exhibitions].pluck(:id) : []
     }
   end
 

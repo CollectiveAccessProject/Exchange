@@ -1,21 +1,21 @@
 <div class="row">
   <div class="col-md-12">
-    <% if((!@collections || (@collections.total_entries == 0)) && (!@resources || (@resources.total_entries == 0)) && (!@collection_objects || (@collection_objects.total_entries == 0)) && (!@exhibitions || (@exhibitions.total_entries == 0)) ) %>
+    <% if((!@collections_num_pages) && (!@resources_num_pages) && (!@collection_objects_num_pages) && (!@exhibitions_num_pages)) %>
         <h2>No results found for <em><%= sanitize(@query_for_display) %></em></h2>
     <% else %>
         <h2>Results for <em><%= sanitize(@query_for_display) %></em></h2>
     <% end %>
   </div>
 </div>
-<% if(@collections && (@collections.total_entries > 0)) %>
+<% if(@collections_num_pages) %>
         <%= render :partial => "quick_search/collection_results" %>
 <% end %>
-<% if(@resources && (@resources.total_entries > 0)) %>
+<% if(@resources_num_pages) %>
     <%= render :partial => "quick_search/resource_results" %>
 <% end %>
-<% if(@exhibitions && (@exhibitions.total_entries > 0)) %>
+<% if(@exhibitions_num_pages) %>
     <%= render :partial => "quick_search/exhibition_results" %>
 <% end %>
-<% if(@collection_objects && (@collection_objects.total_entries > 0)) %>
+<% if(@collection_objects_num_pages) %>
     <%= render :partial => "quick_search/collection_object_results" %>
 <% end %>

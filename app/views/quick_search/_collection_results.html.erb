@@ -1,102 +1,106 @@
 <div id="results_collection">
-<div class="row">
-  <div class="col-sm-12">
-    <a href="#" onClick="$('#collectionsResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
-    <h4><%= @collections.total_entries %> Learning Collection<%= (@collections.total_entries == 1) ? "" : "s" %></h4>
+  <div class="row">
+    <div class="col-sm-12">
+      <a href="#" onClick="$('#collectionsResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
+      <h4>
+          <%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
+
+        (page <%= @collections_page.to_s + "/" + @collections_num_pages.to_s %>)
+      </h4>
+    </div>
   </div>
-</div>
-<div class="row" id="collectionsResultsContainer">
-  <div class="col-sm-12">
-<%
-	col = 0
-	thumb = false
-%>
-<% @collections.each do |r|
-  #next if(r[:access] < 1)
-	  col = col+1
-		if(col == 1)
-%>
-			<div class="row">
-<%
-		end
-%>
-
-    <div class="col-sm-2 qsResult">
-    	
-			<div class="text-left"><%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %></div>
-			<% if(r.resource_hierarchies.count) %>
-				<% r.resource_hierarchies.each do |rel| %>
-					<% if(rel.child_resource.is_resource) %>
-						<% rel.child_resource.media_files.each do |f| %>
-							<% if f.sourceable %>
-								<% if f.access == 1 %>								
-									<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.resource_id, user_signed_in?) %><br/>
-									<% thumb = true %>
-									<% break %>
-								<% end %>
-							<% end %>
-						<% end %>
-						<% if(thumb == true) %>
-							<% break %>
-						<% end %>
-					<% end %>
-				<% end %>
-			<% end %>
-			<% if(thumb == false) %>	
-				<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
-			<% end %>
-			<div class="qsResultText">
-			<%=	"<div class='small'><i>Contains #{r.resource_hierarchies.count}".html_safe + ((r.resource_hierarchies.count == 1) ? " item" : " items") + "</i></div>".html_safe %>
-			<%
-    			if r.author_id
-	    			user_author = r.get_author_name.gsub(/\([\S]+\)/, '')
-	  			else
-	  				user_author = r.user.name
-	  			end
-	  		%>
-	  		<% 
-	  			if (Time.now.to_i - r.updated_at.to_i) > 86400
-	   				display_time = r.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
-	  			else
-	    			display_time = time_ago_in_words(r.updated_at) + ' ago'
-	  			end
-	  		%>
-			<div class="qsMoreCaption">
-				<%= sanitize("<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>") %>
-			</div>
-		</div>
-		<% thumb = false %>
-    </div>
-<% 
-		if(col == 6)
-%>
-			</div>
-			<div class="row">
-<%
-		end 
-%>
-<% end %>
-
-	</div><!-- end row -->
-    <div class='row'><div class='col-sm-3'></div>
-      <%=
-        if(@collections_needs_previous_paging)
-
-          ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "collection", page: @collections_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-        else
-          "<div class='col-sm-3'></div>".html_safe
-        end
+  <div class="row" id="collectionsResultsContainer">
+    <div class="col-sm-12">
+      <%
+        col = 0
+        thumb = false
       %>
-      <%=
-        if(@collections_needs_next_paging)
-
-          ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "collection", page: @collections_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-        else
-          "<div class='col-sm-3'></div>".html_safe
-        end
+      <% @collections.each do |r|
+        #next if(r[:access] < 1)
+        col = col+1
+        if(col == 1)
       %>
-      <div class='col-sm-3'></div>
-    </div>
+              <div class="row">
+          <%
+            end
+          %>
+
+          <div class="col-sm-2 qsResult">
+            <div class="text-left"><%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %></div>
+            <% if(r.resource_hierarchies.count) %>
+                <% r.resource_hierarchies.each do |rel| %>
+                    <% if(rel.child_resource.is_resource) %>
+                        <% rel.child_resource.media_files.each do |f| %>
+                            <% if f.sourceable %>
+                                <% if f.access == 1 %>
+                                    <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.resource_id, user_signed_in?) %><br/>
+                                    <% thumb = true %>
+                                    <% break %>
+                                <% end %>
+                            <% end %>
+                        <% end %>
+                        <% if(thumb == true) %>
+                            <% break %>
+                        <% end %>
+                    <% end %>
+                <% end %>
+            <% end %>
+            <% if(thumb == false) %>
+                <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
+            <% end %>
+            <div class="qsResultText">
+              <%=	"<div class='small'><i>Contains #{r.resource_hierarchies.count}".html_safe + ((r.resource_hierarchies.count == 1) ? " item" : " items") + "</i></div>".html_safe %>
+              <%
+                if r.author_id
+                  user_author = r.get_author_name.gsub(/\([\S]+\)/, '')
+                else
+                  user_author = r.user.name
+                end
+              %>
+              <%
+                if (Time.now.to_i - r.updated_at.to_i) > 86400
+                  display_time = r.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
+                else
+                  display_time = time_ago_in_words(r.updated_at) + ' ago'
+                end
+              %>
+              <div class="qsMoreCaption">
+                <%= sanitize("<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>") %>
+              </div>
+            </div>
+            <% thumb = false %>
+          </div>
+          <%
+            if(col == 6)
+          %>
+              </div>
+              <div class="row">
+          <%
+            end
+          %>
+      <% end %>
+<% if (col > 0) %>
+      </div><!-- end row -->
+          <% end %>
+      <div class='row'><div class='col-sm-3'></div>
+        <%=
+          if(@collections_needs_previous_paging)
+
+            ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "collection", page: @collections_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+          else
+            "<div class='col-sm-3'></div>".html_safe
+          end
+        %>
+        <%=
+          if(@collections_needs_next_paging)
+
+            ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "collection", page: @collections_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+          else
+            "<div class='col-sm-3'></div>".html_safe
+          end
+        %>
+        <div class='col-sm-3'></div>
+      </div>
     </div>
   </div>
 </div>
