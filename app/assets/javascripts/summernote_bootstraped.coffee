@@ -20,7 +20,7 @@ $ ->
       cleaner:{
         notTime:2400,
         action:'both',
-        newline:'<p><br></p>',
+        newline:'<br/>',
         notStyle:'position:absolute;bottom:0;left:2px',
         icon:'<i class="fa fa-file-text" aria-hidden="true"></i>'
     }
