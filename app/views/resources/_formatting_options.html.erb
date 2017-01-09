@@ -179,11 +179,11 @@
 </div>
 <script>
 	$(document).ready(function(){
-		if($('.mediaListIcon').length == 0){
+		if($('.mediaListIcon, .collectionContentsItem').length == 0){
 			$('.mediaDependent').hide();
 		}
 		$('.mediaColumn').bind('DOMSubtreeModified', function(){
-			if($('.mediaListIcon').length > 0){
+			if($('.mediaListIcon, .collectionContentsItem').length > 0){
 				$('.mediaDependent').show();
 			} else {
 				$('.mediaDependent').hide();
