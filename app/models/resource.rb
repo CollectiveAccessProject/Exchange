@@ -127,10 +127,17 @@ class Resource < ActiveRecord::Base
     end
 
     # pseudo fields
-    record['author'] = [self.get_author_name(omit_email: true)]
+    record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
     record['role'] = record['affiliation'] = self.roles.pluck("name")
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
     record['tag'] = self.tags.pluck("tag")
+
+    # break out other date types
+    other_date_regexp = Regexp.new("\\(([^\\)]+)\\)")
+    if (m = other_date_regexp.match(record['other_dates']))
+      record['other_date_types'] = m[1]
+    end
+
 
     # index idno's of collection objects used as media
     record['related_collection_objects'] = ''
@@ -139,7 +146,7 @@ class Resource < ActiveRecord::Base
     record['rating'] = avg_rating.to_i
 
     #puts "INDEXING IS"
-    #puts record
+    puts record
     #puts caller
 
     record
@@ -402,7 +409,13 @@ class Resource < ActiveRecord::Base
   # Options:
   #   :omit_email = don't return email in addition to name
   def get_author_name(options = {})
-    if(self.author_id && (u = User.find(self.author_id)))
+    if(self.author_id && (!options || !options[:force_cataloguer]) && (u = User.find(self.author_id)))
+      n = u.name
+      n += " (" + u.email + ")"  if(!options || !options[:omit_email])
+      return n
+    end
+    if (self.user_id)
+      u = User.find(self.user_id)
       n = u.name
       n += " (" + u.email + ")"  if(!options || !options[:omit_email])
       return n
@@ -633,6 +646,20 @@ class Resource < ActiveRecord::Base
     query_values['rating'] = v
 
 
+    if (params['author_id'] && (params['author_id'].to_i > 0))
+      query_elements.push("author_id:\"#{params['author_id'] }\"")
+
+      begin
+        u = User.find(params['author_id'])
+        n = u.name
+
+        query_display.push("Author: " + n)
+        query_values['author_id'] = true
+      rescue
+        # noop
+      end
+
+    end
 
     case resource_type
       when Resource::RESOURCE
@@ -666,8 +693,8 @@ class Resource < ActiveRecord::Base
     # generate query
     query = query_elements.join(" AND ")
     query_for_display = query_display.join("; ")
-   # puts "q=" + query;
-   # puts "qd=" + query_for_display
+    # puts "q=" + query;
+    # puts "qd=" + query_for_display
     resources = []
     collections = []
     collection_objects = []

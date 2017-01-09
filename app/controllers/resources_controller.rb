@@ -15,7 +15,6 @@ class ResourcesController < ApplicationController
 
   # UI autocomplete on vocabulary terms
   autocomplete :vocabulary_term, :term, :full => true, :extra_data => [:id]
-  
 
   # Filter on type when mode param is set
   def get_autocomplete_items(parameters)
@@ -37,7 +36,7 @@ class ResourcesController < ApplicationController
     render :json => u.map { |user| {:id => user.id, :label => user.name + " (" + user.email + ")", :value => user.name + " (" + user.email + ")"} }
   end
   
-   # Override user name/email autocomplete to match on both name and email (sigh)
+   # Override resource title autocompleter
   def autocomplete_resource_title
     term = params[:term]
     u = Resource.where(
@@ -54,6 +53,37 @@ class ResourcesController < ApplicationController
         "%#{term}%", "#{term}%"
     ).order(:id).distinct
     render :json => u.map { |r| {:id => r.id, :label => (l = r.term), :value => l} }
+  end
+
+  #
+  def autocomplete_author
+    term = params[:term]
+    u = User.joins("INNER JOIN resources ON resources.user_id = users.id OR resources.author_id = users.id").where(
+        'LOWER(users.name) LIKE ?',
+        "%#{term}%"
+    ).order(:id).distinct
+    render :json => u.map { |user| {:id => user.id, :label => user.name, :value => user.name} }
+  end
+
+  #
+  def autocomplete_current_location
+    term = params[:term]
+    agg = Resource.search(
+        aggs: {
+            current_location: { terms: { field: :current_location}}
+        }
+    )
+
+    field_values = []
+    agg.response['aggregations'].each do |aggname, v|
+      v["buckets"].each do |k|
+        next if !k['key'].include?(term)
+        field_values.push(k['key'])
+      end
+    end
+
+
+    render :json => field_values.map { |r| {:label => r, :value => r} }
   end
 
   # GET /resources
@@ -182,14 +212,22 @@ class ResourcesController < ApplicationController
           # if (child.user_id == current_user.id)
           prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
           child.save
-          #else
-
-          #end
         end
 
         session[:mode] = :new;
 
         @resource.index_for_search
+
+        #
+        # TODO: does user have access to resource this is in response to?
+        puts "MEPW" + in_response_to_resource_id.to_s
+        if (@resource.in_response_to_resource_id > 0)
+        # Add resource as child of what we're responding to (not sure why UMMA wants this?)
+          rh = ResourceHierarchy.where(resource_id: @resource.in_response_to_resource_id, child_resource_id: @resource.id).first_or_create
+          rh.save
+          puts "XXXX"
+          puts rh
+        end
 
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.' }
         format.json { render :show, status: :created, location: @resource }

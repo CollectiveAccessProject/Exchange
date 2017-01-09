@@ -2,6 +2,9 @@ class User < ActiveRecord::Base
   rolify
   ratyrate_rater
 
+
+  after_create :set_default_role
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -22,6 +25,12 @@ class User < ActiveRecord::Base
       user.password = Devise.friendly_token[0,20]
       user.name = auth.info.name
     end
+  end
+
+
+
+  def set_default_role
+    self.add_role(:visitor)
   end
 
 end

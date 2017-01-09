@@ -81,6 +81,8 @@ Rails.application.routes.draw do
   get '/resources/:id/autocomplete_collection_object_title' => 'resources#autocomplete_resource_title', mode: Resource::COLLECTION_OBJECT, as: 'autocomplete_collection_object_title'
   get '/resources/:id/autocomplete_user_name' => 'resources#autocomplete_user_name', as: 'autocomplete_user_name'
   get '/resources/:id/autocomplete_vocabulary_term_term' => 'resources#autocomplete_vocabulary_term_term', as: 'autocomplete_vocabulary_term_term'
+  get '/resources/:id/autocomplete_current_location' => 'resources#autocomplete_current_location', as: 'autocomplete_current_location'
+  get '/resources/:id/autocomplete_author' => 'resources#autocomplete_author', as: 'autocomplete_author'
 
 
   # resource user access list

@@ -39,14 +39,14 @@
 									col = CollectionobjectLink.find(media_file.sourceable_id)
 									rc = Resource.find(col.resource_id)
 									cap_fields = JSON.parse(rc.indexing_data)
-									short_caption = sanitize(cap_fields['artist'] + '<br/>' + cap_fields['title'])
+									short_caption = sanitize(cap_fields['artist'].to_s + '<br/>' + cap_fields['title'].to_s)
 									material_fields = ''
 									if cap_fields['support']
-										material_fields = cap_fields['medium'] + ' | ' + cap_fields['support'].to_s
+										material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
 									else
-										material_fields = cap_fields['medium']
+										material_fields = cap_fields['medium'].to_s
 									end
-									long_caption = sanitize(cap_fields['artist'] + '<br/>' + cap_fields['title'] + '<br/>' + cap_fields['date_created'] + '<br/>' + material_fields + '<br/>' + cap_fields['credit_line'] + '<br/>' + cap_fields['idno'])
+									long_caption = sanitize(cap_fields['artist'].to_s + '<br/>' + cap_fields['title'].to_s + '<br/>' + cap_fields['date_created'].to_s + '<br/>' + material_fields.to_s + '<br/>' + cap_fields['credit_line'].to_s + '<br/>' + cap_fields['idno'].to_s)
 								%>
 								<div id="<%= media_file.id %>_caption_type" class="captionRadios">
 									<label class="control-label">Caption Type</label><br/>
@@ -56,8 +56,8 @@
 								<script>
 									var captions = captions || {}
 									captions['<%= media_file.id %>'] = {}
-									captions['<%= media_file.id %>']['short_caption'] = '<%= short_caption %>';
-									captions['<%= media_file.id %>']['long_caption'] = '<%= long_caption %>';
+									captions['<%= media_file.id %>']['short_caption'] = '<%= escape_javascript(short_caption) %>';
+									captions['<%= media_file.id %>']['long_caption'] = '<%= escape_javascript(long_caption) %>';
 									$(document).ready(function(){
 										var caption_type = '<%= media_file.caption_type %>';
 										set_caption_display('<%= media_file.id %>', caption_type);

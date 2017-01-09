@@ -145,10 +145,9 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advCurrentLocation">Current Location</label>
-              <input class="form-control" type="text" name="current_location" id="advCurrentLocation">
+              <%= autocomplete_field_tag(:current_location, "", autocomplete_current_location_path(0), :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, class:'form-control', id:'advCurrentLocation') %>
             </div>
           </div>
-
         </div>
         <div class="row additionalFields" id="advancedSearchExhibition">
           <div class="col-sm-12">
@@ -180,6 +179,15 @@
             </div>
           </div>
         </div>
+        <div class="row additionalFields" id="advancedSearchResource">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advCurrentLocation">Author</label>
+              <%= autocomplete_field_tag(:author_lookup, "", autocomplete_author_path(0), :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, class:'form-control', id:'advAuthor', :id_element => "#resource_author_id",) %>
+              <%= hidden_field_tag("author_id", 0, :id => :resource_author_id) %>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-sm-12 text-center">
             <br/><input class="btn btn-default" value="Search" type="submit"></input>
@@ -201,6 +209,8 @@
                 $('#advancedSearchCollectionObject').slideDown();
             }else if($('#advType').val() == '<%= Resource::EXHIBITION %>'){
                 $('#advancedSearchExhibition').slideDown();
+            } else {
+                $('#advancedSearchResource').slideDown();
             }
         });
     });
