@@ -140,13 +140,20 @@ class Resource < ActiveRecord::Base
 
 
     # index idno's of collection objects used as media
-    record['related_collection_objects'] = ''
+    collection_identifiers = []
+  self.media_files.each do |m|
+     if (m.sourceable.respond_to? (:get_collection_identifier))
+       collection_identifiers.push(m.sourceable.get_collection_identifier)
+     end
+  end
+    puts collection_identifiers.inspect if (collection_identifiers.length > 0)
+    record['related_collection_objects'] = collection_identifiers.join("; ")
 
     # index average rating for this resource
     record['rating'] = avg_rating.to_i
 
     #puts "INDEXING IS"
-    puts record
+   # puts record
     #puts caller
 
     record

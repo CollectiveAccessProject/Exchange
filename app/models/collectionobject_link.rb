@@ -21,6 +21,14 @@ class CollectionobjectLink < ActiveRecord::Base
   	end
   end
 
+  def get_collection_identifier
+    if(original_link.to_i)
+      r = Resource.find(original_link.to_i)
+      return r.collection_identifier
+    end
+    nil
+  end
+
   def get_params
     return { :collectionobject_link => [:original_link]}
   end
