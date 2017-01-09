@@ -217,11 +217,15 @@
         </div>
         <hr/>
         <div class="row">
-          <div class="col-sm-7 text-left">
-            <a href="#"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous</a>
+          <div class="col-xs-7 text-left">
+            <%=
+              link_to('<i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous'.html_safe, resource_path(@search_previous_resource_id)) if (@search_previous_resource_id)
+            %>
           </div>
-          <div class="col-sm-5 text-right">
-            <a href="#">Next <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+          <div class="col-xs-5 text-right">
+            <%=
+              link_to('<i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Next'.html_safe, resource_path(@search_next_resource_id)) if (@search_next_resource_id)
+            %>
           </div>
         </div>
         <div class="detailButtonsResource text-center">

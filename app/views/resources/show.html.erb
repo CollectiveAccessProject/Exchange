@@ -21,7 +21,7 @@
     render :partial => "show_exhibition"
   end
 %>
-<% if (!@resource.is_resource && (@resource.settings(:user_interaction).allow_responses > 0))  %>
+<% if (@resource.allow_responses)  %>
 	<div class="row">
 		<div class="col-sm-12 text-center">
 			<br/><br/><%= link_to("Respond to this " + response_link_text, new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>

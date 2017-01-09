@@ -32,7 +32,7 @@
 			  <div id='create-form-caption-display' class="captionDisplay"></div>
               <%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
               <%= f.input :copyright_notes, :as => :summernote %>
-              <%= f.input :access, as: :select, include_blank: false %>
+              <%= f.input :access,  collection: Rails.application.config.x.access_types%>
 
 			  <ul id="create-form-tabs" class="nav nav-tabs">
 				<% instances.each_with_index do |p,i| %>

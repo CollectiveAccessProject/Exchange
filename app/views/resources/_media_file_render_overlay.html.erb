@@ -80,7 +80,7 @@
 							<% end %>
 							<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
 							<%= f.input :copyright_notes, :input_html => {}, :as => :summernote %>
-							<%= f.input :access, :as => :select, :include_blank => false, :collection => [['Yes', 1], ['No', 0]] %>
+              <%= f.input :access,  collection: Rails.application.config.x.access_types%>
 
 							<%= hidden_field(:media_file, :resource_id, :value => @resource.id) %>
 							<input type="hidden" name='modal_id' value="<%= modal_id %>">

@@ -64,7 +64,7 @@ module ApplicationHelper
   #
   #
   #
-  def get_filters_for_query_builder
+  def get_filters_for_query_builder(current_user=nil)
 
     # TODO: cache these values - we shouldn't hit Elastic every time
     agg = Resource.search(
@@ -88,6 +88,12 @@ module ApplicationHelper
       end
     end
 
+    affiliations = Rails.application.config.x.user_roles.invert
+
+    if(current_user && (!current_user.has_role? :admin))
+      affiliations.delete(:admin)
+    end
+
     [
         {
             id: "affiliation",
@@ -95,7 +101,7 @@ module ApplicationHelper
             label: "Affiliation",
             type: "string",
             input: "select",
-            values: Rails.application.config.x.user_roles.invert
+            values: affiliations
         }, {
             id: "author",
             field: "author",

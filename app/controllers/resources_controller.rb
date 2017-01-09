@@ -67,8 +67,17 @@ class ResourcesController < ApplicationController
   def show
   
   	if(@resource.is_collection)
-    	#session for last collection so can attribute parent when resource has multiple parent collections
+    	# session for last collection so can attribute parent when resource has multiple parent collections
     	session[:last_collection] = @resource.id
+    end
+
+    @search_next_resource_id = @search_previous_resource_id = nil
+
+    # next/previous ids from current search
+    ct = @resource.resource_type_as_sym.to_s
+    if (session[:last_search_results] && (session[:last_search_results].length) && (session[:last_search_results][ct]) && (i = session[:last_search_results][ct].index(@resource.id)))
+      @search_next_resource_id = session[:last_search_results][ct][i+1] if (i<(session[:last_search_results][ct].length - 1))
+      @search_previous_resource_id = session[:last_search_results][ct][i-1] if (i > 0)
     end
   
   end

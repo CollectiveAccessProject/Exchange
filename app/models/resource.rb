@@ -1,22 +1,22 @@
 class Resource < ActiveRecord::Base
   rolify
 
-  has_many :related_resources
+  has_many :related_resources, :dependent => :delete_all
 
   has_many :resources, through: 'related_resources', source: :related
 
-  has_many :resource_hierarchies, -> { order 'resource_hierarchies.rank' }
+  has_many :resource_hierarchies, -> { order 'resource_hierarchies.rank' },  :dependent => :delete_all
   has_many :children, -> { order 'resource_hierarchies.rank' }, through: 'resource_hierarchies', source: :child_resource
 
-  has_many :media_files, -> { order 'media_files.rank' }
+  has_many :media_files, -> { order 'media_files.rank' },  :dependent => :delete_all
   has_many :links
   has_many :favorites
 
-  has_many :resources_users
+  has_many :resources_users, :dependent => :delete_all
   has_many :users, through: 'resources_users'
   belongs_to :users, class_name: 'User', foreign_key: 'author_id'
 
-  has_many :resources_vocabulary_terms, class_name: 'ResourcesVocabularyTerm'
+  has_many :resources_vocabulary_terms, class_name: 'ResourcesVocabularyTerm',  :dependent => :delete_all
   has_many :vocabulary_terms, through: :resources_vocabulary_terms, class_name: 'VocabularyTerm'
   has_many :vocabulary_term_synonyms, through: :vocabulary_terms, class_name: 'VocabularyTermSynonym'
 
@@ -46,7 +46,7 @@ class Resource < ActiveRecord::Base
     s.key :media_formatting, :defaults => { :mode => :slideshow }
     s.key :text_placement,  :defaults => { :placement => :below}
     s.key :text_formatting,  :defaults => { :show_all => 1, :collapse => 0 }
-    s.key :user_interaction,  :defaults => { :allow_comments => 1, :allow_tags => 1, :allow_responses => 1, :display_responses_on_separate_page => 1 }
+    s.key :user_interaction,  :defaults => { :allow_comments => 1, :allow_tags => 1, :allow_responses => 0, :display_responses_on_separate_page => 1 }
   end
 
   #
@@ -131,6 +131,8 @@ class Resource < ActiveRecord::Base
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
     record['tag'] = self.tags.pluck("tag")
 
+    record['related_collection_objects'] = ''
+
     #puts "INDEXING IS"
     #puts record
     #puts caller
@@ -195,9 +197,30 @@ class Resource < ActiveRecord::Base
     end
   end
 
+  def resource_type_as_sym()
+    case self.resource_type
+      when Resource::RESOURCE
+        return :resources
+      when Resource::COLLECTION_OBJECT
+        return :collection_objects
+      when Resource::COLLECTION
+        return :collections
+      when Resource::EXHIBITION
+        return :exhibitions
+    end
+  end
+
   def self.is_favorite(user_id, resource_id)
     favs = Favorite.where({user_id: user_id, resource_id: resource_id})
     return (favs.count > 0) ? favs.first.id : false
+  end
+
+  def allow_responses
+    if((self.settings(:user_interaction).allow_responses > 0) && (!self.is_collection_object))
+      return true
+    end
+
+    false
   end
 
   # return list of settings valid for this type of resource

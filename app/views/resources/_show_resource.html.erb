@@ -459,10 +459,14 @@
         <hr/>
         <div class="row">
           <div class="col-xs-7 text-left">
-            <a href="#"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous</a>
+            <%=
+              link_to('<i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous'.html_safe, resource_path(@search_previous_resource_id)) if (@search_previous_resource_id)
+              %>
           </div>
           <div class="col-xs-5 text-right">
-            <a href="#">Next <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+            <%=
+              link_to('<i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Next'.html_safe, resource_path(@search_next_resource_id)) if (@search_next_resource_id)
+            %>
           </div>
         </div>
         
@@ -597,6 +601,7 @@
                 	aff_array = []
                 	@resource.roles.each do |r|
                 		Rails.application.config.x.user_roles.each do |k,v|
+                      next if (v == :admin)
                 			if r.name == v.to_s
                 				aff_array << { :a_term => k.to_s, :a_val => v.to_s }
                 			end

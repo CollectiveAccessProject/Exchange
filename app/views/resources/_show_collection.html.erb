@@ -118,6 +118,7 @@
 									aff_array = []
 									@resource.roles.each do |r|
 										Rails.application.config.x.user_roles.each do |k,v|
+                      next if (v == :admin)
 											if r.name == v.to_s
 												aff_array << { :a_term => k.to_s, :a_val => v.to_s }
 											end

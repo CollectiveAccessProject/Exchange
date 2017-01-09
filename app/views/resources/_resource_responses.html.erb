@@ -10,7 +10,7 @@
       <%= link_to(sanitize(@resource.in_response_to.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), @resource.in_response_to) %>
     </div>
 <% end %>
-<% if (@resource.responses && (@resource.responses.length > 0)) %>
+<% if (@resource.responses && (@resource.responses.length > 0) && @resource.allow_responses) %>
 
     <% buf = '' %>
     <% @resource.responses.each do |r| %>

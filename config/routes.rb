@@ -90,6 +90,7 @@ Rails.application.routes.draw do
   get '/featured' => 'featured#index', as: 'featured'
   get '/featured/:slug' => 'featured#index', as: 'featured_load_feature'
   get '/featured/:id/get_set_contents' => 'featured#get_set_contents', as: 'featured_get_set_contents'
+  get '/featured/:slug/get' => 'featured#get_set_contents', as: 'featured_get_set_contents_by_slug'
 
   post '/favorites/:id/add' => 'favorites#add', as: 'add_favorite'
   post '/favorites/:id/remove' => 'favorites#remove', as: 'remove_favorite'
@@ -101,13 +102,15 @@ Rails.application.routes.draw do
 
   # featured sets admin
   get '/featured_content_sets' => 'featured_content_sets#index'
+  get '/featured_content_sets/set_order' => 'featured_content_sets#set_order'
   resources :featured_content_sets
+  resources :featured_content_set_items
+
   get '/featured_content_sets/:id/autocomplete_resource_title' => 'featured_content_sets#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_set_resource_title'
   post '/featured_content_sets/:id/add_set_item' => 'featured_content_sets#add_set_item', as: 'featured_content_sets_add_set_item'
   get '/featured_content_sets/:id/remove_set_item' => 'featured_content_sets#remove_set_item', as: 'featured_content_sets_remove_set_item'
   get '/featured_content_sets/:id/set_item_order' => 'featured_content_sets#set_item_order'
 
-  resources :featured_content_set_items
 
   # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'

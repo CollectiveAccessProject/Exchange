@@ -91,8 +91,13 @@ class MediaFilesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def media_file_params
-      params.require(:media_file).permit(
+      p = params.require(:media_file).permit(
           :slug, :caption, :media, :source_type, :source, :copyright_license, :copyright_notes, :access, :lock_version, :resource_id, :caption_type
       )
+
+      p[:access] = 0 if (p[:access] == "false")
+      p[:access] = 1 if (p[:access] == "true")
+
+      p
     end
 end

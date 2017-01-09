@@ -1,6 +1,6 @@
 class FeaturedController < ApplicationController
   def index
-    @featured_content_sets = FeaturedContentSet.where(access: 1)
+    @featured_content_sets = FeaturedContentSet.where("access =  1 AND slug != 'front-page'").order(:rank)
     @slug = params[:slug]
     if(!@slug)
     	@featured_content_sets.each do |s|
@@ -24,7 +24,11 @@ class FeaturedController < ApplicationController
     resp = {status: :ok}
 
     # get current ranks for media
-    set = FeaturedContentSet.where(access: 1, id: params[:id]).first
+    if(params[:slug])
+      set = FeaturedContentSet.where(access: 1, slug: params[:slug]).first
+    else
+      set = FeaturedContentSet.where(access: 1, id: params[:id]).first
+    end
 
     if(!set)
       raise StandardError, "Invalid set"

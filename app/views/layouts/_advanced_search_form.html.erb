@@ -190,7 +190,7 @@
             $(document).ready(function() {
                 $('#builderUI').queryBuilder({
                     operators: ['equal'],
-                    filters: <%= get_filters_for_query_builder.to_json.html_safe %>
+                    filters: <%= get_filters_for_query_builder(current_user).to_json.html_safe %>
                 });
 
                 if (sessionStorage.getItem('qrules')) {
@@ -272,6 +272,9 @@
                     query_tour.restart();
                     query_tour.start();
                 });
+
+                jQuery("#advType").val(<%= Resource::COLLECTION_OBJECT%>);
+                jQuery("#advType").change()
             });
         </script>
       </div>

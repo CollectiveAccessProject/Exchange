@@ -58,7 +58,6 @@ class QuickSearchController < ApplicationController
       res = Resource::quicksearch(@query, models: true, page: @page, type: @type)
     end
 
-
     case
       when (@type == 'resource')
         @resources = res[:resources]
@@ -133,6 +132,13 @@ class QuickSearchController < ApplicationController
     session[:last_search_query_values] = {:query => @query}
     end
 
+
+    session[:last_search_results] = {
+        resources: res[:resources].pluck(:id),
+        collection_objects: res[:collection_objects].pluck(:id),
+        collections: res[:collections].pluck(:id),
+        exhibitions: res[:exhibitions].pluck(:id)
+    }
   end
 
 end

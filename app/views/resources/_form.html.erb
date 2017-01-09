@@ -90,7 +90,14 @@
 		  </div>
 		  <div class="row">
 		    <div class="col-md-12">
-		  	<div class="pull-right"><%= r.button :submit, "Save" %></div>
+		  	<div class="pull-right">
+          <% if (@resource.user_id == current_user.id) %>
+              <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs' %>
+          <% end %>
+
+          <%= r.button :submit, "Save" %>
+        </div>
+
           <%= r.input :in_response_to_resource_id, :input_html => {:value => @resource.in_response_to_resource_id}, as: :hidden, include_blank: false %>
         </div>
 		  </div>
