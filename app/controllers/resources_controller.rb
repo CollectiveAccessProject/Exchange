@@ -225,8 +225,6 @@ class ResourcesController < ApplicationController
         # Add resource as child of what we're responding to (not sure why UMMA wants this?)
           rh = ResourceHierarchy.where(resource_id: @resource.in_response_to_resource_id, child_resource_id: @resource.id).first_or_create
           rh.save
-          puts "XXXX"
-          puts rh
         end
 
         format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.' }

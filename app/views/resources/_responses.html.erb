@@ -1,0 +1,14 @@
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <% if @resource.responses.count > 0 %>
+        <div class="relatedContent">
+          <H4><%= @resource.responses.count %> Response<%= ((@resource.responses.count > 1) ? "s" : "") %></H4>
+          <% @resource.responses.each do |r| %>
+              <div><%= link_to(strip_tags(r.title), r) %><br/><small>&mdash; by <i><%= r.user.name %> (<%= r.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+
+              </div>
+          <% end %>
+        </div>
+    <% end %>
+  </div><!-- end panel-body -->
+</div><!-- end panel -->

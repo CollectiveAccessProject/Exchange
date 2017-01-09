@@ -26,7 +26,7 @@ class Resource < ActiveRecord::Base
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
 
-  has_many :responses, class_name: 'Resource', foreign_key: 'in_response_to_resource_id'
+  has_many :responses, -> { order 'resources.updated_at DESC' }, class_name: 'Resource', foreign_key: 'in_response_to_resource_id'
   belongs_to :in_response_to, class_name: 'Resource', foreign_key: 'in_response_to_resource_id'
 
   # this allows us to save related media files though the resource
