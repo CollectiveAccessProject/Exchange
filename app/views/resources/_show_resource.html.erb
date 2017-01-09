@@ -251,7 +251,6 @@
               $('.num').html('1/'+totalItems+'');
               $('#resourceCarousel').on('slid.bs.carousel', function() {
                 currentIndex = ($('div.active').index() + 2)/2;
-                console.log($('div.active').index());
                 $('.num').html(''+currentIndex+'/'+totalItems+'');
               });
             </script>

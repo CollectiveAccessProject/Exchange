@@ -202,6 +202,12 @@ module ApplicationHelper
             type: "string",
             input: "select",
             values: field_values["style"]
+        },
+        {
+            id: "rating",
+            field: "rating",
+            label: "Rating",
+            type: "integer"
         }
     ]
   end

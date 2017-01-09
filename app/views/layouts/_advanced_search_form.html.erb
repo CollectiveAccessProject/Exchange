@@ -216,7 +216,7 @@
         <script>
             $(document).ready(function() {
                 $('#builderUI').queryBuilder({
-                    operators: ['equal'],
+                    operators: ['equal', 'not_equal', 'between', 'begins_with', 'contains'],
                     filters: <%= get_filters_for_query_builder(current_user).to_json.html_safe %>
                 });
 

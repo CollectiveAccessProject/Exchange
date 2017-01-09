@@ -106,7 +106,6 @@
 
         // Stop Youtube/Soundcloud playback on modal close
         jQuery('.modal').on('hide.bs.modal', function(e) {
-           console.log('modal close event');
            jQuery(this).find('iframe').attr('src', jQuery(this).find('iframe').attr('src'));
         });
 

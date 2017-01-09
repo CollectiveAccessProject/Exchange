@@ -74,7 +74,7 @@ jQuery(document).on('sortstop', "#set_list", function(e, ui) {
     jQuery("#set_list .setListItem").each(function(k,m) {
         ranks.push(jQuery(m).data('set_id'));
     });
-console.log("GOT", ranks)
+
     if (Object.keys(ranks).length > 0) {
         jQuery.getJSON("/featured_content_sets/set_order", {ranks: ranks}, function(data) {
             jQuery("#sets-status").slideDown(250);
