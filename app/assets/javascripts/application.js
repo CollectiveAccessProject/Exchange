@@ -24,6 +24,8 @@
 //= require plugins/media-item/summernote-ext-media-item
 //= require summernote-cleaner
 //= require query-builder-elasticsearch
+//= require jquery.raty
+//= require ratyrate
 //= require_tree .
 
 // Add icontains selector to jQuery - case insensitive text search
