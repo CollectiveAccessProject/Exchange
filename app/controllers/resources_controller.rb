@@ -220,8 +220,7 @@ class ResourcesController < ApplicationController
 
         #
         # TODO: does user have access to resource this is in response to?
-        puts "MEPW" + in_response_to_resource_id.to_s
-        if (@resource.in_response_to_resource_id > 0)
+        if (@resource && @resource.in_response_to_resource_id && (@resource.in_response_to_resource_id > 0))
         # Add resource as child of what we're responding to (not sure why UMMA wants this?)
           rh = ResourceHierarchy.where(resource_id: @resource.in_response_to_resource_id, child_resource_id: @resource.id).first_or_create
           rh.save
