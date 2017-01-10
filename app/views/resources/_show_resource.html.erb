@@ -345,6 +345,46 @@
 			<% end %>
         <% end %>
     <% end %>
+    <% if(@resource.settings(:user_interaction).allow_responses > 0) %>
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<h2>Responses to this Resource</h2>		
+					</div>
+				</div>
+				<div class="row" id="responseResources">
+					<div class="col-sm-12 text-center">
+						<% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) and @resource.get_responses.count > 0 %>
+							<a href="#" class="btn btn-default btn-block" data-target="#responseModal" data-toggle="modal">View Responses</a>
+							<div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							  <div class="modal-dialog">
+								<div class="modal-content">
+								  <div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+									<h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
+								  </div>
+								  <div class="modal-body">
+									<%= render partial: "resource_responses_grid" %>
+								  </div>
+								</div>
+							  </div>
+							</div>
+							
+						<% else %>
+							<%= render partial: "resource_responses_grid" %>
+						<% end %>
+					</div>
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
+					</div>
+				</div>
+			</div>
+		</div>
+	<% end %>
     <div class="row">
       <div class="col-md-12">
         <div class="row" id="detailTags">
@@ -471,12 +511,24 @@
         
         <div class="detailButtonsResource text-center">
           <a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
-          <a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
+          <!-- AddToAny BEGIN -->
+			<a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
+			<script>
+			var a2a_config = a2a_config || {};
+			a2a_config.linkname = '<%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>';
+			a2a_config.prioritize = ["facebook", "twitter", "email", "pinterest", "google_plus", "reddit", "wordpress", "tumblr"];
+			</script>
+		  <!-- AddToAny END -->
           <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
               <a href="#commentButton" onclick="$('#commentPanel').collapse('show')" title="Comment"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
           <% end %>
           <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
         </div>
+        <div class="unit">
+			<h4>Rate this Resource</h4>
+			<%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
+			<h5 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h5>
+		</div>
         <%
           if(@resource.parents && (@resource.parents.count > 0))
         %>

@@ -59,22 +59,46 @@
 					</div><!-- end row -->
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<% if (@resource.allow_responses)  %>
+			<% if(@resource.settings(:user_interaction).allow_responses > 0) %>
+				<div class="panel panel-default">
+					<div class="panel-body">
 						<div class="row">
 							<div class="col-sm-12 text-center">
-								<br/><br/><%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
+								<h2>Responses to this Resource</h2>		
 							</div>
 						</div>
-					<% end %>
-					<div class="row" id="responseResources">
-						<div class="col-sm-12 text-center">
-							<h4>Responses will go here</h4>
+						<div class="row" id="responseResources">
+							<div class="col-sm-12 text-center">
+								<% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) and @resource.get_responses.count > 0 %>
+									<a href="#" class="btn btn-default btn-block" data-target="#responseModal" data-toggle="modal">View Responses</a>
+									<div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+									  <div class="modal-dialog">
+										<div class="modal-content">
+										  <div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+											<h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
+										  </div>
+										  <div class="modal-body">
+										  	<%= render partial: "resource_responses_grid" %>
+										  </div>
+										</div>
+									  </div>
+									</div>
+									
+								<% else %>
+									<%= render partial: "resource_responses_grid" %>
+								<% end %>
+							</div>
+						</div>
+						<hr/>
+						<div class="row">
+							<div class="col-sm-12 text-center">
+								<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			<% end %>
 			<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
 
 				<div class="row" id="detailTags">
@@ -210,8 +234,9 @@
 				  <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
 				</div>
 				<div class="unit">
-  					<h4>Your rating</h4>
-  					<%= rating_for @resource, 'quality', {star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png"} %>
+  					<h4>Rate this Learning Collection</h4>
+  					<%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
+  					<h5 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h5>
 				</div>
 				<%
 				  if(@resource.parents && (@resource.parents.count > 0))
@@ -345,21 +370,11 @@
 				  <div class="unit authorLink">
 					<% if @resource.author_id  %>
 						<% author_name = @resource.get_author_name(:omit_email => true).to_s %>
-						<h4>Created by</h4><%= link_to author_name, '/quick_search/query?utf8=✓&q=author:"' + author_name + '"' %>
+						<h4>Created by</h4><%= link_to author_name , '/quick_search/query?utf8=✓&q=author:"' + author_name + '"' %>
 				
 					<% else %>
 						<h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%>
 					<% end %>
-				
-						<br/><br/>
-						<!--Get all other Resources created by this user-->
-						<a role="button" data-toggle="collapse" href="#authRefPanel"><p><strong>Other Resources by this Author</strong></p></a>
-						<div id="authRefPanel" class="collapse detailRelatedContentBlockScroll">
-							<% author_resources = @resource.get_author_resources %>
-							<% author_resources.each do |ar_key, ar_value| %>	
-								<div><small><%= link_to sanitize(ar_value), get_resource_view_path(ar_key, user_signed_in?) %></small></div>
-							<% end %>
-						</div>
 				  </div><!-- end unit -->
 				  <h4>Last Updated</h4>
 				  <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>

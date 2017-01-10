@@ -21,14 +21,3 @@
     render :partial => "show_exhibition"
   end
 %>
-<% if (@resource.allow_responses)  %>
-	<div class="row">
-		<div class="col-sm-12 text-center">
-			<br/><br/><%= link_to("Respond to this " + response_link_text, new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
-		</div>
-	</div>
-<% end %>
-
-<div>
-  Your rating  : <%= rating_for @resource, 'quality', {star_on: "mortarboard_on.png", star_off: "mortarboard_off.png", star_half: "mortarboard_half.png"} %>
-</div>

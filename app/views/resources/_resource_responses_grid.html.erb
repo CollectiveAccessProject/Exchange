@@ -1,0 +1,32 @@
+<div class="row collectionDetailContents">
+<% @resource.get_responses.each do |rr| %>
+		<div class="col-sm-2">
+			<div class="collectionDetailContentsItem" >
+				<div class='titleOver'><%= link_to ((rr.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rr.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(rr, user_signed_in?) %></div>
+
+<%
+					available_media = 0
+					rr.media_files.each do |f|
+						if f.access == 1
+							available_media = available_media + 1
+						end
+					end
+%>
+				  <% if (available_media > 0) %>
+					<% rr.media_files.each do |f| %>
+
+						<% if f.sourceable %>
+							<% if f.access == 1 %>
+								<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rr, user_signed_in?) %><br/>
+								<% break %>
+							<% end %>
+						<% end %>
+					<% end %>
+				  <% else %>
+					<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(rr, user_signed_in?) %><br/>
+				  <% end %>
+			</div>
+			<small>Response by <%= rr.user.name %></small>
+		</div>
+<% end %>
+</div>

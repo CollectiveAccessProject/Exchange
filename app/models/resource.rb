@@ -56,7 +56,7 @@ class Resource < ActiveRecord::Base
   @@settings_by_type = [
       {}, # not used
       {:media_formatting => [:mode], :text_placement => [:placement], :text_formatting => [:show_all, :collapse], :user_interaction => [:allow_comments, :allow_tags, :allow_responses, :display_responses_on_separate_page]}, # resources
-      {:text_placement => [:placement], :user_interaction => [:allow_comments, :allow_tags, :allow_responses]}, # collections
+      {:text_placement => [:placement], :user_interaction => [:allow_comments, :allow_tags, :allow_responses, :display_responses_on_separate_page]}, # collections
       {:media_formatting => [:mode]}, # collection objects
       {:media_formatting => [:mode]} # exhibitions
   ]
@@ -337,6 +337,10 @@ class Resource < ActiveRecord::Base
     return rel_resource_list
   end
 
+  def get_responses
+    response_ids = Resource.where(in_response_to_resource_id: self.id).pluck(:id)
+    Resource.find(response_ids)
+  end
 
   # 
   # Check access for currently signed in user
@@ -436,6 +440,10 @@ class Resource < ActiveRecord::Base
     star_count = stars.count
     stars_total = stars.inject(0){|sum,x| sum + x }
     score = stars_total / (star_count.nonzero? || 1)
+  end
+
+  def total_ratings
+    total = Rate.where(rateable_id: self.id).count
   end
 
   # the automatic elasticsearch callbacks seem to ignore or

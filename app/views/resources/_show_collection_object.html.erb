@@ -113,93 +113,6 @@
         <%= sanitize(@resource.parsed_body_text) %>
       </div>
     </div><!-- end row -->
-    <div class="row" id="detailTags">
-      <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-          <!--	<div class="row" id="detailComments"> -->
-          <div class="col-sm-6">
-            <% # if @resource.comments.count > 0 %>
-            <a role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
-            <div id="commentPanel" class="detailComments collapse">
-              <% @resource.comments.each do |c| %>
-                  <div>
-                    <%= c.comment %>
-                    <br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
-                  </div>
-              <% end %>
-              <%= form_tag '/resources/add_comment' do %>
-                  <%= hidden_field_tag 'id', @resource.id %>
-                  <div class="form-group">
-                    <label>Add Comment</label>
-                    <%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-                  </div>
-                  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-              <% end %>
-            </div>
-            <% # end %>
-          </div>
-      <% end %>
-      <script>
-		$(document).ready(function(){
-			$('.tag_keyword').hover(
-			function(){ $(this).next(".author_show").show()},
-			function(){$(this).next(".author_show").hide()}
-			);
-		})
-	  </script>
-          <div class="col-sm-6">
-            <a role="button" data-toggle="collapse" href="#tagPanel"><H4><%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
-            <div id="tagPanel" class="collapse detailComments">
-              <div class="row">
-                <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
-					<div class="col-sm-<%= @resource.vocabulary_terms.count > 0 ? '6' : '12' %>">
-					  <h5>Tags</h5>
-					  <%# @resource.tags.map(&:tag).join(", ") %>
-					  <%
-						tag_array = []
-						@resource.tags.each do |t|
-						  tag_array << { :t_tag => t.tag.capitalize, :t_user => t.user.name, :t_id => t.id, :t_updated => t.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
-						end
-						tag_array.sort_by!{|a| a[:t_tag]}
-						tag_array.each do |l|
-					  %>
-						  <span class="tag_keyword"><%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:t_user] + ' (' + l[:t_updated] + ')' %></small></span><br/>
-					  <% end %>
-					  <%= form_tag '/resources/add_tag' do %>
-						  <%= hidden_field_tag 'id', @resource.id %>
-						  <br/>
-						  <div class="form-group">
-							<label>Add Tag</label>
-							<%= text_field_tag 'tag[tag]', nil, class:'form-control' %>
-						  </div>
-						  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-					  <% end %>
-					</div>
-                <% end %>
-                <% if @resource.vocabulary_terms.count > 0 %>
-                    <div class="col-sm-<%= @resource.settings(:user_interaction).allow_tags > 0 ? '6' : '12' %>">
-                      <h5>Keywords</h5>
-                      <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-                      <%
-                        key_array = []
-                        @resource.resources_vocabulary_terms.each do |v|
-                          if(v.user_id)
-                            v_user = User.find(v.user_id)
-                            k_user_name = v_user.name
-                          end
-                          key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => k_user_name, :v_updated => v.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
-
-                        end
-                        key_array.sort_by!{|a| a[:v_term]}
-                        key_array.each do |l|
-                      %>
-                          <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] + ' (' + l[:v_updated] + ')' %></small></span><br/>
-                      <% end %>
-                    </div>
-                <% end %>
-              </div>
-            </div>
-          </div>
-    </div>
   </div><!-- end col -->
   <div class="col-sm-2 resourceSidePanel">
     <div class="panel panel-primary">
@@ -230,7 +143,14 @@
         </div>
         <div class="detailButtonsResource text-center">
           <a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
-          <a href="#" title="Share"><i class="fa fa-share" aria-hidden="true"></i></a>
+          <!-- AddToAny BEGIN -->
+			<a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
+			<script>
+			var a2a_config = a2a_config || {};
+			a2a_config.linkname = '<%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>';
+			a2a_config.prioritize = ["facebook", "twitter", "email", "pinterest", "google_plus", "reddit", "wordpress", "tumblr"];
+			</script>
+		  <!-- AddToAny END -->
           <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
               <a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
           <% end %>
@@ -255,40 +175,6 @@
             <% end %>
           </div>
         </div><!-- end unit -->
-        <% if(@resource.settings(:user_interaction).allow_tags > 0) %>
-            <% if @resource.tags.count > 0 %>
-                <div class="unit">
-                  <H4>Tags</H4>
-                  <%# @resource.tags.map(&:tag).join(", ") %>
-                  <%
-                    tag_array = []
-                    @resource.tags.each do |t|
-                      tag_array << { :t_tag => t.tag.capitalize }
-                    end
-                    tag_array.sort_by!{|a| a[:t_tag]}
-                    tag_array.each do |l|
-                  %>
-                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %><br/>
-                  <% end %>
-                </div>
-            <% end %>
-        <% end %>
-		<% if @resource.vocabulary_terms.count > 0 %>
-			<div class="unit">
-			  <h4>Keywords</h4>
-			  <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-			  <%
-				key_array = []
-				@resource.resources_vocabulary_terms.each do |v|
-				  key_array << { :v_term => v.vocabulary_terms.term.capitalize }
-				end
-				key_array.sort_by!{|a| a[:v_term]}
-				key_array.each do |l|
-			  %>
-				  <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:v_term] + '"') %><br/>
-			  <% end %>
-			</div>
-		<% end %>
         <% if (@resource.copyright_license) %>
             <div class="unit">
               <h4>Copyright</h4>
@@ -299,7 +185,7 @@
             </div>
         <% end %>
 
-        <%= render(partial: 'resources/resource_responses', layout: false) %>
+        <%# render(partial: 'resources/resource_responses', layout: false) %>
       </div>
     </div>
   </div><!-- end col -->

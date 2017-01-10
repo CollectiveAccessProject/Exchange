@@ -586,7 +586,10 @@ $white:#FFFFFF;
 		}
 	}
 }
-
+.noPaddingText{
+	margin: 0;
+	padding: 0;
+}
 /* Carousel Customization */
 
 .carouselNav{
