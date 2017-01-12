@@ -1,21 +1,23 @@
-<div class="row">
-  <div class="col-sm-12">
-    <H4>
-      <% if (params['mode'] == :preview) %>
-          Previewing UMMA Collection Object
-      <% end %>
-      <div class="headingButtons">
-        <% if (user_signed_in?) %>
-            <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
+<% if @resource.check_edit_access(current_user) %>
+	<div class="row">
+	  <div class="col-sm-12">
+		<H4>
+		  <% if (params['mode'] == :preview) %>
+			  Previewing UMMA Collection Object
+		  <% end %>
+		  <div class="headingButtons">
+			<% if (user_signed_in?) %>
+				<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs pull-right' %>
 
-            <%# link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
-        <% end %>
-        <%# last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
-      </div>
-      <br style="clear: both;"/>
-    </H4>
-  </div><!-- end col -->
-</div><!-- end row -->
+				<%# link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+			<% end %>
+			<%# last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
+		  </div>
+		  <br style="clear: both;"/>
+		</H4>
+	  </div><!-- end col -->
+	</div><!-- end row -->
+<% end %>
 <%
   parent = @resource.parents.first
   if(parent)

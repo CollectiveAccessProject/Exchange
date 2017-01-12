@@ -4,13 +4,13 @@ $ ->
       height : 300,
       toolbar : [
         ['style', [ 'bold', 'italic', 'underline', 'clear']],
-        ['cleaner',['cleaner']],
+        ['cleaner',['cleaner', 'codeview']],
         ['font', [ 'fontname', 'strikethrough', 'superscript', 'subscript']],
         ['fontsize', ['fontsize']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
-        ['insert', ['picture', 'link', 'video', 'table', 'hr', 'mediaitem']]
+        ['insert', ['picture', 'link', 'video', 'table', 'hr', 'mediaitem']],
       ],
       buttons : { mediaitem: MediaItemButton },
       callbacks: {
@@ -29,6 +29,6 @@ $ ->
     $(this).summernote
       height : 75,
       toolbar : [
-        ['style', [ 'bold', 'italic', 'underline']],
-        ['font', [ 'superscript', 'subscript']]
+        ['style', [ 'bold', 'italic', 'underline', 'codeview']],
+        ['font', [ 'superscript', 'subscript']],
       ]

@@ -59,46 +59,6 @@
 					</div><!-- end row -->
 				</div>
 			</div>
-			<% if(@resource.settings(:user_interaction).allow_responses > 0) %>
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-sm-12 text-center">
-								<h2>Responses to this Resource</h2>		
-							</div>
-						</div>
-						<div class="row" id="responseResources">
-							<div class="col-sm-12 text-center">
-								<% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) and @resource.get_responses.count > 0 %>
-									<a href="#" class="btn btn-default btn-block" data-target="#responseModal" data-toggle="modal">View Responses</a>
-									<div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-									  <div class="modal-dialog">
-										<div class="modal-content">
-										  <div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
-											<h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
-										  </div>
-										  <div class="modal-body">
-										  	<%= render partial: "resource_responses_grid" %>
-										  </div>
-										</div>
-									  </div>
-									</div>
-									
-								<% else %>
-									<%= render partial: "resource_responses_grid" %>
-								<% end %>
-							</div>
-						</div>
-						<hr/>
-						<div class="row">
-							<div class="col-sm-12 text-center">
-								<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
-							</div>
-						</div>
-					</div>
-				</div>
-			<% end %>
 			<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
 
 				<div class="row" id="detailTags">
@@ -189,6 +149,53 @@
 						</div><!-- end tagPanel -->
 					</div><!-- end col 6 -->
 				</div><!-- end row -->
+			<% end %>
+			<% if(@resource.settings(:user_interaction).allow_responses > 0) %>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-12 text-center">
+								<h2>Responses to this Learning Collection</h2>		
+							</div>
+						</div>
+						
+						<% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) and @resource.get_responses.count > 0 %>
+							<div class="row" id="responseResources">
+								<div class="col-sm-6 text-center">
+									<a href="#" class="btn btn-default btn-block" data-target="#responseModal" data-toggle="modal">View Responses</a>
+									<div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+													<h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
+												</div>
+												<div class="modal-body">
+													<%= render partial: "resource_responses_grid" %>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6 text-center">
+									<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-block"}) %>
+								</div>
+							</div>
+						<% else %>
+							<div class="row" id="responseResources">
+								<div class="col-sm-12 text-center">
+									<%= render partial: "resource_responses_grid" %>
+								</div>
+							</div>
+							<hr/>
+							<div class="row">
+								<div class="col-sm-12 text-center">
+									<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
+								</div>
+							</div>
+						<% end %>
+					</div>
+				</div>
 			<% end %>
 		</div><!-- end col 10 -->
 		<div class="col-sm-2 resourceSidePanel">
@@ -370,10 +377,10 @@
 				  <div class="unit authorLink">
 					<% if @resource.author_id  %>
 						<% author_name = @resource.get_author_name(:omit_email => true).to_s %>
-						<h4>Created by</h4><%= link_to author_name , '/quick_search/query?utf8=✓&q=author:"' + author_name + '"' %>
+						<h4>Created by</h4><%= link_to sanitize(author_name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author:"' + author_name + '"' %> <i class="fa fa-external-link-square" aria-hidden="true"></i>
 				
 					<% else %>
-						<h4>Created by</h4><%= link_to @resource.user.name, '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%>
+						<h4>Created by</h4><%= link_to sanitize(@resource.user.name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%> <i class="fa fa-external-link-square" aria-hidden="true"></i>
 					<% end %>
 				  </div><!-- end unit -->
 				  <h4>Last Updated</h4>
