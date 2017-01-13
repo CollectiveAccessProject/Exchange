@@ -17,7 +17,7 @@ function embedMedia(slug) {
 	  if(@resource.parents.first)
 	    render 'resources/resource_parent_display_header'
 	   else
-	  	strip_tags(@resource.title)
+	  	sanitize(@resource.title)
 	  end
       %>
       <%=

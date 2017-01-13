@@ -11,7 +11,7 @@
 
             <%= r.input :title, :input_html => { rows: 2 } %>
             <% if (!@featured_content_set.id.nil?) %>
-            <%= r.input :slug %>
+            <%= r.input :slug, hint: '<i class="fa fa-info-circle"></i> Used to generate set URL, use only letters, numbers and dashes'.html_safe %>
             <% end %>
             <%= r.input :subtitle, :input_html => { rows: 2 } %>
             <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>

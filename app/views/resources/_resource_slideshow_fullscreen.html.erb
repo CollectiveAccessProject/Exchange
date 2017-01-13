@@ -30,7 +30,7 @@
 									<div class="carouselImageHeight">
 										<%= media_display %>
 									</div>
-									<div class="captionContainer">
+									<div class="captionContainer idle-fade">
 										<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>
 									</div>
 								</div>		
@@ -52,7 +52,7 @@
 						  <a id="rightFullCarousel" class="right carousel-control idle-fade" href="#slideCarousel" role="button" data-slide="next">
 							<span class="control-arrow glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 							<span class="sr-only">Next</span>
-						  </a>
+						  </a>	
 						<% end %>
 					</div><!-- end resourceCarousel -->
 					</div>
@@ -64,10 +64,15 @@
 <script>
 	$(document).ready(function(){
 		var i = null;
+		var old_page_coords = 0;
 		$('#slideJumbo').mousemove(function(){
-			clearTimeout(i);
-			$('.idle-fade').css("opacity", "1");
-			i = setTimeout(`$('.idle-fade').css("opacity", "0");`, 3000);
+			var page_coords = event.pageX + event.pageY;
+			if (page_coords != old_page_coords){
+				clearTimeout(i);
+				$('.idle-fade').css("opacity", "1");
+				i = setTimeout(`$('.idle-fade').css("opacity", "0");`, 3000);
+			}
+			old_page_coords = page_coords;
 		});
 	});
 </script>

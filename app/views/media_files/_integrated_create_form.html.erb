@@ -127,7 +127,7 @@
 		$('#CollectionobjectLink').bind('railsAutocomplete.select', function(){			
 			var index_data = $('#collectionobject_link_indexing_data').val();
 			var index_parse = jQuery.parseJSON(index_data)
-			var short_caption = index_parse.artists + '<br/>' + index_parse.title
+			var short_caption = index_parse.artists + '<br/><em>' + index_parse.title + '</em>'
 			$('#create-form-short-caption-text').prop("value", short_caption);
 			var material_fields = ''
 			if(index_parse.support){
@@ -135,7 +135,7 @@
 			} else {
 				material_fields = index_parse.medium
 			}
-			var long_caption = index_parse.artists + '<br/>' + index_parse.title + '<br/>' + index_parse.date_created + '<br/>' + material_fields + '<br/>' + index_parse.credit_line + '<br/>' + index_parse.idno
+			var long_caption = index_parse.artists + '<br/><em>' + index_parse.title + '</em><br/>' + index_parse.date_created + '<br/>' + material_fields + '<br/>' + index_parse.credit_line + '<br/>' + index_parse.idno
 			$('#create-form-long-caption-text').prop("value", long_caption);
 		});
 	});

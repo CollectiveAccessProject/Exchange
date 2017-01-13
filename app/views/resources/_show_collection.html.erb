@@ -1,4 +1,9 @@
 <%= render :partial => 'show_parent_heading.html.erb' %>
+<% 
+	# Set allowed HTML tags/attributes for the body text
+	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
+	body_attrs_allowed = %w(href style src alt class float data-toggle data-target target)
+%>
 <% if @resource.check_edit_access(current_user) %>
 	<div class="row">
 	  <div class="col-sm-12">
@@ -26,9 +31,9 @@
 					  <div class="col-sm-12">
 						<p id="notice"><%= notice %></p>
 
-						<H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H2>
+						<H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H2>
 
-						<H3><%= sanitize(@resource.subtitle, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H3>
+						<H3><%= sanitize(@resource.subtitle, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H3>
 					  </div>
 					</div>
 					<div class="row">
@@ -38,7 +43,7 @@
 						  <div class="col-sm-4">
 					  <% end %>
 						  <div class="detailBodyText">
-							<%= (@resource.body_text) ? sanitize(@resource.body_text) : "" %>
+							<%= (@resource.body_text) ? sanitize(@resource.body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) : "" %>
 						  </div>
 					  </div>
 					  <% if (@resource.settings(:text_placement).placement.to_s == "above") %>
@@ -240,11 +245,6 @@
 				  <% end %>
 				  <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
 				</div>
-				<div class="unit">
-  					<h4>Rate this Learning Collection</h4>
-  					<%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
-  					<h5 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h5>
-				</div>
 				<%
 				  if(@resource.parents && (@resource.parents.count > 0))
 				%>
@@ -373,6 +373,11 @@
 						%>
 					  </div><!--end unit-->
 				  <% end %>
+				  <div class="unit">
+  					<h4>Rate this Learning Collection</h4>
+  					<%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
+  					<h6 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h6>
+				  </div>
 				  <!-- Display the current user or author -->
 				  <div class="unit authorLink">
 					<% if @resource.author_id  %>

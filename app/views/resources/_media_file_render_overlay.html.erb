@@ -39,14 +39,14 @@
 									col = CollectionobjectLink.find(media_file.sourceable_id)
 									rc = Resource.find(col.resource_id)
 									cap_fields = JSON.parse(rc.indexing_data)
-									short_caption = sanitize(cap_fields['artist'].to_s + '<br/>' + cap_fields['title'].to_s)
+									short_caption = sanitize(cap_fields['artist'].to_s + '<br/><em>' + cap_fields['title'].to_s + '</em>')
 									material_fields = ''
 									if cap_fields['support']
 										material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
 									else
 										material_fields = cap_fields['medium'].to_s
 									end
-									long_caption = sanitize(cap_fields['artist'].to_s + '<br/>' + cap_fields['title'].to_s + '<br/>' + cap_fields['date_created'].to_s + '<br/>' + material_fields.to_s + '<br/>' + cap_fields['credit_line'].to_s + '<br/>' + cap_fields['idno'].to_s)
+									long_caption = sanitize(cap_fields['artist'].to_s + '<br/><em>' + cap_fields['title'].to_s + '</em><br/>' + cap_fields['date_created'].to_s + '<br/>' + material_fields.to_s + '<br/>' + cap_fields['credit_line'].to_s + '<br/>' + cap_fields['idno'].to_s)
 								%>
 								<div id="<%= media_file.id %>_caption_type" class="captionRadios">
 									<label class="control-label">Caption Type</label><br/>

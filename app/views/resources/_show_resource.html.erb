@@ -1,4 +1,9 @@
 <% parent = @resource.parents.first %>
+<% 
+	# Set allowed HTML tags/attributes for the body text
+	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
+	body_attrs_allowed = %w(href style src alt class id float target width height)
+%>
 <%= render partial: 'show_parent_heading.html.erb' %>
 <% if @resource.check_edit_access(current_user) %>
 	<div class="row">
@@ -19,8 +24,8 @@
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
 
-    <H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H2>
-    <H3><%= sanitize(@resource.subtitle, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H3>
+    <H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H2>
+    <H3><%= sanitize(@resource.subtitle, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H3>
     <% if @resource.settings(:text_placement).placement.to_s == "above" %>
         <% if @resource.settings(:text_formatting).show_all == 1 %>
             <% if @resource.settings(:text_formatting).collapse == 1 %>
@@ -31,7 +36,7 @@
                 </script>
             <% end %>
             <div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-              <p><%= sanitize(@resource.parsed_body_text) %></p>
+              <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
             </div>
             <div class="row">
               <div class="col-md-4 col-md-offset-4 text-center">
@@ -51,7 +56,7 @@
                   });
                 </script>            
 				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text) %></p>
+				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
 				</div>
 				<div class="row">
 				  <div class="col-md-4 col-md-offset-4 text-center">
@@ -65,7 +70,7 @@
 				</div>
 			<% else %>
 				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text) %></p>
+				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
 				</div>
 			<% end %>
         <% end %>
@@ -117,6 +122,13 @@
                           # it's in a partial because it's about a billion nested divs :-)
                           render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
+                        <script>
+							$(document).ready(function(){ 
+								$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
+									$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
+								}); 
+							});
+						</script>
                       </div><!-- end col -->
                   <%
 
@@ -161,6 +173,13 @@
                           # it's in a partial because it's about a billion nested divs :-)
                           render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
+                        <script>
+							$(document).ready(function(){ 
+								$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
+									$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
+								}); 
+							});
+						</script>
                       </div><!-- end col -->
                   <%
 
@@ -235,6 +254,13 @@
 
                                   render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                                 %>
+                                <script>
+                                	$(document).ready(function(){ 
+                                		$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
+                                			$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
+                                		}); 
+                                	});
+                                </script>
                             <%
                               counter = counter + 1
                               end
@@ -283,6 +309,13 @@
                         <%=
                           render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
+                        <script>
+							$(document).ready(function(){ 
+								$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
+									$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
+								}); 
+							});
+						</script>
                     <%
                       end
                       end
@@ -306,7 +339,7 @@
                 </script>
             <% end %>
             <div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-              <p><%= sanitize(@resource.parsed_body_text) %></p>
+              <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
             </div>
             <div class="row">
               <div class="col-md-4 col-md-offset-4 text-center">
@@ -326,7 +359,7 @@
                   });
                 </script>            
 				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text) %></p>
+				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
 				</div>
 				<div class="row">
 				  <div class="col-md-4 col-md-offset-4 text-center">
@@ -340,7 +373,7 @@
 				</div>
 			<% else %>
 				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text) %></p>
+				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
 				</div>
 			<% end %>
         <% end %>
@@ -530,11 +563,6 @@
           <% end %>
           <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
         </div>
-        <div class="unit">
-			<h4>Rate this Resource</h4>
-			<%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
-			<h5 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h5>
-		</div>
         <%
           if(@resource.parents && (@resource.parents.count > 0))
         %>
@@ -592,16 +620,18 @@
               </div>
             </div><!-- end unit -->
         <% end %>
-        <div class="unit">
-          <% co_count = @resource.collectionobject_link_count %>
-          <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= co_count.to_s %> Collection Object Source<%= co_count == 1 ? '' : 's' %></H4></a>
-          <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">
-            <% mf_references = @resource.media_file_references %>
-            <% mf_references.each do |mf_key, mf_value| %>
-            	<div><small><%= link_to sanitize(mf_value[0]), get_resource_view_path(mf_key, user_signed_in?) %>(<%= mf_value[1] %>)</small></div>
-            <% end %>
-          </div>
-        </div><!-- end unit -->
+        <% if @resource.collectionobject_link_count > 0 %>
+			<div class="unit">
+			  <% co_count = @resource.collectionobject_link_count %>
+			  <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= co_count.to_s %> Collection Object Source<%= co_count == 1 ? '' : 's' %></H4></a>
+			  <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">
+				<% mf_references = @resource.media_file_references %>
+				<% mf_references.each do |mf_key, mf_value| %>
+					<div><small><%= link_to sanitize(mf_value[0]), get_resource_view_path(mf_key, user_signed_in?) %>(<%= mf_value[1] %>)</small></div>
+				<% end %>
+			  </div>
+			</div><!-- end unit -->
+        <% end %>
         <% if @resource.links.count > 0 %>
             <div class="unit">
               <H4><%= @resource.links.count %> Link<%= ((@resource.links.count > 1) ? "s" : "") %></H4>
@@ -673,6 +703,11 @@
                 %>
               </div><!--end unit-->
           <% end %>
+          <div class="unit">
+			<h4>Rate this Resource</h4>
+			<%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
+			<h6 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h6>
+		  </div>
           <!-- Display the current user or author -->
           <div class="unit authorLink">
             <% if @resource.author_id  %>

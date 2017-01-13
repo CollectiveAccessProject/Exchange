@@ -13,7 +13,7 @@
         </div>
         <div class="row">
           <%# if @resource.media_files.count > 0 %>
-			  <div class="col-sm-6 mediaDependent">
+			  <div class="col-sm-6">
 				<div class="row">
 				  <div class="col-sm-12">
 					<H4>Formatting</H4>
@@ -23,12 +23,12 @@
 				  <div class="col-sm-12">
 					<div class="panel-subbody">
 					  <% if (@resource.setting_is_valid(:media_formatting, :mode)) %>
-						  <div class="row">
+						  <div class="row mediaDependent">
 							<div class="col-sm-12">
 							  <H3>Media formatting</H3>
 							</div>
 						  </div>
-						  <div class="row">
+						  <div class="row mediaDependent">
 							<div class="col-sm-3">
 							  <div class="form-group">
 								<%= radio_button_tag(:media_formatting_mode, "slideshow", (@resource.settings(:media_formatting).mode == :slideshow)) %>
@@ -57,12 +57,12 @@
 					  <% end %>
 
 					  <% if (@resource.setting_is_valid(:text_placement)) %>
-						  <div class="row">
+						  <div class="row mediaDependent">
 							<div class="col-sm-12">
 							  <H3>Text placement</H3>
 							</div>
 						  </div>
-						  <div class="row">
+						  <div class="row mediaDependent">
 							<% if (@resource.setting_is_valid(:text_placement, :placement)) %>
 								<div class="col-sm-4">
 								  <div class="form-group">
@@ -156,10 +156,10 @@
                       </div>
                       <% end %>
                       <% if (@resource.setting_is_valid(:user_interaction, :display_responses_on_separate_page)) %>
-                      <div class="form-group">
-                        <%= check_box_tag(:user_interaction_display_responses_on_separate_page, "display_responses_on_separate_page", (@resource.settings(:user_interaction).display_responses_on_separate_page == 1)) %>
-                        <%= label_tag(:user_interaction_display_responses_on_separate_page, "Display responses on separate page", class: 'inline') %>
-                      </div>
+						  <div class="form-group response_page">
+							<%= check_box_tag(:user_interaction_display_responses_on_separate_page, "display_responses_on_separate_page", (@resource.settings(:user_interaction).display_responses_on_separate_page == 1)) %>
+							<%= label_tag(:user_interaction_display_responses_on_separate_page, "Display responses on separate page", class: 'inline') %>
+						  </div>
                       <% end %>
                     </div>
                   </div>
@@ -179,6 +179,7 @@
 </div>
 <script>
 	$(document).ready(function(){
+		//Show or Hide Formatting options based on presence of media items
 		if($('.mediaListIcon, .collectionContentsItem').length == 0){
 			$('.mediaDependent').hide();
 		}
@@ -188,6 +189,13 @@
 			} else {
 				$('.mediaDependent').hide();
 			}
+		});
+		//Show or hide response paging options if responses are enabled
+		if(!$('#user_interaction_allow_responses').is(':checked')){
+			$('.response_page').hide();
+		}
+		$('#user_interaction_allow_responses').click(function(){
+			$('.response_page').toggle();
 		});
 	});
 </script>

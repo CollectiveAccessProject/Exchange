@@ -18,7 +18,7 @@
 		
 		<div class="col-sm-<%= width %>">
 			<div class="collectionDetailContentsItem" >
-				<div class='titleOver'><%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(rel.child_resource, user_signed_in?) %></div>
+				<div class='titleOver'><%= link_to ((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)), get_resource_view_path(rel.child_resource, user_signed_in?) %></div>
 
 					<% if(rel.child_resource.is_resource) %>
 <%
