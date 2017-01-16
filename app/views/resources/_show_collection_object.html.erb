@@ -94,6 +94,11 @@
                   %>
                       <%= f.sourceable.preview :large  %>
                       <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
+
+                      <%=
+                        # Example of how to output image using IIIF
+                      # image_tag(riiif_image_path(f, {size: ',600'}))
+                      %>
                   <% end %>
                 </div>
             <%

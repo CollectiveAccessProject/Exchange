@@ -118,6 +118,9 @@ Rails.application.routes.draw do
   # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 
+  # IIIF
+  mount Riiif::Engine => '/image-service', as: 'riiif'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
