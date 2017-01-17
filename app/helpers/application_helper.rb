@@ -42,7 +42,10 @@ module ApplicationHelper
     size = size.to_s
 
     case
-      when (((mimetype =~ /^image/) || (mimetype =~ /^application\/pdf$/)) && image && (defined? image.stored? && image.stored?)) && !version.nil?
+      when (((mimetype =~ /^application\/pdf$/)) && image && (defined? image.stored? && image.stored?)) && !version.nil?
+        image_size = media_size_for_version(version)
+        image_tag image.thumb(image_size[:area], format: 'png', frame: 0).convert("-background white -alpha remove").url
+      when ((mimetype =~ /^image/) && image && (defined? image.stored? && image.stored?)) && !version.nil?
         image_size = media_size_for_version(version)
         image_tag image.thumb(image_size[:area], format: 'jpeg', frame: 0).url
       when ((mimetype == "application/vnd.ms-excel") || (mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
