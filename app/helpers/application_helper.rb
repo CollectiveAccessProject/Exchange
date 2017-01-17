@@ -212,3 +212,10 @@ module ApplicationHelper
     ]
   end
 end
+
+#
+# Generate IIIF path for media file. Options are passed as-is to Riiif::Engine.routes.url_helpers.image_path
+#
+def riiif_image_path(media_file, options=nil)
+  Riiif::Engine.routes.url_helpers.image_path(media_file.thumbnail.path.gsub!(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+end
