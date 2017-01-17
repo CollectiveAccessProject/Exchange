@@ -1,7 +1,7 @@
 <% 
 	# Set allowed HTML tags/attributes for the body text
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
-	body_attrs_allowed = %w(href style src alt class float data-toggle data-target target)
+	body_attrs_allowed = %w(href style src alt class float target)
 %>
 <% if @resource.check_edit_access(current_user) %>
 	<div class="row">
@@ -94,6 +94,11 @@
                   %>
                       <%= f.sourceable.preview :large  %>
                       <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
+
+                      <%=
+                        # Example of how to output image using IIIF
+                      # image_tag(riiif_image_path(f, {size: ',600'}))
+                      %>
                   <% end %>
                 </div>
             <%
