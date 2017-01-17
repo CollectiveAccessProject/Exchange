@@ -444,6 +444,8 @@ $white:#FFFFFF;
 						background-color: #000;
 						color: #fff;
 						.previewMediaHalf{
+							padding-left: 0;
+							padding-right: 0;
 							.mediaTips{
 								span{
 									.previewMediaIcon{
@@ -520,6 +522,7 @@ $white:#FFFFFF;
 	position:relative;
 	display:inline-block;
 	vertical-align: top;
+	width: 100%;
 	img{
 		max-width:100%;
 		height:auto;
@@ -555,6 +558,12 @@ $white:#FFFFFF;
 		color:$gray;
 		line-height:1.1em;
 		padding-top:3px;
+		margin-right: 0;
+		margin-left: 0;
+		.previewMediaHalf{
+			padding-left: 0;
+			padding-right: 0;
+		}
 	}
 }
 
@@ -566,6 +575,7 @@ $white:#FFFFFF;
 	padding: 40px;
 	max-width: 100%;
 	height: auto;
+	text-align: center;
 }
 .popover{
 	width: 300px;

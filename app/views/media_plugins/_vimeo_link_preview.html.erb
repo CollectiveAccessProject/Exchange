@@ -9,35 +9,8 @@
   		<!-- This renders the Media type/source thumbnail along with a popover guide to the icons -->
 		<div class="previewMediaCaption">
 			<div class="mediaTips">
-				<span class="mediaTips_<%= media_id %> infoIcon" data-toggle="popover" data-trigger="hover" data-placement="top" role="button"><div class="previewMediaIcon" title="Vimeo video"><i class="fa fa-video-camera" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-vimeo" aria-hidden="true"></i></div></span>
+				<span class="popoverWrapper infoIcon" title="Vimeo video"><div class="previewMediaIcon"><i class="fa fa-video-camera" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-vimeo" aria-hidden="true"></i></div></span>
 			</div>
-		
-			<script>
-				$(function(){
-					$('.mediaTips_<%= media_id %>').popover({
-						html: true,
-						content: function(){
-							return $('.popover_<%= media_id %>').html();
-						}
-					});
-				});
-			</script>
-			<div class="mediaTipsPopover popover_<%= media_id %>">
-				<div class="row">
-					<div class="col-sm-12 col-md-6">
-						Type<br/>
-						<i class='fa fa-image'></i> Image <br/>
-						<i class='fa fa-video-camera'></i> Video <br/>
-						<br/>
-						Source<br/>
-						<i class='fa fa-institution'></i> UMMA <br/>
-						<i class='fa fa-youtube'></i> Youtube <br/>
-						<i class='fa fa-flickr'></i> Flickr<br/>
-						<i class='fa fa-vimeo'></i> Vimeo<br/>
-						<i class='fa fa-file'></i> Local File<br/>
-				  	</div>
-				</div>
-			</div> 
 	  	</div>
 	  	<!-- End Media guide and thumbnail section -->
 <%
