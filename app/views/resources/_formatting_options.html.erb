@@ -167,13 +167,6 @@
             <% end %>
           </div>
         </div>
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="form-group">
-              <br/><%= submit_tag "Save", class:'btn btn-default btn-sm' %>
-            </div>
-          </div>
-        </div>
     <% end %>
   </div>
 </div>
@@ -197,5 +190,11 @@
 		$('#user_interaction_allow_responses').click(function(){
 			$('.response_page').toggle();
 		});
+
+
+		// submit form on change
+      jQuery("#formattingOptionsFormElements").on('change', function(e) {
+          jQuery("#formattingOptionsFormElements").submit();
+      });
 	});
 </script>
