@@ -35,8 +35,8 @@ class ResourcesController < ApplicationController
     ).order(:id).all
     render :json => u.map { |user| {:id => user.id, :label => user.name + " (" + user.email + ")", :value => user.name + " (" + user.email + ")"} }
   end
-  
-   # Override resource title autocompleter
+
+  # Override resource title autocompleter
   def autocomplete_resource_title
     term = params[:term]
     u = Resource.where(
@@ -95,10 +95,10 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
-  
-  	if(@resource.is_collection)
-    	# session for last collection so can attribute parent when resource has multiple parent collections
-    	session[:last_collection] = @resource.id
+
+    if(@resource.is_collection)
+      # session for last collection so can attribute parent when resource has multiple parent collections
+      session[:last_collection] = @resource.id
     end
 
     @search_next_resource_id = @search_previous_resource_id = nil
@@ -109,7 +109,7 @@ class ResourcesController < ApplicationController
       @search_next_resource_id = session[:last_search_results][ct][i+1] if (i<(session[:last_search_results][ct].length - 1))
       @search_previous_resource_id = session[:last_search_results][ct][i-1] if (i > 0)
     end
-  
+
   end
 
   # Handle public viewing of resources
@@ -221,7 +221,7 @@ class ResourcesController < ApplicationController
         #
         # TODO: does user have access to resource this is in response to?
         if (@resource && @resource.in_response_to_resource_id && (@resource.in_response_to_resource_id > 0))
-        # Add resource as child of what we're responding to (not sure why UMMA wants this?)
+          # Add resource as child of what we're responding to (not sure why UMMA wants this?)
           rh = ResourceHierarchy.where(resource_id: @resource.in_response_to_resource_id, child_resource_id: @resource.id).first_or_create
           rh.save
         end
@@ -384,14 +384,14 @@ class ResourcesController < ApplicationController
 
   def remove_tag
     # TODO: make sure user is allowed to do this for this resource
-   if(t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first)
-    t.destroy
+    if(t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first)
+      t.destroy
 
-    @resource.update_search_index
-    resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
-   else
-     resp = {status: :err, error: "Invalid parameters"}
-   end
+      @resource.update_search_index
+      resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+    else
+      resp = {status: :err, error: "Invalid parameters"}
+    end
 
     respond_to do |format|
       format.json { render json: resp }
@@ -434,15 +434,21 @@ class ResourcesController < ApplicationController
   def add_link
     # TODO: make sure user is allowed to do this for this resource
     params.permit(links: [:url, :caption])
-    puts params.inspect
-    link = Link.new({url: params[:link][:url], caption: params[:link][:caption], resource_id: @resource.id})
 
-    if (link.save)
-      @resource.update_search_index
-      resp = {status: :ok, html: render_to_string("resources/_links", layout: false)}
-    else
-      resp = {status: :err, error: link.errors.full_messages.join('; ')}
+    begin
+
+      link = Link.new({url: params[:link][:url], caption: params[:link][:caption], resource_id: @resource.id})
+
+      if (link.save)
+        @resource.update_search_index
+        resp = {status: :ok, html: render_to_string("resources/_links", layout: false)}
+      else
+        resp = {status: :err, error: link.errors.full_messages.join('; ')}
+      end
+    rescue Exception => e
+      resp = {status: :err, error: "URL is invalid"}
     end
+
 
     respond_to do |format|
       format.json { render json: resp }
@@ -638,7 +644,7 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (@resource.user_id != current_user.id)
-      #  raise "Not owner"
+        #  raise "Not owner"
       end
 
       to_user_id = params[:to_user_id]
