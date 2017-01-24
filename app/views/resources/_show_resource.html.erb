@@ -740,7 +740,29 @@
               <% end  %>
             </div>
         <% end %>
-
+		<div class="unit">
+			<a role="button" data-toggle="collapse" href="#reportPanel"><h4><i class="fa fa-exclamation-triangle"></i> Report</h4></a>	
+			<div id="reportPanel" class="collapse">
+				<%= form_tag 'send_report' do %>
+					<div class="form-group"><label>Email:</label><%= text_field_tag 'email', '', :class => 'form-control' %></div>
+					<div class="form-group"><label>Report:</label><%= text_area_tag 'report', '', {:class => 'form-control', :rows => '3'} %></div>
+					<%= hidden_field_tag 'r_title', @resource.title %>
+					<%= hidden_field_tag 'r_id', @resource.id %>
+					<%= submit_tag "Send Report", {:value => "Send Report", :class => "btn btn-default btn-sm"} %>
+				<% end %>
+				<br/>
+				<p><span data-toggle="popover" data-placement="top" data-trigger="hover" data-content="UMMA is dedicated to fostering diversity, equity and inclusion and therefore abusive, threatening or derogatory content is subject to removal from The Exchange. Please use this tool to report any content that crosses these lines. All reports will be reviewed by UMMA staff for potential action."><i class="fa fa-question-circle"></i>Reporting Policy</span></p>
+				<script>
+					$('#reportPanel').ready(function(){
+						$('[data-toggle="popover"]').popover({
+							container: 'body'
+						});
+					});
+				</script>
+			</div>
+		</div>
+		
+		
         <%= render(partial: 'resources/resource_responses', layout: false) %>
       </div>
     </div>

@@ -121,6 +121,9 @@ Rails.application.routes.draw do
   # IIIF
   mount Riiif::Engine => '/image-service', as: 'riiif'
 
+  # Report Mailer
+  post '/resources/:id/send_report' => 'resources#send_report'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

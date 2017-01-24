@@ -356,6 +356,16 @@ class ResourcesController < ApplicationController
     end
   end
 
+  # Send Report Email
+  def send_report
+    email = params[:email]
+    report = params[:report]
+    r_title = params[:r_title]
+    r_id = params[:r_id]
+    ReportMailer.report_email(email, report, r_title, r_id).deliver_now
+    redirect_to :back
+  end
+
   # add new tag
   def add_tag
     # TODO: make sure user is allowed to do this for this resource
