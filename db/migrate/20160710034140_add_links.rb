@@ -9,6 +9,6 @@ class AddLinks < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :links, [:resource_id, :url], :unique => true, :name => 'unique_link_per_resource'
+    add_index :links, [:resource_id, :url], :unique => true, name: 'unique_link_per_resource', length: {url: 255}
   end
 end
