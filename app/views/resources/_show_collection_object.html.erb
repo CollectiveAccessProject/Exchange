@@ -202,3 +202,19 @@
     </div>
   </div><!-- end col -->
 </div><!-- end row -->
+<script>
+	// This script enables searching on terms in Collection Object body text
+	// It detects everything that has a class of .co-search_text
+	// It then uses a second assigned class co-[search_field] to target the correct field
+	// These classes are assigned at import through the services.conf file in the UMMA CA system
+	$(document).ready(function(){
+		$('.co-search').each(function(){
+			var classes = $(this).attr('class');
+			var class_reg = /co-([a-z_]+)$/
+			var class_match = class_reg.exec(classes);
+			var search_type = class_match[1]
+			var search_text = $(this).text();
+			$(this).html("<a href='/quick_search/query?utf8=✓&amp;q=" + search_type + ":\"" + search_text + "\"'>" + search_text + '</a>');
+		});
+	});
+</script>

@@ -20,7 +20,7 @@
       #display_file_type = 'Unknown File Type'
   end
 %> 
-<%= link_to("Download " + display_file_type.html_safe, plugin_model.file.url)  %>
+<%= link_to("Download " + display_file_type.html_safe, plugin_model.file.url, class: "idle-fade")  %>
 <br/>
 <%=
   mimetype = plugin_model.file_content_type

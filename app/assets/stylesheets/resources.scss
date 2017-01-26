@@ -529,7 +529,7 @@ $white:#FFFFFF;
 	}
 	.previewMediaIcon {
 		display: inline-block;
-		width: 50px;
+		/* width: 50px; */
 		margin: 0 auto;
 		color: $gray;
 		background-color: none;
@@ -773,3 +773,7 @@ dd > .alert, p > .alert, dt > .alert{
 	margin-bottom: 20px;
 }
 
+/* Response Styles */
+.btn-response{
+	min-width: 275px;
+}
