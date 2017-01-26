@@ -162,7 +162,7 @@ class Resource < ActiveRecord::Base
 
   # Generate display label for resource autocomplete
   def get_autocomplete_label
-    label = self.title.strip
+    label = ActionController::Base.helpers.strip_tags(self.title.strip)
     label += " (" + self.collection_identifier + ")" if (self.collection_identifier && self.collection_identifier.length > 0)
     label += " [COLLECTION]" if (self.is_collection)
     label += " [RESOURCE]" if (self.is_resource)
