@@ -76,11 +76,16 @@ namespace :exchange do
 
 					puts "notes are " + copyright_notes
 
+					if(value['body_text'])
+						body_text = HTMLEntities.new.decode(value['body_text'])
+						body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([\w\b ]+)<\/span>/, '<a href="/quick_search/query?utf8=true&q=\1:"\2"">\2</a>')	
+					end
+
 					if (Resource.where(collectiveaccess_id: value['collectiveaccess_id']).
 							first_or_create.update(title: HTMLEntities.new.decode(value['title']),
 																		 copyright_notes: copyright_notes,
 																		 copyright_license: copyright_license,
-																		 body_text: HTMLEntities.new.decode(value['body_text']),
+																		 body_text: body_text_search,
 																		 subtitle: HTMLEntities.new.decode(value['subtitle']),
 																		 resource_type: Resource::COLLECTION_OBJECT,
 																		 collection_identifier: value['idno'],

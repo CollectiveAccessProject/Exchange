@@ -25,3 +25,5 @@
 # Ignore environment vars file
 config/app_environment_variables.rb
 
+# Ignore environment files
+config/environments/development.rb

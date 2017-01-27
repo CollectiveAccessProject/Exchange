@@ -6,12 +6,12 @@
 	<body>
 		<p>A Report has been recieved on the following resource:</p>
 
-		<p>Reporter Email: <%= @email %></p>
+		<p><strong>Reporter Email:</strong><br/> <%= @email %></p>
 
-		<p>Resource Title: <%= @title %></p>
+		<p><strong>Resource Title:</strong><br/><%= @title.html_safe %></p>
 
-		<p>Resource ID: <%= @id %></p>
+		<p><strong>Resource ID:</strong><br/> <%= @id %></p>
 
-		<p>Report Message:<br/><%= @report %></p>
+		<p><strong>Report Message:</strong><br/><%= @report %></p>
 	</body>
 </html>

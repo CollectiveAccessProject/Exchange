@@ -363,6 +363,7 @@ class ResourcesController < ApplicationController
     r_title = params[:r_title]
     r_id = params[:r_id]
     ReportMailer.report_email(email, report, r_title, r_id).deliver_now
+    flash[:notice] = 'A Report has been filed on this Resorce'
     redirect_to :back
   end
 
