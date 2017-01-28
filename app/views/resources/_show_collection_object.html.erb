@@ -192,7 +192,7 @@
               <h4>Copyright</h4>
               <%= @resource.get_license_type %>
               <% if (@resource.copyright_notes.present?) %>
-                  (<%= @resource.copyright_notes %>)
+                  (<%= sanitize(@resource.copyright_notes).html_safe %>)
               <% end  %>
             </div>
         <% end %>
