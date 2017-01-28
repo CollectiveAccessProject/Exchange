@@ -529,7 +529,7 @@ $white:#FFFFFF;
 	}
 	.previewMediaIcon {
 		display: inline-block;
-		width: 50px;
+		/* width: 50px; */
 		margin: 0 auto;
 		color: $gray;
 		background-color: none;
@@ -553,7 +553,7 @@ $white:#FFFFFF;
 	}
 	.previewMediaCaption{
 		font-size:11px;
-		background-color:#FFFFFF;
+		/*background-color:#FFFFFF;*/
 		text-align:center;
 		color:$gray;
 		line-height:1.1em;
@@ -773,3 +773,7 @@ dd > .alert, p > .alert, dt > .alert{
 	margin-bottom: 20px;
 }
 
+/* Response Styles */
+.btn-response{
+	min-width: 275px;
+}

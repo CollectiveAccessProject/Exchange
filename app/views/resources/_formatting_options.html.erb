@@ -154,6 +154,13 @@
                         <%= check_box_tag(:user_interaction_allow_responses, "allow_responses", (@resource.settings(:user_interaction).allow_responses == 1)) %>
                         <%= label_tag(:user_interaction_allow_responses, "Allow users to post resources in response to this resource", class: 'inline') %>
                       </div>
+                      <script>
+                      	$(document).ready(function(){
+                      		$('#user_interaction_allow_responses').click(function(){
+                      			$('.nav-tabs > li:nth-of-type(8)').toggle();
+                      		});
+                      	});
+                      </script>
                       <% end %>
                       <% if (@resource.setting_is_valid(:user_interaction, :display_responses_on_separate_page)) %>
 						  <div class="form-group response_page">

@@ -162,7 +162,7 @@ class Resource < ActiveRecord::Base
 
   # Generate display label for resource autocomplete
   def get_autocomplete_label
-    label = self.title.strip
+    label = ActionController::Base.helpers.strip_tags(self.title.strip)
     label += " (" + self.collection_identifier + ")" if (self.collection_identifier && self.collection_identifier.length > 0)
     label += " [COLLECTION]" if (self.is_collection)
     label += " [RESOURCE]" if (self.is_resource)
@@ -517,7 +517,7 @@ class Resource < ActiveRecord::Base
         else
           caption_include = ''
         end
-        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed #{sizeClass}\" #{cssFloat}><a href=\"#\" id=\"\link#{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(prev_version.to_sym, width, height) + "<br/>" + caption_include + "</a></div>")
+        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed text-center #{sizeClass}\" #{cssFloat}><a href=\"#\" id=\"\link#{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(prev_version.to_sym, width, height) + "</a><br/>" + caption_include + "</div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end

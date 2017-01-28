@@ -43,7 +43,7 @@
               <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
               <div class="qsMoreCaption">
                 <div class="small"><%= r.get_collection_object_field('date_created') %></div>
-                <div class="small"><i><%= sanitize(r.get_collection_object_field('credit_line')).html_safe %></i></div>
+                <div class="small"><i><%= sanitize(r.get_collection_object_field('credit_line')) %></i></div>
                 <div class="small text-left"><%= r.subtitle %></div>
               </div>
             </div>

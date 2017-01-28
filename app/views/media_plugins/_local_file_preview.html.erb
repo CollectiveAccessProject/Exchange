@@ -26,10 +26,7 @@
   end
 %> 
   <div class="previewMediaCaption row">
-    <div class="col-xs-6 previewMediaHalf text-left">
-      <%= display_file_type.nil? ? "Unknown" : display_file_type.html_safe %>
-    </div>
-    <div class="col-xs-6 previewMediaHalf text-right">
+    <div class="col-xs-12 previewMediaHalf text-center">
 <%
 	media_id = plugin_model.media_file.id
 	if (version.to_s != "icon" && version.to_s != "thumbnail")
@@ -42,6 +39,7 @@
 <%
 	end
 %>
+		<%= display_file_type.nil? ? "Unknown" : display_file_type.html_safe %>
     </div>
   </div>
 </span>

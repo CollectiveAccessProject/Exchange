@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+	</head>
+	<body>
+		<p>A Report has been recieved on the following resource:</p>
+
+		<p><strong>Reporter Email:</strong><br/> <%= @email %></p>
+
+		<p><strong>Resource Title:</strong><br/><%= @title.html_safe %></p>
+
+		<p><strong>Resource ID:</strong><br/> <%= @id %></p>
+
+		<p><strong>Report Message:</strong><br/><%= @report %></p>
+	</body>
+</html>

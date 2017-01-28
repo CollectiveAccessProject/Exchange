@@ -25,3 +25,12 @@
 		<%= render 'form' %>
 	</div><!-- end col -->
 </div><!-- end row -->
+<script>
+$(".js-summernote").on("summernote.paste",function(e,ne) {
+
+  var bufferText = ((ne.originalEvent || ne).clipboardData || window.clipboardData).getData('Text');
+  ne.preventDefault();
+  document.execCommand('insertText', false, bufferText);
+
+});
+</script>

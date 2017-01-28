@@ -64,6 +64,56 @@
 					</div><!-- end row -->
 				</div>
 			</div>
+			<% if(@resource.settings(:user_interaction).allow_responses > 0) %>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) %>
+							<div class="row" id="responseResources">
+								<% if(@resource.get_responses.count > 0) %>
+									<div class="col-xs-12 col-sm-6 text-center">
+										<a href="#" class="btn btn-default btn-response" data-target="#responseModal" data-toggle="modal">View Responses</a>
+										<div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+														<h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
+													</div>
+													<div class="modal-body">
+														<%= render partial: "resource_responses_grid" %>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								<% end %>
+								<div class="col-xs-12 col-sm-<%= @resource.get_responses.count > 0 ? '6' : '12' %> text-center">
+									<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-response"}) %>
+								</div>
+							</div>
+						<% else %>
+							<div class="row">
+								<div class="col-xs-12 col-sm-12 text-center">
+									<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-response"}) %>
+								</div>
+							</div>
+							<% if(@resource.get_responses.count > 0) %>
+								<hr/>
+								<div class="row">
+									<div class="col-sm-12 text-center">
+										<h2>Responses to this Learning Collection</h2>		
+									</div>
+								</div>
+								<div class="row" id="responseResources">
+									<div class="col-sm-12 text-center">
+										<%= render partial: "resource_responses_grid" %>
+									</div>
+								</div>
+							<% end %>
+						<% end %>
+					</div>
+				</div>
+			<% end %>
 			<% if((@resource.settings(:user_interaction).allow_tags > 0) || (@resource.settings(:user_interaction).allow_comments > 0)) %>
 
 				<div class="row" id="detailTags">
@@ -154,53 +204,6 @@
 						</div><!-- end tagPanel -->
 					</div><!-- end col 6 -->
 				</div><!-- end row -->
-			<% end %>
-			<% if(@resource.settings(:user_interaction).allow_responses > 0) %>
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-sm-12 text-center">
-								<h2>Responses to this Learning Collection</h2>		
-							</div>
-						</div>
-						
-						<% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) and @resource.get_responses.count > 0 %>
-							<div class="row" id="responseResources">
-								<div class="col-sm-6 text-center">
-									<a href="#" class="btn btn-default btn-block" data-target="#responseModal" data-toggle="modal">View Responses</a>
-									<div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-										<div class="modal-dialog">
-											<div class="modal-content">
-												<div class="modal-header">
-													<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
-													<h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
-												</div>
-												<div class="modal-body">
-													<%= render partial: "resource_responses_grid" %>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-6 text-center">
-									<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-block"}) %>
-								</div>
-							</div>
-						<% else %>
-							<div class="row" id="responseResources">
-								<div class="col-sm-12 text-center">
-									<%= render partial: "resource_responses_grid" %>
-								</div>
-							</div>
-							<hr/>
-							<div class="row">
-								<div class="col-sm-12 text-center">
-									<%= link_to("Respond to this Learning Collection", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default"}) %>
-								</div>
-							</div>
-						<% end %>
-					</div>
-				</div>
 			<% end %>
 		</div><!-- end col 10 -->
 		<div class="col-sm-2 resourceSidePanel">
@@ -404,6 +407,27 @@
 					  <% end  %>
 					</div>
 				<% end %>
+				<div class="unit">
+					<a role="button" data-toggle="collapse" href="#reportPanel"><h4><i class="fa fa-exclamation-triangle"></i> Report</h4></a>	
+					<div id="reportPanel" class="collapse">
+						<%= form_tag 'send_report' do %>
+							<div class="form-group"><label>Email:</label><%= text_field_tag 'email', '', :class => 'form-control' %></div>
+							<div class="form-group"><label>Report:</label><%= text_area_tag 'report', '', {:class => 'form-control', :rows => '3'} %></div>
+							<%= hidden_field_tag 'r_title', @resource.title %>
+							<%= hidden_field_tag 'r_id', @resource.id %>
+							<%= submit_tag "Send Report", {:value => "Send Report", :class => "btn btn-default btn-sm"} %>
+						<% end %>
+						<br/>
+						<p><span data-toggle="popover" data-placement="top" data-trigger="hover" data-content="UMMA is dedicated to fostering diversity, equity and inclusion and therefore abusive, threatening or derogatory content is subject to removal from The Exchange. Please use this tool to report any content that crosses these lines. All reports will be reviewed by UMMA staff for potential action."><i class="fa fa-question-circle"></i>Reporting Policy</span></p>
+						<script>
+							$('#reportPanel').ready(function(){
+								$('[data-toggle="popover"]').popover({
+									container: 'body'
+								});
+							});
+						</script>
+					</div>
+				</div>
 		    </div>
 		  </div>
 		</div><!-- end col 2 -->

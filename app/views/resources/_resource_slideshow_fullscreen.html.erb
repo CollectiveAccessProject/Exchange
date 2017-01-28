@@ -69,8 +69,8 @@
 			var page_coords = event.pageX + event.pageY;
 			if (page_coords != old_page_coords){
 				clearTimeout(i);
-				$('.idle-fade').css("opacity", "1");
-				i = setTimeout(`$('.idle-fade').css("opacity", "0");`, 3000);
+				$('#slideJumbo .idle-fade').css("opacity", "1");
+				i = setTimeout(`$('#slideJumbo .idle-fade').css("opacity", "0");`, 3000);
 			}
 			old_page_coords = page_coords;
 		});
