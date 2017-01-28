@@ -40,7 +40,7 @@
                         	<strong>-Caption: </strong>Whether or not to include a caption with the media<br/>
                         	<strong>-Float: </strong>How to align the media, either to the right or left with text wrapping around the image, or as a stand-alone that breaks with text above and below<br/>
                         </blockquote>
-                        Once embedded the media tag will look like the example below and can be customized by setting the following options 
+                        Once embedded the media tag will look like the example below and can be customized by setting the following options
             		    <blockquote>
             			    &lt;media [name] [version] [width=xxx] [height=yyy] [caption=yes/no] [float=left/right/none]&gt;
             			    <br/>Ex. <em>&lt;media my-video thumbnail&gt;</em>
@@ -59,8 +59,8 @@
           		<% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
           			<div class="form-group text optional resource_copyright_notes">
               			<label class="text optional control-label" for="author_id">Author</label>
-              			<%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#resource_author_id", class:'form-control') %>
-           	  			<%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :resource_author_id) %>
+              			<%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#content_resource_author_id", class:'form-control') %>
+           	  			<%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :content_resource_author_id) %>
 		  			</div>
           		<% end %>
           		<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
@@ -117,8 +117,8 @@
           	  <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
                 <div class="form-group text optional resource_copyright_notes">
                   <label class="text optional control-label" for="author_id">Author</label>
-                  <%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#resource_author_id", class:'form-control') %>
-                  <%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :resource_author_id) %>
+                  <%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#content_object_author_id", class:'form-control') %>
+                  <%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :content_object_author_id) %>
                 </div>
           	  <% end %>
 		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
