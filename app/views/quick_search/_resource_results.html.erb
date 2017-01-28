@@ -5,6 +5,10 @@
       <h4>
         <%= @resources_count %> Resource<%= (@resources_count == 1) ? "" : "s" %>
         (page <%= @resources_page.to_s + "/" + @resources_num_pages.to_s %>)
+
+        <div class="pull-right">
+          <form><%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %></form>
+        </div>
       </h4>
     </div>
   </div>
@@ -96,3 +100,14 @@
     </div>
   </div>
 </div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery("#resource_num_items_per_page").on('change', function(e) {
+            jQuery.getJSON("<%= query_results_path(type: "resource", page: @resources_page, query: @query) %>/" + jQuery(this).val(), function(data) {
+                jQuery("#results_resource").html(data.html);
+                return true;
+            });
+        });
+    });
+</script>

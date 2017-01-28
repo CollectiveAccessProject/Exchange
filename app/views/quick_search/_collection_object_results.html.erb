@@ -5,8 +5,11 @@
       <h4>
         <%= @collection_objects_count %> UMMA Collection Object<%= (@collection_objects_count == 1) ? "" : "s" %>
         (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
-      </h4>
 
+        <div class="pull-right">
+          <form><%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page"}) %></form>
+        </div>
+      </h4>
     </div>
   </div>
   <div class="row" id="colObjectResultsContainer">
@@ -40,7 +43,7 @@
               <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
               <div class="qsMoreCaption">
                 <div class="small"><%= r.get_collection_object_field('date_created') %></div>
-                <div class="small"><i><%= r.get_collection_object_field('credit_line') %></i></div>
+                <div class="small"><i><%= sanitize(r.get_collection_object_field('credit_line')).html_safe %></i></div>
                 <div class="small text-left"><%= r.subtitle %></div>
               </div>
             </div>
@@ -82,3 +85,14 @@
     </div>
   </div>
 </div>
+
+<script>
+  jQuery(document).ready(function() {
+      jQuery("#collection_object_num_items_per_page").on('change', function(e) {
+          jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>/" + jQuery(this).val(), function(data) {
+              jQuery("#results_collection_object").html(data.html);
+              return true;
+          });
+      });
+  });
+</script>

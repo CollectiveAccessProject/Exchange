@@ -6,6 +6,10 @@
           <%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
 
         (page <%= @collections_page.to_s + "/" + @collections_num_pages.to_s %>)
+
+        <div class="pull-right">
+          <form><%= select_tag("collection_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection']), {id: "collection_num_items_per_page"}) %></form>
+        </div>
       </h4>
     </div>
   </div>
@@ -104,3 +108,14 @@
     </div>
   </div>
 </div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery("#collection_num_items_per_page").on('change', function(e) {
+            jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>/" + jQuery(this).val(), function(data) {
+                jQuery("#results_collection").html(data.html);
+                return true;
+            });
+        });
+    });
+</script>

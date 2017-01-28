@@ -5,6 +5,10 @@
       <h4>
         <%= @exhibitions_count %> UMMA Exhibition<%= (@exhibitions_count == 1) ? "" : "s" %>
         (page <%= @exhibitions_page.to_s + "/" + @exhibitions_num_pages.to_s %>)</h4>
+
+      <div class="pull-right">
+        <form><%= select_tag("exhibition_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['exhibition']), {id: "exhibition_num_items_per_page"}) %></form>
+      </div>
     </div>
   </div>
   <div class="row" id="exhibitionResultsContainer">
@@ -62,3 +66,14 @@
       </div>
     </div>
   </div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery("#exhibition_num_items_per_page").on('change', function(e) {
+            jQuery.getJSON("<%= query_results_path(type: "exhibition", page: @exhibitions_page, query: @query) %>/" + jQuery(this).val(), function(data) {
+                jQuery("#results_exhibition").html(data.html);
+                return true;
+            });
+        });
+    });
+</script>

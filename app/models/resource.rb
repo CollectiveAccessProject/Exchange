@@ -533,6 +533,7 @@ class Resource < ActiveRecord::Base
     query_proc = query.dup
 
     options[:page] = 1 if (!options[:page] || (options[:page] < 1))
+    length = options[:length]
 
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
@@ -578,7 +579,7 @@ class Resource < ActiveRecord::Base
 
     if (!options[:type] || (options[:type] == 'collection_object'))
       begin
-        collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s)
+        collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).per_page(length)
         if (!options[:models])
           collection_objects = collection_objects.map do |r|
             if r._source
