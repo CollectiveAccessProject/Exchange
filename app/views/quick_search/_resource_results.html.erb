@@ -78,7 +78,7 @@
       </div><!-- end row -->
           <% end %>
 
-      <div class='row'><div class='col-sm-3'></div>
+      <div class='row'>
         <%=
           if(@resources_needs_previous_paging)
 
@@ -87,6 +87,26 @@
             "<div class='col-sm-3'></div>".html_safe
           end
         %>
+        <div class='col-sm-6 text-center'>
+          <%
+            if (@resources_needs_previous_paging || @resources_needs_next_paging)
+            s = 1
+            e = @resources_num_pages
+
+            if (e > 10)
+              s = @resources_page - 5
+              s = 1 if (s < 1)
+              e = s + 9
+            end
+
+            for i in s..e do
+          %>
+              <%=  (link_to(i, query_results_path(type: "resource", page: i, query: @query), { class: "btn search-next-btn " + ((i == @resources_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+          <%
+            end
+            end
+          %>
+        </div>
         <%=
           if(@resources_needs_next_paging)
 
@@ -95,7 +115,6 @@
             "<div class='col-sm-3'></div>".html_safe
           end
         %>
-        <div class='col-sm-3'></div>
       </div>
     </div>
   </div>

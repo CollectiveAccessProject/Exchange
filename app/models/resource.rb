@@ -534,6 +534,7 @@ class Resource < ActiveRecord::Base
 
     options[:page] = 1 if (!options[:page] || (options[:page] < 1))
     length = options[:length]
+    length = WillPaginate.per_page if (!length)
 
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
@@ -541,7 +542,10 @@ class Resource < ActiveRecord::Base
 
     if (!options[:type] || (options[:type] == 'resource'))
       begin
-        resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s)
+        resources_length = length
+        resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
+
+        resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s).per_page(resources_length)
         if (!options[:models])
           resources = resources.map do |r|
             if r._source
@@ -560,7 +564,10 @@ class Resource < ActiveRecord::Base
 
     if (!options[:type] || (options[:type] == 'collection'))
       begin
-        collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s)
+        collections_length = length
+        collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
+
+        collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s).per_page(collections_length)
 
         if(!options[:models])
           collections = collections.map do |r|
@@ -579,7 +586,10 @@ class Resource < ActiveRecord::Base
 
     if (!options[:type] || (options[:type] == 'collection_object'))
       begin
-        collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).per_page(length)
+        collection_objects_length = length
+        collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
+
+        collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).per_page(collection_objects_length)
         if (!options[:models])
           collection_objects = collection_objects.map do |r|
             if r._source
@@ -597,7 +607,10 @@ class Resource < ActiveRecord::Base
 
     if (!options[:type] || (options[:type] == 'exhibition'))
       begin
-        exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s)
+        exhibitions_length = length
+        exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
+
+        exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s).per_page(exhibitions_length)
         if (!options[:models])
           exhibitions = exhibitions.map do |r|
             if r._source
@@ -620,6 +633,9 @@ class Resource < ActiveRecord::Base
   # STATIC
   def self.advancedsearch(params, options={})
     resource_type = params['type'].to_i
+
+    length = options[:length]
+    length = WillPaginate.per_page if (!length)
 
     query_elements = []
     query_display = []
@@ -718,7 +734,10 @@ class Resource < ActiveRecord::Base
 
     if ((resource_type == Resource::RESOURCE) || (resource_type.nil?))
       begin
-        resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s)
+        resources_length = length
+        resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
+
+        resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).per_page(resources_length)
         if (!options[:models])
           resources.map do |r|
             if r._source
@@ -736,8 +755,11 @@ class Resource < ActiveRecord::Base
     end
 
     if ((resource_type == Resource::COLLECTION) || (resource_type.nil?))
+      collections_length = length
+      collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
+
       begin
-        collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s)
+        collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).per_page(collections_length)
         if (!options[:models])
           collections.map do |r|
             if r._source
@@ -755,8 +777,10 @@ class Resource < ActiveRecord::Base
 
     if ((resource_type == Resource::COLLECTION_OBJECT) || (resource_type.nil?))
       begin
+        collection_objects_length = length
+        collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
-        collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s)
+        collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).per_page(collection_objects_length)
         if (!options[:models])
           collection_objects.map do |r|
             if r._source
@@ -773,8 +797,11 @@ class Resource < ActiveRecord::Base
     end
 
     if ((resource_type == Resource::EXHIBITION) || (resource_type.nil?))
+      exhibitions_length = length
+      exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
+
       begin
-        exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s)
+        exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).per_page(exhibitions_length)
         if (!options[:models])
           exhibitions.map do |r|
             if r._source

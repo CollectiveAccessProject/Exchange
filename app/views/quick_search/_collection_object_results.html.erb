@@ -61,9 +61,9 @@
             end
           %>
       <% if (col > 0) %>
-      </div><!-- end row -->
-          <% end %>
-      <div class='row'><div class='col-sm-3'></div>
+          </div><!-- end row -->
+      <% end %>
+      <div class='row'>
         <%=
           if(@collection_objects_needs_previous_paging)
 
@@ -72,6 +72,26 @@
             "<div class='col-sm-3'></div>".html_safe
           end
         %>
+        <div class='col-sm-6 text-center'>
+          <%
+            if (@collection_objects_needs_previous_paging || @collection_objects_needs_next_paging)
+            s = 1
+            e = @collection_objects_num_pages
+
+            if (e > 10)
+              s = @collection_objects_page - 5
+              s = 1 if (s < 1)
+              e = s + 9
+            end
+
+            for i in s..e do
+          %>
+              <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+          <%
+            end
+            end
+          %>
+        </div>
         <%=
           if(@collection_objects_needs_next_paging)
 
@@ -80,19 +100,18 @@
             "<div class='col-sm-3'></div>".html_safe
           end
         %>
-        <div class='col-sm-3'></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  jQuery(document).ready(function() {
-      jQuery("#collection_object_num_items_per_page").on('change', function(e) {
-          jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>/" + jQuery(this).val(), function(data) {
-              jQuery("#results_collection_object").html(data.html);
-              return true;
-          });
-      });
-  });
+    jQuery(document).ready(function() {
+        jQuery("#collection_object_num_items_per_page").on('change', function(e) {
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>/" + jQuery(this).val(), function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                return true;
+            });
+        });
+    });
 </script>

@@ -53,6 +53,26 @@
             "<div class='col-sm-3'></div>".html_safe
           end
         %>
+        <div class='col-sm-6 text-center'>
+          <%
+            if (@exhibitions_needs_previous_paging || @exhibitions_needs_next_paging)
+            s = 1
+            e = @exhibitions_num_pages
+
+            if (e > 10)
+              s = @exhibitions_page - 5
+              s = 1 if (s < 1)
+              e = s + 9
+            end
+
+            for i in s..e do
+          %>
+              <%=  (link_to(i, query_results_path(type: "exhibition", page: i, query: @query), { class: "btn search-next-btn " + ((i == @exhibitions_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+          <%
+            end
+            end
+          %>
+        </div>
         <%=
           if(@exhibitions_needs_next_paging)
 
