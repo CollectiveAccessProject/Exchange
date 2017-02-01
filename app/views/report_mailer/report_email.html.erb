@@ -6,7 +6,10 @@
 	<body>
 		<p>A Report has been recieved on the following resource:</p>
 
-		<p><strong>Reporter Email:</strong><br/> <%= @email %></p>
+		<% if @reporter_name %>
+			<p><strong>Reporter Name:</strong><br/><%= @reporter_name %></p>
+		<% end %>
+		<p><strong>Reporter Email:</strong><br/> <%= @reporter_email %></p>
 
 		<p><strong>Resource Title:</strong><br/><%= @title.html_safe %></p>
 
