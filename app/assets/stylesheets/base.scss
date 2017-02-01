@@ -733,6 +733,13 @@ select.input-sm{
 		}
 	}
 }
+.dbResourceTip, .dbCollectionTip{
+	position: relative;
+	top: 3px;
+}
+.popover-content{
+	color: $gray;
+}
 .previewThumbnail{
 	min-height:250px;
 	text-align:center;

@@ -7,9 +7,25 @@
       <div class="btn-group" role="group" id="new_materials">
         <a class="btn btn-default btn-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New &nbsp;<i class="fa fa-plus-circle fa-3" aria-hidden="true"></i></a>
         <ul class="dropdown-menu">
-          <li><%= link_to('New Resource', new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
-          <li><%= link_to('New Collection', new_collection_path, class:'btn btn-xs btn-noBg')  %></li>
+          <li><%= link_to('New Resource <i class="fa fa-info-circle dbResourceTip pull-right"></i>'.html_safe, new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
+          <li><%= link_to('New Collection<i class="fa fa-info-circle dbCollectionTip pull-right"></i>'.html_safe, new_collection_path, class:'btn btn-xs btn-noBg')  %></li>
         </ul>
+        <script>
+        	$(document).ready(function(){
+        		$('.dbResourceTip').popover({
+        			title: "What is a Resource?",
+        			content: 'An individual item in the Exchange covering one topic, item or idea.',
+        			placement: "left",
+        			trigger: "hover",
+        		});
+        		$('.dbCollectionTip').popover({
+        			title: "What is a Collection?",
+        			content: 'A group of Resources that illustrates a common theme or concept (i.e. for a course).',
+        			placement: "left",
+        			trigger: "hover"
+        		});
+        	});
+        </script>
       </div>
     </H1>
   </div>
@@ -182,7 +198,7 @@
 		exch_tour.init();
 		if (!Cookies.get('toured')){
 			exch_tour.start();
-			Cookies.set('toured', true, {expires: 1/288});
+			Cookies.set('toured', true, {expires: 365});
 		}
 });
 </script>
