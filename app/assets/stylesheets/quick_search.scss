@@ -82,3 +82,19 @@ $white:#FFFFFF;
 	background-color: white;
 	color: $lt_gray;
 }
+.btn-exch-green{
+	background-color: $green;
+	color: #fff;
+}
+.btn-exch-green:hover{
+	background-color: $green;
+	color: #fff;	
+}
+.searchPaging{
+	position: relative;
+	top: -3px;
+	font-size: 14px;
+}
+.itemsPerPage{
+	font-size: 14px;
+}

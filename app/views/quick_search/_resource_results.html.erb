@@ -7,7 +7,7 @@
         (page <%= @resources_page.to_s + "/" + @resources_num_pages.to_s %>)
 
         <div class="pull-right">
-          <form><%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %></form>
+          <form class="searchPaging"><%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page", class: "itemsPerPage"}) %> Results per page</form>
         </div>
       </h4>
     </div>
@@ -101,7 +101,7 @@
 
             for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "resource", page: i, query: @query), { class: "btn search-next-btn " + ((i == @resources_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+              <%=  (link_to(i, query_results_path(type: "resource", page: i, query: @query), { class: "btn search-next-btn " + ((i == @resources_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
           <%
             end
             end

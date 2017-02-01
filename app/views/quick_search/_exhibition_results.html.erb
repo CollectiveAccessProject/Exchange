@@ -7,8 +7,8 @@
         (page <%= @exhibitions_page.to_s + "/" + @exhibitions_num_pages.to_s %>)</h4>
 
       <div class="pull-right">
-        <form><%= select_tag("exhibition_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['exhibition']), {id: "exhibition_num_items_per_page"}) %></form>
-      </div>
+          <form class="searchPaging"><%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page", class: "itemsPerPage"}) %> Results per page</form>
+        </div>
     </div>
   </div>
   <div class="row" id="exhibitionResultsContainer">
@@ -67,7 +67,7 @@
 
             for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "exhibition", page: i, query: @query), { class: "btn search-next-btn " + ((i == @exhibitions_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+              <%=  (link_to(i, query_results_path(type: "exhibition", page: i, query: @query), { class: "btn search-next-btn " + ((i == @exhibitions_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
           <%
             end
             end

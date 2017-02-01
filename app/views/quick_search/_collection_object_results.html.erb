@@ -7,7 +7,7 @@
         (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
 
         <div class="pull-right">
-          <form><%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page"}) %></form>
+          <form class="searchPaging"><%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page", class: "itemsPerPage"}) %> Results per page</form>
         </div>
       </h4>
     </div>
@@ -86,7 +86,7 @@
 
             for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+              <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
           <%
             end
             end
