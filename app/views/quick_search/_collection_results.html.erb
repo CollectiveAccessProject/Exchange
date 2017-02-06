@@ -10,7 +10,7 @@
         <div class="pull-right">
           <form>
             <%= select_tag("collection_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection']), {id: "collection_num_items_per_page"}) %>
-
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Sort by <%= select_tag("collection_sort", options_for_select(sortOptions('collection'), @sort_defaults['collection']), {id: "collection_sort"}) %>
           </form>
         </div>
@@ -113,7 +113,7 @@
 
             for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "collection", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collections_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+              <%=  (link_to(i, query_results_path(type: "collection", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collections_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
           <%
             end
             end

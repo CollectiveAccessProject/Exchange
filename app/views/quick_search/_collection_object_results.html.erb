@@ -90,7 +90,7 @@
 
             for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+              <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
           <%
             end
             end

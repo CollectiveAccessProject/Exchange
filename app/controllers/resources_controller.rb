@@ -358,11 +358,17 @@ class ResourcesController < ApplicationController
 
   # Send Report Email
   def send_report
-    email = params[:email]
+    options = {}
+    if params[:email]
+      email = params[:email]
+    else
+      r_user_name = params[:r_user_name]
+      r_user_email = params[:r_user_email]
+    end
     report = params[:report]
     r_title = params[:r_title]
     r_id = params[:r_id]
-    ReportMailer.report_email(email, report, r_title, r_id).deliver_now
+    ReportMailer.report_email(report, r_title, r_id, { email: email, r_user_name: r_user_name, r_user_email: r_user_email }).deliver_now
     flash[:notice] = 'A Report has been filed on this Resorce'
     redirect_to :back
   end

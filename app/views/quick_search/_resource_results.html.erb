@@ -9,9 +9,8 @@
         <div class="pull-right">
           <form>
             <%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %>
-
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Sort by <%= select_tag("resource_sort", options_for_select(sortOptions('resource'), @sort_defaults['resource']), {id: "resource_sort"}) %>
-
           </form>
         </div>
       </h4>
@@ -106,7 +105,7 @@
 
             for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "resource", page: i, query: @query), { class: "btn search-next-btn " + ((i == @resources_page) ? "btn-danger" : "btn-default"), remote: true})).html_safe %>
+              <%=  (link_to(i, query_results_path(type: "resource", page: i, query: @query), { class: "btn search-next-btn " + ((i == @resources_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
           <%
             end
             end
