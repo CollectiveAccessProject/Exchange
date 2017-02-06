@@ -7,7 +7,11 @@
         (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
 
         <div class="pull-right">
-          <form class="searchPaging"><%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page", class: "itemsPerPage"}) %> Results per page</form>
+          <form>
+            <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page"}) %>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+           Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %>
+          </form>
         </div>
       </h4>
     </div>
@@ -107,8 +111,8 @@
 
 <script>
     jQuery(document).ready(function() {
-        jQuery("#collection_object_num_items_per_page").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>/" + jQuery(this).val(), function(data) {
+        jQuery("#collection_object_num_items_per_page, #collection_object_sort").on('change', function(e) {
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>/" + jQuery("#collection_object_num_items_per_page").val() + "/" + jQuery("#collection_object_sort").val(), function(data) {
                 jQuery("#results_collection_object").html(data.html);
                 return true;
             });
