@@ -699,7 +699,8 @@ $white:#FFFFFF;
 	display: none;
 }
 .moRelated{
-	padding: 10px 10px 0 10px;
+	padding: 5px;
+	border-radius: 5px;
 	display:inline-block;
 	width: 125px;
 	vertical-align:top;
@@ -730,6 +731,11 @@ $white:#FFFFFF;
 	a{
 		text-decoration: none;
 	}
+}
+.moCurrent{
+	background-color: $lt-gray;
+	padding: 5px;
+	border-radius: 5px
 }
 .related_scroll{
 	margin-top: 50px;

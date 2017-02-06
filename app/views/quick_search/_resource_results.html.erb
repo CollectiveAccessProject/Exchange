@@ -7,10 +7,9 @@
         (page <%= @resources_page.to_s + "/" + @resources_num_pages.to_s %>)
 
         <div class="pull-right">
-          <form>
-            <%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            Sort by <%= select_tag("resource_sort", options_for_select(sortOptions('resource'), @sort_defaults['resource']), {id: "resource_sort"}) %>
+          <form class="searchPaging">
+          	<div class="searchFormElement">Results Per Page <%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %></div>
+            <div class="searchFormElement">Sort by <%= select_tag("resource_sort", options_for_select(sortOptions('resource'), @sort_defaults['resource']), {id: "resource_sort"}) %></div>
           </form>
         </div>
       </h4>
@@ -63,6 +62,9 @@
                   end
                 %>
                 <%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
+                <% if r.total_ratings > 0 %>
+                  <div class='small'><strong>Average Rating: </strong><%= r.avg_rating %></div>
+                <% end %>
               </div>
             </div>
             <% thumb = false %>

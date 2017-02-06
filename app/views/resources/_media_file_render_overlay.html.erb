@@ -181,19 +181,15 @@
 
 								if af.sourceable
 									if af.access == 1
-										if af.sourceable.id.to_s == media_file.sourceable.id.to_s
-											next
-										else
-											count = count + 1
+										count = count + 1
 			%>
-											<li class="moRelated">
-												<a href="#" data-dismiss="modal" data-toggle="modal" data-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>">
-												<%= af.sourceable.preview :thumbnail %>
-												<small><%= media_file.title %></small>
-												</a>
-											</li>
+										<li class="moRelated <%= af.sourceable.id.to_s == media_file.sourceable.id.to_s ? 'moCurrent' : '' %>" >
+											<a href="#" data-dismiss="modal" data-toggle="modal" data-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>">
+											<%= af.sourceable.preview :thumbnail %>
+											<small><%= media_file.title %></small>
+											</a>
+										</li>
 			<%
-										end
 									end
 								end
 							end

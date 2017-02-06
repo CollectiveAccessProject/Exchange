@@ -34,6 +34,9 @@ $white:#FFFFFF;
 		color:$blue !important;
 		line-height:1.1em !important;
 	}
+	iframe{
+		width: 100%;
+	}
 	.small{
 		font-size:11px;
 		line-height:1.2em;
@@ -92,8 +95,12 @@ $white:#FFFFFF;
 }
 .searchPaging{
 	position: relative;
-	top: -3px;
+	top: -2px;
 	font-size: 14px;
+	.searchFormElement{
+		margin: 0 10px;
+		float: left;
+	}
 }
 .itemsPerPage{
 	font-size: 14px;
