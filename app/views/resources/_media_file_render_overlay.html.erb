@@ -92,7 +92,7 @@
 						<%= sanitize(media_file.caption) %>
 						<br/>
 						<br/>
-						<%= media_file.copyright_notes %>
+						<%= sanitize(media_file.copyright_notes) %>
 						Media Source:
 		<%
 						media_source = media_file.get_media_class(media_file.sourceable_type)
@@ -224,7 +224,9 @@
 			$(caption_display).hide();
 			$(caption_field).show();
 			$(caption_field + ' .summernote').prop('disabled', false);
+			$(caption_text_field).prop("disabled", true);
 		} else {
+			$(caption_text_field).prop("disabled", false);
 			if(caption_val == 2){
 				var caption_head = '<h5>No Caption</h5>';
 				var caption_text = ' ';

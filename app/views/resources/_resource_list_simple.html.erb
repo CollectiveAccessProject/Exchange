@@ -9,7 +9,7 @@
 		   <% rel.child_resource.media_files.each do |f| %>
 
            <% if f.sourceable %>
-					<%= link_to (f.sourceable.preview :thumbnail), edit_resource_path(rel.child_resource) %><br/>
+					<%= link_to (f.sourceable.preview :thumbnail, '', '', f.caption), edit_resource_path(rel.child_resource) %><br/>
 					<% break %>
 				<% end %>
 			<% end %>

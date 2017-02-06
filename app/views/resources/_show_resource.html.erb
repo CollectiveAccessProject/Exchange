@@ -166,7 +166,7 @@
                           begin
                             media_display = f.sourceable.render(:large)
                           rescue
-                            media_display = f.sourceable.preview :large
+                            media_display = f.sourceable.preview :large, '', '', f.caption
                           end
                         %>
                         <%=
@@ -234,7 +234,7 @@
                                           # render video inline so it's playable
                                           f.sourceable.render :medium
                                         else
-                                          f.sourceable.preview :large
+                                          f.sourceable.preview :large, '', '', f.caption
                                       end
                                     %>
                                   </a>
@@ -264,7 +264,7 @@
 							  begin
 								media_display = f.sourceable.render :large
 							  rescue
-								media_display = f.sourceable.preview :large
+								media_display = f.sourceable.preview :large, '', '', f.caption
 							  end
 							%>
 							<%=
@@ -308,7 +308,7 @@
                           begin
                             media_display = f.sourceable.render :large
                           rescue
-                            media_display = f.sourceable.preview :large
+                            media_display = f.sourceable.preview :large, caption: f.caption
                           end
                         %>
                         <%=
