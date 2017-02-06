@@ -35,7 +35,7 @@
 							  <div class="flash-notice" id="form-status-message"></div>
 							</div>
 							<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
-								<% 
+								<%
 									col = CollectionobjectLink.find(media_file.sourceable_id)
 									rc = Resource.find(col.resource_id)
 									cap_fields = JSON.parse(rc.indexing_data)
@@ -52,7 +52,7 @@
 									<label class="control-label">Caption Type</label><br/>
 									<%= f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
 								</div>
-								
+
 								<script>
 									var captions = captions || {}
 									captions['<%= media_file.id %>'] = {}
@@ -66,9 +66,9 @@
 											set_caption_display('<%= media_file.id %>', caption_val);
 										});
 									});
-									
+
 								</script>
-								
+
 								<div class="<%= media_file.id %>_caption_display captionDisplay">
 								</div>
 								<div class="<%= media_file.id %>_caption_field">
@@ -93,7 +93,7 @@
 						<br/>
 						<br/>
 						<%= media_file.copyright_notes %>
-						Media Source: 
+						Media Source:
 		<%
 						media_source = media_file.get_media_class(media_file.sourceable_type)
 						case media_source.to_s
@@ -171,14 +171,14 @@
 							<span class="sr-only">Move Left</span>
 						</a>
 					</div>
-					<div class="col-xs-10 moWrapper">	
-						<div id="moResults_<%= media_file.id %>" class="moContainer">				
+					<div class="col-xs-10 moWrapper">
+						<div id="moResults_<%= media_file.id %>" class="moContainer">
 							<ul class="moResults">
-			
+
 			<%
 							count = 0
-							@resource.media_files.each do |af| 
-				
+							@resource.media_files.each do |af|
+
 								if af.sourceable
 									if af.access == 1
 										if af.sourceable.id.to_s == media_file.sourceable.id.to_s
@@ -189,7 +189,7 @@
 											<li class="moRelated">
 												<a href="#" data-dismiss="modal" data-toggle="modal" data-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>">
 												<%= af.sourceable.preview :thumbnail %>
-												<small><%= media_file.title %></small> 
+												<small><%= media_file.title %></small>
 												</a>
 											</li>
 			<%
@@ -200,7 +200,7 @@
 			%>
 							</ul>
 						</div>
-					</div>	
+					</div>
 					<div class="col-xs-1 related_scroll">
 					<a id="scroll-right_<%= media_file.id %>" href="#" role="button">
 						<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
@@ -222,7 +222,7 @@
 
 		if(caption_val == 1){
 			$(caption_display).hide();
-			$(caption_field).show();	
+			$(caption_field).show();
 			$(caption_field + ' .summernote').prop('disabled', false);
 		} else {
 			if(caption_val == 2){

@@ -164,6 +164,8 @@ namespace :exchange do
 
 	desc 'Rebuild ElasticSearch quick search index'
 	task :reindex => :environment do
+		Resource.__elasticsearch__.create_index! force: true
+		MediaFile.__elasticsearch__.create_index! force: true
 		{'Resource' => 'resource', 'MediaFile' => 'media_file'}.each do |k,v|
 			t = k.constantize
 

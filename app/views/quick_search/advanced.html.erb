@@ -7,15 +7,15 @@
     <% end %>
   </div>
 </div>
-<% if(@collections_num_pages) %>
+<% if(@collections && @collections.respond_to?(:total_entries) && (@collections.total_entries > 0)) %>
         <%= render :partial => "quick_search/collection_results" %>
 <% end %>
-<% if(@resources_num_pages) %>
+<% if(@resources && @resources.respond_to?(:total_entries) && (@resources.total_entries > 0)) %>
     <%= render :partial => "quick_search/resource_results" %>
 <% end %>
-<% if(@exhibitions_num_pages) %>
+<% if(@exhibitions && @exhibitions.respond_to?(:total_entries) && (@exhibitions.total_entries > 0)) %>
     <%= render :partial => "quick_search/exhibition_results" %>
 <% end %>
-<% if(@collection_objects_num_pages) %>
+<% if(@collection_objects && @collection_objects.respond_to?(:total_entries) && (@collection_objects.total_entries > 0)) %>
     <%= render :partial => "quick_search/collection_object_results" %>
 <% end %>

@@ -77,6 +77,35 @@ class Resource < ActiveRecord::Base
   include Elasticsearch::Model
   #include Elasticsearch::Model::Callbacks
 
+
+
+  # ElasticSearch mappings
+  settings do
+    mappings dynamic: true do
+      indexes :title, type: 'string', analyzer: 'standard', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :idno, type: 'string', analyzer: 'standard', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :artist, type: 'string', analyzer: 'standard', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :rating, type: 'integer'
+      indexes :created_at, type: 'date'
+    end
+  end
+
+
   # basic model validations
   validates :slug, uniqueness: 'Slug is already in use'
   validates :resource_type, :presence => true
@@ -141,20 +170,16 @@ class Resource < ActiveRecord::Base
 
     # index idno's of collection objects used as media
     collection_identifiers = []
-  self.media_files.each do |m|
-     if (m.sourceable.respond_to? (:get_collection_identifier))
-       collection_identifiers.push(m.sourceable.get_collection_identifier)
-     end
-  end
-    puts collection_identifiers.inspect if (collection_identifiers.length > 0)
+    self.media_files.each do |m|
+      if (m.sourceable.respond_to? (:get_collection_identifier))
+        collection_identifiers.push(m.sourceable.get_collection_identifier)
+      end
+    end
+    #puts collection_identifiers.inspect if (collection_identifiers.length > 0)
     record['related_collection_objects'] = collection_identifiers.join("; ")
 
     # index average rating for this resource
     record['rating'] = avg_rating.to_i
-
-    #puts "INDEXING IS"
-   # puts record
-    #puts caller
 
     record
   end
@@ -527,6 +552,31 @@ class Resource < ActiveRecord::Base
     return body_text_proc
   end
 
+
+
+
+  #
+  # Translate sort options to ElasticSearch sortable fields
+  #
+  def self.searchSortForType(sortsByType, type=nil)
+    sort = sortsByType[type] if (type && sortsByType && sortsByType[type])
+
+    case sort
+      when "title"
+        {field: "title.raw", direction: "asc" }
+      when "idno"
+        {field: "idno.raw", direction: "asc" }
+      when "artist"
+        {field: "artist.raw", direction: "asc"}
+      when "created_at"
+        {field: "created_at", direction: "desc" }
+      when "rating"
+        {field: "rating", direction: "desc" }
+      else
+        {field: "_score", direction: "desc" }
+    end
+  end
+
   # Simple "quicksearch" of resources (broken out by type)
   # STATIC
   def self.quicksearch(query, options={})
@@ -545,7 +595,18 @@ class Resource < ActiveRecord::Base
         resources_length = length
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
-        resources = Resource.search(query_proc + " AND resource_type:" + Resource::RESOURCE.to_s).per_page(resources_length)
+        sort = searchSortForType(options[:sortsByType], 'resource')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query_proc + " AND resource_type:" + Resource::RESOURCE.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        resources = Resource.search(qdef).per_page(resources_length)
+
         if (!options[:models])
           resources = resources.map do |r|
             if r._source
@@ -567,7 +628,17 @@ class Resource < ActiveRecord::Base
         collections_length = length
         collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
-        collections = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION.to_s).per_page(collections_length)
+        sort = searchSortForType(options[:sortsByType], 'collection')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query_proc + " AND resource_type:" + Resource::COLLECTION.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        collections = Resource.search(qdef).per_page(collections_length)
 
         if(!options[:models])
           collections = collections.map do |r|
@@ -578,9 +649,6 @@ class Resource < ActiveRecord::Base
         else
           collections = collections.page(options[:page]).records
         end
-      rescue
-        # no search?
-        collections = []
       end
     end
 
@@ -589,7 +657,18 @@ class Resource < ActiveRecord::Base
         collection_objects_length = length
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
-        collection_objects = Resource.search(query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).per_page(collection_objects_length)
+        sort = searchSortForType(options[:sortsByType], 'collection_object')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        collection_objects = Resource.search(qdef).per_page(collection_objects_length)
+
         if (!options[:models])
           collection_objects = collection_objects.map do |r|
             if r._source
@@ -610,7 +689,18 @@ class Resource < ActiveRecord::Base
         exhibitions_length = length
         exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
-        exhibitions = Resource.search(query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s).per_page(exhibitions_length)
+        sort = searchSortForType(options[:sortsByType], 'exhibition')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        exhibitions = Resource.search(qdef).per_page(exhibitions_length)
+
         if (!options[:models])
           exhibitions = exhibitions.map do |r|
             if r._source
@@ -725,8 +815,7 @@ class Resource < ActiveRecord::Base
     # generate query
     query = query_elements.join(" AND ")
     query_for_display = query_display.join("; ")
-    # puts "q=" + query;
-    # puts "qd=" + query_for_display
+
     resources = []
     collections = []
     collection_objects = []
@@ -737,7 +826,18 @@ class Resource < ActiveRecord::Base
         resources_length = length
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
-        resources = Resource.search(query + " AND resource_type:" + Resource::RESOURCE.to_s).per_page(resources_length)
+        sort = searchSortForType(options[:sortsByType], 'resource')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query + " AND resource_type:" + Resource::RESOURCE.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        resources = Resource.search(qdef).per_page(resources_length)
+
         if (!options[:models])
           resources.map do |r|
             if r._source
@@ -759,7 +859,18 @@ class Resource < ActiveRecord::Base
       collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
       begin
-        collections = Resource.search(query + " AND resource_type:" + Resource::COLLECTION.to_s).per_page(collections_length)
+        sort = searchSortForType(options[:sortsByType], 'collection')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query + " AND resource_type:" + Resource::COLLECTION.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        collections = Resource.search(qdef).per_page(collections_length)
+
         if (!options[:models])
           collections.map do |r|
             if r._source
@@ -780,7 +891,18 @@ class Resource < ActiveRecord::Base
         collection_objects_length = length
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
-        collection_objects = Resource.search(query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s).per_page(collection_objects_length)
+        sort = searchSortForType(options[:sortsByType], 'collection_object')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        collection_objects = Resource.search(qdef).per_page(collection_objects_length)
+
         if (!options[:models])
           collection_objects.map do |r|
             if r._source
@@ -801,7 +923,18 @@ class Resource < ActiveRecord::Base
       exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
       begin
-        exhibitions = Resource.search(query + " AND resource_type:" + Resource::EXHIBITION.to_s).per_page(exhibitions_length)
+        sort = searchSortForType(options[:sortsByType], 'exhibition')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query + " AND resource_type:" + Resource::EXHIBITION.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        exhibitions = Resource.search(qdef).per_page(exhibitions_length)
+
         if (!options[:models])
           exhibitions.map do |r|
             if r._source
