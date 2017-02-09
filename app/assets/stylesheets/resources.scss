@@ -12,6 +12,7 @@ $md_gray:#DEDEDE;
 $lt_gray:#eaeaeb;
 $black:#000000;
 $white:#FFFFFF;
+$red:#BA0017;
 .modal.modal-wide .modal-dialog {
   width: 90%;
   text-align:left;
@@ -782,4 +783,7 @@ dd > .alert, p > .alert, dt > .alert{
 /* Response Styles */
 .btn-response{
 	min-width: 275px;
+}
+.btn-delete:hover, .btn-delete:focus{
+	color: $red !important;
 }

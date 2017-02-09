@@ -311,22 +311,15 @@ class Resource < ActiveRecord::Base
     link_ids = CollectionobjectLink.where("resource_id = ?", self.id).pluck(:id)
     resource_ids = MediaFile.where("sourceable_id IN (?)", link_ids).pluck(:resource_id)
 
-    Resource.find(resource_ids)
+    # 
+    rel_resource_ids = RelatedResource.where("to_resource_id = ?", self.id).pluck(:resource_id)
+    
+    all_resource_ids = rel_resource_ids + resource_ids
+
+    Resource.find(all_resource_ids)
   end
-
+  
   #
-  # Return collection of resources that reference the currently loaded one
-  # via collectionobject_links
-  #
-  def get_collection_object_references
-    # get ids of collection object links
-    link_ids = CollectionobjectLink.where("resource_id = ?", self.id).pluck(:id)
-    resource_ids = MediaFile.where("sourceable_id IN (?)", link_ids).pluck(:resource_id)
-
-    Resource.find(resource_ids)
-  end
-
-  # 
   # Return list of Resources created by a single user
   # Either through the author_id or default user_id
   #
@@ -996,7 +989,7 @@ class ResourceSettingObject < RailsSettings::SettingObject
     end
 
     # text_formatting / show_all
-    if self.show_all.present? && self.show_all != 0 && self.show_all != 1
+    if self.show_all.present? && self.show_all != 0 && self.show_all != 1 && self.show_all != 2
       raise StandardError, "Text formatting show all setting is invalid"
     end
 
