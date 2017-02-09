@@ -116,6 +116,9 @@ Rails.application.routes.draw do
   get '/featured_content_sets/:id/remove_set_item' => 'featured_content_sets#remove_set_item', as: 'featured_content_sets_remove_set_item'
   get '/featured_content_sets/:id/set_item_order' => 'featured_content_sets#set_item_order'
 
+  # Dashboard User Resources/Collections filtering/sorting
+  get '/filter_user_items' => 'dashboard#filter_user_items', as: 'filter_user_items'
+  get '/remove_filter' => 'dashboard#remove_filter', as: 'remove_filter'
 
   # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'

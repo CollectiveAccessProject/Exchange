@@ -354,6 +354,10 @@ class Resource < ActiveRecord::Base
     end
     return rel_resource_list
   end
+  
+  def sort_user_resources(access)
+  	@published_ids = Resource.where('access=? AND user_id=?', access, current_user.id).pluck(:id)
+  end
 
   def get_responses
     response_ids = Resource.where(in_response_to_resource_id: self.id).pluck(:id)

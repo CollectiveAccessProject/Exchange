@@ -1150,3 +1150,8 @@ ul.ui-autocomplete {
 .btn-group > .dropdown-menu > li > a{
 	width: 100%;
 }
+/* DASHBOARD FILTERS */
+.active_filter {
+	background-color: $green !important;
+	color: $white !important;
+}

@@ -38,6 +38,30 @@
         <div class="col-sm-4">
           <input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms" id="dashboardSearch"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         </div>
+        <div class="col-sm-4">
+        	<div class="btn-group">
+				<a id="filter_dropdown" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filters <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li> <h6>Publication Status</h6><hr/></li>
+					<li><%= link_to '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Published'.html_safe, filter_user_items_path(:filter_access => 1), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
+					<li><%= link_to '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Unpublished'.html_safe, filter_user_items_path(:filter_access => 0), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
+					<li><%= link_to 'Clear Filter', remove_filter_path, :remote => true, :class => 'btn btn-xs btn-noBg remove_filter' %></li>
+				</ul>
+        	</div>
+        	<script>
+        		$(document).ready(function(){
+        			$('.publish_filter').click(function(){
+        				$('.publish_filter').removeClass('active_filter');
+        				$(this).addClass('active_filter');
+        				$('#filter_dropdown').dropdown('toggle');
+        			});
+        			$('.remove_filter').click(function(){
+        				$('.publish_filter').removeClass('active_filter');
+        				$('#filter_dropdown').dropdown('toggle');
+        			});
+        		});
+        	</script>
+        </div>
       </div><!-- end row -->
     </form></div><!-- end dbUnit -->
     <div class="dbUnit"><HR/></div>

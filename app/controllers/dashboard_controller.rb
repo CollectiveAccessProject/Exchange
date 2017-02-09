@@ -44,7 +44,22 @@ class DashboardController < ApplicationController
 
       # user favorites
       @favorites = Favorite.where(user_id: current_user.id)
-  end
+    end
 
+  end
+  
+  def filter_user_items
+  	filter_access = params[:filter_access]
+  	@filtered = Resource.where('access = ? AND user_id = ?', filter_access, current_user.id)
+  	respond_to do |format|
+  	  format.js { render :action => "filter_user_items" }
+  	end
+  end
+  
+  def remove_filter
+  	@filtered = Resource.where('user_id = ?', current_user.id)
+  	respond_to do |format|
+  	  format.js { render :action => "filter_user_items" }
+  	end
   end
 end
