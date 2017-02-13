@@ -370,6 +370,7 @@ class Resource < ActiveRecord::Base
   # Return false if user does not have assigned access
   #
   def check_edit_access(current_user)
+  	return false if (!current_user)
     resUser = ResourcesUser.where(resource_id: self.id, user_id: current_user.id).first
     if resUser
       if resUser.access == 2
