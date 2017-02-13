@@ -88,7 +88,7 @@
 		    <div class="col-md-12">
 		  	  <div class="pull-right">
           		<% if (@resource.user_id == current_user.id) %>
-              	  <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs' %>
+              	  <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-delete' %>
           		<% end %>
           		<%= r.button :submit, "Save" %>
         	  </div>
@@ -146,7 +146,7 @@
 		    <div class="col-md-12">
 		      <div class="pull-right">
 		      	<% if (@resource.user_id == current_user.id) %>
-              		<%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs' %>
+              		<%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-delete' %>
           	 	<% end %>
 		      	<%= r.button :submit, "Save" %>
 		      </div>

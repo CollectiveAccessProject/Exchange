@@ -1,0 +1,21 @@
+<% filtered.each do |f| %>
+	<div class="dbUnit">
+		<div><b><%= sanitize(f.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></b> (<%= f.resource_type_for_display %>) [<%= (f.access == 1) ? "Published" : "Not published" %>]</div>
+		<%= ((f.subtitle.length > 0) ? sanitize("<p>" + f.subtitle  + "</p>") : "") %>
+		<div>
+		  <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(f, user_signed_in?), class:'btn btn-default btn-xs' %>
+		  <%= link_to '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(f), class:'btn btn-default btn-xs' %>
+		  <div class="btn-group">
+			<a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+			  <li><%= link_to '<span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy and Customize'.html_safe, fork_resource_path(f), class:'btn btn-xs btn-noBg', method: :post %></li>
+			  <li><%= link_to '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> '.html_safe + ((f.access == 0) ? "Publish" : "Unpublish"), publish_resource_path(f), class:'btn btn-xs btn-noBg', method: :post %></li>
+			  <!--	<li><a href="#" class="btn btn-xs btn-noBg"><span class="glyphicon glyphicon-share aria-hidden="true"></span> Share</a></li>-->
+			  <li role="separator" class="divider"></li>
+			  <li><%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, f, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-noBg' %></li>
+			</ul>
+		  </div>
+		</div>
+	  	<HR/>
+	  </div>
+<% end %>

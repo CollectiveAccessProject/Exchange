@@ -24,7 +24,7 @@ namespace :exchange do
 
 
 		start = 0
-		limit = 10
+		limit = 3
 
 		# query UMMA collections to get list of all records in chunks of 100 and
 		# create or update exchange resources based on collectiveaccess_id
@@ -53,7 +53,7 @@ namespace :exchange do
 			object_list_for_display.each do |_, value|
 				if value.is_a?(Hash) && value['collectiveaccess_id'].present?
 					log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']}"
-					puts  "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} :: #{value['idno']}"
+					puts  "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} :: #{value['subtitle']}"
 
 					copyright_notes = value['copyright_holder'].present? ? HTMLEntities.new.decode(value['copyright_holder']) : ''
 					copyright_notes += value['copyright_text'].present? ? "\n" + HTMLEntities.new.decode(value['copyright_text']) : ''
@@ -79,7 +79,7 @@ namespace :exchange do
 					if(value['body_text'])
 						body_text = HTMLEntities.new.decode(value['body_text'])
 						body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([A-Za-z0-9 _\(\)-]+)<\/span>/, '<a href="../../quick_search/query?utf8=true&q=\1:&quot;\2&quot;">\2</a>')	
-						puts body_text_search
+						body_text_search = body_text.gsub(/<strong>Additional Object [A-Za-z\(\)]+<\/strong><br><br>/, "")	
 					end
 
 					if (Resource.where(collectiveaccess_id: value['collectiveaccess_id']).
@@ -89,7 +89,7 @@ namespace :exchange do
 																		 body_text: body_text_search,
 																		 subtitle: HTMLEntities.new.decode(value['subtitle']),
 																		 resource_type: Resource::COLLECTION_OBJECT,
-																		 collection_identifier: value['idno'],
+																		 collection_identifier: value['subtitle'],
 																		 collectiveaccess_id: value['collectiveaccess_id'],
 																		 user_id: user_id))
 
@@ -103,7 +103,7 @@ namespace :exchange do
 							value['media'].split('|').each do |u|
 								if ((key = /representation:([\d]+)/.match(u)))
 									representation_id = key[1]
-
+									puts value['caption_text']
 									m = nil
 									if ((cl = CollectiveaccessLink.where(key: key.to_s, id: sourceable_ids).first) && cl.id)
 										m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first

@@ -27,57 +27,31 @@
     <H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H2>
     <H3><%= sanitize(@resource.subtitle, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H3>
     <% if @resource.settings(:text_placement).placement.to_s == "above" %>
-        <% if @resource.settings(:text_formatting).show_all == 1 %>
-            <% if @resource.settings(:text_formatting).collapse == 1 %>
-                <script>
-                  $(document).ready(function(){
-                    $('.textSlider').css('max-height', '240px');
-                  });
-                </script>
-            <% end %>
-            <div class="col-md-12 textSlider" aria-controls="fullTextExpand">
+        <% if @resource.settings(:text_formatting).show_all == 0 %>
+        	<div class="col-md-12">
               <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
             </div>
-            <div class="row">
-              <div class="col-md-4 col-md-offset-4 text-center">
-                <a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
-                  <!--<hr/>-->
-                  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show More <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-                  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>" onclick="$('.textSlider').css('max-height', '240px')"><i class="fa fa-chevron-up" aria-hidden="true"></i> Show Less <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-                  <!--<hr/>-->
-                </a>
-              </div>
-            </div>
-        <% else %>
-            <% if @resource.settings(:text_formatting).collapse == 1 %>
-                <script>
-                  $(document).ready(function(){
-                    $('.textSlider').css('max-height', '0px');
-                  });
-                </script>            
-				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
-				</div>
-				<div class="row">
-				  <div class="col-md-4 col-md-offset-4 text-center">
-					<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
-					  <!--<hr/>-->
-					  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show More <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-					  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>" onclick="$('.textSlider').css('max-height', '0px')"><i class="fa fa-chevron-up" aria-hidden="true"></i> Show Less <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-					  <!--<hr/>-->
-					</a>
-				  </div>
-				</div>
-			<% else %>
-				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
-				</div>
-			<% end %>
+        <% else %>           
+			<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
+			  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
+			</div>
+			<div class="row">
+			  <div class="col-md-4 col-md-offset-4 text-center">
+				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
+				  <!--<hr/>-->
+				  <span class="hideText" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show More' : 'Show Text' %> <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+				  <span class="hideText collapse" onclick="$('.textSlider').css('max-height', '<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>')"><i class="fa fa-chevron-up" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show Less' : 'Hide Text' %> <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+				  <!--<hr/>-->
+				</a>
+			  </div>
+			</div>
+			<script>
+			  $(document).ready(function(){
+				 $('.textSlider').css('max-height', "<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>");
+			  });
+			</script> 
         <% end %>
     <% end %>
-
-
-
 
     <%
       # generate count of publically available media files
@@ -166,7 +140,7 @@
                           begin
                             media_display = f.sourceable.render(:large)
                           rescue
-                            media_display = f.sourceable.preview :large
+                            media_display = f.sourceable.preview :large, '', '', f.caption
                           end
                         %>
                         <%=
@@ -234,14 +208,14 @@
                                           # render video inline so it's playable
                                           f.sourceable.render :medium
                                         else
-                                          f.sourceable.preview :large
+                                          f.sourceable.preview :large, '', '', f.caption
                                       end
                                     %>
                                   </a>
-
-                                  <div class="captionContainer">
+                                  <!--This is a legacy caption container, leave until we move to production -->
+                                  <!--<div class="captionContainer">
                                     <div class="slideshowCaption"><%= sanitize(f.caption)  %></div>
-                                  </div>
+                                  </div>-->
                             </div>
                             <%
                               counter = counter + 1
@@ -264,7 +238,7 @@
 							  begin
 								media_display = f.sourceable.render :large
 							  rescue
-								media_display = f.sourceable.preview :large
+								media_display = f.sourceable.preview :large, '', '', f.caption
 							  end
 							%>
 							<%=
@@ -308,7 +282,7 @@
                           begin
                             media_display = f.sourceable.render :large
                           rescue
-                            media_display = f.sourceable.preview :large
+                            media_display = f.sourceable.preview :large, caption: f.caption
                           end
                         %>
                         <%=
@@ -336,52 +310,29 @@
       render partial: 'resource_slideshow_fullscreen'
     %>
     <% if @resource.settings(:text_placement).placement.to_s == "below" %>
-        <% if @resource.settings(:text_formatting).show_all == 1 %>
-            <% if @resource.settings(:text_formatting).collapse == 1 %>
-                <script>
-                  $(document).ready(function(){
-                    $('.textSlider').css('max-height', '240px');
-                  });
-                </script>
-            <% end %>
-            <div class="col-md-12 textSlider" aria-controls="fullTextExpand">
+        <% if @resource.settings(:text_formatting).show_all == 0 %>
+        	<div class="col-md-12">
               <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
             </div>
-            <div class="row">
-              <div class="col-md-4 col-md-offset-4 text-center">
-                <a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
-                  <!--<hr/>-->
-                  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show More <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-                  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>" onclick="$('.textSlider').css('max-height', '240px')"><i class="fa fa-chevron-up" aria-hidden="true"></i> Show Less <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-                  <!--<hr/>-->
-                </a>
-              </div>
-            </div>
-        <% else %>
-            <% if @resource.settings(:text_formatting).collapse == 1 %>
-                <script>
-                  $(document).ready(function(){
-                    $('.textSlider').css('max-height', '0px');
-                  });
-                </script>            
-				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
-				</div>
-				<div class="row">
-				  <div class="col-md-4 col-md-offset-4 text-center">
-					<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
-					  <!--<hr/>-->
-					  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? '' : 'collapse' %>" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> Show More <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-					  <span class="hideText <%= (@resource.settings(:text_formatting).collapse == 1) ? 'collapse' : '' %>" onclick="$('.textSlider').css('max-height', '0px')"><i class="fa fa-chevron-up" aria-hidden="true"></i> Show Less <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-					  <!--<hr/>-->
-					</a>
-				  </div>
-				</div>
-			<% else %>
-				<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-				  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
-				</div>
-			<% end %>
+        <% else %>           
+			<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
+			  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
+			</div>
+			<div class="row">
+			  <div class="col-md-4 col-md-offset-4 text-center">
+				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
+				  <!--<hr/>-->
+				  <span class="hideText" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show More' : 'Show Text' %> <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+				  <span class="hideText collapse" onclick="$('.textSlider').css('max-height', '<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>')"><i class="fa fa-chevron-up" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show Less' : 'Hide Text' %> <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+				  <!--<hr/>-->
+				</a>
+			  </div>
+			</div>
+			<script>
+			  $(document).ready(function(){
+				 $('.textSlider').css('max-height', "<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>");
+			  });
+			</script> 
         <% end %>
     <% end %>
     <% if(@resource.settings(:user_interaction).allow_responses > 0) %>

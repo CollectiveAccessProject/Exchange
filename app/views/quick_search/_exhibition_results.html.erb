@@ -7,10 +7,9 @@
         (page <%= @exhibitions_page.to_s + "/" + @exhibitions_num_pages.to_s %>)
 
       <div class="pull-right">
-        <form>
-          <%= select_tag("exhibition_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['exhibition']), {id: "exhibition_num_items_per_page"}) %>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          Sort by <%= select_tag("exhibition_sort", options_for_select(sortOptions('exhibition'), @sort_defaults['exhibition']), {id: "exhibition_sort"}) %>
+        <form class="searchPaging">
+          	<div class="searchFormElement">Results Per Page <%= select_tag("exhibition_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['exhibition']), {id: "exhibition_num_items_per_page"}) %></div>
+          <div class="searchFormElement">Sort by <%= select_tag("exhibition_sort", options_for_select(sortOptions('exhibition'), @sort_defaults['exhibition']), {id: "exhibition_sort"}) %></div>
         </form>
       </div>
       </h4>

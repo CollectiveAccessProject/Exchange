@@ -25,21 +25,23 @@
       #display_file_type = 'Unknown File Type'
   end
 %> 
-  <div class="previewMediaCaption row">
-    <div class="col-xs-12 previewMediaHalf text-center">
 <%
 	media_id = plugin_model.media_file.id
-	if (version.to_s != "icon" && version.to_s != "thumbnail")
+	if !(version.to_s == "icon" || version.to_s == "thumbnail" || caption == 'no')
 %>
 		<!-- This renders the Media type/source thumbnail along with a popover guide to the icons -->
-			<div class="mediaTips">
-				<span class="popoverWrapper infoIcon" title="Local File"><div class="previewMediaIcon"><i class="fa fa-file" aria-hidden="true"></i></div></span>
+			<div class="previewMediaCaption row">
+				<div class="col-xs-6 previewMediaHalf text-left">
+					<%= sanitize(plugin_model.media_file.caption) %>
+				</div>
+				<div class="col-xs-6 text-right previewMediaHalf idle-fade">
+					<div class="mediaTips">
+						<span class="popoverWrapper infoIcon" title="Local File"><div class="previewMediaIcon"><i class="fa fa-file" aria-hidden="true"></i> <%= display_file_type.nil? ? "Unknown" : display_file_type.html_safe %></div></span>
+					</div>
+				</div>
 			</div>
 	  	<!-- End Media guide and thumbnail section -->
 <%
 	end
 %>
-		<%= display_file_type.nil? ? "Unknown" : display_file_type.html_safe %>
-    </div>
-  </div>
 </span>

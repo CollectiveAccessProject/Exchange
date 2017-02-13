@@ -6,9 +6,9 @@
 
 <%
 	# construct URL for link to UMMA Catalog
-	
-	collection_id = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'x-\1-sl-\2')
-	collection_url = 'http://quod.lib.umich.edu/m/musart/' + collection_id
+	# Disabled at request of John Turner, but preserving in case it is wanted in the future
+	# collection_id = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'x-\1-sl-\2')
+	# collection_url = 'http://quod.lib.umich.edu/m/musart/' + collection_id
 %>
 
 <span class='previewMedia'>
@@ -16,14 +16,13 @@
       render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil}
 %>
 <%
-	
-	if (version.to_s != "icon" && version.to_s != "thumbnail")
+	if !(version.to_s == "icon" || version.to_s == "thumbnail" || caption == 'no')
 %>
 		<div class="previewMediaCaption row">
-			<!--<div class="col-xs-6 previewMediaHalf text-left">
-				<%= r.title %><br/>
-			</div>-->
-			<div class="col-xs-12 text-right previewMediaHalf idle-fade">
+			<div class="col-xs-6 previewMediaHalf text-left">
+				<%= sanitize(local_assigns[:caption]) %>
+			</div>
+			<div class="col-xs-6 text-right previewMediaHalf idle-fade">
 				<div class="mediaTips">
 					<span class="popoverWrapper mediaTipsTrigger" title="UMMA Collection Object Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div></span>
 				</div>

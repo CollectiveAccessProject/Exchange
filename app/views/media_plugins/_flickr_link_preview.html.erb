@@ -7,13 +7,18 @@
 %>
 <%
 	media_id = plugin_model.media_file.id
-	if (version.to_s != "icon" && version.to_s != "thumbnail")
+	if !(version.to_s == "icon" || version.to_s == "thumbnail" || caption == 'no')
 %>
   		
   		<!-- This renders the Media type/source thumbnail along with a popover guide to the icons -->
-		<div class="previewMediaCaption">
-			<div class="mediaTips">
-				<span class="popoverWrapper infoIcon" title="Flickr Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-flickr" aria-hidden="true"></i></div></span>
+		<div class="previewMediaCaption row">
+			<div class="col-xs-6 previewMediaHalf text-left">
+				<%= sanitize(plugin_model.media_file.caption) %>
+			</div>
+			<div class="col-xs-6 text-right previewMediaHalf idle-fade">
+				<div class="mediaTips">
+					<span class="popoverWrapper infoIcon" title="Flickr Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-flickr" aria-hidden="true"></i></div></span>
+				</div>
 			</div>
 	  	</div>
 	  	<!-- End Media guide and thumbnail section -->

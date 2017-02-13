@@ -44,7 +44,58 @@ class DashboardController < ApplicationController
 
       # user favorites
       @favorites = Favorite.where(user_id: current_user.id)
-  end
+    end
 
+  end
+  
+  #
+  # Sort and Filter a users items on their Dashboard
+  #
+  def filter_user_items
+  	# If user is applying new filter, save that
+  	if params[:pub_filter] != nil
+  		session[:access_filter] = params[:pub_filter]
+  	elsif params[:type_filter] != nil
+  		session[:type_filter] = params[:type_filter]
+  	end
+  	
+  	# Get filtered array of resource objects
+  	if session[:access_filter] && session[:type_filter] 
+  		filtered_temp = Resource.where('access = ? AND resource_type = ? AND user_id = ?', session[:access_filter], session[:type_filter] , current_user.id)
+  	elsif session[:access_filter]
+  		filtered_temp = Resource.where('access = ? AND user_id = ?', session[:access_filter], current_user.id)
+  	elsif session[:type_filter]
+  		filtered_temp = Resource.where('resource_type = ? AND user_id = ?', session[:type_filter] , current_user.id)
+  	else
+  		filtered_temp = Resource.where('user_id = ?', current_user.id)
+  	end
+  	
+  	# Apply a sort to the objects if necessary
+  	
+  	if params[:sort_type]
+  		session[:dash_sort] = params[:sort_type]
+  	end
+  	
+  	if session[:dash_sort] == 'title'
+  		@filtered = filtered_temp.sort_by { |resource| ActionController::Base.helpers.strip_tags(resource.read_attribute(session[:dash_sort])) }
+  	elsif session[:dash_sort]
+  		@filtered = filtered_temp.sort_by { |resource| resource.read_attribute(session[:dash_sort]) }
+  	else
+  		@filtered = filtered_temp
+  	end
+  	
+  	respond_to do |format|
+  	  format.js { render :action => "filter_user_items" }
+  	end
+  end
+  
+  def remove_filter
+  	session.delete(:access_filter)
+  	session.delete(:type_filter)
+  	session.delete(:dash_sort)
+  	@filtered = Resource.where('user_id = ?', current_user.id)
+  	respond_to do |format|
+  	  format.js { render :action => "filter_user_items" }
+  	end
   end
 end

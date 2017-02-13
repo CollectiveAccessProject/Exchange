@@ -93,18 +93,24 @@
 							  <div class="row">
 								<div class="col-sm-12">
 								  <div class="form-group">
-									<%= check_box_tag(:text_formatting_show_all, "show_all", (@resource.settings(:text_formatting).show_all == 1)) %>
-									<%= label_tag(:text_formatting_show_all, "Only show the first 10 lines of text with link to Read More", class: 'inline') %>
+									<%= radio_button_tag(:text_formatting_show_all, 0, (@resource.settings(:text_formatting).show_all == 0)) %>
+									<%= label_tag(:text_formatting_show_all, "Display all text", class: 'inline') %>
 								  </div>
 								</div>
 							  </div>
-						  <% end %>
-						  <% if (@resource.setting_is_valid(:text_formatting, :collapse)) %>
 							  <div class="row">
 								<div class="col-sm-12">
 								  <div class="form-group">
-									<%= check_box_tag(:text_formatting_collapse, "collapse", (@resource.settings(:text_formatting).collapse == 1)) %>
-									<%= label_tag(:text_formatting_collapse, "Have text collapsed by default", class: 'inline') %>
+									<%= radio_button_tag(:text_formatting_show_all, 1, (@resource.settings(:text_formatting).show_all == 1)) %>
+									<%= label_tag(:text_formatting_show_all, "Display first 10 lines of text with link to read more", class: 'inline') %>
+								  </div>
+								</div>
+							  </div>
+							  <div class="row">
+								<div class="col-sm-12">
+								  <div class="form-group">
+									<%= radio_button_tag(:text_formatting_show_all, 2, (@resource.settings(:text_formatting).show_all == 2)) %>
+									<%= label_tag(:text_formatting_collapse, "Hide all text by default with link to read more", class: 'inline') %>
 								  </div>
 								</div>
 							  </div>

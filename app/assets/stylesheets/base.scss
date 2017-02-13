@@ -681,6 +681,11 @@ select.input-sm{
 	}
 }
 .dbResourceList{
+	max-height:495px;
+	overflow-y:auto;
+	margin-bottom:20px;
+}
+.dbActivityList{
 	max-height:400px;
 	overflow-y:auto;
 	margin-bottom:20px;
@@ -1145,4 +1150,18 @@ ul.ui-autocomplete {
 		border:1px solid $lt_gray;
 	}
 
+}
+/* WELCOME */
+.btn-group > .dropdown-menu > li > a{
+	width: 100%;
+}
+/* DASHBOARD FILTERS */
+.active_filter {
+	background-color: $green !important;
+	color: $white !important;
+}
+.filter_head{
+	h6 {
+		margin: 0 0 0 10px;
+	}
 }

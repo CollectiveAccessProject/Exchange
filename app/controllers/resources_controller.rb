@@ -501,8 +501,9 @@ class ResourcesController < ApplicationController
       @resource.settings(:media_formatting).mode = params[:media_formatting_mode].to_sym if(!params[:media_formatting_mode].nil?);
       @resource.settings(:text_placement).placement = params[:text_placement_placement].to_sym if(!params[:text_placement_placement].nil?);
 
-      @resource.settings(:text_formatting).show_all = (params[:text_formatting_show_all] == "show_all") ? 1 : 0;
-      @resource.settings(:text_formatting).collapse = (params[:text_formatting_collapse] == "collapse") ? 1 : 0;
+      @resource.settings(:text_formatting).show_all = params[:text_formatting_show_all].to_i;
+      # Deprecated in new formatting style
+      # @resource.settings(:text_formatting).collapse = (params[:text_formatting_collapse] == "collapse") ? 1 : 0;
 
       @resource.settings(:user_interaction).allow_comments = (params[:user_interaction_allow_comments] == "allow_comments") ? 1 : 0;
       @resource.settings(:user_interaction).allow_tags = (params[:user_interaction_allow_tags] == "allow_tags") ? 1 : 0;

@@ -38,6 +38,56 @@
         <div class="col-sm-4">
           <input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms" id="dashboardSearch"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         </div>
+        <div class="col-sm-8 text-right">
+        	<div class="btn-group">
+				<a id="filter_dropdown" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter By <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li class="filter_head"> <h6>Publication Status</h6></li>
+					<li><%= link_to 'Published'.html_safe, filter_user_items_path(:pub_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
+					<li><%= link_to 'Unpublished'.html_safe, filter_user_items_path(:pub_filter => 0), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
+					<li class="filter_head"> <h6>Resource Type</h6></li>
+					<li><%= link_to 'Resource'.html_safe, filter_user_items_path(:type_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
+					<li class="filter_head"><%= link_to 'Learning Collection'.html_safe, filter_user_items_path(:type_filter => 2), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
+					<li><hr/><%= link_to 'Clear Filters', remove_filter_path, :remote => true, :class => 'btn btn-xs btn-noBg remove_filter' %></li>
+				</ul>
+        	</div>
+        	<div class="btn-group">
+				<a id="sort_dropdown" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span> Sort By <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><%= link_to 'Title', filter_user_items_path(:sort_type => 'title'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
+					<li><%= link_to 'Date Created', filter_user_items_path(:sort_type => 'created_at'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
+					<li><%= link_to 'Date Updated', filter_user_items_path(:sort_type => 'updated_at'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
+					<li><%= link_to 'Type', filter_user_items_path(:sort_type => 'resource_type'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>					
+				</ul>
+        	</div>
+        </div>
+		<script>
+			$(document).ready(function(){
+				$.ajax({
+					url: '<%= remove_filter_path %>',
+					type: 'GET',
+				});
+				$('.publish_filter').click(function(){
+					$('.publish_filter').removeClass('active_filter');
+					$(this).addClass('active_filter');
+					$('#filter_dropdown').dropdown('toggle');
+				});
+				$('.type_filter').click(function(){
+					$('.type_filter').removeClass('active_filter');
+					$(this).addClass('active_filter');
+					$('#filter_dropdown').dropdown('toggle');
+				});
+				$('.sort_option').click(function(){
+					$('.sort_option').removeClass('active_filter');
+					$(this).addClass('active_filter');
+					$('#sort_dropdown').dropdown('toggle');
+				});
+				$('.remove_filter').click(function(){
+					$('.publish_filter, .type_filter, .sort_option').removeClass('active_filter');
+					$('#filter_dropdown').dropdown('toggle');
+				});
+			});
+		</script>
       </div><!-- end row -->
     </form></div><!-- end dbUnit -->
     <div class="dbUnit"><HR/></div>
@@ -76,7 +126,7 @@
         </div>
       </div><!-- end row -->
     </form></div><!-- end dbUnit -->
-    <div class="dbResourceList">
+    <div class="dbActivityList">
     <div class="dbUnit"><HR/></div>
     <%
       @activity_history.each do |h|
