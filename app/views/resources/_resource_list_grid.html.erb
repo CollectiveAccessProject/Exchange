@@ -18,9 +18,9 @@
 		
 		<div class="col-sm-<%= width %>">
 			<div class="collectionDetailContentsItem" >
-				<div class='titleOver'><%= link_to sanitize(((rel.child_resource.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ") + rel.child_resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style class)), get_resource_view_path(rel.child_resource, user_signed_in?) %></div>
+				<div class='titleOver'><%= link_to sanitize(((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "" : "<i class='fa fa-folder-o'></i> ") + rel.child_resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style class)), get_resource_view_path(rel.child_resource, user_signed_in?) %></div>
 
-					<% if(rel.child_resource.is_resource) %>
+					<% if(rel.child_resource.is_resource || rel.child_resource.is_collection_object) %>
 <%
 						available_media = 0
 						rel.child_resource.media_files.each do |f|
@@ -68,8 +68,10 @@
 			</div>
 			<% if(rel.child_resource.is_resource) %>
 				<small>Resource with <%= available_media %> media</small>
-			<% else %>
+			<% elsif(rel.child_resource.is_collection) %>
 				<small>Collection with <%= rel.child_resource.children.count %> item<%= (rel.child_resource.children.count == 1) ? "" : "s" %></small>
+			<% else %>
+				<small>Collection Object</small>
 			<% end %>
 		</div>
 <%
