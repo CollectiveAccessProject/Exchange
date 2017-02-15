@@ -2,7 +2,7 @@ class Resource < ActiveRecord::Base
   rolify
   ratyrate_rateable "quality"
 
-  has_many :related_resources, :dependent => :delete_all
+  has_many :related_resources, -> { order 'related_resources.rank' }, :dependent => :delete_all
 
   has_many :resources, through: 'related_resources', source: :related
 

@@ -337,3 +337,51 @@ jQuery(document).on('sortstop', "#link_list", function(e, ui) {
         });
     }
 });
+
+//
+// link list drag and drop
+//
+jQuery("#link_list").sortable();
+jQuery(document).on('sortstop', "#link_list", function(e, ui) {
+    var resource_id =  jQuery("#link_list").data("resource_id");
+
+    var ranks = [];
+    jQuery("#link_list .linkListItem").each(function(k,m) {
+        ranks.push(jQuery(m).data('link_id'));
+    });
+
+    if (Object.keys(ranks).length > 0) {
+        jQuery.getJSON("/resources/" + resource_id + "/set_link_order", {ranks: ranks}, function(data) {
+            jQuery("#links-status").slideDown(250);
+
+            jQuery("#links-status-message").html((data && data.status && (data.status == 'ok')) ? "Saved link order" : "Could not save set link order: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#links-status").slideUp(250);
+            }, 3000);
+        });
+    }
+});
+
+//
+// related resource list drag and drop
+//
+jQuery("#related_resource_list").sortable();
+jQuery(document).on('sortstop', "#related_resource_list", function(e, ui) {
+    var resource_id =  jQuery("#related_resource_list").data("resource_id");
+
+    var ranks = [];
+    jQuery("#related_resource_list .relatedResourceListItem").each(function(k,m) {
+        ranks.push(jQuery(m).data('link_id'));
+    });
+
+    if (Object.keys(ranks).length > 0) {
+        jQuery.getJSON("/resources/" + resource_id + "/set_related_resource_order", {ranks: ranks}, function(data) {
+            jQuery("#related-resources-status").slideDown(250);
+
+            jQuery("#related-resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Saved resource order" : "Could not save set resource order: " + data.error);
+            window.setTimeout(function() {
+                jQuery("#related-resources-status").slideUp(250);
+            }, 3000);
+        });
+    }
+});

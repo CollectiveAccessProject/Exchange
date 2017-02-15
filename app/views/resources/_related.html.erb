@@ -10,15 +10,15 @@
         <div class="row">
           <div class="col-md-5">
             <div class="form-group">
-            	<label>Search for resource</label>
-            	<%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#to_resource_id", class:'form-control') %>
-            	<%= hidden_field_tag(:to_resource_id) %>
+              <label>Search for resource</label>
+              <%= autocomplete_field_tag(:find_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#to_resource_id", class:'form-control') %>
+              <%= hidden_field_tag(:to_resource_id) %>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
-            	<label>Caption</label>
-            	<%= text_field_tag(:caption, '', size: 50, class:'form-control') %>
+              <label>Caption</label>
+              <%= text_field_tag(:caption, '', size: 50, class:'form-control') %>
             </div>
           </div>
           <div class="col-md-1">
@@ -29,22 +29,29 @@
         </div>
     <% end %>
     <% if @resource.related_resources.count > 0 %>
-		<div class="relatedResources">
-			<H4><%= @resource.related_resources.count %> Related Item(s)</H4>
-		<% @resource.related_resources.each do |r| %>
-			<div>
-			  <%= link_to ((r.related.is_resource || r.related.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title), get_resource_view_path(r.related, user_signed_in?), target: "_blank" %>
-			  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_related_resource_path(@resource) + "?related=" + r.related.id.to_s, {remote: true, class: :relatedResourcesRemoveLink}) %>
-			  <% if (r.caption.length > 0) %>
-			   <br/><small>
-				 <%= r.caption %>
-			   </small>
-			  <% end %>
+        <div class="relatedResources">
+          <H4><%= @resource.related_resources.count %> Related Item(s)</H4>
 
-			</div>
-		<% end %>
-		</div>
+          <div id="related_resource_list" data-resource_id="<%= @resource.id %>">
+            <% @resource.related_resources.each do |r| %>
+                <div class="relatedResourceListItem" data-link_id="<%= r.id %>">
+                  <%= link_to ((r.related.is_resource || r.related.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title), get_resource_view_path(r.related, user_signed_in?), target: "_blank" %>
+                  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_related_resource_path(@resource) + "?related=" + r.related.id.to_s, {remote: true, class: :relatedResourcesRemoveLink}) %>
+                  <% if (r.caption.length > 0) %>
+                      <blockquote><a href="#" data-type="textarea" data-pk="<%= r.id %>" data-name="caption" data-title="Edit caption" data-url="/resources/edit_related_resource_caption/<%= r.id %>" class="relatedResourceListCaption"><%= r.caption %></a></blockquote>
+                  <% end %>
+                </div>
+            <% end %>
+          </div>
+        </div>
     <% end %>
 
   </div>
 </div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#related_resource_list").sortable();
+        jQuery('.relatedResourceListCaption').editable();
+    });
+</script>

@@ -621,6 +621,25 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def edit_related_resource_caption
+    # TODO: make sure user is allowed to do this for this resource
+    if (r = RelatedResource.where(id: params[:related_id]).first)
+      r.caption = params[:caption]
+      if (r.save)
+        resp = {status: :ok}
+      else
+        resp = {status: :error, msg: r.errors.full_messages.join('; ')}
+      end
+
+    else
+      resp = {status: :error, msg: "No relationship found"}
+    end
+
+    respond_to do |format|
+      format.json { render json: resp }
+    end
+  end
+
   # set order of media
   def set_media_order
     resp = {status: :ok}
@@ -678,19 +697,41 @@ class ResourcesController < ApplicationController
 
 
   def set_link_order
-
     resp = {status: :ok}
 
     # TODO: Check if user has access to resource for which links are being reordered
 
-    # get current ranks for media
+    # get current ranks for links
     current_link = Link.where(resource_id: params[:id]).order(:rank)
     ranks = current_link.pluck(:rank)
 
     params[:ranks].each do |link_id|
       if (l = Link.where(resource_id: params[:id], id: link_id).first)
-        l.rank = r = ranks.shift
-        puts "SET " + l.id.to_s + " to " + r.to_s
+        l.rank = ranks.shift
+        if (!l.save)
+          resp = {:status => :err, :error => l.errors.full_messages.join('; ')}
+          break
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
+    end
+  end
+
+  def set_related_resource_order
+    resp = {status: :ok}
+
+    # TODO: Check if user has access to resource for which links are being reordered
+
+    # get current ranks for related resources
+    current_link = RelatedResource.where(resource_id: params[:id]).order(:rank)
+    ranks = current_link.pluck(:rank)
+
+    params[:ranks].each do |related_id|
+      if (l = RelatedResource.where(resource_id: params[:id], id: related_id).first)
+        l.rank = ranks.shift
         if (!l.save)
           resp = {:status => :err, :error => l.errors.full_messages.join('; ')}
           break
