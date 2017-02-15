@@ -50,6 +50,9 @@ Rails.application.routes.draw do
   match '/resources/:id/remove_link' => 'resources#remove_link', :as => 'remove_link_from_resources', :via => [:get]
   match '/resources/:id/remove_parent/:parent_id' => 'resources#remove_parent', :as => 'remove_parent', :via => [:get]
 
+  match '/resources/edit_link/:link_id' => 'resources#edit_link', :via => [:put]
+  match '/resources/edit_link_caption/:link_id' => 'resources#edit_link_caption', :via => [:put]
+
 
   post '/resources/:id/set_parent' => 'resources#update', as: "set_resource_parent_with_id"
   post '/resources/:id/add_related_resource' => 'resources#add_related_resource', as: "add_related_resource"
@@ -64,6 +67,7 @@ Rails.application.routes.draw do
 
   get '/resources/:id/set_media_order' => 'resources#set_media_order', as: "set_media_order"
   get '/resources/:id/set_resource_order' => 'resources#set_resource_order', as: "set_resource_order"
+  get '/resources/:id/set_link_order' => 'resources#set_link_order', as: "set_link_order"
 
   # save preferences via ajax, get JSON in return
   post '/resources/:id/save_preferences' => 'resources#save_preferences',  defaults: { format: 'json' }

@@ -10,7 +10,7 @@ class Resource < ActiveRecord::Base
   has_many :children, -> { order 'resource_hierarchies.rank' }, through: 'resource_hierarchies', source: :child_resource
 
   has_many :media_files, -> { order 'media_files.rank' },  :dependent => :delete_all
-  has_many :links
+  has_many :links, -> { order 'links.rank' }
   has_many :favorites
 
   has_many :resources_users, :dependent => :delete_all

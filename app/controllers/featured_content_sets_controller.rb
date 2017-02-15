@@ -23,7 +23,7 @@ class FeaturedContentSetsController < ApplicationController
 
   def create
     @featured_content_set = FeaturedContentSet.new(featured_content_set_params)
-   # @featured_content_set.user = current_user
+    # @featured_content_set.user = current_user
 
     respond_to do |format|
       if @featured_content_set.save
@@ -35,7 +35,6 @@ class FeaturedContentSetsController < ApplicationController
         format.json { render json: @featured_content_set.errors, status: :unprocessable_entity }
       end
     end
-
   end
 
 
@@ -64,7 +63,7 @@ class FeaturedContentSetsController < ApplicationController
 
     respond_to do |format|
       @featured_content_set.destroy
-        format.html { redirect_to featured_content_sets_path, notice: ActionController::Base.helpers.sanitize('Featured content set ' + title + ' has been removed.') }
+      format.html { redirect_to featured_content_sets_path, notice: ActionController::Base.helpers.sanitize('Featured content set ' + title + ' has been removed.') }
 
     end
   end
@@ -125,7 +124,6 @@ class FeaturedContentSetsController < ApplicationController
     ranks = current_items.pluck(:rank)
 
     params[:ranks].each do |id|
-        puts "SET ID " + id
       if (i = FeaturedContentSetItem.where(featured_content_set_id: params[:id], resource_id: id).first)
         i.rank = ranks.shift
         if (!i.save)
