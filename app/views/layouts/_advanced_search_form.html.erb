@@ -311,7 +311,15 @@
                 });
 
                 jQuery("#advType").val(<%= Resource::COLLECTION_OBJECT%>);
-                jQuery("#advType").change()
+                jQuery("#advType").change();
+
+                <%
+                if (@is_query_builder_query)
+%>
+               jQuery("#queryBuilderContainer").show();
+                <%
+                end
+                  %>
             });
         </script>
       </div>
