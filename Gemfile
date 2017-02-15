@@ -8,7 +8,7 @@ gem 'rails', '4.2.6'
 gem 'mysql2', '~> 0.3.18'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0.6'
+gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
@@ -28,7 +28,7 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 # bootstrap
-gem 'bootstrap-sass', '~> 3.2'
+gem 'bootstrap-sass'
 
 # summernote alternative to boostrap-wysihtml5
 gem 'summernote-rails'
@@ -128,3 +128,4 @@ gem 'jquery_query_builder-rails'
 gem 'ratyrate'
 
 gem 'riiif'
+gem 'bootstrap-editable-rails'
