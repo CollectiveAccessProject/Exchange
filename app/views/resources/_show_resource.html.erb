@@ -4,7 +4,9 @@
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
 	body_attrs_allowed = %w(href style src alt class id float target width height title)
 %>
-<%= render partial: 'show_parent_heading.html.erb' %>
+<% if session[:last_collection] %>
+	<%= render partial: 'show_parent_heading.html.erb' %>
+<% end %>
 <% if @resource.check_edit_access(current_user) %>
 	<div class="row">
 	  <div class="col-sm-12">
@@ -509,7 +511,7 @@
         </div>
         
         <div class="detailButtonsResource text-center">
-          <a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
+          <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
           <!-- AddToAny BEGIN -->
 			<a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
 			<script>

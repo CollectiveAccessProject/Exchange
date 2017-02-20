@@ -6,8 +6,8 @@
 		  <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(f, user_signed_in?), class:'btn btn-default btn-xs' %>
 		  <%= link_to '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(f), class:'btn btn-default btn-xs' %>
 		  <div class="btn-group">
-			<a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
-			<ul class="dropdown-menu">
+			<a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <i class="fa fa-caret-right"></i></a>
+			<ul class="dropdown-menu dropdown-menu-dash">
 			  <li><%= link_to '<span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy and Customize'.html_safe, fork_resource_path(f), class:'btn btn-xs btn-noBg', method: :post %></li>
 			  <li><%= link_to '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> '.html_safe + ((f.access == 0) ? "Publish" : "Unpublish"), publish_resource_path(f), class:'btn btn-xs btn-noBg', method: :post %></li>
 			  <!--	<li><a href="#" class="btn btn-xs btn-noBg"><span class="glyphicon glyphicon-share aria-hidden="true"></span> Share</a></li>-->

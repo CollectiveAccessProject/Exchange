@@ -1004,10 +1004,10 @@ li.tagList {
   }
 }
 .embedQuarter{
-	max-width: 25%;
+	max-width: 24%;
 }
 .embedHalf{
-	max-width: 50%;
+	max-width: 49%;
 }
 .embedFull{
 	max-width: 100%;
@@ -1166,6 +1166,10 @@ ul.ui-autocomplete {
 	}
 }
 
+.dropdown-menu-dash{
+	top: -80px;
+	left: 55px;
+}
 
 blockquote .linkListCaption, blockquote .relatedResourceListCaption {
   font-size: 11px;

@@ -15,7 +15,7 @@
         	  %>
               <% if(@resource.forked_from_resource_id && (@resource.forked_from_resource_id > 0))  %>
                 <em>Forked from
-                <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
+                <%=  link_to sanitize(@resource.forked_from_resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)), resource_preview_url(@resource.forked_from_resource) %>
                 </em>
               <% end %>
 		      <%= r.input :title, :input_html => {:rows => 2} %>

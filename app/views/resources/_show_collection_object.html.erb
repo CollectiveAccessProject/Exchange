@@ -27,21 +27,11 @@
   parent = @resource.parents.first
   if(parent)
 %>
+<% if session[:last_collection] %>
+	<%= render :partial => 'show_parent_heading.html.erb' %>
+<% end %>
     <div class="row">
       <div class="col-sm-12">
-        <H4><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
-          Part of:
-          <%=
-            link_to sanitize(parent.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(parent, user_signed_in?), "class": ""
-          %>
-          <br/><small><a href="#" onClick="$('#detailParentInfoPanel').toggle(); return false;">
-          <%=
-            if(parent.resource_hierarchies)
-              sanitize("<small>#{parent.resource_hierarchies.count} resource") + (parent.resource_hierarchies.count == 1 ? ' ' : 's ')
-            end
-          %>
-          in this learning collection</a></small>
-        </H4>
         <div class="panel panel-primary" id="detailParentInfoPanel">
           <div class="panel-body">
             <div class="row">
@@ -154,7 +144,7 @@
           </div>
         </div>
         <div class="detailButtonsResource text-center">
-          <a href="#" title="Copy and Customize"><i class="fa fa-clone" aria-hidden="true"></i></a>
+          <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
           <!-- AddToAny BEGIN -->
 			<a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
 			<script>

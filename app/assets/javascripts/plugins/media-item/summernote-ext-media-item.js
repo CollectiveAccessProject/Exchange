@@ -43,7 +43,10 @@ jQuery(document).ready(function($) {
     $('.container').on('click', '.dropdown-media-item', function() {
 	//Create modal for setting embed options
 	var re = /\(([^)]+)\)/;
-	slug = re.exec( $(this).find('.media-item-title').html().replace("<em>", "").replace("</em>", "") );
+	console.log($(this).find('.media-item-title').html());
+	slug = re.exec( $(this).find('.media-item-title').html());
+	slug[1].replace('<em>', '').replace('</em>', '')
+	console.log(slug);
 	function embedModal(slug){
 		html = '<div id="embedModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"';
 		html += '<div class="modal-dialog">';
