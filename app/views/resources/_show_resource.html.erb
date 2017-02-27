@@ -1,4 +1,7 @@
 <% parent = @resource.parents.first %>
+<% content_for :page_title do %>
+  <title>Exchange: <%= sanitize(@resource.title, :tags => %w()) %></title>
+<% end %>
 <% 
 	# Set allowed HTML tags/attributes for the body text
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)

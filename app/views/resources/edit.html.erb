@@ -9,6 +9,9 @@ function embedMedia(slug) {
 	$('#embedModal').modal('toggle');
 }
 </script>
+<% content_for :page_title do %>
+  <title>Exchange|Editing: <%= sanitize(@resource.title, :tags => %w()) %></title>
+<% end %>
 
 <div class="row">
   <div class="col-sm-12">

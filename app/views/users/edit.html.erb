@@ -1,3 +1,6 @@
+<% content_for :page_title do %>
+  <title>Exchange: <%= sanitize(@user.name, :tags => %w()) %>'s Profile</title>
+<% end %>
 <div class="row">
   <div class="col-sm-12">
     <H4><span id="resource_title_header">

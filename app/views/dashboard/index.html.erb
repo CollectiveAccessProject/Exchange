@@ -1,3 +1,6 @@
+<% content_for :page_title do %>
+  <title>Exchange: Your Dashboard</title>
+<% end %>
 <div class="row">
   <div class="col-sm-10">
     <H1>Dashboard</H1>
@@ -92,7 +95,7 @@
     </form></div><!-- end dbUnit -->
     <div class="dbUnit"><HR/></div>
     <div id="dashboardResourceList" class="dbResourceList">
-      <!-- This list is replaced by _filter_user_items_list.html.erb in the same directory. -->
+      <!-- This list is replaced by _filter_user_items_list.html.erb in the same directory. This is kept here for load purposes -->
       <% @resources.each do |resource| %>
           <div class="dbUnit">
             <div><b><%= sanitize(resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></b> (<%= resource.resource_type_for_display %>) [<%= (resource.access == 1) ? "Published" : "Not published" %>]</div>

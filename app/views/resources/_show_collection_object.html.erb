@@ -3,6 +3,9 @@
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
 	body_attrs_allowed = %w(href style src alt class float target)
 %>
+<% content_for :page_title do %>
+  <title>Exchange: <%= sanitize(@resource.title, :tags => %w()) %></title>
+<% end %>
 <% if @resource.check_edit_access(current_user) %>
 	<div class="row">
 	  <div class="col-sm-12">

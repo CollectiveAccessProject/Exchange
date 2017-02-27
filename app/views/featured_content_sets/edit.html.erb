@@ -1,3 +1,6 @@
+<% content_for :page_title do %>
+  <title>Exchange|Editing: <%= sanitize(@featured_content_set.title, :tags => %w()) %></title>
+<% end %>
 <div class="row">
   <div class="col-sm-12">
     <H4><span id="resource_title_header">Editing featured content set <em><%= @featured_content_set.title %></em></span>
