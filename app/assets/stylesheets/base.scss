@@ -749,17 +749,17 @@ select.input-sm{
 	min-height:250px;
 	text-align:center;
 	padding:10px;
-  .caption{
-    font-size:11px;
-    padding:5px 0px 0px 0px;
-    overflow-y:auto;
-    line-height:1.1em;
-    color:$gray;
-    height:auto;
-  }
-  iframe{
-    width: 100% !important;
-  }
+	.caption{
+    		font-size:11px;
+    		padding:5px 0px 0px 0px;
+    		line-height:1.1em;
+    		color:$gray;
+    		height:auto;
+		text-align:left;
+  	}
+  	iframe{
+   		 width: 100% !important;
+  	}
 }
 #footer {
   position: fixed;
@@ -1167,7 +1167,7 @@ ul.ui-autocomplete {
 }
 
 .dropdown-menu-dash{
-	top: -80px;
+	top: -60px;
 	left: 55px;
 }
 
