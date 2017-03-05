@@ -598,23 +598,42 @@ class ResourcesController < ApplicationController
     created = 0
     exists = 0
 
+    resp = nil
     for add_child_resource_id in add_child_resource_ids
       begin
-        if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
-          exists = exists + 1
-        else
-          prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).create
+        if (@resource.is_collection)
+         if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
+           exists = exists + 1
+         else
+           prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).create
+           created = created + 1
+          end
+        elsif(@resource.is_resource)
+         # if (MediaFile.joins(:sourceable).where(media_files: {resource_id: @resource.id}, sourceable: {resource_id: add_child_resource_id}).length > 0)
+         if (ActiveRecord::Base.connection.execute("SELECT * FROM media_files mf INNER JOIN collectionobject_links AS l ON mf.sourceable_id = l.id WHERE mf.sourceable_type = 'CollectionobjectLink' AND mf.resource_id = " + @resource.id.to_s + " AND l.resource_id = " + add_child_resource_id.to_i.to_s).count > 0)
+            exists = exists + 1
+          else
+          @media_file = MediaFile.new({
+              caption: "",
+              copyright_notes: "",
+              access: true
+                                      })
+          @media_file.set_sourceable_media({collectionobject_link: {original_link: add_child_resource_id}});
+
+          # TODO: does user have access to this resource?
+          @media_file.resource_id = @resource.id
+          @media_file.save
           created = created + 1
+            end
         end
 
-        resp = {:status => :ok, :numAdded => created, :numExisting => exists, :ids => add_child_resource_ids}
       rescue StandardError => ex
         resp = {:status => :err, :error => ex.message}
         break
       end
-    end
+      end
 
-
+    resp = {:status => :ok, :numAdded => created, :numExisting => exists, :ids => add_child_resource_ids} if(!resp)
     respond_to do |format|
       format.json { render :json => resp, status: :ok }
     end
