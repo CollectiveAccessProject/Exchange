@@ -21,6 +21,7 @@ $white:#FFFFFF;
 	position:relative;
 	text-align:center;
 	margin-bottom:25px;
+    padding-top: 5px;
 	line-height:1.1em;
 	overflow:hidden;
 	img{
@@ -80,6 +81,13 @@ $white:#FFFFFF;
 		}
 	}
 }
+
+.qsResultCheckbox {
+  position: absolute;
+  top: 0px;
+  right: 3px;
+}
+
 .thumbPlaceholder{
 	padding: 50px 30px 10px 30px;
 	background-color: white;

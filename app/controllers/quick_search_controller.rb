@@ -2,8 +2,8 @@ class QuickSearchController < ApplicationController
   def query
     begin
       setup
-    rescue
-      redirect_to("/", :flash => { :error => "Search could not be completed" })
+    rescue Exception => e
+      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
     end
   end
 
@@ -51,6 +51,9 @@ class QuickSearchController < ApplicationController
   # Setup results for quicksearch and paging handler
   #
   private def setup(options=nil)
+    @available_collections = get_available_collections
+    @available_collections_and_resources = get_available_collections_and_resources
+
     params.permit(:query, :q, :page, :type, :length, :sort)
     @query = params[:q] if (!(@query = params[:query]))
     @page = params[:page].to_i
@@ -220,5 +223,21 @@ class QuickSearchController < ApplicationController
     sort = session[:sort][type.to_s]
     return "" if ((sort == nil)|| !sort)
     return sort
+  end
+
+  #
+  #
+  #
+  def get_available_collections
+    return nil if (!current_user)
+    return Resource.where("resource_type = ? AND user_id = ?", Resource::LEARNING_COLLECTION, current_user.id).order(title: :asc)
+  end
+
+  #
+  #
+  #
+  def get_available_collections_and_resources
+    return nil if (!current_user)
+    return Resource.where("resource_type IN (?) AND user_id = ?", [Resource::LEARNING_COLLECTION, Resource::RESOURCE], current_user.id).order(title: :asc)
   end
 end

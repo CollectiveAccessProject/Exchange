@@ -17,6 +17,23 @@
   </div>
   <div class="row" id="colObjectResultsContainer">
     <div class="col-sm-12">
+      <div id="collectionObjectResults-status">
+        <div class="flash-notice" id="collectionObjectResults-status-message">
+
+        </div>
+      </div>
+
+      <% if (current_user && (@available_collections_and_resources.length > 0)) %>
+          <div>
+            <form class="collectionObjectResultsAdd">
+              Add checked results to collection/resource <%=
+              select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'collectionObjectResultsAddToCollectionID')
+            %>
+              <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsAddToCollection"  %>
+            </form>
+          </div>
+      <% end %>
+
       <%
         col = 0
         thumb = false
@@ -31,6 +48,9 @@
             end
           %>
           <div class="col-md-2 qsResult">
+            <% if (current_user && (@available_collections_and_resources.length > 0)) %>
+                <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
+            <% end %>
             <% r.media_files.each do |f| %>
                 <% if f.sourceable %>
                     <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
@@ -115,6 +135,41 @@
                 jQuery("#results_collection_object").html(data.html);
                 return true;
             });
+        });
+
+
+        jQuery("#collectionObjectResultsAddToCollection").on('click', function(e) {
+            e.preventDefault();
+
+            var add_to_collection_id = jQuery("#collectionObjectResultsAddToCollectionID").val();
+
+            var ids = jQuery("#results_collection_object input.qsResultCheckbox").map(function() {
+                return jQuery(this).prop('checked') ? jQuery(this).val(): undefined;
+            }).get()
+
+            if (!ids || (ids.length == 0)) {
+                jQuery("#collectionObjectResults-status").slideDown(250);
+                jQuery("#collectionObjectResults-status-message").html("No items are checked");
+                window.setTimeout(function() {
+                    jQuery("#collectionObjectResults-status").slideUp(250);
+                }, 3000);
+                return false;
+            }
+
+            jQuery.post("/resources/" + add_to_collection_id + "/add_child_resources", {"add_child_resource_ids[]": ids}, function(data) {
+                var n = data.numAdded;
+                existed_msg = (data.numExisting > 0) ? ((data.numExisting == 1) ? " (1 already exists)" :  " (" + data.numExisting + " already exist)") : "";
+
+                jQuery("#collectionObjectResults-status").slideDown(250);
+                jQuery("#collectionObjectResults-status-message").html(((n == 1) ? "Added 1 collection object to collection" : "Added " + n + " collection objects to collection") + existed_msg);
+                window.setTimeout(function() {
+                    jQuery("#collectionObjectResults-status").slideUp(250);
+                }, 3000);
+
+                jQuery("#results_collection_object input.qsResultCheckbox").prop('checked', false);
+                return true;
+            }, 'json');
+            return false;
         });
     });
 </script>
