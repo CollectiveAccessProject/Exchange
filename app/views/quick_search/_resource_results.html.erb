@@ -8,7 +8,7 @@
 
         <div class="pull-right">
           <form class="searchPaging">
-          	<div class="searchFormElement">Results Per Page <%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %></div>
+            <div class="searchFormElement">Results Per Page <%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %></div>
             <div class="searchFormElement">Sort by <%= select_tag("resource_sort", options_for_select(sortOptions('resource'), @sort_defaults['resource']), {id: "resource_sort"}) %></div>
           </form>
         </div>
@@ -17,6 +17,25 @@
   </div>
   <div class="row" id="resourceResultsContainer">
     <div class="col-sm-12">
+
+      <div id="resourceResults-status">
+        <div class="flash-notice" id="resourceResults-status-message">
+
+        </div>
+      </div>
+
+      <% if (current_user && (@available_collections.length > 0)) %>
+          <div>
+            <form class="resourceResultsAdd">
+              Add checked results to collection <%=
+              select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'resourceResultsAddToCollectionID')
+            %>
+              <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "resourceResultsAddToCollection"  %>
+            </form>
+          </div>
+      <% end %>
+
+
       <%
         col = 0
         thumb = false
@@ -32,15 +51,21 @@
             end
           %>
           <div class="col-md-2 qsResult">
+            <% if (current_user && (@available_collections.length > 0)) %>
+            <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
+            <% end %>
+
+            <div style="margin-right: 10px">
             <% r.media_files.each do |f| %>
                 <% if f.sourceable %>
                     <% if f.access == 1 %>
-                        <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
+                        <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?), class: "qsResultThumb" %><br/>
                         <% thumb = true %>
                         <% break %>
                     <% end %>
                 <% end %>
             <% end %>
+            </div>
             <% if(thumb == false) %>
                 <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r[:id], user_signed_in?) %><br/>
             <% end %>
@@ -63,7 +88,7 @@
                 %>
                 <%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
                 <% if r.total_ratings > 0 %>
-                  <div class='small'><strong>Average Rating: </strong><%= r.avg_rating %></div>
+                    <div class='small'><strong>Average Rating: </strong><%= r.avg_rating %></div>
                 <% end %>
               </div>
             </div>
@@ -81,8 +106,8 @@
             end
           %>
       <% if (col > 0) %>
-      </div><!-- end row -->
-          <% end %>
+          </div><!-- end row -->
+      <% end %>
 
       <div class='row'>
         <%=
@@ -96,22 +121,22 @@
         <div class='col-sm-6 text-center'>
           <%
             if (@resources_needs_previous_paging || @resources_needs_next_paging)
-            s = 1
-            e = @resources_num_pages
+              s = 1
+              e = @resources_num_pages
 
-            if (e > 10)
-              s = @resources_page - 5
-              s = 1 if (s < 1)
-              e = s + 9
-            end
+              if (e > 10)
+                s = @resources_page - 5
+                s = 1 if (s < 1)
+                e = s + 9
+              end
 
-            for i in s..e do
+              for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "resource", page: i, query: @query), { class: "btn search-next-btn " + ((i == @resources_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
-          <%
-            end
-            end
-          %>
+                  <%=  (link_to(i, query_results_path(type: "resource", page: i, query: @query), { class: "btn search-next-btn " + ((i == @resources_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+              <%
+                end
+                end
+              %>
         </div>
         <%=
           if(@resources_needs_next_paging)
@@ -133,6 +158,40 @@
                 jQuery("#results_resource").html(data.html);
                 return true;
             });
+        });
+
+        jQuery("#resourceResultsAddToCollection").on('click', function(e) {
+            e.preventDefault();
+
+            var add_to_collection_id = jQuery("#resourceResultsAddToCollectionID").val();
+
+            var ids = jQuery("#results_resource input.qsResultCheckbox").map(function() {
+                return jQuery(this).prop('checked') ? jQuery(this).val(): undefined;
+            }).get()
+
+            if (!ids || (ids.length == 0)) {
+                jQuery("#resourceResults-status").slideDown(250);
+                jQuery("#resourceResults-status-message").html("No items are checked");
+                window.setTimeout(function() {
+                    jQuery("#resourceResults-status").slideUp(250);
+                }, 3000);
+                return false;
+            }
+
+            jQuery.post("/resources/" + add_to_collection_id + "/add_child_resources", {"add_child_resource_ids[]": ids}, function(data) {
+                var n = data.numAdded;
+                existed_msg = (data.numExisting > 0) ? ((data.numExisting == 1) ? " (1 already exists)" :  " (" + data.numExisting + " already exist)") : "";
+
+                jQuery("#resourceResults-status").slideDown(250);
+                jQuery("#resourceResults-status-message").html(((n == 1) ? "Added 1 resource to collection" : "Added " + n + " resources to collection") + existed_msg);
+                window.setTimeout(function() {
+                    jQuery("#resourceResults-status").slideUp(250);
+                }, 3000);
+
+                jQuery("#results_resource input.qsResultCheckbox").prop('checked', false);
+                return true;
+            }, 'json');
+            return false;
         });
     });
 </script>

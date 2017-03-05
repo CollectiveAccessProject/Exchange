@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :except => [:view]
-  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
+  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
 
   include CommentableController
   include TaggableController
@@ -35,8 +35,8 @@ class ResourcesController < ApplicationController
     ).order(:id).all
     render :json => u.map { |user| {:id => user.id, :label => user.name + " (" + user.email + ")", :value => user.name + " (" + user.email + ")"} }
   end
-  
-   # Override resource title autocompleter
+
+  # Override resource title autocompleter
   def autocomplete_resource_title
     term = params[:term]
     u = Resource.where(
@@ -95,10 +95,10 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
-  
-  	if(@resource.is_collection)
-    	# session for last collection so can attribute parent when resource has multiple parent collections
-    	session[:last_collection] = @resource.id
+
+    if(@resource.is_collection)
+      # session for last collection so can attribute parent when resource has multiple parent collections
+      session[:last_collection] = @resource.id
     end
 
     @search_next_resource_id = @search_previous_resource_id = nil
@@ -109,7 +109,7 @@ class ResourcesController < ApplicationController
       @search_next_resource_id = session[:last_search_results][ct][i+1] if (i<(session[:last_search_results][ct].length - 1))
       @search_previous_resource_id = session[:last_search_results][ct][i-1] if (i > 0)
     end
-  
+
   end
 
   # Handle public viewing of resources
@@ -221,7 +221,7 @@ class ResourcesController < ApplicationController
         #
         # TODO: does user have access to resource this is in response to?
         if (@resource && @resource.in_response_to_resource_id && (@resource.in_response_to_resource_id > 0))
-        # Add resource as child of what we're responding to (not sure why UMMA wants this?)
+          # Add resource as child of what we're responding to (not sure why UMMA wants this?)
           rh = ResourceHierarchy.where(resource_id: @resource.in_response_to_resource_id, child_resource_id: @resource.id).first_or_create
           rh.save
         end
@@ -391,14 +391,14 @@ class ResourcesController < ApplicationController
 
   def remove_tag
     # TODO: make sure user is allowed to do this for this resource
-   if(t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first)
-    t.destroy
+    if(t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first)
+      t.destroy
 
-    @resource.update_search_index
-    resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
-   else
-     resp = {status: :err, error: "Invalid parameters"}
-   end
+      @resource.update_search_index
+      resp = {:status => :ok, :html => render_to_string("resources/_tags", layout: false)}
+    else
+      resp = {status: :err, error: "Invalid parameters"}
+    end
 
     respond_to do |format|
       format.json { render json: resp }
@@ -564,6 +564,9 @@ class ResourcesController < ApplicationController
   end
 
 
+  #
+  # Add single resource, return resource list as HTML
+  #
   def add_child_resource
     begin
       # response
@@ -582,6 +585,41 @@ class ResourcesController < ApplicationController
       format.json { render :json => resp, status: :ok }
     end
   end
+
+  #
+  # Add one or more resources, return data
+  #
+  def add_child_resources
+    # response
+
+    # TODO: Check if user can relate to target
+    add_child_resource_ids = params[:add_child_resource_ids]
+
+    created = 0
+    exists = 0
+
+    for add_child_resource_id in add_child_resource_ids
+      begin
+        if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
+          exists = exists + 1
+        else
+          prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).create
+          created = created + 1
+        end
+
+        resp = {:status => :ok, :numAdded => created, :numExisting => exists, :ids => add_child_resource_ids}
+      rescue StandardError => ex
+        resp = {:status => :err, :error => ex.message}
+        break
+      end
+    end
+
+
+    respond_to do |format|
+      format.json { render :json => resp, status: :ok }
+    end
+  end
+
 
   # add related resource
   def add_related_resource
@@ -752,7 +790,7 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (@resource.user_id != current_user.id)
-      #  raise "Not owner"
+        #  raise "Not owner"
       end
 
       to_user_id = params[:to_user_id]

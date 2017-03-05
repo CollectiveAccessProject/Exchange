@@ -66,6 +66,7 @@ Rails.application.routes.draw do
 
 
   post '/resources/:id/add_child_resource' => 'resources#add_child_resource', as: "add_child_resource"
+  post '/resources/:id/add_child_resources' => 'resources#add_child_resources', as: "add_child_resources"
 
   get '/resources/:id/set_media_order' => 'resources#set_media_order', as: "set_media_order"
   get '/resources/:id/set_resource_order' => 'resources#set_resource_order', as: "set_resource_order"
