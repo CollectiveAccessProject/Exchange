@@ -1,4 +1,4 @@
-<% 
+<%
 	# Set allowed HTML tags/attributes for the body text
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
 	body_attrs_allowed = %w(href style src alt class float target)
@@ -123,7 +123,7 @@
     <div class="panel panel-primary">
       <div class="panel-body">
         <div class="row">
-          
+
           <div class="col-xs-12 text-left">
             <% if (user_signed_in?) %>
               <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard' %>
@@ -191,6 +191,21 @@
         <% end %>
 
         <%# render(partial: 'resources/resource_responses', layout: false) %>
+        <% if (current_user && (@available_collections_and_resources.length > 0)) %>
+        <div class="unit">
+          <div id="collectionObjectAdd-status">
+            <div class="flash-notice" id="collectionObjectAdd-status-message">
+
+            </div>
+          </div>
+          <h4>Add to collection</h4>  <form class="collectionObjectAdd"><%=
+          select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'detailCollectionList', id:'collectionObjectAddToCollectionID')
+        %>
+          <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectAddToCollection", data: {id: @resource.id}  %>
+        </form>
+        </div>
+        <% end %>
+
       </div>
     </div>
   </div><!-- end col -->

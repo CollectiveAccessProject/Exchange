@@ -311,6 +311,46 @@ jQuery(document).ready(function() {
         }, 3000);
 
     });
+
+
+//
+//
+//
+    jQuery("#collectionObjectAddToCollection").on('click', function(e) {
+        e.preventDefault();
+
+        var add_to_collection_id = jQuery("#collectionObjectAddToCollectionID").val();
+
+        jQuery.post("/resources/" + add_to_collection_id + "/add_child_resources", {"add_child_resource_ids[]": [jQuery("#collectionObjectAddToCollection").data('id')]}, function(data) {
+
+            jQuery("#collectionObjectAdd-status").slideDown(250);
+            jQuery("#collectionObjectAdd-status-message").html("Added collection object to collection");
+            window.setTimeout(function() {
+                jQuery("#collectionObjectAdd-status").slideUp(250);
+            }, 3000);
+
+            return true;
+        }, 'json');
+        return false;
+    });
+
+    jQuery("#resourceAddToCollection").on('click', function(e) {
+        e.preventDefault();
+
+        var add_to_collection_id = jQuery("#resourceAddToCollectionID").val();
+
+        jQuery.post("/resources/" + add_to_collection_id + "/add_child_resources", {"add_child_resource_ids[]": [jQuery("#resourceAddToCollection").data('id')]}, function(data) {
+
+            jQuery("#resourceAdd-status").slideDown(250);
+            jQuery("#resourceAdd-status-message").html("Added resource to collection");
+            window.setTimeout(function() {
+                jQuery("#resourceAdd-status").slideUp(250);
+            }, 3000);
+
+            return true;
+        }, 'json');
+        return false;
+    });
 });
 
 
