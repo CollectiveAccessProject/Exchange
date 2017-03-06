@@ -1,26 +1,26 @@
 <% parent = @resource.parents.first %>
-<% 
-	# Set allowed HTML tags/attributes for the body text
-	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
-	body_attrs_allowed = %w(href style src alt class id float target width height title)
+<%
+  # Set allowed HTML tags/attributes for the body text
+  body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
+  body_attrs_allowed = %w(href style src alt class id float target width height title)
 %>
 <% if session[:last_collection] %>
-	<%= render partial: 'show_parent_heading.html.erb' %>
+    <%= render partial: 'show_parent_heading.html.erb' %>
 <% end %>
 <% if @resource.check_edit_access(current_user) %>
-	<div class="row">
-	  <div class="col-sm-12">
-		<H4>
-		  <% if (params['mode'] == :preview) %>
-			  Previewing Resource
-		  <% end %>
-			<div class='headingButtons'>
-				<%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
-		  </div>
-		  <br style="clear: both;"/>
-		</H4>
-	  </div><!-- end col -->
-	</div><!-- end row -->
+    <div class="row">
+      <div class="col-sm-12">
+        <H4>
+          <% if (params['mode'] == :preview) %>
+              Previewing Resource
+          <% end %>
+          <div class='headingButtons'>
+            <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
+          </div>
+          <br style="clear: both;"/>
+        </H4>
+      </div><!-- end col -->
+    </div><!-- end row -->
 <% end %>
 <div class="row">
   <div class="col-sm-10">
@@ -30,28 +30,28 @@
     <H3><%= sanitize(@resource.subtitle, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H3>
     <% if @resource.settings(:text_placement).placement.to_s == "above" %>
         <% if @resource.settings(:text_formatting).show_all == 0 %>
-        	<div class="col-md-12">
+            <div class="col-md-12">
               <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
             </div>
-        <% else %>           
-			<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-			  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
-			</div>
-			<div class="row">
-			  <div class="col-md-4 col-md-offset-4 text-center">
-				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
-				  <!--<hr/>-->
-				  <span class="hideText" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show More' : 'Show Text' %> <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-				  <span class="hideText collapse" onclick="$('.textSlider').css('max-height', '<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>')"><i class="fa fa-chevron-up" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show Less' : 'Hide Text' %> <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-				  <!--<hr/>-->
-				</a>
-			  </div>
-			</div>
-			<script>
-			  $(document).ready(function(){
-				 $('.textSlider').css('max-height', "<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>");
-			  });
-			</script> 
+        <% else %>
+            <div class="col-md-12 textSlider" aria-controls="fullTextExpand">
+              <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-offset-4 text-center">
+                <a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
+                  <!--<hr/>-->
+                  <span class="hideText" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show More' : 'Show Text' %> <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                  <span class="hideText collapse" onclick="$('.textSlider').css('max-height', '<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>')"><i class="fa fa-chevron-up" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show Less' : 'Hide Text' %> <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                  <!--<hr/>-->
+                </a>
+              </div>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $('.textSlider').css('max-height', "<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>");
+                });
+            </script>
         <% end %>
     <% end %>
 
@@ -99,13 +99,13 @@
                           render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
                         <script>
-							$(document).ready(function(){ 
-								$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
-									$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
-								});
-								$('.popoverWrapper').tooltip();
-							});
-						</script>
+                            $(document).ready(function(){
+                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
+                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
+                                });
+                                $('.popoverWrapper').tooltip();
+                            });
+                        </script>
                       </div><!-- end col -->
                   <%
 
@@ -151,13 +151,13 @@
                           render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
                         <script>
-							$(document).ready(function(){ 
-								$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
-									$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
-								});
-								$('.popoverWrapper').tooltip();
-							});
-						</script>
+                            $(document).ready(function(){
+                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
+                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
+                                });
+                                $('.popoverWrapper').tooltip();
+                            });
+                        </script>
                       </div><!-- end col -->
                   <%
 
@@ -218,7 +218,7 @@
                                   <!--<div class="captionContainer">
                                     <div class="slideshowCaption"><%= sanitize(f.caption)  %></div>
                                   </div>-->
-                            </div>
+                                </div>
                             <%
                               counter = counter + 1
                               end
@@ -230,46 +230,46 @@
               </div>
             </div>
             <%
-            	# Create Modals for each slide, necessary to do separately to allow modals to pop-over
-            	# outside of slideshow
-            	@resource.media_files.each do |f|
-                	if f.access == 1
-                    	if f.sourceable
+              # Create Modals for each slide, necessary to do separately to allow modals to pop-over
+              # outside of slideshow
+              @resource.media_files.each do |f|
+                if f.access == 1
+                  if f.sourceable
             %>
-            				<%
-							  begin
-								media_display = f.sourceable.render :large
-							  rescue
-								media_display = f.sourceable.preview :large, '', '', f.caption
-							  end
-							%>
-							<%=
-							  # this renders a bootstrap model that is triggered if you click on the preview above
-							  # it's in a partial because it's about a billion nested divs :-)
+                        <%
+                          begin
+                            media_display = f.sourceable.render :large
+                            rescue
+                            media_display = f.sourceable.preview :large, '', '', f.caption
+                          end
+                        %>
+                        <%=
+                          # this renders a bootstrap model that is triggered if you click on the preview above
+                          # it's in a partial because it's about a billion nested divs :-)
 
-							  render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
-							%>
-							<script>
-								$(document).ready(function(){ 
-									$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
-										$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
-									});
-									$('.popoverWrapper').tooltip();
-								});
-							</script>
-            <%
-            			end
-            		end
-            	end
-            %>
+                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
+                        %>
+                        <script>
+                            $(document).ready(function(){
+                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
+                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
+                                });
+                                $('.popoverWrapper').tooltip();
+                            });
+                        </script>
+                    <%
+                      end
+                      end
+                      end
+                    %>
             <script>
-              //Generates slide count and position for use above
-              var totalItems = $('.item').length;
-              $('.num').html('1/'+totalItems+'');
-              $('#resourceCarousel').on('slid.bs.carousel', function() {
-                currentIndex = ($('div.active').index() + 1);
-                $('.num').html(''+currentIndex+'/'+totalItems+'');
-              });
+                //Generates slide count and position for use above
+                var totalItems = $('.item').length;
+                $('.num').html('1/'+totalItems+'');
+                $('#resourceCarousel').on('slid.bs.carousel', function() {
+                    currentIndex = ($('div.active').index() + 1);
+                    $('.num').html(''+currentIndex+'/'+totalItems+'');
+                });
             </script>
         <% end %>
     <%
@@ -291,13 +291,13 @@
                           render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
                         %>
                         <script>
-							$(document).ready(function(){ 
-								$('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){ 
-									$('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show"); 
-								}); 
-								$('.popoverWrapper').tooltip();
-							});
-						</script>
+                            $(document).ready(function(){
+                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
+                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
+                                });
+                                $('.popoverWrapper').tooltip();
+                            });
+                        </script>
                     <%
                       end
                       end
@@ -313,80 +313,80 @@
     %>
     <% if @resource.settings(:text_placement).placement.to_s == "below" %>
         <% if @resource.settings(:text_formatting).show_all == 0 %>
-        	<div class="col-md-12">
+            <div class="col-md-12">
               <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
             </div>
-        <% else %>           
-			<div class="col-md-12 textSlider" aria-controls="fullTextExpand">
-			  <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
-			</div>
-			<div class="row">
-			  <div class="col-md-4 col-md-offset-4 text-center">
-				<a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
-				  <!--<hr/>-->
-				  <span class="hideText" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show More' : 'Show Text' %> <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
-				  <span class="hideText collapse" onclick="$('.textSlider').css('max-height', '<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>')"><i class="fa fa-chevron-up" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show Less' : 'Hide Text' %> <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-				  <!--<hr/>-->
-				</a>
-			  </div>
-			</div>
-			<script>
-			  $(document).ready(function(){
-				 $('.textSlider').css('max-height', "<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>");
-			  });
-			</script> 
+        <% else %>
+            <div class="col-md-12 textSlider" aria-controls="fullTextExpand">
+              <p><%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %></p>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-md-offset-4 text-center">
+                <a role="button" data-toggle="collapse" href="#fullTextField" aria-expanded="false" aria-controls="fullTextExpand" onclick="$('.hideText').toggle('slow')">
+                  <!--<hr/>-->
+                  <span class="hideText" onclick="$('.textSlider').css('max-height', '5000px')"><i class="fa fa-chevron-down" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show More' : 'Show Text' %> <i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                  <span class="hideText collapse" onclick="$('.textSlider').css('max-height', '<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>')"><i class="fa fa-chevron-up" aria-hidden="true"></i> <%= @resource.settings(:text_formatting).show_all == 1 ? 'Show Less' : 'Hide Text' %> <i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                  <!--<hr/>-->
+                </a>
+              </div>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $('.textSlider').css('max-height', "<%= @resource.settings(:text_formatting).show_all == 1 ? '240px' : '0px' %>");
+                });
+            </script>
         <% end %>
     <% end %>
     <% if(@resource.settings(:user_interaction).allow_responses > 0) %>
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) %>
-					<div class="row" id="responseResources">
-						<% if(@resource.get_responses.count > 0) %>
-							<div class="col-xs-12 col-sm-6 text-center">
-								<a href="#" class="btn btn-default btn-response" data-target="#responseModal" data-toggle="modal">View Responses</a>
-								<div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
-												<h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
-											</div>
-											<div class="modal-body">
-												<%= render partial: "resource_responses_grid" %>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						<% end %>
-						<div class="col-xs-12 col-sm-<%= @resource.get_responses.count > 0 ? '6' : '12' %> text-center">
-							<%= link_to("Respond to this Resource", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-response"}) %>
-						</div>
-					</div>
-				<% else %>
-					<div class="row">
-						<div class="col-xs-12 col-sm-12 text-center">
-							<%= link_to("Respond to this Resource", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-response"}) %>
-						</div>
-					</div>
-					<% if(@resource.get_responses.count > 0) %>
-						<hr/>
-						<div class="row">
-							<div class="col-sm-12 text-center">
-								<h2>Responses to this Resource</h2>		
-							</div>
-						</div>
-						<div class="row" id="responseResources">
-							<div class="col-sm-12 text-center">
-								<%= render partial: "resource_responses_grid" %>
-							</div>
-						</div>
-					<% end %>
-				<% end %>
-			</div>
-		</div>
-	<% end %>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) %>
+                <div class="row" id="responseResources">
+                  <% if(@resource.get_responses.count > 0) %>
+                      <div class="col-xs-12 col-sm-6 text-center">
+                        <a href="#" class="btn btn-default btn-response" data-target="#responseModal" data-toggle="modal">View Responses</a>
+                        <div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+                                <h2 class="modal-title" id="addMediaFormLabel">Responses</h2>
+                              </div>
+                              <div class="modal-body">
+                                <%= render partial: "resource_responses_grid" %>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  <% end %>
+                  <div class="col-xs-12 col-sm-<%= @resource.get_responses.count > 0 ? '6' : '12' %> text-center">
+                    <%= link_to("Respond to this Resource", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-response"}) %>
+                  </div>
+                </div>
+            <% else %>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 text-center">
+                    <%= link_to("Respond to this Resource", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-response"}) %>
+                  </div>
+                </div>
+                <% if(@resource.get_responses.count > 0) %>
+                    <hr/>
+                    <div class="row">
+                      <div class="col-sm-12 text-center">
+                        <h2>Responses to this Resource</h2>
+                      </div>
+                    </div>
+                    <div class="row" id="responseResources">
+                      <div class="col-sm-12 text-center">
+                        <%= render partial: "resource_responses_grid" %>
+                      </div>
+                    </div>
+                <% end %>
+            <% end %>
+          </div>
+        </div>
+    <% end %>
     <div class="row">
       <div class="col-md-12">
         <div class="row" id="detailTags">
@@ -413,22 +413,22 @@
               </div>
           <% end %>
           <script>
-          	$(document).ready(function(){
-				$('.tag_keyword').hover(
-				function(){ $(this).next(".author_show").show()},
-				function(){$(this).next(".author_show").hide()}
-				);
-			})
-		  </script>
-              <div class="col-sm-6">
-                <a role="button" data-toggle="collapse" href="#tagPanel"><H4>
-                	<% if (@resource.settings(:user_interaction).allow_tags > 0) %>
-                		<%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp; 
-                	<% end %>
-                	<%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
-                <div id="tagPanel" class="collapse detailComments">
-                  <div class="row">
-                    <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+              $(document).ready(function(){
+                  $('.tag_keyword').hover(
+                      function(){ $(this).next(".author_show").show()},
+                      function(){$(this).next(".author_show").hide()}
+                  );
+              })
+          </script>
+          <div class="col-sm-6">
+            <a role="button" data-toggle="collapse" href="#tagPanel"><H4>
+              <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
+                  <%= @resource.tags.count %> Tag<%= @resource.tags.count == 1 ? '' : 's' %> &amp;
+              <% end %>
+              <%= @resource.vocabulary_terms.count %> Keyword<%= @resource.vocabulary_terms.count == 1 ? '' : 's' %></h4></a>
+            <div id="tagPanel" class="collapse detailComments">
+              <div class="row">
+                <% if (@resource.settings(:user_interaction).allow_tags > 0) %>
                     <div class="col-sm-<%= @resource.vocabulary_terms.count > 0 ? '6' : '12' %>">
                       <h5>Tags</h5>
                       <%# @resource.tags.map(&:tag).join(", ") %>
@@ -452,32 +452,32 @@
                           <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
                       <% end %>
                     </div>
-                    <% end %>
-                    <% if @resource.resources_vocabulary_terms.count > 0 %>
-                        <div class="col-sm-<%= @resource.settings(:user_interaction).allow_tags > 0 ? '6' : '12' %>">
-                          <h5>Keywords</h5>
-                          <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-                          <%
-                            key_array = []
-                            @resource.resources_vocabulary_terms.each do |v|
-                              k_user_name = ""
-                              if(v.user_id)
-                                v_user = User.find(v.user_id)
-                                k_user_name = v_user.name
-                              end
-                              key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => k_user_name, :v_updated => v.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
+                <% end %>
+                <% if @resource.resources_vocabulary_terms.count > 0 %>
+                    <div class="col-sm-<%= @resource.settings(:user_interaction).allow_tags > 0 ? '6' : '12' %>">
+                      <h5>Keywords</h5>
+                      <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+                      <%
+                        key_array = []
+                        @resource.resources_vocabulary_terms.each do |v|
+                          k_user_name = ""
+                          if(v.user_id)
+                            v_user = User.find(v.user_id)
+                            k_user_name = v_user.name
+                          end
+                          key_array << { :v_term => v.vocabulary_terms.term.capitalize, :v_user_name => k_user_name, :v_updated => v.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) }
 
-                            end
-                            key_array.sort_by!{|a| a[:v_term]}
-                            key_array.each do |l|
-                          %>
-                              <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] + ' (' + l[:v_updated] + ')' %></small></span><br/>
-                          <% end %>
-                        </div>
-                    <% end %>
-                  </div>
-                </div>
+                        end
+                        key_array.sort_by!{|a| a[:v_term]}
+                        key_array.each do |l|
+                      %>
+                          <span class="tag_keyword"><%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term] + '"') %></span><span class="author_show"> <small>&mdash; by <%= l[:v_user_name] + ' (' + l[:v_updated] + ')' %></small></span><br/>
+                      <% end %>
+                    </div>
+                <% end %>
               </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -486,10 +486,10 @@
     <div class="panel panel-primary">
       <div class="panel-body">
         <div class="row">
-          
+
           <div class="col-xs-12 text-left">
             <% if (user_signed_in?) %>
-              <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard' %>
+                <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard' %>
             <% end %>
           </div>
           <div class="col-xs-12 text-left">
@@ -501,7 +501,7 @@
           <div class="col-xs-7 text-left">
             <%=
               link_to('<i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Previous'.html_safe, resource_path(@search_previous_resource_id)) if (@search_previous_resource_id)
-              %>
+            %>
           </div>
           <div class="col-xs-5 text-right">
             <%=
@@ -509,17 +509,17 @@
             %>
           </div>
         </div>
-        
+
         <div class="detailButtonsResource text-center">
           <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
           <!-- AddToAny BEGIN -->
-			<a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
-			<script>
-			var a2a_config = a2a_config || {};
-			a2a_config.linkname = '<%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>';
-			a2a_config.prioritize = ["facebook", "twitter", "email", "pinterest", "google_plus", "reddit", "wordpress", "tumblr"];
-			</script>
-		  <!-- AddToAny END -->
+          <a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
+          <script>
+              var a2a_config = a2a_config || {};
+              a2a_config.linkname = '<%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>';
+              a2a_config.prioritize = ["facebook", "twitter", "email", "pinterest", "google_plus", "reddit", "wordpress", "tumblr"];
+          </script>
+          <!-- AddToAny END -->
           <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
               <a href="#commentButton" onclick="$('#commentPanel').collapse('show')" title="Comment"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
           <% end %>
@@ -583,16 +583,16 @@
             </div><!-- end unit -->
         <% end %>
         <% if @resource.collectionobject_link_count > 0 %>
-			<div class="unit">
-			  <% co_count = @resource.collectionobject_link_count %>
-			  <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= co_count.to_s %> Collection Object Source<%= co_count == 1 ? '' : 's' %></H4></a>
-			  <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">
-				<% mf_references = @resource.media_file_references %>
-				<% mf_references.each do |mf_key, mf_value| %>
-					<div><small><%= link_to sanitize(mf_value[0]), get_resource_view_path(mf_key, user_signed_in?) %>(<%= mf_value[1] %>)</small></div>
-				<% end %>
-			  </div>
-			</div><!-- end unit -->
+            <div class="unit">
+              <% co_count = @resource.collectionobject_link_count %>
+              <a role="button" data-toggle="collapse" href="#referencePanel"><H4><%= co_count.to_s %> Collection Object Source<%= co_count == 1 ? '' : 's' %></H4></a>
+              <div id="referencePanel" class="collapse detailRelatedContentBlockScroll">
+                <% mf_references = @resource.media_file_references %>
+                <% mf_references.each do |mf_key, mf_value| %>
+                    <div><small><%= link_to sanitize(mf_value[0]), get_resource_view_path(mf_key, user_signed_in?) %>(<%= mf_value[1] %>)</small></div>
+                <% end %>
+              </div>
+            </div><!-- end unit -->
         <% end %>
         <% if @resource.links.count > 0 %>
             <div class="unit">
@@ -624,58 +624,73 @@
                 </div>
             <% end %>
         <% end %>
-		<% if @resource.vocabulary_terms.count > 0 %>
-			<div class="unit">
-			  <h4>Keywords</h4>
-			  <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
-			  <%
-				key_array = []
-				@resource.resources_vocabulary_terms.each do |v|
-				  key_array << { :v_term => v.vocabulary_terms.term.capitalize }
-				end
-				key_array.sort_by!{|a| a[:v_term]}
-				key_array.each do |l|
-			  %>
-				  <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term]) + '"' %><br/>
-			  <% end %>
-			</div>
-		<% end %>
+        <% if @resource.vocabulary_terms.count > 0 %>
+            <div class="unit">
+              <h4>Keywords</h4>
+              <%# @resource.vocabulary_terms.map(&:term).join(", ") %>
+              <%
+                key_array = []
+                @resource.resources_vocabulary_terms.each do |v|
+                  key_array << { :v_term => v.vocabulary_terms.term.capitalize }
+                end
+                key_array.sort_by!{|a| a[:v_term]}
+                key_array.each do |l|
+              %>
+                  <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term]) + '"' %><br/>
+              <% end %>
+            </div>
+        <% end %>
         <div>
           <!--Get all associated Affiliations-->
           <% if @resource.roles.count > 0 %>
               <div class="unit">
                 <h4>Created For</h4>
-                <%= 
-                	buf = ''
-                	aff_array = []
-                	@resource.roles.each do |r|
-                		Rails.application.config.x.user_roles.each do |k,v|
+                <%=
+                  buf = ''
+                  aff_array = []
+                  @resource.roles.each do |r|
+                    Rails.application.config.x.user_roles.each do |k,v|
                       next if (v == :admin)
-                			if r.name == v.to_s
-                				aff_array << { :a_term => k.to_s, :a_val => v.to_s }
-                			end
-                		end
-                	end
-                	aff_array.sort_by!{|a| a[:a_term]}
-                	aff_array.each do |a|
-                		buf += link_to a[:a_term], '/quick_search/query?utf8=✓&q=role:' + a[:a_val]
-                		buf += '<br/>'
-                	end
-                	sanitize(buf)
+                      if r.name == v.to_s
+                        aff_array << { :a_term => k.to_s, :a_val => v.to_s }
+                      end
+                    end
+                  end
+                  aff_array.sort_by!{|a| a[:a_term]}
+                  aff_array.each do |a|
+                    buf += link_to a[:a_term], '/quick_search/query?utf8=✓&q=role:' + a[:a_val]
+                    buf += '<br/>'
+                  end
+                  sanitize(buf)
                 %>
               </div><!--end unit-->
           <% end %>
+
+          <% if (current_user && (@available_collections.length > 0)) %>
           <div class="unit">
-			<h4>Rate this Resource</h4>
-			<%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
-			<h6 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h6>
-		  </div>
+            <div id="resourceAdd-status">
+              <div class="flash-notice" id="resourceAdd-status-message">
+
+              </div>
+            </div>
+            <h4>Add to collection</h4>  <form class="collectionObjectAdd"><%=
+            select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections, :id, lambda {|t| strip_tags(t.title)}), class:'detailCollectionList', id:'resourceAddToCollectionID')
+          %>
+            <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "resourceAddToCollection", data: {id: @resource.id}  %>
+          </form>
+          </div>
+          <% end %>
+          <div class="unit">
+            <h4>Rate this Resource</h4>
+            <%= rating_for @resource, 'quality', disable_after_rate: false, star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png", cancel_place: 'right', cancel_on: 'cancel_on.png', cancel_off: 'cancel_off.png' %>
+            <h6 class="noPaddingText">AVG: <%= @resource.avg_rating %> | Ratings: <%= @resource.total_ratings %></h6>
+          </div>
           <!-- Display the current user or author -->
           <div class="unit authorLink">
             <% if @resource.author_id  %>
-            	<% author_name = @resource.get_author_name(:omit_email => true).to_s %>
+                <% author_name = @resource.get_author_name(:omit_email => true).to_s %>
                 <h4>Created by</h4><%= link_to sanitize(author_name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author:"' + author_name + '"' %> <i class="fa fa-external-link-square" aria-hidden="true"></i>
-                
+
             <% else %>
                 <h4>Created by</h4><%= link_to sanitize(@resource.user.name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%> <i class="fa fa-external-link-square" aria-hidden="true"></i>
             <% end %>
@@ -696,35 +711,35 @@
               <% end  %>
             </div>
         <% end %>
-		<div class="unit">
-			<a role="button" data-toggle="collapse" href="#reportPanel"><h4><i class="fa fa-exclamation-triangle"></i> Report</h4></a>	
-			<div id="reportPanel" class="collapse">
-				<%= form_tag 'send_report' do %>
-					<% if !user_signed_in? %>
-						<div class="form-group"><label>Email:</label><%= text_field_tag 'email', '', :class => 'form-control' %></div>
-					<% else %>
-						<%= hidden_field_tag 'r_user_name', current_user.name %>
-						<%= hidden_field_tag 'r_user_email', current_user.email %>
-					<% end %>
-					<div class="form-group"><label>Report:</label><%= text_area_tag 'report', '', {:class => 'form-control', :rows => '3'} %></div>
-					<%= hidden_field_tag 'r_title', @resource.title %>
-					<%= hidden_field_tag 'r_id', @resource.id %>
-					<%= submit_tag "Send Report", {:value => "Send Report", :class => "btn btn-default btn-sm"} %>
-				<% end %>
-				<br/>
-				<p><span data-toggle="popover" data-placement="top" data-trigger="hover" data-content="UMMA is dedicated to fostering diversity, equity and inclusion and therefore abusive, threatening or derogatory content is subject to removal from The Exchange. Please use this tool to report any content that crosses these lines. All reports will be reviewed by UMMA staff for potential action."><i class="fa fa-question-circle"></i>Reporting Policy</span></p>
-				<script>
-					$('#reportPanel').ready(function(){
-						$('[data-toggle="popover"]').popover({
-							container: 'body',
-							title: "Reporting Guidelines"
-						});
-					});
-				</script>
-			</div>
-		</div>
-		
-		
+        <div class="unit">
+          <a role="button" data-toggle="collapse" href="#reportPanel"><h4><i class="fa fa-exclamation-triangle"></i> Report</h4></a>
+          <div id="reportPanel" class="collapse">
+            <%= form_tag 'send_report' do %>
+                <% if !user_signed_in? %>
+                    <div class="form-group"><label>Email:</label><%= text_field_tag 'email', '', :class => 'form-control' %></div>
+                <% else %>
+                    <%= hidden_field_tag 'r_user_name', current_user.name %>
+                    <%= hidden_field_tag 'r_user_email', current_user.email %>
+                <% end %>
+                <div class="form-group"><label>Report:</label><%= text_area_tag 'report', '', {:class => 'form-control', :rows => '3'} %></div>
+                <%= hidden_field_tag 'r_title', @resource.title %>
+                <%= hidden_field_tag 'r_id', @resource.id %>
+                <%= submit_tag "Send Report", {:value => "Send Report", :class => "btn btn-default btn-sm"} %>
+            <% end %>
+            <br/>
+            <p><span data-toggle="popover" data-placement="top" data-trigger="hover" data-content="UMMA is dedicated to fostering diversity, equity and inclusion and therefore abusive, threatening or derogatory content is subject to removal from The Exchange. Please use this tool to report any content that crosses these lines. All reports will be reviewed by UMMA staff for potential action."><i class="fa fa-question-circle"></i>Reporting Policy</span></p>
+            <script>
+                $('#reportPanel').ready(function(){
+                    $('[data-toggle="popover"]').popover({
+                        container: 'body',
+                        title: "Reporting Guidelines"
+                    });
+                });
+            </script>
+          </div>
+        </div>
+
+
         <%= render(partial: 'resources/resource_responses', layout: false) %>
       </div>
     </div>
@@ -732,57 +747,57 @@
 </div><!-- end row -->
 <script>
 
-  $(function(){
-    $('.mediaTipsTrigger').popover({
-      html: true,
-      content: function(){
-        return $('.mediaTipsPopover').html();
-      }
+    $(function(){
+        $('.mediaTipsTrigger').popover({
+            html: true,
+            content: function(){
+                return $('.mediaTipsPopover').html();
+            }
+        });
     });
-  });
-  //These scripts control display and interaction with the slideshows
-  // These functions trigger opening and closing of the FULL-fullscreen slideshow
+    //These scripts control display and interaction with the slideshows
+    // These functions trigger opening and closing of the FULL-fullscreen slideshow
 
-  function launchIntoFullscreen(element) {
-    if(element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if(element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    } else if(element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
-    } else if(element.msRequestFullscreen) {
-      element.msRequestFullscreen();
+    function launchIntoFullscreen(element) {
+        if(element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if(element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if(element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
     }
-  }
 
-  // Bind the launch fullscreen option to all links to the fullscreen slideshow
-  // Also set focus on carousel-control to enable keyboard commands onload, delay gives time for element to be visible
-  $('a#openFullscreen, a#modalSlideshow').click(function(){
-    launchIntoFullscreen(document.documentElement); // the whole page
-    setTimeout(function(){
-      $('.carousel-control').focus();
-    }, 500);
-  });
+    // Bind the launch fullscreen option to all links to the fullscreen slideshow
+    // Also set focus on carousel-control to enable keyboard commands onload, delay gives time for element to be visible
+    $('a#openFullscreen, a#modalSlideshow').click(function(){
+        launchIntoFullscreen(document.documentElement); // the whole page
+        setTimeout(function(){
+            $('.carousel-control').focus();
+        }, 500);
+    });
 
-  function exitFullscreen() {
-    if(document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if(document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if(document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
+    function exitFullscreen() {
+        if(document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if(document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if(document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
     }
-  }
 
-  // Exit fullscreen and fullscreen modal with one click
-  // If Esc is used, it will have to be hit twice, once to escape fullscreen and once to close the modal
-  // There seems to be no way around this behavior
-  $('#fullscreenClose').click(function(){
-    exitFullscreen();
-  });
-  // Enforce Esc as key to close the modal
-  $(document).keyup(function(e){
-    if(e.keyCode === 27)
-      $("#carousel-full").modal('hide');
-  });
+    // Exit fullscreen and fullscreen modal with one click
+    // If Esc is used, it will have to be hit twice, once to escape fullscreen and once to close the modal
+    // There seems to be no way around this behavior
+    $('#fullscreenClose').click(function(){
+        exitFullscreen();
+    });
+    // Enforce Esc as key to close the modal
+    $(document).keyup(function(e){
+        if(e.keyCode === 27)
+            $("#carousel-full").modal('hide');
+    });
 </script>
