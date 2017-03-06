@@ -389,7 +389,7 @@ class Resource < ActiveRecord::Base
   def collectionobject_link_count(options = {})
     co_count = 0
     MediaFile.where('sourceable_type=? AND resource_id=?', 'collectionobjectLink', self.id).find_each do |rf|
-      if rf.access == 1
+      if rf.access == 1 and rf.display_collectionobject_link == 1
         co_count += 1
       elsif options[:get_hidden]
         co_count += 1
@@ -409,7 +409,7 @@ class Resource < ActiveRecord::Base
       co_resource = Resource.find(co_link.resource_id)
 
       MediaFile.where('sourceable_id=? AND resource_id=?', co_link.id, self.id).find_each do |media_resource|
-        if media_resource.access == 1
+        if media_resource.access == 1 and media_resource.display_collectionobject_link == 1
           mf_references[co_resource.id] = [co_resource.title, co_resource.collection_identifier]
         end
       end

@@ -757,6 +757,16 @@ select.input-sm{
     		height:auto;
 		text-align:left;
   	}
+	.coLink{
+		background-color: $green;
+		color: $white;
+		padding: 2px 0;
+		font-size: 11px;
+		text-align: center;
+		a {
+			color: $white;
+		}
+	}
   	iframe{
    		 width: 100% !important;
   	}

@@ -29,6 +29,11 @@ class MediaFile < ActiveRecord::Base
     return Rails.application.config.x.license_types.key(self.copyright_license)
   end
 
+  def get_original_resource_id
+    original_id = CollectionobjectLink.find(self.sourceable_id)
+    return original_id.resource_id
+  end
+
   # List of supported media "plugins"
   def external_media_classes
     [CollectionobjectLink, FlickrLink, GoogledocsLink, YoutubeLink, VimeoLink, SoundcloudLink, LocalFile, CollectiveaccessLink]

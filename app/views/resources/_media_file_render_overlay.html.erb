@@ -39,20 +39,49 @@
 									col = CollectionobjectLink.find(media_file.sourceable_id)
 									rc = Resource.find(col.resource_id)
 									cap_fields = JSON.parse(rc.indexing_data)
-									short_caption = sanitize(cap_fields['artist'].to_s + '<br/><em>' + cap_fields['title'].to_s + '</em>')
+									short_caption = ''
+									long_caption = ''
+									if cap_fields['artist']
+										short_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
+										long_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
+									end
+									if cap_fields['title']
+										short_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em>')
+										long_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em><br/>')
+									end
 									material_fields = ''
 									if cap_fields['support']
 										material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
 									else
 										material_fields = cap_fields['medium'].to_s
 									end
-									long_caption = sanitize(cap_fields['artist'].to_s + '<br/><em>' + cap_fields['title'].to_s + '</em><br/>' + cap_fields['date_created'].to_s + '<br/>' + material_fields.to_s + '<br/>' + cap_fields['credit_line'].to_s + '<br/>' + cap_fields['idno'].to_s)
+									if cap_fields['date_created']
+										long_caption += sanitize(cap_fields['date_created'].to_s + '<br/>')
+									end
+									if material_fields != ''
+										long_caption += sanitize(material_fields.to_s + '<br/>')
+									end
+									if cap_fields['credit_line']
+										long_caption += sanitize(cap_fields['credit_line'].to_s + '<br/>')
+									end
+									if cap_fields['idno']
+										long_caption += sanitize(cap_fields['idno'].to_s)
+									end
 								%>
-								<div id="<%= media_file.id %>_caption_type" class="captionRadios">
-									<label class="control-label">Caption Type</label><br/>
-									<%= f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
+								<div class="row">
+									<div class="col-sm-6">
+										<div id="<%= media_file.id %>_caption_type" class="captionRadios">
+											<label class="control-label">Caption Type</label><br/>
+											<%= f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div id="<%= media_file.id %>_display_collectionobject_link" class="captionRadios">
+											<label class="control-label">Display link to Collection Object?</label><br/>
+											<%= f.collection_radio_buttons :display_collectionobject_link, [[1, "Yes"], [0, "No"]], :first, :last %>
+										</div>
+									</div>
 								</div>
-
 								<script>
 									var captions = captions || {}
 									captions['<%= media_file.id %>'] = {}
@@ -78,7 +107,7 @@
 							<% else %>
 								<%= f.input :caption, :input_html => {}, :as => :summernote %>
 							<% end %>
-							<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
+							<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false, :readonly => true, :disabled => true %>
 							<%= f.input :copyright_notes, :input_html => {}, :as => :summernote %>
               <%= f.input :access,  collection: Rails.application.config.x.access_types%>
 
@@ -89,7 +118,7 @@
 
 						<% end %>
 					<% else %>
-						<%= sanitize(media_file.caption) %>
+						<%= sanitize(HTMLEntities.new.decode(media_file.caption)) %>
 						<br/>
 						<br/>
 						<%= sanitize(media_file.copyright_notes) %>
@@ -102,10 +131,12 @@
 		<%
 						# construct URL for link to UMMA Catalog
 						r = Resource.find(media_file.sourceable.resource_id)
-						collection_url = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'http://quod.lib.umich.edu/m/musart/x-\1-sl-\2')
+						# collection_url = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'http://quod.lib.umich.edu/m/musart/x-\1-sl-\2')
 		%>
-						  UMMA Collection Object<br/>
-						  Original Link: <a href="<%= collection_url %>" target="_blank"><%= collection_url %></a>
+						  UMMA Collections<br/>
+						  <% if media_file.display_collectionobject_link != 0 %>
+						  	<%= link_to "View Object Record", get_resource_view_path(r.id, user_signed_in?) %>
+						  <% end %>
 		<%
 						when "FlickrLink"
 		%>
