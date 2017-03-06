@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <% if (current_user && (@available_collections_and_resources.length > 0)) %>
+      <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
           <div>
             <form class="collectionObjectResultsAdd">
               Add checked results to collection/resource <%=
@@ -48,7 +48,7 @@
             end
           %>
           <div class="col-md-2 qsResult">
-            <% if (current_user && (@available_collections_and_resources.length > 0)) %>
+            <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
                 <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
             <% end %>
             <% r.media_files.each do |f| %>

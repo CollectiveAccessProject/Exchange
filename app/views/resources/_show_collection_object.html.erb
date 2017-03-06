@@ -191,7 +191,7 @@
         <% end %>
 
         <%# render(partial: 'resources/resource_responses', layout: false) %>
-        <% if (current_user && (@available_collections_and_resources.length > 0)) %>
+        <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
         <div class="unit">
           <div id="collectionObjectAdd-status">
             <div class="flash-notice" id="collectionObjectAdd-status-message">

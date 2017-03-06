@@ -24,7 +24,7 @@
         </div>
       </div>
 
-      <% if (current_user && (@available_collections.length > 0)) %>
+      <% if (current_user && @available_collections && (@available_collections.length > 0)) %>
           <div>
             <form class="resourceResultsAdd">
               Add checked results to collection <%=
@@ -51,7 +51,7 @@
             end
           %>
           <div class="col-md-2 qsResult">
-            <% if (current_user && (@available_collections.length > 0)) %>
+            <% if (current_user && @available_collections && (@available_collections.length > 0)) %>
             <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
             <% end %>
 

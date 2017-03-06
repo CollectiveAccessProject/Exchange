@@ -24,7 +24,7 @@
             <%= link_to "Create new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
           </div>
           <div class="col-sm-6 col-md-5 text-center">
-          <% if (@available_collections.length > 0) %>
+          <% if (@available_collections && (@available_collections.length > 0)) %>
           	<div class="row">
 				<%= form_tag(set_resource_parent_with_id_path(@resource), method: "post") do %>
 					<div class="col-sm-3 text-right"><small>or use:</small></div>
