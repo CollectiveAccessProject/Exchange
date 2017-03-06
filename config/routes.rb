@@ -63,6 +63,7 @@ Rails.application.routes.draw do
   get '/resources/:id/remove_related_resource' => 'resources#remove_related_resource', as: "remove_related_resource"
   post '/resources/:id/fork' => 'resources#fork', as: "fork_resource"
   post '/resources/:id/publish' => 'resources#toggle_access', as: "publish_resource"
+  post '/resources/:id/set_response_info/:response_id' => 'resources#set_response_info', as:"set_response_info"
 
 
   post '/resources/:id/add_child_resource' => 'resources#add_child_resource', as: "add_child_resource"

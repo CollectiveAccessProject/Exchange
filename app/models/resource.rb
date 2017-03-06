@@ -36,6 +36,8 @@ class Resource < ActiveRecord::Base
 
   after_commit :update_search_index
 
+  before_save :set_rating
+
   # resource type constants
   RESOURCE = 1
   LEARNING_COLLECTION = 2
@@ -184,6 +186,13 @@ class Resource < ActiveRecord::Base
     record
   end
   serialize :indexing_data
+
+  def set_rating
+    score = self.avg_rating
+    if (score != self.average_rating)
+      average_rating = score
+    end
+  end
 
   # Generate display label for resource autocomplete
   def get_autocomplete_label

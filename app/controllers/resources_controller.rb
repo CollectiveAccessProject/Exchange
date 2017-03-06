@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :except => [:view]
-  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access]
+  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :set_response_info]
 
   include CommentableController
   include TaggableController
@@ -95,6 +95,9 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
+
+    @available_collections = get_available_collections(@resource)
+    @available_collections_and_resources = get_available_collections_and_resources(@resource)
 
     if(@resource.is_collection)
       # session for last collection so can attribute parent when resource has multiple parent collections
@@ -602,36 +605,36 @@ class ResourcesController < ApplicationController
     for add_child_resource_id in add_child_resource_ids
       begin
         if (@resource.is_collection)
-         if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
-           exists = exists + 1
-         else
-           prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).create
-           created = created + 1
-          end
-        elsif(@resource.is_resource)
-         # if (MediaFile.joins(:sourceable).where(media_files: {resource_id: @resource.id}, sourceable: {resource_id: add_child_resource_id}).length > 0)
-         if (ActiveRecord::Base.connection.execute("SELECT * FROM media_files mf INNER JOIN collectionobject_links AS l ON mf.sourceable_id = l.id WHERE mf.sourceable_type = 'CollectionobjectLink' AND mf.resource_id = " + @resource.id.to_s + " AND l.resource_id = " + add_child_resource_id.to_i.to_s).count > 0)
+          if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
             exists = exists + 1
           else
-          @media_file = MediaFile.new({
-              caption: "",
-              copyright_notes: "",
-              access: true
-                                      })
-          @media_file.set_sourceable_media({collectionobject_link: {original_link: add_child_resource_id}});
+            prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).create
+            created = created + 1
+          end
+        elsif(@resource.is_resource)
+          # if (MediaFile.joins(:sourceable).where(media_files: {resource_id: @resource.id}, sourceable: {resource_id: add_child_resource_id}).length > 0)
+          if (ActiveRecord::Base.connection.execute("SELECT * FROM media_files mf INNER JOIN collectionobject_links AS l ON mf.sourceable_id = l.id WHERE mf.sourceable_type = 'CollectionobjectLink' AND mf.resource_id = " + @resource.id.to_s + " AND l.resource_id = " + add_child_resource_id.to_i.to_s).count > 0)
+            exists = exists + 1
+          else
+            @media_file = MediaFile.new({
+                                            caption: "",
+                                            copyright_notes: "",
+                                            access: true
+                                        })
+            @media_file.set_sourceable_media({collectionobject_link: {original_link: add_child_resource_id}});
 
-          # TODO: does user have access to this resource?
-          @media_file.resource_id = @resource.id
-          @media_file.save
-          created = created + 1
-            end
+            # TODO: does user have access to this resource?
+            @media_file.resource_id = @resource.id
+            @media_file.save
+            created = created + 1
+          end
         end
 
       rescue StandardError => ex
         resp = {:status => :err, :error => ex.message}
         break
       end
-      end
+    end
 
     resp = {:status => :ok, :numAdded => created, :numExisting => exists, :ids => add_child_resource_ids} if(!resp)
     respond_to do |format|
@@ -801,6 +804,30 @@ class ResourcesController < ApplicationController
     end
   end
 
+
+  #
+  def set_response_info
+
+    params.permit(:show)
+
+    # TODO: Check if user has access to resource
+    if (r = Resource.where({in_response_to_resource_id: params[:id], id: params[:response_id]}).first)
+      begin
+        r.response_banned_on = (params[:show].to_i == 1) ? 1 : 0
+        r.save
+
+        resp = {show: params[:show], status: :ok, :html => render_to_string("resources/_responses", layout: false)}
+      rescue Exception => e
+        resp = {:status => :err, :error => r.errors.full_messages.join('; ')}
+      end
+    else
+      resp = {:status => :err, :error => "Not found"}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
+    end
+  end
   #
   # User access list
   #
@@ -852,9 +879,22 @@ class ResourcesController < ApplicationController
 
   # return collections available to the current user
   def get_available_collections(resource)
+    return nil if (!current_user)
+
     ids = resource.parents.pluck(:id)
     ids.push(resource.id)
     return Resource.where("resource_type = ? AND user_id = ? AND id NOT IN (?)", Resource::LEARNING_COLLECTION, current_user.id, ids).order(title: :asc)
+  end
+
+  #
+  #
+  #
+  def get_available_collections_and_resources(resource)
+    #return nil if (!current_user)
+
+    ids = resource.parents.pluck(:id)
+    ids.push(resource.id)
+    return Resource.where("resource_type IN (?) AND user_id = ? AND id NOT IN (?)", [Resource::LEARNING_COLLECTION, Resource::RESOURCE], current_user.id, ids).order(title: :asc)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

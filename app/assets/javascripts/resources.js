@@ -351,6 +351,18 @@ jQuery(document).ready(function() {
         }, 'json');
         return false;
     });
+
+    jQuery("#tab_responses").on('click', '.responseBankLink', function(e) {
+        e.preventDefault();
+        var url = jQuery(this).attr('href');
+
+        jQuery.post(url, {"show": jQuery(this).data('show')}, function(data) {
+            jQuery("#tab_responses").html(data.html);
+
+            return true;
+        }, 'json');
+        return false;
+    });
 });
 
 

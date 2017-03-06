@@ -271,7 +271,8 @@ namespace :exchange do
 				end
 			end
 		end
-	end
+  end
+
 	desc 'Update Collection Object Body Text'
 	task reformat_co_body_text: :environment do
 		test_count = 0
@@ -283,6 +284,18 @@ namespace :exchange do
 			if (test_count > 5)
 				break
 			end
+		end
+  end
+
+	desc 'Update cached average resource ratings'
+	task update_cached_average_resource_ratings: :environment do
+		test_count = 0
+		Resource.all.each do |r|
+      r.average_rating =  rating = r.avg_rating.to_i
+
+      r.save
+
+      puts "Set " + rating.to_s + " for " + r.id.to_s
 		end
 	end
 end

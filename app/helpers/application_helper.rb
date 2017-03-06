@@ -3,6 +3,8 @@ module ApplicationHelper
     case version
       when :icon
         return {width: 72, height: 72, area: "72x72" }
+      when :largeicon
+        return {width: 120, height: 120, area: "120x120" }
       when :thumbnail
         return {width: 240, height: 200, area: "240x200" }
       when :medium
