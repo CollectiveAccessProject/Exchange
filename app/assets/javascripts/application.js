@@ -28,6 +28,8 @@
 //= require ratyrate
 //= require bootstrap-editable
 //= require bootstrap-editable-rails
+//= require leaflet
+//= require leaflet-iiif
 //= require_tree .
 
 // Add icontains selector to jQuery - case insensitive text search

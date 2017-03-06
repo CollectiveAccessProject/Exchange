@@ -1,0 +1,30 @@
+<div id="mediaViewerModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mediaViewerModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h2 class="modal-title" id="addMediaFormLabel">Media</h2>
+      </div>
+      <div class="modal-body">
+        <div id="image" class="zoomableViewer"> </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  jQuery(document).ready(function() {
+      jQuery('#mediaViewerModal').on('shown.bs.modal', function(){
+          var path = jQuery(this).data('iiif');
+          var map = L.map('image', {
+              center: [0, 0],
+              crs: L.CRS.Simple,
+              zoom: 2,
+          });
+
+          L.tileLayer.iiif(path).addTo(map);
+          map.invalidateSize();
+      });
+  });
+</script>

@@ -92,6 +92,7 @@
                         # Example of how to output image using IIIF
                       # image_tag(riiif_image_path(f, {size: ',600'}))
                       %>
+                      <a href="#" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i></a>
                   <% end %>
                 </div>
             <%
@@ -210,3 +211,4 @@
     </div>
   </div><!-- end col -->
 </div><!-- end row -->
+<%= render(partial: 'resources/media_overlay') %>

@@ -224,3 +224,7 @@ end
 def riiif_image_path(media_file, options=nil)
   Riiif::Engine.routes.url_helpers.image_path(media_file.thumbnail.path.gsub!(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
 end
+
+def riiif_info_path(media_file, options=nil)
+  Riiif::Engine.routes.url_helpers.info_path(media_file.thumbnail.path.gsub!(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+end

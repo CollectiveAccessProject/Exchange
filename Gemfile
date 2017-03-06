@@ -129,3 +129,4 @@ gem 'ratyrate'
 
 gem 'riiif'
 gem 'bootstrap-editable-rails'
+gem 'leaflet-rails'
