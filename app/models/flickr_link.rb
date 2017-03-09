@@ -21,7 +21,11 @@ class FlickrLink < ActiveRecord::Base
 
   def set_thumbnail
     # Get list of available photo sizes from Flickr
+    begin
     p = flickr.photos.getSizes(photo_id: self.photo_id)
+    rescue
+      raise "Can not fetch this image. Access may be restricted by the rights holder."
+      end
 
     if (!(version = p.find {|p| p['label'] == 'Original' }))  # try to use the highest resolution original
       version = p.pop   # otherwise use the last one in the list (presumably the best?)

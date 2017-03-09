@@ -34,24 +34,30 @@ class MediaFilesController < ApplicationController
     @resource = @media_file.resource;
 
     respond_to do |format|
-      if @media_file.save
+      begin
+        if @media_file.save
 
-        format.html do
-          if @media_file.resource
-            redirect_to edit_resource_path(@media_file.resource), notice: 'Media was added.'
-          elsif
-            redirect_to @media_file, notice: 'Media was added.'
+          format.html do
+            if @media_file.resource
+              redirect_to edit_resource_path(@media_file.resource), notice: 'Media was added.'
+            elsif
+              redirect_to @media_file, notice: 'Media was added.'
+            end
           end
+          format.json { render json: {status: :OK, notice: 'Media was added.', media: @media_file }}
+          format.js
+        else
+          format.json { render json: @media_file.errors.full_messages, status: :unprocessable_entity }
+          format.html do
+            redirect_to edit_resource_path(params[:media_file][:resource_id]), notice: 'Media could not be added: ' + @media_file.errors.full_messages.join(";")
+          end
+          #format.js
         end
-        format.json { render json: {status: :OK, notice: 'Media was added.', media: @media_file }}
-        format.js
-      else
-        format.json { render json: @media_file.errors.full_messages.join(";"), status: :unprocessable_entity }
-        format.html do
-          redirect_to edit_resource_path(params[:media_file][:resource_id]), notice: 'Media could not be added: ' + @media_file.errors.full_messages.join(";")
-        end
-        format.js
+      rescue Exception => e
+        format.json { render json: e.message,  status: :unprocessable_entity }
+        #format.js
       end
+
     end
   end
 
@@ -84,20 +90,20 @@ class MediaFilesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_media_file
-      @media_file = MediaFile.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_media_file
+    @media_file = MediaFile.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def media_file_params
-      p = params.require(:media_file).permit(
-          :slug, :caption, :media, :source_type, :source, :copyright_license, :copyright_notes, :access, :lock_version, :resource_id, :caption_type, :display_collectionobject_link
-      )
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def media_file_params
+    p = params.require(:media_file).permit(
+        :slug, :caption, :media, :source_type, :source, :copyright_license, :copyright_notes, :access, :lock_version, :resource_id, :caption_type, :display_collectionobject_link
+    )
 
-      p[:access] = 0 if (p[:access] == "false")
-      p[:access] = 1 if (p[:access] == "true")
+    p[:access] = 0 if (p[:access] == "false")
+    p[:access] = 1 if (p[:access] == "true")
 
-      p
-    end
+    p
+  end
 end
