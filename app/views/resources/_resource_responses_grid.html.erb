@@ -1,6 +1,6 @@
 <div class="row collectionDetailContents">
-<% @resource.get_responses.each do |rr| %>
-      <% next if (rr.response_banned_on > 0) %>
+<% @resource.responses.each do |rr| %>
+	  <% next if (rr.response_banned_on == 1) %>
 		<div class="col-sm-2">
 			<div class="collectionDetailContentsItem" >
 				<div class='titleOver'><%= link_to ((rr.is_resource) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rr.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(rr, user_signed_in?) %></div>

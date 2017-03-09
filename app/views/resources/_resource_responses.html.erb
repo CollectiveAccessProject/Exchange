@@ -14,7 +14,7 @@
 
     <% buf = '' %>
     <% @resource.responses.each do |r| %>
-        <% next if (r.response_banned_on > 0) %>
+        <% next if (r.response_banned_on) %>
         <%
           next if ((r.access == 0) && (!r.is_collection_object))
         %>

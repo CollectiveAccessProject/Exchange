@@ -6,28 +6,48 @@
 
           <div class="row">
             <% @resource.responses.each do |r| %>
-                <div class="col-md-2">
-                  <% r.media_files.each do |f| %>
-                      <% if f.sourceable %>
-                          <% if f.access == 1 %>
-                              <%= link_to (f.sourceable.preview :largeicon), get_resource_view_path(r[:id], false) %><br/>
-                              <% thumb = true %>
-                              <% break %>
-                          <% end %>
-                      <% end %>
-                  <% end %>
-                </div>
-                <div class="col-md-3">
-                  <%= link_to(strip_tags(r.title), r) %>
-                  <br/>
-                  By <i><%= r.user.name %> (<%= link_to(r.user.email, "mailto:" + r.user.email) %>)</i>
-                  <br/>
-                  (<%= r.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)
-                  <br/>
-                  <%= (r.response_banned_on == 1) ? link_to("<i class='fa fa-ban' aria-hidden='true'></i>".html_safe + " Will not display", set_response_info_path(@resource.id, r.id), class: "responseBankLink", data: {show: 0}) : link_to("<i class='fa fa-stop-circle' aria-hidden='true'></i>".html_safe + " Will display", set_response_info_path(@resource.id, r.id), class: "responseBankLink", data: {show: 1}) %>
-                </div>
+                <div class="col-md-6">
+                	<div class="row">
+						<div class="col-md-5">
+<%
+					available_media = 0
+					r.media_files.each do |f|
+						if f.access == 1
+							available_media = available_media + 1
+						end
+					end
+%>
+				  		<% if (available_media > 0) %>
+							<% r.media_files.each do |f| %>
+						    	<% if f.sourceable %>
+									<% if f.access == 1 %>
+										<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], false) %><br/>
+									  	<% thumb = true %>
+									  	<% break %>
+								  	<% end %>
+							  	<% end %>
+						  	<% end %>
+						<% else %>
+							<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %>
+				  		<% end %>
+						</div>
+						<div class="col-md-6">
+						  <%= link_to(strip_tags(r.title), r) %>
+						  <br/>
+						  By <i><%= r.user.name %> (<%= link_to(r.user.email, "mailto:" + r.user.email) %>)</i>
+						  <br/>
+						  (<%= r.created_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)
+						  <br/>
+						  <%= (r.response_banned_on == 1) ? link_to("<i class='fa fa-ban' aria-hidden='true'></i>".html_safe + " Will not display", set_response_info_path(@resource.id, r.id), class: "responseBankLink", data: {show: 0}) : link_to("<i class='fa fa-stop-circle' aria-hidden='true'></i>".html_safe + " Will display", set_response_info_path(@resource.id, r.id), class: "responseBankLink", data: {show: 1}) %>
+						</div>
+					</div>
+				</div>
             <% end %>
           </div>
+        </div>
+    <% else %>
+    	<div class="relatedContent">
+          <H4>No Responses To Display</H4>
         </div>
     <% end %>
   </div><!-- end panel-body -->
