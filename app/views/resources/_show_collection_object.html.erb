@@ -60,7 +60,8 @@
                 <% end %>
               </div><!-- end col -->
             </div><!-- end row -->
-          </div><!-- end panel body --></div><!-- end panel -->
+          </div><!-- end panel body -->
+        </div><!-- end panel -->
       </div><!-- end col -->
     </div><!-- end row -->
 <%
@@ -92,7 +93,9 @@
                         # Example of how to output image using IIIF
                       # image_tag(riiif_image_path(f, {size: ',600'}))
                       %>
-                      <a href="#" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i></a>
+                      <div class="zoomControls">
+                      	<a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+                      </div>
                   <% end %>
                 </div>
             <%
@@ -124,12 +127,13 @@
     <div class="panel panel-primary">
       <div class="panel-body">
         <div class="row">
-
           <div class="col-xs-12 text-left">
             <% if (user_signed_in?) %>
               <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard' %>
             <% end %>
           </div>
+        </div>
+        <div class="row">
           <div class="col-xs-12 text-left">
             <%= last_search_button(session, {'text': '<span class="glyphicon glyphicon-arrow-left aria-hidden="true"></span> Search'.html_safe}) %>
           </div>
@@ -199,11 +203,12 @@
 
             </div>
           </div>
-          <h4>Add to collection</h4>  <form class="collectionObjectAdd"><%=
+          <h4>Add to collection</h4>
+          <form class="collectionObjectAdd"><%=
           select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'detailCollectionList', id:'collectionObjectAddToCollectionID')
         %>
           <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectAddToCollection", data: {id: @resource.id}  %>
-        </form>
+          </form>
         </div>
         <% end %>
 

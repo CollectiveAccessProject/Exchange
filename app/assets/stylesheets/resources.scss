@@ -792,3 +792,12 @@ dd > .alert, p > .alert, dt > .alert{
 .detailCollectionList {
   width: 130px;
 }
+
+/* Leaflet Zoom Styles */
+.zoomControls{
+	text-align: initial;
+	.leafletZoom{
+		text-align: left !important;
+	}
+}
+

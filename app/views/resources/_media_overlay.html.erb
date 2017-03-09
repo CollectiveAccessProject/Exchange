@@ -9,6 +9,7 @@
       </div>
       <div class="modal-body">
         <div id="image" class="zoomableViewer"> </div>
+      </div>
     </div>
   </div>
 </div>
@@ -21,8 +22,8 @@
               center: [0, 0],
               crs: L.CRS.Simple,
               zoom: 2,
+              attributionControl: false,
           });
-
           L.tileLayer.iiif(path).addTo(map);
           map.invalidateSize();
       });

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215185345) do
+ActiveRecord::Schema.define(version: 20170306040307) do
 
   create_table "average_caches", force: :cascade do |t|
     t.integer  "rater_id",      limit: 4
@@ -156,21 +156,22 @@ ActiveRecord::Schema.define(version: 20170215185345) do
   end
 
   create_table "media_files", force: :cascade do |t|
-    t.string   "slug",              limit: 255,      default: "", null: false
-    t.integer  "resource_id",       limit: 4
-    t.text     "caption",           limit: 16777215,              null: false
-    t.integer  "copyright_license", limit: 1,        default: 0,  null: false
-    t.string   "copyright_notes",   limit: 255,                   null: false
-    t.integer  "access",            limit: 1,        default: 0,  null: false
-    t.integer  "lock_version",      limit: 4,        default: 0,  null: false
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
-    t.integer  "sourceable_id",     limit: 4
-    t.string   "sourceable_type",   limit: 255
-    t.integer  "rank",              limit: 4
-    t.string   "thumbnail_uid",     limit: 255
-    t.string   "title",             limit: 255
-    t.integer  "caption_type",      limit: 4
+    t.string   "slug",                          limit: 255,      default: "", null: false
+    t.integer  "resource_id",                   limit: 4
+    t.text     "caption",                       limit: 16777215,              null: false
+    t.integer  "copyright_license",             limit: 1,        default: 0,  null: false
+    t.string   "copyright_notes",               limit: 255,                   null: false
+    t.integer  "access",                        limit: 1,        default: 0,  null: false
+    t.integer  "lock_version",                  limit: 4,        default: 0,  null: false
+    t.datetime "created_at",                                                  null: false
+    t.datetime "updated_at",                                                  null: false
+    t.integer  "sourceable_id",                 limit: 4
+    t.string   "sourceable_type",               limit: 255
+    t.integer  "rank",                          limit: 4
+    t.string   "thumbnail_uid",                 limit: 255
+    t.string   "title",                         limit: 255
+    t.integer  "caption_type",                  limit: 4
+    t.integer  "display_collectionobject_link", limit: 2
   end
 
   add_index "media_files", ["resource_id"], name: "fk_rails_0b5d71f8d5", using: :btree
@@ -264,6 +265,9 @@ ActiveRecord::Schema.define(version: 20170215185345) do
     t.string   "role",                       limit: 1024
     t.integer  "author_id",                  limit: 4
     t.integer  "in_response_to_resource_id", limit: 4
+    t.integer  "average_rating",             limit: 4,          default: 0
+    t.integer  "response_banned_on",         limit: 4
+    t.text     "response_ban_reason",        limit: 65535
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "fk_rails_8c3d1e0d9a", using: :btree

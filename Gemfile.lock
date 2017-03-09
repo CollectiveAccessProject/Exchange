@@ -125,6 +125,7 @@ GEM
       railties (>= 3.1)
     json (1.8.6)
     jwt (1.5.6)
+    leaflet-rails (1.0.2)
     ledermann-rails-settings (2.4.2)
       activerecord (>= 3.1)
     loofah (2.0.3)
@@ -294,6 +295,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails (~> 4.2.0)
   jquery_query_builder-rails
+  leaflet-rails
   ledermann-rails-settings
   mime-types
   mysql2 (~> 0.3.18)
