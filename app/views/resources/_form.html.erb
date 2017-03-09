@@ -64,7 +64,7 @@
 		  			</div>
           		<% end %>
           		<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-		      	<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, selected: 1 %>
+		      	<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
 		    </div>
 		    <div class="col-md-6">
 		      	<%= r.input :copyright_notes, :input_html => {:rows => 4} %>
@@ -122,7 +122,7 @@
                 </div>
           	  <% end %>
 		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, selected: 1 %>
+		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
 		    </div>
 			<div class="col-md-6">
 			  <%= r.input :copyright_notes, :input_html => {}, :as => :summernote %>

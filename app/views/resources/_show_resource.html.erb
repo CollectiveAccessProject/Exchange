@@ -139,12 +139,11 @@
                           </a>
                           <div class="caption small">
                             <%= sanitize(f.caption) %>
+                            <% if f.display_collectionobject_link == 1 %>
+                          	  <%= link_to "<br/>View Object Record".html_safe, get_resource_view_path(f.get_original_resource_id, user_signed_in?) %>
+                          	<% end %>
                           </div>
-                          <% if f.display_collectionobject_link == 1 %>
-                          	<div class="coLink">
-                          	  <%= link_to "View Object Record", get_resource_view_path(f.get_original_resource_id, user_signed_in?) %>
-                          	</div>
-                          <% end %>
+                          
                         </div>
                         <%
                           begin

@@ -121,7 +121,7 @@
 								<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
 							<% end %>
 							<%= f.input :copyright_notes, :input_html => {}, :as => :summernote %>
-              <%= f.input :access,  collection: Rails.application.config.x.access_types%>
+              <%= f.input :access,  collection: Rails.application.config.x.access_types, label: 'Publication Status'%>
 
 							<%= hidden_field(:media_file, :resource_id, :value => @resource.id) %>
 							<input type="hidden" name='modal_id' value="<%= modal_id %>">
@@ -130,7 +130,7 @@
 
 						<% end %>
 					<% else %>
-						<%= sanitize(HTMLEntities.new.decode(media_file.caption)) %>
+						<%= sanitize(media_file.caption) %>
 						<br/>
 						<br/>
 						<%= sanitize(media_file.copyright_notes) %>
@@ -145,7 +145,7 @@
 						r = Resource.find(media_file.sourceable.resource_id)
 						# collection_url = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'http://quod.lib.umich.edu/m/musart/x-\1-sl-\2')
 		%>
-						  UMMA Collections<br/>
+						  UMMA Object Record<br/>
 						  <% if media_file.display_collectionobject_link != 0 %>
 						  	<%= link_to "View Object Record", get_resource_view_path(r.id, user_signed_in?) %>
 						  <% end %>
@@ -196,15 +196,23 @@
 					<script>
 						$('body').on('click', '#scroll-right_<%= media_file.id %>', function(){
 							$("#moResults_<%= media_file.id %>").animate({
-								scrollLeft: "+=125px"
+								scrollLeft: "+=135px"
 							}, "slow");
 						});
 					</script>
 					<script>
 						$('body').on('click', '#scroll-left_<%= media_file.id %>', function(){
 							$("#moResults_<%= media_file.id %>").animate({
-								scrollLeft: "-=125px"
+								scrollLeft: "-=135px"
 							}, "slow");
+						});
+					</script>
+					<script>
+						$('.moContainer').on('click', function(){
+							var scrollPos = $(this).scrollLeft();
+							$('.modal').on('shown.bs.modal', function(){
+								$('.moContainer').scrollLeft(scrollPos);
+							});
 						});
 					</script>
 				<div class="row">
