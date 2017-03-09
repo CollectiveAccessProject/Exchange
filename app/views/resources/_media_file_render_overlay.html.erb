@@ -16,9 +16,16 @@
         	</div>
         	<% if (!editable) %>
 				<div class="row">
-					<div class="col-sm-12 text-center scaleImg">
-						<div class="col-sm-12">
-							<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a>
+					<div class="col-sm-12 scaleImg">
+						<div class="row">
+							<div class="col-sm-6">
+								<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
+									<!--<a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%# riiif_info_path(media_file) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>-->
+								<% end %>
+							</div>
+							<div class="col-sm-6 text-right">
+								<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -107,7 +114,12 @@
 							<% else %>
 								<%= f.input :caption, :input_html => {}, :as => :summernote %>
 							<% end %>
-							<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false, :readonly => true, :disabled => true %>
+							<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
+								<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false, :readonly => true, :disabled => true %>
+							<% else %>
+
+								<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
+							<% end %>
 							<%= f.input :copyright_notes, :input_html => {}, :as => :summernote %>
               <%= f.input :access,  collection: Rails.application.config.x.access_types%>
 
@@ -272,3 +284,4 @@
 	}
 	</script>
 </div>
+<%= render(partial: 'resources/media_overlay') %>

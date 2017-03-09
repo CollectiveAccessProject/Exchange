@@ -25,7 +25,7 @@
 		  <div class="row">
 		    <div class="col-md-12">
 		      <%= r.input :body_text, :input_html => {}, :as => :summernote %>
-            	<% if(@resource.is_resource) %>
+            	<% if(@resource.is_resource) and @resource.id %>
                     <div class="mediaEmbedHelpLink">
                         <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i> How do I embed media in the body of my resource?
@@ -64,7 +64,7 @@
 		  			</div>
           		<% end %>
           		<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-		      	<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
+		      	<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, selected: 1 %>
 		    </div>
 		    <div class="col-md-6">
 		      	<%= r.input :copyright_notes, :input_html => {:rows => 4} %>
@@ -122,7 +122,7 @@
                 </div>
           	  <% end %>
 		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false %>
+		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, selected: 1 %>
 		    </div>
 			<div class="col-md-6">
 			  <%= r.input :copyright_notes, :input_html => {}, :as => :summernote %>
@@ -133,7 +133,7 @@
               	  	buf = ''
               	  	Rails.application.config.x.user_roles.each do |k,v|
                       next if (v == :admin)
-                	  buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, @resource.has_role?(v), {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
+                	  buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, ((@resource.id)) ? @resource.has_role?(v) : "checked", {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
                 	  #buf += + "<br/>"
               	  	end
               	  	buf.html_safe

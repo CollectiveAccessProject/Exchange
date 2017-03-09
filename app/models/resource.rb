@@ -26,7 +26,7 @@ class Resource < ActiveRecord::Base
   belongs_to :forked_from_resource, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
   has_many :forked_resources, class_name: 'Resource', foreign_key: 'forked_from_resource_id'
 
-  has_many :responses, -> { order 'resources.updated_at DESC' }, class_name: 'Resource', foreign_key: 'in_response_to_resource_id'
+  has_many :responses, -> { order 'resources.created_at DESC' }, class_name: 'Resource', foreign_key: 'in_response_to_resource_id'
   belongs_to :in_response_to, class_name: 'Resource', foreign_key: 'in_response_to_resource_id'
 
   # this allows us to save related media files though the resource
@@ -48,7 +48,7 @@ class Resource < ActiveRecord::Base
   has_settings :class_name => 'ResourceSettingObject'  do |s|
     s.key :media_formatting, :defaults => { :mode => :slideshow }
     s.key :text_placement,  :defaults => { :placement => :below}
-    s.key :text_formatting,  :defaults => { :show_all => 1, :collapse => 0 }
+    s.key :text_formatting,  :defaults => { :show_all => 0, :collapse => 0 }
     s.key :user_interaction,  :defaults => { :allow_comments => 1, :allow_tags => 1, :allow_responses => 0, :display_responses_on_separate_page => 1 }
   end
 
