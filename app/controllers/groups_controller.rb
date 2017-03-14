@@ -58,7 +58,7 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       if @group.save
-        format.html { redirect_to @group, notice: 'Group was created.' }
+        format.html { redirect_to edit_group_path(@group), notice: 'Group was created.' }
         format.json { render :index, status: :created, location: @group }
       else
         format.html { render :new }
