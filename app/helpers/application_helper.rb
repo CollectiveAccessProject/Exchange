@@ -36,7 +36,7 @@ module ApplicationHelper
   end
 
   def get_resource_view_path(resource, is_logged_in)
-    return is_logged_in ? resource_view_path(resource) : resource_view_path(resource)
+    return is_logged_in ? resource_preview_path(resource) : resource_view_path(resource)
   end
 
   def get_file_icon(mimetype:, size:nil, image: nil, version:nil)
@@ -222,9 +222,11 @@ end
 # Generate IIIF path for media file. Options are passed as-is to Riiif::Engine.routes.url_helpers.image_path
 #
 def riiif_image_path(media_file, options=nil)
-  Riiif::Engine.routes.url_helpers.image_path(media_file.thumbnail.path.gsub!(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+  return '' if !media_file.thumbnail.path
+  Riiif::Engine.routes.url_helpers.image_path(media_file.thumbnail.path.gsub(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
 end
 
 def riiif_info_path(media_file, options=nil)
-  Riiif::Engine.routes.url_helpers.info_path(media_file.thumbnail.path.gsub!(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+  return '' if !media_file.thumbnail.path
+  Riiif::Engine.routes.url_helpers.info_path(media_file.thumbnail.path.gsub(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
 end
