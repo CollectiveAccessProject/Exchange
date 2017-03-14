@@ -1,15 +1,41 @@
-<div class="panel panel-primary">
-  <div class="panel-body">
-    <%= simple_form_for(@group) do |f| %>
-      <%= f.error_notification %>
+<%= simple_form_for @group do |r| %>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <H3><%= (@group.id) ? 'Group' : 'New group' %> details </H3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
 
-      <%= f.input :name %>
-      <%= f.input :description %>
-      <%= f.input :type, collection: Group.group_types, include_blank: false %>
+            <%= r.input :name, :input_html => { rows: 2 } %>
+            <% if (!@group.id.nil?) %>
+                <%= r.input :slug, hint: '<i class="fa fa-info-circle"></i> Used to generate set URL, use only letters, numbers and dashes'.html_safe %>
+            <% end %>
+            <%= r.input :description, :input_html => { rows: 2 } %>
+            <%= r.input :group_type, collection: Group.group_types, include_blank: false %>
 
-    <div class="form-actions">
-      <%= f.button :submit %>
-    </div>
-    <% end %>
-  </div>
-</div>
+            <% if(!@group.created_at.nil?) %>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Group created</label></div>
+                  <div class="col-md-6"><%= @group.created_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+            <% end %>
+            <% if(!@group.updated_at.nil?) %>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Group last updated</label></div>
+                  <div class="col-md-6"><%= @group.updated_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+            <% end %>
+          </div><!-- end col -->
+        </div><!-- end row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-right"><%= r.button :submit, "Save" %></div>
+          </div><!-- end col -->
+        </div>
+      </div><!-- end panel-body -->
+
+    </div><!-- end panel -->
+<% end %>

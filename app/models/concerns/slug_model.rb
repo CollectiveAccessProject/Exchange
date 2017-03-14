@@ -6,6 +6,8 @@ module SlugModel
         slug = self.title.parameterize
       elsif (self.has_attribute?(:caption) && self.caption)
         slug = self.caption.parameterize
+      elsif (self.has_attribute?(:name) && self.name)
+        slug = self.name.parameterize
       else
         slug = '???'
       end
