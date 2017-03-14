@@ -2,7 +2,21 @@ class GroupsController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html, :json
-  before_action :set_group, only: [:edit, :update, :destroy]
+  before_action :set_group, only: [:edit, :update, :destroy, :add_user, :remove_user]
+
+  # UI autocomplete on user name/email (used by user lookup)
+  autocomplete :user, :name, :full => true, :extra_data => [:id]
+
+
+  # Override user name/email autocomplete to match on both name and email (sigh)
+  def autocomplete_user_name
+    term = params[:term]
+    u = User.where(
+        'LOWER(users.name) LIKE ? OR LOWER(users.email) LIKE ?',
+        "%#{term}%", "%#{term}%"
+    ).order(:id).all
+    render :json => u.map { |user| {:id => user.id, :label => user.name + " (" + user.email + ")", :value => user.name + " (" + user.email + ")"} }
+  end
 
   # GET /groups
   # GET /groups.json
@@ -82,6 +96,45 @@ class GroupsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to groups_url, notice: 'Group was deleted.' }
       format.json { head :no_content }
+    end
+  end
+
+  #
+  #
+  #
+  def add_user
+    begin
+      params.permit(:to_user_id, :access_type)
+      to_user_id = params[:to_user_id]
+      access_type = params[:access_type]
+      item = UserGroup.where(group_id: @group.id, user_id: to_user_id, access_type: access_type).first_or_create
+
+      resp = {:status => :ok, :html => render_to_string("groups/_user_list", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp, status: :ok }
+    end
+
+  end
+
+  #
+  #
+  #
+  def remove_user
+    begin
+      user_id = params[:user_id]
+      UserGroup.where(group_id: @group.id, user_id: user_id).destroy_all
+
+      resp = {:status => :ok, :html => render_to_string("groups/_user_list", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
     end
   end
 

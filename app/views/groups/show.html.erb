@@ -15,18 +15,21 @@
 
 <div id="set_list">
   <% if (@groups && (@groups.length > 0)) %>
-  <% @groups.each do |g| %><div class="setListItem row featuredAdminSetListRow" data-group_id="<%= g.id %>">
+      <% @groups.each do |g| %><div class="setListItem row featuredAdminSetListRow" data-group_id="<%= g.id %>">
   <div class="col-sm-6"><b><%= sanitize(g.name, tags: %w(strong em a font b sup sub u), attributes: %w(href style))  %></b><br/>(<%= g.slug %>)
-  <% if(g.description && (g.description.length > 0)) %>
-    <blockquote><%= g.description %></blockquote>
+    [<%= ((c = g.user_groups.count) == 1 ? "1 user" : c.to_s + " users") %>]
+    <% if(g.description && (g.description.length > 0)) %>
+        <blockquote><%= g.description %></blockquote>
     <% end %>
   </div>
   <div class="col-sm-3">
     <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_group_path(g), class: "btn btn-xs btn-default") %>
     <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, g, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
-  </div><% end %>
-</div>
+  </div>
+</div><% end %>
 
   <% else %>
       <h3>No groups defined</h3>
   <% end %>
+
+</div>

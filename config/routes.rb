@@ -12,7 +12,14 @@ Rails.application.routes.draw do
 
   root 'welcome#index'
 
-  resources :resources, :groups
+  resources :resources
+
+
+  resources :groups
+  get '/groups/:id/autocomplete_group_user_name' => 'groups#autocomplete_user_name', as: 'autocomplete_group_user_name'
+  post '/groups/:id/add_group_user' => 'groups#add_user', as: 'group_add_user'
+  get '/groups/:id/remove_group_user' => 'groups#remove_user', as: 'group_remove_user'
+
 
   # add user guide and other pages in About
   get '/user_guide' => 'about#user_guide'

@@ -1,0 +1,49 @@
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-12">
+        <h3>Users in group</h3>
+      </div>
+    </div>
+    <%= form_tag(group_add_user_path(@group), remote: true, method: "post", format: :json, class: 'set_items', id: 'groupUsers') do |f| %>
+        <div id="group-users-status">
+          <div class="flash-notice" id="group-users-status-message">
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <label>Search for user</label>
+              <%= autocomplete_field_tag(:find_user_id, '', :autocomplete_group_user_name, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#to_user_id", class:'form-control') %>
+              <%= hidden_field_tag(:to_user_id) %>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Access</label><br/>
+              <%= select_tag(:access_type, options_for_select(Rails.application.config.x.user_access_types)) %>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <label>&nbsp;</label>
+            <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
+          </div>
+        </div>
+    <% end %>
+    <% if @group.user_groups.count > 0 %>
+        <H4><%= @group.user_groups.count %> Users(s) in this group</H4>
+        <div id="set_contents_list">
+          <% @group.user_groups.each do |g| %>
+              <div class="setItem">
+                <%= g.user.email %>
+                <%= "[" + Rails.application.config.x.user_access_types.find{|key, val| val == g.access_type }[0]+"]" %>
+                <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, group_remove_user_path(@group) + "?user_id=" + g.user_id.to_s, {remote: true, class: :setItemsRemove}) %>
+              </div>
+          <% end %>
+        </div>
+    <% end %>
+
+  </div>
+</div>

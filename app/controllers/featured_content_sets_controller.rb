@@ -92,13 +92,6 @@ class FeaturedContentSetsController < ApplicationController
   #
   #
   #
-  def edit_set_item
-
-  end
-
-  #
-  #
-  #
   def remove_set_item
     begin
       @featured_content_set = FeaturedContentSet.find(params[:id])
