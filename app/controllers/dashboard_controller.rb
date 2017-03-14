@@ -2,7 +2,7 @@ class DashboardController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    @resources = Resource.where(user_id: current_user.id)
+    @resources = Resource.where('user_id=? OR author_id=?', current_user.id, current_user.id)
 
     # user activity history
     activity_history = PaperTrail::Version.where('whodunnit = ?', current_user.id).order(:created_at => :desc).limit(20)
@@ -61,13 +61,13 @@ class DashboardController < ApplicationController
   	
   	# Get filtered array of resource objects
   	if session[:access_filter] && session[:type_filter] 
-  		filtered_temp = Resource.where('access = ? AND resource_type = ? AND user_id = ?', session[:access_filter], session[:type_filter] , current_user.id)
+  		filtered_temp = Resource.where('access = ? AND resource_type = ? AND (user_id = ? OR author_id=?)', session[:access_filter], session[:type_filter] , current_user.id, current_user.id)
   	elsif session[:access_filter]
-  		filtered_temp = Resource.where('access = ? AND user_id = ?', session[:access_filter], current_user.id)
+  		filtered_temp = Resource.where('access = ? AND (user_id = ? OR author_id = ?', session[:access_filter], current_user.id, current_user.id)
   	elsif session[:type_filter]
-  		filtered_temp = Resource.where('resource_type = ? AND user_id = ?', session[:type_filter] , current_user.id)
+  		filtered_temp = Resource.where('resource_type = ? AND (user_id = ? OR author_id = ?)', session[:type_filter] , current_user.id, current_user.id)
   	else
-  		filtered_temp = Resource.where('user_id = ?', current_user.id)
+  		filtered_temp = Resource.where('user_id = ? OR author_id = ?', current_user.id, current_user.id)
   	end
   	
   	# Apply a sort to the objects if necessary
@@ -79,7 +79,7 @@ class DashboardController < ApplicationController
   	if session[:dash_sort] == 'title'
   		@filtered = filtered_temp.sort_by { |resource| ActionController::Base.helpers.strip_tags(resource.read_attribute(session[:dash_sort])) }
   	elsif session[:dash_sort]
-  		@filtered = filtered_temp.sort_by { |resource| resource.read_attribute(session[:dash_sort]) }
+  		@filtered = filtered_temp.sort_by { |resource| resource.read_attribute(session[:dash_sort]) }.reverse!
   	else
   		@filtered = filtered_temp
   	end
@@ -93,7 +93,7 @@ class DashboardController < ApplicationController
   	session.delete(:access_filter)
   	session.delete(:type_filter)
   	session.delete(:dash_sort)
-  	@filtered = Resource.where('user_id = ?', current_user.id)
+  	@filtered = Resource.where('user_id = ? OR author_id', current_user.id, current_user.id)
   	respond_to do |format|
   	  format.js { render :action => "filter_user_items" }
   	end

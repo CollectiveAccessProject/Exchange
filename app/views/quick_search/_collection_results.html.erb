@@ -3,10 +3,10 @@
     <div class="col-sm-12">
       <a href="#" onClick="$('#collectionsResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
       <h4>
-          <%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
-
-        (page <%= @collections_page.to_s + "/" + @collections_num_pages.to_s %>)
-
+      	  <a href="#" onClick="$('#collectionsResultsContainer').toggle(); return false;"style="padding-right:35vw;">
+          	<%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
+          	(page <%= @collections_page.to_s + "/" + @collections_num_pages.to_s %>)
+		  </a>
         <div class="pull-right">
           <form class="searchPaging">
           	<div class="searchFormElement">Results Per Page <%= select_tag("collection_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection']), {id: "collection_num_items_per_page"}) %></div>

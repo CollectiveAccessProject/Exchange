@@ -11,7 +11,7 @@
           <div class="col-sm-6">
             <div class="row">
             	<div class="col-sm-12 text-center scaleImg">
- 		           <%= media %>
+ 		        	<%= media %>
         		</div>
         	</div>
         	<% if (!editable) %>
@@ -19,12 +19,14 @@
 					<div class="col-sm-12 scaleImg">
 						<div class="row">
 							<div class="col-sm-6">
-								<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
-									<!--<a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%# riiif_info_path(media_file) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>-->
-								<% end %>
-							</div>
-							<div class="col-sm-6 text-right">
 								<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a>
+							</div>
+							<div class="col-sm-6">
+								<% if media_file.thumbnail_uid != nil and ['CollectionobjectLink', 'LocalFile', 'FlickrLink'].include? media_file.get_media_class(media_file.sourceable_type).to_s %>
+									<div class="zoomControls">
+										<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(media_file) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+									</div>
+								<% end %>
 							</div>
 						</div>
 					</div>
@@ -237,7 +239,6 @@
 										<li class="moRelated <%= af.sourceable.id.to_s == media_file.sourceable.id.to_s ? 'moCurrent' : '' %>" >
 											<a href="#" data-dismiss="modal" data-toggle="modal" data-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>">
 											<%= af.sourceable.preview :thumbnail %>
-											<small><%= media_file.title %></small>
 											</a>
 										</li>
 			<%
@@ -292,4 +293,3 @@
 	}
 	</script>
 </div>
-<%= render(partial: 'resources/media_overlay') %>

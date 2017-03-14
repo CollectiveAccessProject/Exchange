@@ -515,7 +515,13 @@ $red:#BA0017;
 		display: none;
 	}
 }
-
+.collectionObjectPreview{
+	display: inline-block;
+	img {
+		max-width: 100%;
+		max-height: 800px;
+	}
+}
 #find_child_resource_id {
   width: 300px;
   display: inline;
@@ -795,9 +801,10 @@ dd > .alert, p > .alert, dt > .alert{
 
 /* Leaflet Zoom Styles */
 .zoomControls{
-	text-align: initial;
+	text-align: right;
 	.leafletZoom{
-		text-align: left !important;
+		font-size: 12px;
+		color: #8a898a;
 	}
 }
 

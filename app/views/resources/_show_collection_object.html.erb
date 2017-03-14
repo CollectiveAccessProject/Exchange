@@ -75,27 +75,27 @@
     <H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H2>
     <div class="row">
       <div class="col-sm-8">
-        <div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
-          <!-- Wrapper for slides -->
-          <div class="carousel-inner" role="listbox">
+        <% if @resource.media_files.count > 1 %>
+          <div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
             <%
               counter = 1
               @resource.media_files.each do |f|
             %>
                 <div class="item <%= (counter == 1) ? 'active' : '' %>">
-                  <%
-                    if f.sourceable
-                  %>
-                      <%= f.sourceable.preview :huge  %>
-                      <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
-
-                      <%=
-                        # Example of how to output image using IIIF
+                <%
+                  if f.sourceable
+                %>
+                  <%= f.sourceable.preview :huge  %>
+                    <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
+                    <%=
+                      # Example of how to output image using IIIF
                       # image_tag(riiif_image_path(f, {size: ',600'}))
-                      %>
-                      <div class="zoomControls">
-                      	<a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-                      </div>
+                    %>
+                    <div class="zoomControls">
+                      <a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+                    </div>
                   <% end %>
                 </div>
             <%
@@ -103,20 +103,29 @@
               end
             %>
           </div><!-- end carousel-inner -->
-          <%
-            if @resource.media_files.count > 1
-          %>
-              <!-- Left and right controls -->
-              <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
-          <% end %>
+          <!-- Left and right controls -->
+          <a class="left carousel-control" href="#resourceCarousel" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#resourceCarousel" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
         </div><!-- end resourceCarousel -->
+      	<% else %>
+   		  <% @resource.media_files.each do |f| %>
+      		<div class="collectionObjectPreview">
+      			<%= f.sourceable.preview :huge %>
+      			<div class="zoomControls">
+				  <a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+				</div>
+      		</div>
+      	<% 
+      	  end 
+      	end
+      	%>	   
+      		
       </div><!-- end col -->
       <div class="col-sm-4 collectionObjectDetailText">
         <%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %>
