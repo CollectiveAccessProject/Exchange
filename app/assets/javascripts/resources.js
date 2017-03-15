@@ -269,7 +269,8 @@ jQuery(document).ready(function() {
         window.setTimeout(function() {
             jQuery("#access-user-status").slideUp(250);
         }, 3000);
-
+        e.preventDefault();
+        return false;
     });
 
     jQuery(document).on("ajax:success", ".resourceUserAccessRemoveLink", function(e, data) {
@@ -282,7 +283,37 @@ jQuery(document).ready(function() {
         window.setTimeout(function() {
             jQuery("#access-user-status").slideUp(250);
         }, 3000);
+        e.preventDefault();
+        return false;
+    });
 
+    // AJAX group access control
+    jQuery(document).on("ajax:success", "#resourceGroupAccessElements", function(e, data) {
+        if(data.status == 'ok') {
+            jQuery("#tab_access").html(data.html)
+        }
+        jQuery("#access-group-status").slideDown(250);
+
+        jQuery("#access-group-status-message").html((data && data.status && (data.status == 'ok')) ? "Added group" : "Could not add group: " + data.error);
+        window.setTimeout(function() {
+            jQuery("#access-group-status").slideUp(250);
+        }, 3000);
+        e.preventDefault();
+        return false;
+    });
+
+    jQuery(document).on("ajax:success", ".resourceGroupAccessRemoveLink", function(e, data) {
+        if(data.status == 'ok') {
+            jQuery("#tab_access").html(data.html)
+        }
+        jQuery("#access-group-status").slideDown(250);
+
+        jQuery("#access-group-status-message").html((data && data.status && (data.status == 'ok')) ? "Removed group" : "Could not remove group: " + data.error);
+        window.setTimeout(function() {
+            jQuery("#access-group-status").slideUp(250);
+        }, 3000);
+        e.preventDefault();
+        return false;
     });
 
     // AJAX keywords

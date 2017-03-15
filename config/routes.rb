@@ -108,6 +108,12 @@ Rails.application.routes.draw do
   # TODO: make this POST
   get '/resources/:id/remove_resource_user_access' => 'resources#remove_user_access', as: "remove_resource_user_access"
 
+  # resource group access list
+  post '/resources/:id/add_group_access' => 'resources#add_group_access', as: "add_group_access"
+  # TODO: make this POST
+  get '/resources/:id/remove_resource_group_access' => 'resources#remove_group_access', as: "remove_resource_group_access"
+
+
   get '/featured' => 'featured#index', as: 'featured'
   get '/featured/:slug' => 'featured#index', as: 'featured_load_feature'
   get '/featured/:id/get_set_contents' => 'featured#get_set_contents', as: 'featured_get_set_contents'

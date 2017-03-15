@@ -44,7 +44,7 @@
         <% end %>
       </div>
       <div class="col-md-6">
-        <%= form_tag(add_related_resource_path(@resource), remote: true, method: "post", format: :json, class: 'related_resources', id: 'relatedResourcesElements') do |f| %>
+        <%= form_tag(add_group_access_path(@resource), remote: true, method: "post", format: :json, class: 'resource_group_access', id: 'resourceGroupAccessElements') do |f| %>
 
             <div id="access-group-status">
               <div class="flash-notice" id="access-group-status-message">
@@ -57,9 +57,9 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-md-7">
-                  <label>Search for group</label>
-                  <%= autocomplete_field_tag(:find_user_id, '', :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no users found.", :size => 40, :id_element => "#to_user_id", class:'form-control') %>
-                  <%= hidden_field_tag(:to_user_id) %>
+                  <label>Add group</label>
+                  <br/>
+                  <%= select_tag(:to_group_id, options_for_select(groups_for_user(current_user))) %>
                 </div>
                 <div class="col-md-3">
                   <label>&nbsp;</label><br/>
@@ -73,14 +73,16 @@
               </div>
             </div>
 
-            <% @resource.resources_users.each do |l|
-              next
-              next if (!l.user)
+            <% @resource.resources_groups.each do |l|
+             # next
+              next if (!l.group)
+              access_display = Rails.application.config.x.user_access_types.find{|key, val| val == l.access }
+              next if (access_display.nil?)
             %>
                 <div>
-                  <%= l.user.name + " (" + l.user.email + ")" %>
-                  <%= "[" + Rails.application.config.x.access_types.find{|key, val| val == l.access }[0]+"]" %>
-                  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_resource_user_access_path(@resource) + "?user_id=" + l.user.id.to_s, {remote: true, class: :resourceUserAccessRemoveLink}) %>
+                  <%= l.group.name %>
+                  <%= "[" + access_display[0].to_s + "]" %>
+                  <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_resource_group_access_path(@resource) + "?group_id=" + l.group.id.to_s, {remote: true, class: :resourceGroupAccessRemoveLink}) %>
                 </div>
             <% end %>
         <% end %>

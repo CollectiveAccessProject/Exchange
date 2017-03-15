@@ -14,6 +14,8 @@ class Resource < ActiveRecord::Base
   has_many :favorites
 
   has_many :resources_users, :dependent => :delete_all
+  has_many :resources_groups, :dependent => :delete_all
+
   has_many :users, through: 'resources_users'
   belongs_to :users, class_name: 'User', foreign_key: 'author_id'
 

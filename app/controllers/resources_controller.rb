@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :except => [:view]
-  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :set_response_info]
+  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :add_group_access, :remove_group_access, :set_response_info]
 
   include CommentableController
   include TaggableController
@@ -828,6 +828,7 @@ class ResourcesController < ApplicationController
       format.json { render :json => resp }
     end
   end
+
   #
   # User access list
   #
@@ -836,7 +837,7 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (@resource.user_id != current_user.id)
-        #  raise "Not owner"
+          raise "Only owner can change access settings"
       end
 
       to_user_id = params[:to_user_id]
@@ -857,10 +858,53 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (@resource.user_id != current_user.id)
-        #  raise "Not owner"
+          raise "Only owner can change access settings"
       end
       user_id = params[:user_id]
       ResourcesUser.where(resource_id: @resource.id, user_id: user_id).destroy_all
+      resp = {:status => :ok, :html => render_to_string("resources/_access", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
+    end
+  end
+
+  #
+  # Group access list
+  #
+  def add_group_access
+    # response
+    begin
+      # only owner can add user access
+      if (@resource.user_id != current_user.id)
+          raise "Only owner can change access settings"
+      end
+
+      to_group_id = params[:to_group_id]
+      access_type = params[:access_type]
+      prel = ResourcesGroup.where(resource_id: @resource.id, group_id: to_group_id, access: access_type).first_or_create
+
+      resp = {:status => :ok, :html => render_to_string("resources/_access", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp, status: :ok }
+    end
+  end
+
+  def remove_group_access
+    begin
+      # only owner can add user access
+      if (@resource.user_id != current_user.id)
+          raise "Only owner can change access settings"
+      end
+      group_id = params[:group_id]
+      ResourcesGroup.where(resource_id: @resource.id, group_id: group_id).destroy_all
       resp = {:status => :ok, :html => render_to_string("resources/_access", layout: false)}
     rescue StandardError => ex
       resp = {:status => :err, :error => ex.message}
