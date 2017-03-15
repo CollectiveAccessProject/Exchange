@@ -245,7 +245,7 @@ class QuickSearchController < ApplicationController
   #
   def get_available_collections
     return nil if (!current_user)
-    return Resource.where("resource_type = ? AND user_id = ?", Resource::LEARNING_COLLECTION, current_user.id).order(title_sort: :asc)
+    return Resource.where("resource_type = ? AND user_id = ?", Resource::COLLECTION, current_user.id).order(title_sort: :asc)
   end
 
   #
@@ -253,6 +253,6 @@ class QuickSearchController < ApplicationController
   #
   def get_available_collections_and_resources
     return nil if (!current_user)
-    return Resource.where("resource_type IN (?) AND user_id = ?", [Resource::LEARNING_COLLECTION, Resource::RESOURCE], current_user.id).order(title_sort: :asc)
+    return Resource.where("resource_type IN (?) AND user_id = ?", [Resource::COLLECTION, Resource::RESOURCE], current_user.id).order(title_sort: :asc)
   end
 end
