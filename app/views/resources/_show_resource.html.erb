@@ -90,9 +90,10 @@
                           <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
                             <%= f.sourceable.preview :thumbnail  %>
                           </a>
-                          <% if f.thumbnail_uid != nil and ['CollectionobjectLink', 'LocalFile', 'FlickrLink'].include? f.get_media_class(f.sourceable_type).to_s %>
+                          
+                          <% if (fzoom = is_zoomable(f)) %>
 							<div class="zoomControls">
-							  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+							  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
 							</div>
 						  <% end %>
                         </div>
@@ -144,9 +145,10 @@
                           <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
                             <%= f.sourceable.preview :thumbnail  %>
                           </a>
-                          <% if f.thumbnail_uid != nil and ['CollectionobjectLink', 'LocalFile', 'FlickrLink'].include? f.get_media_class(f.sourceable_type).to_s %>
+                          
+                          <% if (fzoom = is_zoomable(f)) %>
 							<div class="zoomControls">
-							  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+							  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
 							</div>
 						  <% end %>
                           <div class="caption small">

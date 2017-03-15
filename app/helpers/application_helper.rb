@@ -230,3 +230,17 @@ def riiif_info_path(media_file, options=nil)
   return '' if !media_file.thumbnail.path
   Riiif::Engine.routes.url_helpers.info_path(media_file.thumbnail.path.gsub(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
 end
+
+def is_zoomable(media_file)
+	case
+		when (['LocalFile', 'FlickrLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
+			if(media_file.thumbnail_uid != nil)
+				return media_file if (media_file.thumbnail && media_file.thumbnail.mime_type.match(/^image\//))
+			end
+			return false
+		when (['CollectionobjectLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
+			return media_file.sourceable.get_media
+		else
+			return false
+	end
+end

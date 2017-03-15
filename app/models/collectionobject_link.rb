@@ -20,7 +20,20 @@ class CollectionobjectLink < ActiveRecord::Base
   		return r.copyright_license
   	end
   end
+  
+  def get_resource
+  	if(original_link.to_i)
+  		return Resource.find(original_link.to_i)
+  	end
+  end
 
+  def get_media
+  	if(original_link.to_i)
+  		r = Resource.find(original_link.to_i)
+  		return r.media_files[0]
+  	end
+  end
+  
   def get_collection_identifier
     if(original_link.to_i)
       r = Resource.find(original_link.to_i)

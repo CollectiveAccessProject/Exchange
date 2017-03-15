@@ -93,7 +93,7 @@
                       # Example of how to output image using IIIF
                       # image_tag(riiif_image_path(f, {size: ',600'}))
                     %>
-                    <div class="zoomControls">
+                    <div class="zoomControls" style="padding-right: 100px;">
                       <a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
                     </div>
                   <% end %>

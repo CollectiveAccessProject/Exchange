@@ -15,10 +15,12 @@
 </div>
 
 <script>
+var map;
   jQuery(document).ready(function() {
       jQuery('#mediaViewerModal').on('shown.bs.modal', function(){
-          var path = jQuery(this).data('iiif');
-          var map = L.map('image', {
+		if (map) {map.off(); map.remove(); }
+        var path = jQuery(this).data('iiif');
+        map = L.map('image', {
               center: [0, 0],
               crs: L.CRS.Simple,
               zoom: 2,
