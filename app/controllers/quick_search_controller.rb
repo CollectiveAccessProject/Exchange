@@ -1,4 +1,19 @@
 class QuickSearchController < ApplicationController
+
+  # UI autocomplete on resource title (used by related resources lookup)
+  autocomplete :resource, :title, :full => true, :extra_data => [:id, :collection_identifier, :resource_type, :indexing_data], :display_value => :get_autocomplete_label
+
+  def autocomplete_resource_title
+    term = params[:term]
+    mode = params[:mode]
+
+    u = Resource.where(
+        '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?)',
+        "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::RESOURCE])
+    ).order(:id).all
+    render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
+  end
+
   def query
     begin
       setup

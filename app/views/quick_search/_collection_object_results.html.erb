@@ -3,14 +3,14 @@
     <div class="col-sm-12">
       <a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
       <h4>
-      	<a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;"style="padding-right:30vw;">
-        	<%= @collection_objects_count %> UMMA Collection Object<%= (@collection_objects_count == 1) ? "" : "s" %>
-        	(page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
-		</a>
+        <a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;"style="padding-right:30px;">
+          <%= @collection_objects_count %> UMMA Collection Object<%= (@collection_objects_count == 1) ? "" : "s" %>
+          (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
+        </a>
         <div class="pull-right">
           <form class="searchPaging">
-          	<div class="searchFormElement">Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></div>
-           <div class="searchFormElement">Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></div>
+            <div class="searchFormElement">Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></div>
+            <div class="searchFormElement">Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></div>
           </form>
         </div>
       </h4>
@@ -28,7 +28,12 @@
           <div>
             <form class="collectionObjectResultsAdd">
               Add checked results to collection/resource <%=
-              select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'collectionObjectResultsAddToCollectionID')
+
+              if(@available_collections_and_resources.length > 25)
+                autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:add_to_collection_id)
+              else
+                select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'add_to_collection_id')
+              end
             %>
               <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsAddToCollection"  %>
             </form>
@@ -99,22 +104,22 @@
         <div class='col-sm-6 text-center'>
           <%
             if (@collection_objects_needs_previous_paging || @collection_objects_needs_next_paging)
-            s = 1
-            e = @collection_objects_num_pages
+              s = 1
+              e = @collection_objects_num_pages
 
-            if (e > 10)
-              s = @collection_objects_page - 5
-              s = 1 if (s < 1)
-              e = s + 9
-            end
+              if (e > 10)
+                s = @collection_objects_page - 5
+                s = 1 if (s < 1)
+                e = s + 9
+              end
 
-            for i in s..e do
+              for i in s..e do
           %>
-              <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
-          <%
-            end
-            end
-          %>
+                  <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+              <%
+                end
+                end
+              %>
         </div>
         <%=
           if(@collection_objects_needs_next_paging)
@@ -142,7 +147,7 @@
         jQuery("#collectionObjectResultsAddToCollection").on('click', function(e) {
             e.preventDefault();
 
-            var add_to_collection_id = jQuery("#collectionObjectResultsAddToCollectionID").val();
+            var add_to_collection_id = jQuery("#add_to_collection_id").val();
 
             var ids = jQuery("#results_collection_object input.qsResultCheckbox").map(function() {
                 return jQuery(this).prop('checked') ? jQuery(this).val(): undefined;

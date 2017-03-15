@@ -29,7 +29,12 @@
           <div>
             <form class="resourceResultsAdd">
               Add checked results to collection <%=
-              select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'resourceResultsAddToCollectionID')
+              if(@available_collections.length > 25)
+                autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:add_to_collection_id)
+              else
+                select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'add_to_collection_id')
+              end
+
             %>
               <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "resourceResultsAddToCollection"  %>
             </form>
@@ -164,7 +169,7 @@
         jQuery("#resourceResultsAddToCollection").on('click', function(e) {
             e.preventDefault();
 
-            var add_to_collection_id = jQuery("#resourceResultsAddToCollectionID").val();
+            var add_to_collection_id = jQuery("#add_to_collection_id").val();
 
             var ids = jQuery("#results_resource input.qsResultCheckbox").map(function() {
                 return jQuery(this).prop('checked') ? jQuery(this).val(): undefined;
