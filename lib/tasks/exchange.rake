@@ -297,5 +297,16 @@ namespace :exchange do
 
       puts "Set " + rating.to_s + " for " + r.id.to_s
 		end
+  end
+
+	desc 'Load sortable resources title field'
+	task load_sortable_title: :environment do
+		test_count = 0
+		Resource.all.each do |r|
+			r.title_sort =  ActionController::Base.helpers.strip_tags(r.title.strip)
+
+			r.save
+
+		end
 	end
 end

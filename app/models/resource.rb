@@ -220,8 +220,11 @@ class Resource < ActiveRecord::Base
   def set_rating
     score = self.avg_rating
     if (score != self.average_rating)
-      average_rating = score
+      self.average_rating = score
     end
+
+    self.title_sort = ActionController::Base.helpers.strip_tags(self.title.strip)
+
   end
 
   # Generate display label for resource autocomplete
