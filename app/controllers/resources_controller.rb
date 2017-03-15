@@ -96,6 +96,11 @@ class ResourcesController < ApplicationController
   # GET /resources/1.json
   def show
 
+    if(!@resource.can(:view, current_user))
+      redirect_to root_path, notice: "That resource is not accessible"
+      return
+    end
+
     @available_collections = get_available_collections(@resource)
     @available_collections_and_resources = get_available_collections_and_resources(@resource)
 
@@ -117,13 +122,11 @@ class ResourcesController < ApplicationController
 
   # Handle public viewing of resources
   def view
-
-    # For now we allow public access to *ANY* collection object
-    # regardess of how access is set, per JT's request
-    if((@resource.access == 0) && !@resource.is_collection_object)
+    if(!@resource.can(:view, current_user))
       redirect_to root_path, notice: "That resource is not accessible"
       return
     end
+
     render :show
   end
 
@@ -154,6 +157,10 @@ class ResourcesController < ApplicationController
 
   # GET /resources/1/edit
   def edit
+    if(!@resource.can(:edit, current_user))
+      redirect_to root_path, notice: "That resource is not accessible"
+      return
+    end
     @media_file = MediaFile.new
     # @resource.settings(:media_formatting).mode = 'foo'
     # @resource.save!
@@ -836,7 +843,7 @@ class ResourcesController < ApplicationController
     # response
     begin
       # only owner can add user access
-      if (@resource.user_id != current_user.id)
+      if (!@resource.can(:edit, current_user))
           raise "Only owner can change access settings"
       end
 
@@ -857,7 +864,7 @@ class ResourcesController < ApplicationController
   def remove_user_access
     begin
       # only owner can add user access
-      if (@resource.user_id != current_user.id)
+      if (!@resource.can(:edit, current_user))
           raise "Only owner can change access settings"
       end
       user_id = params[:user_id]
@@ -879,7 +886,7 @@ class ResourcesController < ApplicationController
     # response
     begin
       # only owner can add user access
-      if (@resource.user_id != current_user.id)
+      if (!@resource.can(:edit, current_user))
           raise "Only owner can change access settings"
       end
 
@@ -900,7 +907,7 @@ class ResourcesController < ApplicationController
   def remove_group_access
     begin
       # only owner can add user access
-      if (@resource.user_id != current_user.id)
+      if (!@resource.can(:edit, current_user))
           raise "Only owner can change access settings"
       end
       group_id = params[:group_id]

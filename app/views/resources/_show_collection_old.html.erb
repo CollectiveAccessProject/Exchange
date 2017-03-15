@@ -1,5 +1,5 @@
 <%= render :partial => 'show_parent_heading.html.erb' %>
-<% if @resource.check_edit_access(current_user) %>
+<% if @resource.can(:edit, current_user) %>
 	<div class="row">
 	  <div class="col-sm-12">
 		<H4>

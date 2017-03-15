@@ -121,15 +121,43 @@ class Resource < ActiveRecord::Base
   #
   # Access control
   #
-  def can(action, user_id)
+  def can(action, user)
+    # owner/author can do anything
+    return true if (self.user_id == user.id)
+    return true if (self.author_id && (self.author_id == user.id))
 
-    # owner can do anything
-    return true if (self.user_id == user_id)
+    # For now we allow public access to *ANY* collection object
+    # regardess of how access is set, per JT's request
+   return true if((self.is_collection_object) && (action == :view))
+
+    # resource is publicly viewable
+    if ((action == :view) && self.access > 0)
+      return true
+    end
 
     # is user in ACL?
+    if (f = ResourcesUser.where({resource_id: self.id, user_id: user.id}).first)
+      case
+        when ((action == :view) && (f.access >= 1))
+          return true
+        when ((action == :edit) && (f.access >= 2))
+          return true
+        else
+          # noop
+      end
+    end
 
     # is user in group that has access to this resource?
-
+    if (f = ResourcesGroup.joins([:group, :user_groups]).where(resources_groups: {resource_id: self.id}, user_groups: {user_id: user.id}).first)
+      case
+        when ((action == :view) && (f.access >= 1))
+          return true
+        when ((action == :edit) && (f.access >= 2))
+          return true
+        else
+          # noop
+      end
+    end
 
     return false
   end
@@ -322,14 +350,14 @@ class Resource < ActiveRecord::Base
     link_ids = CollectionobjectLink.where("resource_id = ?", self.id).pluck(:id)
     resource_ids = MediaFile.where("sourceable_id IN (?)", link_ids).pluck(:resource_id)
 
-    # 
+    #
     rel_resource_ids = RelatedResource.where("to_resource_id = ?", self.id).pluck(:resource_id)
-    
+
     all_resource_ids = rel_resource_ids + resource_ids
 
     Resource.find(all_resource_ids)
   end
-  
+
   #
   # Return list of Resources created by a single user
   # Either through the author_id or default user_id
@@ -365,9 +393,9 @@ class Resource < ActiveRecord::Base
     end
     return rel_resource_list
   end
-  
+
   def sort_user_resources(access)
-  	@published_ids = Resource.where('access=? AND user_id=?', access, current_user.id).pluck(:id)
+    @published_ids = Resource.where('access=? AND user_id=?', access, current_user.id).pluck(:id)
   end
 
   def get_responses
@@ -375,24 +403,7 @@ class Resource < ActiveRecord::Base
     Resource.find(response_ids)
   end
 
-  # 
-  # Check access for currently signed in user
-  # Also automatically grant access if user created or is assigned author of resource
-  # Return false if user does not have assigned access
   #
-  def check_edit_access(current_user)
-  	return false if (!current_user)
-    resUser = ResourcesUser.where(resource_id: self.id, user_id: current_user.id).first
-    if resUser
-      if resUser.access == 2
-        return true
-      end
-    elsif self.user_id == current_user.id or self.author_id == current_user.id
-      return true
-    end
-  end
-
-  # 
   # Get the count of collectionobject-based media files
   # Options:
   # :get_hidden = also count the hidden media files
@@ -409,7 +420,7 @@ class Resource < ActiveRecord::Base
     return co_count
   end
 
-  # 
+  #
   # Get the Collection Object Resource pages for the sources
   # of the media files used in this Resource
   #

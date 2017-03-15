@@ -3,4 +3,5 @@ class ResourcesGroup < ActiveRecord::Base
 
     belongs_to :resource
     belongs_to :group
+    has_many :user_groups, through: :group
 end

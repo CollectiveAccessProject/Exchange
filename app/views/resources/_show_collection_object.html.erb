@@ -6,7 +6,7 @@
 <% content_for :page_title do %>
   <title>Exchange: <%= sanitize(@resource.title, :tags => %w()) %></title>
 <% end %>
-<% if @resource.check_edit_access(current_user) %>
+<% if @resource.can(:edit, current_user) %>
 	<div class="row">
 	  <div class="col-sm-12">
 		<H4>

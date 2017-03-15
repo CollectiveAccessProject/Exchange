@@ -9,7 +9,7 @@
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
 	body_attrs_allowed = %w(href style src alt class float data-toggle data-target target)
 %>
-<% if @resource.check_edit_access(current_user) %>
+<% if @resource.can(:edit, current_user) %>
 	<div class="row">
 	  <div class="col-sm-12">
 		<H4>
