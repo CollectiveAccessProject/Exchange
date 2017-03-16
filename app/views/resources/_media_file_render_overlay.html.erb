@@ -16,19 +16,13 @@
         	</div>
         	<% if (!editable) %>
 				<div class="row">
-					<div class="col-sm-12 scaleImg">
-						<div class="row">
-							<div class="col-sm-6">
-								<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a>
+					<div class="col-sm-12 scaleImg text-center">
+						<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a><br/>
+						<% if (fzoom = is_zoomable(media_file)) %>
+							<div class="zoomControls">
+								<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
 							</div>
-							<div class="col-sm-6">
-								<% if media_file.thumbnail_uid != nil and ['CollectionobjectLink', 'LocalFile', 'FlickrLink'].include? media_file.get_media_class(media_file.sourceable_type).to_s %>
-									<div class="zoomControls">
-										<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(media_file) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-									</div>
-								<% end %>
-							</div>
-						</div>
+						<% end %>
 					</div>
 				</div>
 			<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306040307) do
+ActiveRecord::Schema.define(version: 20170315035957) do
 
   create_table "average_caches", force: :cascade do |t|
     t.integer  "rater_id",      limit: 4
@@ -124,9 +124,10 @@ ActiveRecord::Schema.define(version: 20170306040307) do
     t.string   "name",        limit: 100,      null: false
     t.string   "slug",        limit: 100,      null: false
     t.text     "description", limit: 16777215
-    t.integer  "type",        limit: 1
+    t.integer  "group_type",  limit: 1
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.integer  "user_id",     limit: 4
   end
 
   add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
@@ -268,12 +269,19 @@ ActiveRecord::Schema.define(version: 20170306040307) do
     t.integer  "average_rating",             limit: 4,          default: 0
     t.integer  "response_banned_on",         limit: 4
     t.text     "response_ban_reason",        limit: 65535
+    t.text     "title_sort",                 limit: 65535,                   null: false
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "fk_rails_8c3d1e0d9a", using: :btree
   add_index "resources", ["resource_type"], name: "index_resources_on_resource_type", using: :btree
   add_index "resources", ["slug"], name: "index_resources_on_slug", using: :btree
   add_index "resources", ["user_id"], name: "fk_rails_ba0e3c0a94", using: :btree
+
+  create_table "resources_groups", force: :cascade do |t|
+    t.integer "resource_id", limit: 4
+    t.integer "group_id",    limit: 4
+    t.integer "access",      limit: 1
+  end
 
   create_table "resources_roles", id: false, force: :cascade do |t|
     t.integer "resource_id", limit: 4
@@ -356,11 +364,11 @@ ActiveRecord::Schema.define(version: 20170306040307) do
   add_index "tags", ["user_id"], name: "fk_rails_3a148b8bf5", using: :btree
 
   create_table "user_groups", force: :cascade do |t|
-    t.integer  "type",       limit: 1
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "user_id",    limit: 4
-    t.integer  "group_id",   limit: 4
+    t.integer  "access_type", limit: 1
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.integer  "user_id",     limit: 4
+    t.integer  "group_id",    limit: 4
   end
 
   add_index "user_groups", ["group_id"], name: "fk_rails_d51d929145", using: :btree

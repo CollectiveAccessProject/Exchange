@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
     // Create embed on click
     $('.container').on('click', '.dropdown-media-item', function() {
 	//Create modal for setting embed options
-	var re = /\(([^)]+)\)/;
+	var re = /\(([^)]+)\)$/;
 	console.log($(this).find('.media-item-title').html());
 	slug = re.exec( $(this).find('.media-item-title').html());
 	slug[1].replace('<em>', '').replace('</em>', '')
@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
 		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatRight" value="right">Right</label></div>';
 		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatNone" value="none">None</label></div>';
 		html += '</div>';
-		//Clicking the submit button sends the propera item slug and form data to the embedMeida() function, definited in the _form.hmtl.erb views file
+		//Clicking the submit button sends the proper item, slug and form data to the embedMedia() function, defined in the _form.hmtl.erb views file
 		html += '<div class="form-group"><input type="button" id="embedCreate" class="btn btn-primary" value="Embed Media" onClick="embedMedia(slug);"/></div>';
 		html += '</form>';
 		html += '</div></div></div></div></div></div>';

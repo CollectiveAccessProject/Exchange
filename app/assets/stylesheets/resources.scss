@@ -608,6 +608,11 @@ $red:#BA0017;
 	margin: 0;
 	padding: 0;
 }
+.caption > p {
+	font-size: inherit;
+	line-height: auto;
+	margin: 0;
+}
 /* Carousel Customization */
 
 .carouselNav{
@@ -807,4 +812,8 @@ dd > .alert, p > .alert, dt > .alert{
 		color: #8a898a;
 	}
 }
+.scaleImg > .zoomControls{
+	text-align: inherit;
+}
+
 
