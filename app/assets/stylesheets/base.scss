@@ -1067,13 +1067,34 @@ li.tagList {
   width: 120px;
 }
 
+/* Media Item Embed Dropdown */
+.dropdown-media-item{
+        height: 200px;
+        overflow-y: hidden;
+        white-space: normal;
+}
 #dropdown-media {
-  width: 150px;
+  width: 800px;
+  left: -550px;
   max-height: 300px;
   overflow-y: auto;
   margin-right: 10px;
 }
-
+.itemIconPadding{
+	padding: 20px;
+	height: auto;
+	text-align: center;
+	color: #666;
+}
+.media-item-title{
+	color: #666;
+	p{
+		font-size: 14px;
+		line-height: 16px;
+	}
+	font-size: 14px;
+	line-height: 16px;
+}
 /*Independent scrolling for user guide/docs*/
 
 .guide_row {

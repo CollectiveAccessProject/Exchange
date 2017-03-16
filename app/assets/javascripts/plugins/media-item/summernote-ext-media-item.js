@@ -16,6 +16,7 @@ exchangeLoadMediaForSummernote = function() {
         $('#dropdown-media-item-btn').hide();   // hide media list when there is no linked media
     } else {
         $('#dropdown-media-item-btn').show();
+        $('#dropdown-media').append('<div class="container"><div class="row">');
         $('#resource_media_list .mediaListIcon').each(function () {
 
             media_img = $(this).find('img').attr('src');
@@ -27,14 +28,17 @@ exchangeLoadMediaForSummernote = function() {
                 thumb = '<img src="' + media_img + '"/>';
             } else if ('undefined' !== typeof(media_iframe)) {
                 thumb = '<iframe src="' + media_iframe + '"/>';
+            } else {
+            	thumb = '<div class="itemIconPadding"><i class="fa fa-image fa-5x"></i></div>';
             }
 
-            $('#dropdown-media').append('<div class="dropdown-media-item" style="color: #000; padding: 2%;">' +
+            $('#dropdown-media').append('<div class="col-sm-3 dropdown-media-item" style="color: #000; padding: 2%;">' +
                 '<div class="media-item-thumb">' + thumb + '</div>' +
                 '<span class="media-item-title">' + media_title + '</span>' +
                 '</div>'
             );
         });
+        $('#dropdown-media').append('</div></div>');
     }
 }
 
