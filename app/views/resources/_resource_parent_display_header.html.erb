@@ -1,5 +1,18 @@
-<%=
-  if(@resource.parents && @resource.parents.first)
-    (link_to sanitize("Part of: " + @resource.parents.first.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(@resource.parents.first), "class": "") +  (((parent_count = @resource.parents.count) > 1) ? " + " + ((parent_count - 1).to_s) + " more " : "")
+<%#
+  #if(@resource.parents && @resource.parents.first)
+  #  (link_to sanitize("Part of: " + @resource.parents.first.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(@resource.parents.first), "class": "") +  (((parent_count = @resource.parents.count) > 1) ? " + " + ((parent_count - 1).to_s) + " more " : "")
+  #end
+%>
+
+<%
+  if(@resource.parents.count > 0)
+    @resource.parents.each do |p|
+      if p.can(:edit, current_user)
+%>
+        <%= (link_to sanitize("Part of: " + p.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(p), "class": "") +  (((parent_count = @resource.parents.count) > 1) ? " + " + ((parent_count - 1).to_s) + " more " : "") %>
+<%
+        break
+	  end
+	end
   end
 %>

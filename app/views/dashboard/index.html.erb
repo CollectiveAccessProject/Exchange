@@ -51,6 +51,7 @@
 					<li class="filter_head"> <h6>Resource Type</h6></li>
 					<li><%= link_to 'Resource'.html_safe, filter_user_items_path(:type_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
 					<li class="filter_head"><%= link_to 'Learning Collection'.html_safe, filter_user_items_path(:type_filter => 2), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
+					<li class="filter_head"><%= link_to 'Collection Object'.html_safe, filter_user_items_path(:type_filter => 3), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
 					<li><hr/><%= link_to 'Clear Filters', remove_filter_path, :remote => true, :class => 'btn btn-xs btn-noBg remove_filter' %></li>
 				</ul>
         	</div>
@@ -147,8 +148,9 @@
       Your Stats
     </H4>
     <div class="dbUnit">
-      <%= c = @resources.where({resource_type: Resource::RESOURCE}).count %> resource<%= c == 1 ? '' : 's' %></p>
-      <%= c = @resources.where({resource_type: Resource::COLLECTION}).count %> collection<%= c == 1 ? '' : 's' %></p>
+      <%= c = @counts[:resources] %> Resource<%= c == 1 ? '' : 's' %></p>
+      <%= c = @counts[:collections] %> Collection<%= c == 1 ? '' : 's' %></p>
+      <%= c = @counts[:collection_objects] %> Collection Object<%= c == 1 ? '' : 's' %></p>
     </div><!-- end dbUnit -->
   </div><!-- end col -->
 </div><!-- end row -->

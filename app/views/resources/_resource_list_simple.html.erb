@@ -1,20 +1,24 @@
 <% @resource.resource_hierarchies.each do |rel| %>
 	<div class="collectionContentsItem" data-id="<%= rel.id %>">
 	<div class="pull-right" style="margin:2px -5px 0px 5px;"><%= link_to '<i class="fa fa-times-circle" aria-hidden="true"></i>'.html_safe, rel, method: :delete, remote: true, data: {confirm: 'Are you sure you want to remove this resource from the collection?'}, class: 'btn btn-xs btn-noBg' %></div>
-
-   	<%= link_to ((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(rel.child_resource) %><br/>
+	<% if rel.child_resource.can(:edit, current_user) %>
+   		<%= link_to ((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(rel.child_resource) %><br/>
+   	<% elsif rel.child_resource.can(:view, current_user) %>
+   		<%= link_to ((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), resource_preview_path(rel.child_resource) %><br/>
+   	<% else %>
+   		<%= (rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style) %><br/>
+   	<% end %>
 
     <% if(rel.child_resource.is_resource || rel.child_resource.is_collection_object) %>
-		  <% if (rel.child_resource.media_files.count > 0) %> 
-		   <% rel.child_resource.media_files.each do |f| %>
-
-           <% if f.sourceable %>
+		<% if (rel.child_resource.media_files.count > 0) %> 
+			<% rel.child_resource.media_files.each do |f| %>
+				<% if f.sourceable %>
 					<%= link_to (f.sourceable.preview :thumbnail, '', '', f.caption), edit_resource_path(rel.child_resource) %><br/>
 					<% break %>
 				<% end %>
 			<% end %>
-		   <% else %>
-		    <%= link_to '<i class="fa fa-picture-o fa-4x fa-align-center" aria-hidden="true"></i>'.html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
+		<% else %>
+			<%= link_to '<i class="fa fa-picture-o fa-4x fa-align-center" aria-hidden="true"></i>'.html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
 		    <% end %>
 			<small><%= rel.child_resource.resource_type_for_display %> with <%= rel.child_resource.media_files.count %> media</small>
 		<% else %>
