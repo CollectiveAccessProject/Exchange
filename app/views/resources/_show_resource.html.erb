@@ -373,7 +373,15 @@
           <div class="panel-body">
             <% if(@resource.settings(:user_interaction).display_responses_on_separate_page > 0) %>
                 <div class="row" id="responseResources">
-                  <% if(@resource.get_responses.count > 0) %>
+<%
+				  resp_count = 0
+				  @resource.get_responses.each do |rr|
+					if((rr.can(:view, current_user) or rr.can(:edit, current_user)) and rr.response_banned_on != 1)
+					  resp_count += 1
+					end
+				  end
+%>
+                  <% if(resp_count > 0) %>
                       <div class="col-xs-12 col-sm-6 text-center">
                         <a href="#" class="btn btn-default btn-response" data-target="#responseModal" data-toggle="modal">View Responses</a>
                         <div class="modal modal-wide" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -391,7 +399,7 @@
                         </div>
                       </div>
                   <% end %>
-                  <div class="col-xs-12 col-sm-<%= @resource.get_responses.count > 0 ? '6' : '12' %> text-center">
+                  <div class="col-xs-12 col-sm-<%= resp_count > 0 ? '6' : '12' %> text-center">
                     <%= link_to("Respond to this Resource", new_resource_path + "?in_response_to_resource_id=" + @resource.id.to_s, { class: "btn btn-default btn-response"}) %>
                   </div>
                 </div>
@@ -557,11 +565,17 @@
           <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
         </div>
         <%
-          if(@resource.parents && (@resource.parents.count > 0))
+          parent_count = 0
+          @resource.parents.each do |p|
+            if p.can(:view, current_user) or p.can(:edit, current_user)
+              parent_count += 1
+            end
+          end
+          if(@resource.parents && (parent_count > 0))
         %>
             <div class="unit">
 
-              <a role="button" data-toggle="collapse" href="#lcPanel"><h4>Part of <%= @resource.parents.count %> Learning Collection<%= (@resource.parents.count == 1) ? "" : "s" %></h4></a>
+              <a role="button" data-toggle="collapse" href="#lcPanel"><h4>Part of <%= parent_count %> Learning Collection<%= (parent_count == 1) ? "" : "s" %></h4></a>
               <!--<H4>More from this learning collection</H4>-->
 
               <div id="lcPanel" class="collapse scrollList">
@@ -569,7 +583,7 @@
                   panelCount = 0
                   @resource.parents.each do |p|
                 %>
-
+				  <% if p.can(:view, current_user) or p.can(:edit, current_user) %>
                     <div>
                       <strong><%= link_to sanitize(p.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(p, user_signed_in?) %> <i class="fa fa-external-link-square" aria-hidden="true"></i></strong>
                       <br/>
@@ -577,38 +591,47 @@
                         See <%= p.resource_hierarchies.count %> Included Resource<%= (p.resource_hierarchies.count == 1) ? "" : "s" %> <i class="fa fa-angle-double-down" aria-hidden="true"></i></a></div>
                     <div id="collPanel_<%= panelCount %>" class="collapse scrollList">
                       <% p.resource_hierarchies.each do |rel| %>
-                          <div>
-                            <small>
-                              <% if (rel.child_resource.is_collection) %>
-                                  <%= link_to "<i class='fa fa-folder-o'></i>".html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %>
-                              <% end %>
-                              <%= link_to sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(rel.child_resource, user_signed_in?) %>
-                              <br />
-                              <%= (rel.child_resource.subtitle.length > 50) ? rel.child_resource.subtitle[0..50] + "..." : rel.child_resource.subtitle %>
-                            </small><br/>
-                          </div>
+                      	  <% if rel.child_resource.can(:view, current_user) or rel.child_resource.can(:edit, current_user) %>
+                            <div>
+                              <small>
+                                <% if (rel.child_resource.is_collection) %>
+                                    <%= link_to "<i class='fa fa-folder-o'></i>".html_safe, get_resource_view_path(rel.child_resource, user_signed_in?) %>
+                                <% end %>
+                                <%= link_to sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(rel.child_resource, user_signed_in?) %>
+                                <br />
+                                <%= (rel.child_resource.subtitle.length > 50) ? rel.child_resource.subtitle[0..50] + "..." : rel.child_resource.subtitle %>
+                              </small><br/>
+                            </div>
+                          <% end %>
                       <% end %>
                     </div>
-
+				  <% end %>
                     <% panelCount += 1 %>
                 <% end %>
               </div>
             </div><!-- end unit -->
         <% end %>
-        <% if @resource.related_resources.count > 0 %>
+        <%
+          related_count = 0
+          @resource.related_resources.each do |rel|
+            if rel.related.can(:view, current_user) or rel.related.can(:edit, current_user)
+              related_count += 1
+            end
+          end
+        %>
+        <% if related_count > 0 %>
             <div class="unit">
-              <a role="button" data-toggle="collapse" href="#relatedPanel"><H4><%= @resource.related_resources.count %> Related Resource<%= @resource.related_resources.count == 1 ? '' : 's' %></H4></a>
+              <a role="button" data-toggle="collapse" href="#relatedPanel"><H4><%= related_count %> Related Resource<%= related_count == 1 ? '' : 's' %></H4></a>
               <div id="relatedPanel" class="collapse detailRelatedContentBlockScroll">
                 <% @resource.related_resources.each do |r| %>
-                    <div>
-                      <%= link_to ((r.related.is_resource || r.related.is_collection_object) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r.related, user_signed_in?) %>
-                      <% if (r.caption.length > 0) %>
-                          <br/><small>
-                      <%= r.caption %>
-                    </small>
-                      <% end %>
-
+                    <% if r.related.can(:view, current_user) or r.related.can(:edit, current_user) %>
+                      <div>
+                        <%= link_to ((r.related.is_resource || r.related.is_collection_object) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r.related, user_signed_in?) %>
+                        <% if (r.caption.length > 0) %>
+                            <br/><small><%= r.caption %></small>
+                        <% end %>
                     </div>
+                  <% end %>
                 <% end %>
               </div>
             </div><!-- end unit -->

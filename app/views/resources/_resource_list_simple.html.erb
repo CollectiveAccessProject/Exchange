@@ -1,19 +1,24 @@
 <% @resource.resource_hierarchies.each do |rel| %>
-	<div class="collectionContentsItem" data-id="<%= rel.id %>">
-	<div class="pull-right" style="margin:2px -5px 0px 5px;"><%= link_to '<i class="fa fa-times-circle" aria-hidden="true"></i>'.html_safe, rel, method: :delete, remote: true, data: {confirm: 'Are you sure you want to remove this resource from the collection?'}, class: 'btn btn-xs btn-noBg' %></div>
+	<%= (rel.child_resource.can(:edit, current_user) or rel.child_resource.can(:view, current_user)) ? "<div class=\"collectionContentsItem\" data-id=\"#{rel.id}\">".html_safe : "<div class=\"collectionContentsItem blockedResource\" data-toggle=\"popover\" data-placement=\"top\" data-trigger=\"hover\" data-id=\"#{rel.id}\">".html_safe %>
+	<div class="pull-right" style="margin:2px -5px 0px 5px; z-index: 1000"><%= link_to '<i class="fa fa-times-circle" aria-hidden="true"></i>'.html_safe, rel, method: :delete, remote: true, data: {confirm: 'Are you sure you want to remove this resource from the collection?'}, class: 'btn btn-xs btn-noBg' %></div>
 	<% if rel.child_resource.can(:edit, current_user) %>
    		<%= link_to ((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(rel.child_resource) %><br/>
    	<% elsif rel.child_resource.can(:view, current_user) %>
    		<%= link_to ((rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), resource_preview_path(rel.child_resource) %><br/>
    	<% else %>
-   		<%= (rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style) %><br/>
+   		<small><%= (rel.child_resource.is_resource || rel.child_resource.is_collection_object) ? "<i class='fa fa-angle-double-right'></i> ".html_safe : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(rel.child_resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style) %><br/></small>
    	<% end %>
-
     <% if(rel.child_resource.is_resource || rel.child_resource.is_collection_object) %>
 		<% if (rel.child_resource.media_files.count > 0) %> 
 			<% rel.child_resource.media_files.each do |f| %>
 				<% if f.sourceable %>
-					<%= link_to (f.sourceable.preview :thumbnail, '', '', f.caption), edit_resource_path(rel.child_resource) %><br/>
+					<% if rel.child_resource.can(:edit, current_user)  %>
+						<%= link_to (f.sourceable.preview :thumbnail, '', '', f.caption), edit_resource_path(rel.child_resource) %><br/>
+					<% elsif rel.child_resource.can(:view, current_user) %>
+						<%= link_to (f.sourceable.preview :thumbnail, '', '', f.caption), resource_preview_path(rel.child_resource) %><br/>
+					<% else %>
+						<%= f.sourceable.preview :thumbnail %>
+					<% end %>
 					<% break %>
 				<% end %>
 			<% end %>
@@ -33,8 +38,17 @@
 			<% end %>
 		<% end %>
 	</div>
+	<script>
+	  $('#resource_media_list').ready(function(){
+		$('.blockedResource').popover({
+			container: 'body',
+			template: '<div class="popover popoverNarrow" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"</div></div>',
+			title: "Can't view or edit this Resource!",
+			content: "You cannot view or edit this Resource! Owner: <%= rel.child_resource.user.name %> (<%= rel.child_resource.user.email %>)"
+		});
+	  });
+	</script>
 <% end %>
-
 <script type="text/javascript">
   jQuery(document).ready(function() {
     jQuery("#collection_contents_list").sortable();

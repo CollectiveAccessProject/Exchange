@@ -188,7 +188,7 @@
               end
             %>
             <div>
-             <%= link_to(f.resource.title, f.resource) %>
+             <%= link_to(sanitize(f.resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)), f.resource) %>
             </div>
           </div>
         </div><!--end col -->

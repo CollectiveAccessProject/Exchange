@@ -583,7 +583,10 @@ class ResourcesController < ApplicationController
 
       # TODO: Check if user can relate to target
       add_child_resource_id = params[:add_child_resource_id]
-
+      child_resource = Resource.find(add_child_resource_id)
+      if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
+	raise StandardError, 'Access Denied'
+      end
       prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).first_or_create
 
       resp = {:status => :ok, :html => render_to_string("resources/_resource_list_simple", layout: false)}
@@ -611,6 +614,10 @@ class ResourcesController < ApplicationController
     resp = nil
     for add_child_resource_id in add_child_resource_ids
       begin
+        child_resource = Resource.find(add_child_resource_id)
+        if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
+	  raise StandardError, 'Access Denied'
+        end
         if (@resource.is_collection)
           if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
             exists = exists + 1
@@ -657,6 +664,10 @@ class ResourcesController < ApplicationController
 
       # TODO: Check if user can relate to target
       to_resource_id = params[:to_resource_id]
+      to_resource = Resource.find(to_resource_id)
+      if(!to_resource.can(:view, current_user) and !to_resource.can(:edit, current_user))
+	raise StandardError, 'Access Denied'
+      end
       prel = RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id, caption: params[:caption]).first_or_create
 
       @resource.update_search_index
@@ -675,6 +686,10 @@ class ResourcesController < ApplicationController
     begin
       # TODO: Check if user can delete this
       to_resource_id = params[:related]
+      to_resource = Resource.find(to_resource_id)
+      if(!to_resource.can(:edit, current_user))
+	raise StandardError, 'Delete Access Denied'
+      end
       RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id).destroy_all
 
       @resource.update_search_index

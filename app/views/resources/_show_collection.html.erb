@@ -265,6 +265,7 @@
 						<%
 						  panelCount = 0
 						  @resource.parents.each do |p|
+						  	next if (!p.can(:view, current_user) and !p.can(:edit, current_user))
 						%>
 
 							<div>
@@ -274,6 +275,7 @@
 								See <%= p.resource_hierarchies.count %> Included Resource<%= (p.resource_hierarchies.count == 1) ? "" : "s" %> <i class="fa fa-angle-double-down" aria-hidden="true"></i></a></div>
 							<div id="collPanel_<%= panelCount %>" class="collapse scrollList">
 							  <% p.resource_hierarchies.each do |rel| %>
+							  	  <% next if (!rel.child_resource.can(:view, current_user) and !rel.child_resource.can(:edit, current_user)) %>
 								  <div>
 									<small>
 									  <% if (rel.child_resource.is_collection) %>
@@ -297,6 +299,7 @@
 					  <a role="button" data-toggle="collapse" href="#relatedPanel"><H4><%= @resource.related_resources.count %> Related Resource<%= @resource.related_resources.count == 1 ? '' : 's' %></H4></a>
 					  <div id="relatedPanel" class="collapse detailRelatedContentBlockScroll">
 						<% @resource.related_resources.each do |r| %>
+							<% next if (!r.related.can(:view, current_user) and !r.related.can(:edit, current_user)) %>
 							<div>
 							  <%= link_to ((r.related.is_resource || r.related.is_collection_object) ? "" : "<i class='fa fa-folder-o'></i> ".html_safe) + sanitize(r.related.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r.related, user_signed_in?) %>
 							  <% if (r.caption.length > 0) %>

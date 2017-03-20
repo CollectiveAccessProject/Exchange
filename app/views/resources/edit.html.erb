@@ -123,14 +123,14 @@ function embedMedia(slug) {
   </div><!-- end col -->
   <div class="col-md-2 mediaColumn">
   	  <% if (@resource.is_resource || @resource.is_collection_object) %>
-  	  	<h6><span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Click and drag the Media Files in this column to set their order of appearance. The first Media File will display as the preview image for the Resource"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Media Files</span></h6>
+  	  	<h6><span class="mediaOrder" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Click and drag the Media Files in this column to set their order of appearance. The first Media File will display as the preview image for the Resource"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Media Files</span></h6>
   	  <% end %>
   	  <% if (@resource.is_collection) %>
-  	    <h6><span data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click and drag the Resources in this column to set their order of appearance. The first Resource will display as the preview image for the Collection"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Resources</span></h6>
+  	    <h6><span class="mediaOrder" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click and drag the Resources in this column to set their order of appearance. The first Resource will display as the preview image for the Collection"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Resources</span></h6>
   	  <% end %>
   	  <script>
 	     $('#mediatip').ready(function(){
- 		$('[data-toggle="popover"]').popover();
+ 		$('.mediaOrder').popover();
 	     });
 	  </script>
       <% if (@resource.is_resource || @resource.is_collection_object) %>

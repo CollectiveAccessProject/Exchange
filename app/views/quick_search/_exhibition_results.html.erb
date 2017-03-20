@@ -22,13 +22,13 @@
 	col = 0
 %>
 <% @exhibitions.each do |r|
-  #next if(r[:access] < 1)
-	  col = col+1
-		if(col == 1)
+  	next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
+	col = col+1
+	if(col == 1)
 %>
-			<div class="row">
+		<div class="row">
 <%
-		end
+	end
 %>
 
     <div class="col-sm-2 qsResult qsResultText">

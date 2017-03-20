@@ -3,14 +3,30 @@
 
     <% if @resource.parents.count > 0 %>
 		<div class="relatedContent">
-			<H4>Part of <%= @resource.parents.count %> collection<%= ((@resource.parents.count > 1) ? "s" : "") %></H4>
+<%
+			count = 0
+			@resource.parents.each do |c|
+				if c.can(:edit, current_user) or c.can(:view, current_user)
+					count += 1
+				end
+			end
+					
+%>
+			<H4>Part of <%= count %> collection<%= ((count > 1) ? "s" : "") %></H4>
 			<% @resource.parents.each do |c| %>
-				<div>
-				  <%= link_to(sanitize(c.title), edit_resource_path(c)) %>
-          <%= "(" + c.resource_type_for_display + ")" %>
-          <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_parent_path(@resource.id, c.id), {remote: true, class: :collectionsRemoveLink}) %>
-
-        </div>
+				<% if c.can(:edit, current_user) %>
+				  <div>
+				    <%= link_to(sanitize(c.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(c)) %>
+          		    <%= "(" + c.resource_type_for_display + ")" %>
+          		    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_parent_path(@resource.id, c.id), {remote: true, class: :collectionsRemoveLink}) %>
+        		  </div>
+        		<% elsif c.can(:view, current_user)  %>
+        		  <div>
+				    <%= link_to(sanitize(c.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), resource_preview_path(c)) %>
+          		    <%= "(" + c.resource_type_for_display + ")" %>
+          		    <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_parent_path(@resource.id, c.id), {remote: true, class: :collectionsRemoveLink}) %>
+        		  </div>
+        		<% end %>
 			<% end %>
     </div>
     <% else %>

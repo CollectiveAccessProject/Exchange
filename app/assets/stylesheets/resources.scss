@@ -138,6 +138,12 @@ $red:#BA0017;
 #resource_media_list, #collection_contents_list{
 	padding:0px;
 }
+.blockedResource:hover{
+	cursor: not-allowed;
+}
+.popoverNarrow{
+	width: 160px;
+}
 .mediaListIcon, .collectionContentsItem{
 	position:relative;
 	line-height:1em !important;
@@ -185,6 +191,9 @@ $red:#BA0017;
 		small{
 			margin-left:15px;
 		}
+	}
+	.editable-buttons{
+		margin: 8px 5px;
 	}
 }
 

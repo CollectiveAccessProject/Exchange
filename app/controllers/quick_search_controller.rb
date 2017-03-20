@@ -245,7 +245,21 @@ class QuickSearchController < ApplicationController
   #
   def get_available_collections
     return nil if (!current_user)
-    return Resource.where("resource_type = ? AND user_id = ?", Resource::COLLECTION, current_user.id).order(title_sort: :asc)
+    # Get Resources for users from Resources and ResourcesUser
+  	collections = []
+  	editable_res = ResourcesUser.where('user_id=? AND access=?', current_user.id, 2)
+    editable_res.each do |ed|
+    	editable_colls = Resource.where('id = ? AND resource_type = ?', ed.resource_id, Resource::COLLECTION)
+    	editable_colls.each do |coll|
+    		collections.push(Resource.find(coll.id))
+    	end
+    end
+    user_res = Resource.where('(user_id=? OR author_id=?) AND resource_type = ? ', current_user.id, current_user.id, Resource::COLLECTION)
+	user_res.each do |us|
+		collections.push(Resource.find(us.id))
+	end
+    #return Resource.where("resource_type = ? AND user_id = ?", Resource::COLLECTION, current_user.id).order(title_sort: :asc)
+    return collections
   end
 
   #
@@ -253,6 +267,17 @@ class QuickSearchController < ApplicationController
   #
   def get_available_collections_and_resources
     return nil if (!current_user)
-    return Resource.where("resource_type IN (?) AND user_id = ?", [Resource::COLLECTION, Resource::RESOURCE], current_user.id).order(title_sort: :asc)
+     # Get Resources for users from Resources and ResourcesUser
+  	resources = []
+  	editable_res = ResourcesUser.where('user_id=? AND access=?', current_user.id, 2)
+    editable_res.each do |ed|
+    	resources.push(Resource.find(ed.resource_id))
+    end
+    user_res = Resource.where('(user_id=? OR author_id=?) AND resource_type IN (?) ', current_user.id, current_user.id, [Resource::COLLECTION, Resource::RESOURCE]).order(title_sort: :asc)
+	user_res.each do |us|
+		resources.push(Resource.find(us.id))
+	end
+    #return Resource.where("resource_type IN (?) AND user_id = ?", [Resource::COLLECTION, Resource::RESOURCE], current_user.id).order(title_sort: :asc)
+    return resources
   end
 end

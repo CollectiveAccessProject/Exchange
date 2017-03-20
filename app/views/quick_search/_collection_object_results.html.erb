@@ -46,6 +46,7 @@
       %>
       <%
         @collection_objects.each do |r|
+          next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
           col = col+1
           if(col == 1)
       %>

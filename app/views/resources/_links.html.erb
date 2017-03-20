@@ -46,6 +46,10 @@
 <script type="text/javascript">
     jQuery(document).ready(function() {
         jQuery("#link_list").sortable();
-        jQuery('.linkListCaption, .linkListUrl').editable();
+        jQuery('.linkListCaption, .linkListUrl').editable({
+        	placement: 'right',
+        	mode: 'inline',
+        	rows: 1
+        });
     });
 </script>

@@ -15,6 +15,7 @@
 %>
   <% items.each do |item| %>
 <%
+		next if (!item.resource.can(:view, current_user) and !item.resource.can(:edit, current_user))
 		i = i+1;
 %>
       <div class="col-sm-4 featuredItemCol">
