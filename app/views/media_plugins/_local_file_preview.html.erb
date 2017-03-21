@@ -35,7 +35,7 @@
 					<div class="mediaTips">
 						<span class="popoverWrapper infoIcon" title="Local File"><div class="previewMediaIcon"><i class="fa fa-file" aria-hidden="true"></i> <%= display_file_type.nil? ? "Unknown" : display_file_type.html_safe %></div></span>
 					</div>
-					<%= sanitize(plugin_model.media_file.caption) %>
+					<%= sanitize(local_assigns[:caption]) %>
 				</div>
 			</div>
 	  	<!-- End Media guide and thumbnail section -->

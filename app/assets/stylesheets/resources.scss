@@ -380,7 +380,7 @@ $red:#BA0017;
 			background-color:#FFF;
 			font-size:13px !important;
 			padding:5px 0;
-			text-align:center;
+			text-align:left !important;
 			position:relative;
 			z-index:1000;
 			font{
@@ -414,7 +414,7 @@ $red:#BA0017;
 			background-color:#FFF;
 			font-size:13px !important;
 			padding:10px;
-			text-align:center;
+			text-align:left !important;
 			position:relative;
 			z-index:1000;
 			font{
@@ -681,6 +681,10 @@ $red:#BA0017;
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%) !important;
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1);
+}
+.jumbotron p {
+	font-size: 13px;
+	font-weight: normal;
 }
 #slideJumbo{
 	padding: 0 !important;

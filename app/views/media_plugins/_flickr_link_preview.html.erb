@@ -16,7 +16,7 @@
 				<div class="mediaTips">
 					<span class="popoverWrapper infoIcon" title="Flickr Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-flickr" aria-hidden="true"></i></div></span>
 				</div>
-				<%= sanitize(plugin_model.media_file.caption) %>
+				<%= sanitize(local_assigns[:caption]) %>
 			</div>
 	  	</div>
 	  	<!-- End Media guide and thumbnail section -->

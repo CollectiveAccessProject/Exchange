@@ -23,16 +23,18 @@
 								begin
 									media_display = f.sourceable.render :large
 								rescue
-									media_display = f.sourceable.preview :large	
+									media_display = f.sourceable.preview :large, '', '', f.caption
 								end
 		%>	
 								<div class="item <%= (counter == 1) ? 'active' : '' %>">
 									<div class="carouselImageHeight">
 										<%= media_display %>
 									</div>
-									<div class="captionContainer idle-fade">
-										<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>
-									</div>
+									<% if f.sourceable_type != 'CollectionobjectLink' %>
+										<div class="captionContainer idle-fade">
+											<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>
+										</div>
+									<% end %>
 								</div>		
 		<%
 								counter = counter + 1
