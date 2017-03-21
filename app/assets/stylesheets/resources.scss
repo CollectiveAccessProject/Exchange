@@ -152,6 +152,9 @@ $red:#BA0017;
 		font-size:12px;
 		font-family: $font-family-sans-serif;
 		line-height:1em !important;
+		p {
+			font-size: inherit;
+		}
 	}
 	a .fa-times{
 		font-size:14px;
@@ -833,4 +836,14 @@ dd > .alert, p > .alert, dt > .alert{
 }
 .scaleImg > .zoomControls{
 	text-align: inherit;
+}
+/* Right Panel Header */
+.headPanel{
+	margin-bottom: 10px !important;
+}
+.headPanelBody{
+	padding: 5px 10px !important;
+}
+#infoColHead h4{
+	margin: 0;
 }

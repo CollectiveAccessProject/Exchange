@@ -9,19 +9,18 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-md-12">
-            Learning Collections are groups of Resources (and/or sub-Collections) with a common theme. You can use Learning
-            Collections to make slideshow, tours, presentations, digital papers and more.
+          <div class="col-md-12 text-center">
+            Learning Collections are groups of Resources (and/or sub-Collections) with a common theme. 
           </div>
         </div>
         <div class="row" style="margin-top: 30px;">
           <div class="col-md-12 text-center">
-            <strong>Would you like to organize this <%= (@resource.is_resource) ? "Resource" : "Collection" %> within a Learning Collection?</strong>
+            <strong>How would you like to organize this <%= (@resource.is_resource) ? "Resource" : "Collection" %> within a Learning Collection?</strong>
           </div>
         </div>
         <div class="row" style="margin-top: 30px;">
           <div class="col-sm-6 col-md-5 col-md-offset-1 text-center">
-            <%= link_to "Create new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
+            <%= link_to "Add to new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
           </div>
           <div class="col-sm-6 col-md-5 text-center">
           <% if (@available_collections && (@available_collections.length > 0)) %>
@@ -52,7 +51,7 @@
         <div class="row" style="margin-top: 20px">
 
           <div class="col-md-12 text-right">
-            <br/><a class="" data-dismiss="modal" aria-label="Close">No thanks <i class="fa fa-times"></i></a>
+            <br/><a class="" data-dismiss="modal" aria-label="Close">Add it another time <i class="fa fa-times"></i></a>
           </div>
         </div>
       </div>

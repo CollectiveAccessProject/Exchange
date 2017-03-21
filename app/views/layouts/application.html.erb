@@ -61,7 +61,7 @@
       </ul>
       <%= form_tag({ controller: '/quick_search', action: 'query' }, method: 'get', class: 'navbar-form navbar-right tour-search-form') do %>
         <div class="quickSearch">
-        	<%= text_field_tag(:q, nil, class: 'form-control', placeholder: 'Search') %><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+        	<%= text_field_tag(:q, nil, class: 'form-control', placeholder: 'Search the Exchange') %><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         	<div id="advSearchLink"><a href="#" onClick="$('#queryBuilderContainer').slideUp(250, function() { $('#advancedSearchContainer').slideToggle(); }); return false;">Advanced Search</a></div>
           <div id="queryBuilderLink"><a href="#" onClick="$('#advancedSearchContainer').slideUp(250, function() { $('#queryBuilderContainer').slideToggle(); } ); return false;">Builder</a></div>
         </div>

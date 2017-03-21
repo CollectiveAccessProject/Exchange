@@ -12,21 +12,6 @@
 <% if session[:last_collection] %>
     <%= render partial: 'show_parent_heading.html.erb' %>
 <% end %>
-<% if @resource.can(:edit, current_user) %>
-    <div class="row">
-      <div class="col-sm-12">
-        <H4>
-          <% if (params['mode'] == :preview) %>
-              Previewing Resource
-          <% end %>
-          <div class='headingButtons'>
-            <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
-          </div>
-          <br style="clear: both;"/>
-        </H4>
-      </div><!-- end col -->
-    </div><!-- end row -->
-<% end %>
 <div class="row">
   <div class="col-sm-10 resourceBodyText">
     <p id="notice"><%= notice %></p>
@@ -522,20 +507,27 @@
     </div>
   </div><!-- end col -->
   <div class="col-sm-2 resourceSidePanel">
-    <div class="panel panel-primary">
-      <div class="panel-body">
+    <% if user_signed_in? || session.key?(:last_search_type) %>
+    <div class="panel panel-primary headPanel">
+      <div class="panel-body headPanelBody">
         <div class="row">
-
-          <div class="col-xs-12 text-left">
-            <% if (user_signed_in?) %>
-                <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard' %>
-            <% end %>
-          </div>
-          <div class="col-xs-12 text-left">
-            <%= last_search_button(session, {'text': '<span class="glyphicon glyphicon-arrow-left aria-hidden="true"></span> Search'.html_safe}) %>
+          <div id="infoColHead" class="col-xs-12 text-right">
+            <h4>
+              <% if @resource.can(:edit, current_user) %>
+    		    <%= link_to '<span class="glyphicon glyphicon-edit aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(@resource), class:'btn btn-default btn-xs' %>
+			  <% end %>
+              <% if user_signed_in? %>
+              	<%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class: 'btn btn-default btn-xs' %><br/>
+              <% end %>
+              <%= last_search_button(session, {'class': 'btn btn-default btn-xs'}) %>
+            </h4>
           </div>
         </div>
-        <hr/>
+      </div>
+    </div>
+    <% end %>
+    <div class="panel panel-primary">
+      <div class="panel-body">
         <div class="row">
           <div class="col-xs-7 text-left">
             <%=
@@ -694,7 +686,6 @@
               <% end %>
             </div>
         <% end %>
-        <div>
           <!--Get all associated Affiliations-->
           <% if @resource.roles.count > 0 %>
               <div class="unit">
@@ -749,24 +740,25 @@
                 <h4>Created by</h4><%= link_to sanitize(@resource.user.name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%> <i class="fa fa-external-link-square" aria-hidden="true"></i>
             <% end %>
           </div><!-- end unit -->
-          <h4>Last Updated</h4>
-          <% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
-              <%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
-          <% else %>
-              <%= time_ago_in_words(@resource.updated_at) + ' ago' %>
-          <% end %>
-        </div>
         <% if (@resource.copyright_license) %>
             <div class="unit">
-              <h4>Copyright</h4>
+              <h4>Copyright/Author Notes</h4>
               <%= @resource.get_license_type %>
               <% if (@resource.copyright_notes.present?) %>
-                  (<%= @resource.copyright_notes %>)
+                  (<%= sanitize(@resource.copyright_notes, tags: %w(strong em a font b sup sub u i br), attributes: %w(href style)) %>)
               <% end  %>
             </div>
         <% end %>
         <div class="unit">
-          <a role="button" data-toggle="collapse" href="#reportPanel"><h4><i class="fa fa-exclamation-triangle"></i> Report</h4></a>
+			<h4>Last Updated</h4>
+			<% if (Time.now.to_i - @resource.updated_at.to_i) > 86400 %>
+				<%= @resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.') %>
+			<% else %>
+				<%= time_ago_in_words(@resource.updated_at) + ' ago' %>
+			<% end %>
+		</div>
+        <div class="unit">
+          <a role="button" data-toggle="collapse" href="#reportPanel"><h4><i class="fa fa-flag"></i> Report</h4></a>
           <div id="reportPanel" class="collapse">
             <%= form_tag 'send_report' do %>
                 <% if !user_signed_in? %>
