@@ -19,14 +19,11 @@
 	if !(version.to_s == "icon" || version.to_s == "thumbnail" || caption == 'no')
 %>
 		<div class="previewMediaCaption row">
-			<div class="col-xs-6 previewMediaHalf text-left">
-				<%= sanitize(local_assigns[:caption]) %>
-			</div>
-			<div class="col-xs-6 text-right previewMediaHalf idle-fade">
+			<div class="col-xs-12 text-left previewMediaCol idle-fade">
 				<div class="mediaTips">
 					<span class="popoverWrapper mediaTipsTrigger" title="UMMA Collection Object Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div></span>
 				</div>
-				
+				<%= sanitize(local_assigns[:caption]) %>
 			</div>
 		</div>
 <%

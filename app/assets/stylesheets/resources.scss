@@ -251,7 +251,9 @@ $red:#BA0017;
 	padding: 10px 0;
 	display: block;
 }
-
+.resourceBodyText > div > ul, .resourceBodyText > div > ol{
+	list-style-position: inside;
+}
 .collectionDetailContents{
 	margin-bottom:10px;
 	.collectionDetailContentsItem{
@@ -454,10 +456,12 @@ $red:#BA0017;
 					.previewMediaCaption{
 						background-color: #000;
 						color: #fff;
-						.previewMediaHalf{
+						.previewMediaCol{
 							padding-left: 0;
 							padding-right: 0;
 							.mediaTips{
+								float: right;
+								padding: 3px;
 								span{
 									.previewMediaIcon{
 										color: #fff;
@@ -561,6 +565,8 @@ $red:#BA0017;
 	}
 	.mediaTips{
 		margin: auto 0;
+		float: right;
+		padding: 3px;
 		display: inline-block;
 		color: $gray;
 	}
@@ -577,7 +583,7 @@ $red:#BA0017;
 		padding-top:3px;
 		margin-right: 0;
 		margin-left: 0;
-		.previewMediaHalf{
+		.previewMediaCol{
 			padding-left: 0;
 			padding-right: 0;
 		}
