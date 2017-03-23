@@ -1,0 +1,23 @@
+<% content_for :page_title do %>
+  <title>Exchange: New Vocabulary Term</title>
+<% end %>
+<div class="row">
+  <div class="col-sm-12">
+    <H4><span id="resource_title_header">Create new vocabulary term</span>
+
+      <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Term list'.html_safe, '/vocabulary_terms', class: 'btn btn-default btn-xs pull-right' %>
+    </H4>
+  </div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+  <div class="col-md-12">
+    <div id="resources-status">
+      <div class="flash-notice" id="resources-status-message">
+
+      </div>
+    </div>
+
+    <%= render 'form' %>
+
+  </div><!-- end col -->
+</div><!-- end row -->
