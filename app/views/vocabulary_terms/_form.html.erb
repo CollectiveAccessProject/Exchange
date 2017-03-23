@@ -1,0 +1,39 @@
+<%= simple_form_for @vocabulary_term do |r| %>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <H3><%= (@vocabulary_term.id) ? 'Term' : 'New term' %> details </H3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+
+            <%= r.input :term, :input_html => { rows: 2 } %>
+            <% if (!@vocabulary_term.id.nil?) %>
+            <% end %>
+            <%= r.input :description, :input_html => { rows: 2 } %>
+            <%= r.input :reference_url, :input_html => { rows: 2  } %>
+            <% if(!@vocabulary_term.created_at.nil?) %>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Set created</label></div>
+                  <div class="col-md-6"><%= @vocabulary_term.created_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+            <% end %>
+            <% if(!@vocabulary_term.updated_at.nil?) %>
+                <div class="row form-group">
+                  <div class="col-md-4"><label class="string optional control-label">Set last updated</label></div>
+                  <div class="col-md-6"><%= @vocabulary_term.updated_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
+                </div>
+            <% end %>
+          </div><!-- end col -->
+        </div><!-- end row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="pull-right"><%= r.button :submit, "Save" %></div>
+          </div><!-- end col -->
+        </div>
+      </div><!-- end panel-body -->
+        
+	</div><!-- end panel -->
+<% end %>

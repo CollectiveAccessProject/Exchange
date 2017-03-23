@@ -1,0 +1,23 @@
+<% content_for :page_title do %>
+  <title>Exchange: Vocabulary terms</title>
+<% end %>
+<div class="btn-group pull-right" role="group" id="new_featured_content_set">
+  <%= link_to('New vocabulary term', new_vocabulary_term_path, class: "btn btn-default btn-lg") %>
+</div>
+
+<h2>Vocabulary terms</h2>
+
+<div id="sets-status">
+  <div class="flash-notice" id="sets-status-message">
+
+  </div>
+</div>
+
+<div id="set_list">
+<% @vocabulary_term.each do |s| %><div class="setListItem row featuredAdminSetListRow" data-set_id="<%= s.id %>">
+  <div class="col-sm-6"><b><%= sanitize(s.term, tags: %w(strong em a font b sup sub u), attributes: %w(href style))  %></b><br/></div>
+	<div class="col-sm-3">
+		<%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_vocabulary_term_path(s), class: "btn btn-xs btn-default") %>
+		<%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, s, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
+	</div>
+</div><% end %>
