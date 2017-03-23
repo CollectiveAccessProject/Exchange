@@ -1,0 +1,33 @@
+<div class="modal modal-wide" id="<%= modal_id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header green-header">
+        <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+
+        <h2 class="modal-title" id="addMediaFormLabel">Edit</h2>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+         <div class="col-md-12">
+           <%= simple_form_for(item, remote: true, url: vocabulary_terms_edit_synonym_path(@vocabulary_term),  type: :json, html: { id: 'editSetItemFormElements'}) do |f| %>
+               <%= f.error_notification %>
+               <div id="form-status">
+                 <div class="flash-notice" id="form-status-message"></div>
+               </div>
+               <%= f.input :synonym %>
+               <%= f.input :description %>
+               <%= f.input :reference_url %>
+
+
+               <%= hidden_field(:vocabulary_term_synonym, :synonym_id,  value: item.id) %>
+
+               <input type="hidden" name='modal_id' value="<%= modal_id %>">
+
+               <%= f.button(:submit) %>
+           <% end %>
+         </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

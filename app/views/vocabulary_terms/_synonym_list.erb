@@ -1,0 +1,60 @@
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <%= form_tag(vocabulary_terms_add_synonym_path(@vocabulary_term), remote: true, method: "post", format: :json, class: 'set_items', id: 'setItems') do |f| %>
+        <div id="set-items-status">
+          <div class="flash-notice" id="set-items-status-message">
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Synonym</label>
+              <%= text_field_tag(:synonym, '', size: 60, class:'form-control') %>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Description</label>
+              <%= text_field_tag(:description, '', size: 60, class:'form-control') %>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Reference URL</label>
+              <%= text_field_tag(:reference_url, '', size: 50, class:'form-control') %>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <label>&nbsp;</label>
+            <%= submit_tag "Add", class:'btn btn-default btn-sm' %>
+          </div>
+        </div>
+    <% end %>
+    <% if @vocabulary_term.vocabulary_term_synonyms.count > 0 %>
+        <H4><%= c = @vocabulary_term.vocabulary_term_synonyms.count %> <%= (c == 1) ? " synonym" : "synonyms" %></H4>
+        <div id="set_contents_list">
+          <% @vocabulary_term.vocabulary_term_synonyms.each do |s| %>
+              <div class="setItem" data-vocabulary_term_id="<%= s.vocabulary_term_id %>">
+                <%= s.synonym %>
+                <a href="#" data-toggle="modal" data-target="#item_<%= s.id.to_s %>" class="setItemsEdit"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, vocabulary_terms_remove_synonym_path(@vocabulary_term) + "?synonym_id=" + s.id.to_s, {remote: true, class: :setItemsRemove}) %>
+                <% if (s.description.length > 0) %>
+                    <br/><small>
+                <%= s.description %>
+              </small>
+                <% end %>
+              </div>
+              <%= render partial: 'vocabulary_terms/edit_synonym', locals: { modal_id: "item_" + s.id.to_s, item: s} %>
+          <% end %>
+        </div>
+    <% end %>
+
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function() {
+    jQuery("#set_contents_list").sortable();
+  });
+</script>

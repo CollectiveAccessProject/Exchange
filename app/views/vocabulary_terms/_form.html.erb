@@ -16,13 +16,13 @@
             <%= r.input :reference_url, :input_html => { rows: 2  } %>
             <% if(!@vocabulary_term.created_at.nil?) %>
                 <div class="row form-group">
-                  <div class="col-md-4"><label class="string optional control-label">Set created</label></div>
+                  <div class="col-md-4"><label class="string optional control-label">Term created</label></div>
                   <div class="col-md-6"><%= @vocabulary_term.created_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
                 </div>
             <% end %>
             <% if(!@vocabulary_term.updated_at.nil?) %>
                 <div class="row form-group">
-                  <div class="col-md-4"><label class="string optional control-label">Set last updated</label></div>
+                  <div class="col-md-4"><label class="string optional control-label">Term last updated</label></div>
                   <div class="col-md-6"><%= @vocabulary_term.updated_at.strftime("%m/%d/%y at %H:%M:%S") %></div>
                 </div>
             <% end %>

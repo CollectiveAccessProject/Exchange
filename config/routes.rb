@@ -144,6 +144,10 @@ Rails.application.routes.draw do
   get '/vocabulary_terms' => 'vocabulary_terms#index'
   resources :vocabulary_terms
   resources :vocabulary_term_synonyms
+  post '/vocabulary_terms/:id/add_synonym' => 'vocabulary_terms#add_synonym', as: 'vocabulary_terms_add_synonym'
+  patch '/vocabulary_terms/:id/edit_synonym' => 'vocabulary_terms#edit_synonym', as: 'vocabulary_terms_edit_synonym'
+  get '/vocabulary_terms/:id/remove_synonym' => 'vocabulary_terms#remove_synonym', as: 'vocabulary_terms_remove_synonym'
+
 
   # Dashboard User Resources/Collections filtering/sorting
   get '/filter_user_items' => 'dashboard#filter_user_items', as: 'filter_user_items'

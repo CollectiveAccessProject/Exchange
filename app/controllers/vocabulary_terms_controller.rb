@@ -67,17 +67,14 @@ class VocabularyTermsController < ApplicationController
     end
   end
 
-  #
-  # Add set item
-  #
-  def add_set_item
+
+  def add_synonym
     begin
       @vocabulary_term = VocabularyTerm.find(params[:id])
 
-      to_resource_id = params[:to_resource_id]
-      item = VocabularyTermSynonym.where(featured_content_set_id: @featured_content_set.id, resource_id: to_resource_id, title: params[:title], subtitle: params[:subtitle]).first_or_create
+      syn = VocabularyTermSynonym.where(vocabulary_term_id: @vocabulary_term.id, synonym: params[:synonym], description: params[:description], reference_url: params[:reference_url]).first_or_create
 
-      resp = {:status => :ok, :html => render_to_string("featured_content_sets/_item_list", layout: false)}
+      resp = {:status => :ok, :html => render_to_string("vocabulary_terms/_synonym_list", layout: false)}
     rescue StandardError => ex
       resp = {:status => :err, :error => ex.message}
     end
@@ -88,16 +85,31 @@ class VocabularyTermsController < ApplicationController
 
   end
 
-  #
-  #
-  #
-  def remove_set_item
+  def edit_synonym
     begin
-      @featured_content_set = VocabularyTerm.find(params[:id])
-      resource_id = params[:related]
-      VocabularyTermSynonym.where(featured_content_set_id: @featured_content_set.id, resource_id: resource_id).destroy_all
+      @vocabulary_term = VocabularyTerm.find(params[:id])
 
-      resp = {:status => :ok, :html => render_to_string("featured_content_sets/_item_list", layout: false)}
+      if (syn = VocabularyTermSynonym.where(vocabulary_term_id: @vocabulary_term.id, id: synonym_params[:synonym_id]).first)
+        syn.update ({synonym: synonym_params[:synonym], description: synonym_params[:description], reference_url: synonym_params[:reference_url]})
+      end
+
+      resp = {:status => :ok, :html => render_to_string("vocabulary_terms/_synonym_list", layout: false)}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp, status: :ok }
+    end
+
+  end
+
+  def remove_synonym
+    begin
+      @vocabulary_term = VocabularyTerm.find(params[:id])
+      VocabularyTermSynonym.where(vocabulary_term_id: @vocabulary_term.id, id: params[:synonym_id]).destroy_all
+
+      resp = {:status => :ok, :html => render_to_string("vocabulary_terms/_synonym_list", layout: false)}
     rescue StandardError => ex
       resp = {:status => :err, :error => ex.message}
     end
@@ -107,58 +119,15 @@ class VocabularyTermsController < ApplicationController
     end
   end
 
-  # set order of set items
-  def set_item_order
-    resp = {status: :ok}
-
-    # get current ranks for set items
-    current_items = VocabularyTermSynonym.where(featured_content_set_id: params[:id]).order(:rank)
-    ranks = current_items.pluck(:rank)
-
-    params[:ranks].each do |id|
-      if (i = VocabularyTermSynonym.where(featured_content_set_id: params[:id], resource_id: id).first)
-        i.rank = ranks.shift
-        if (!i.save)
-          resp = {:status => :err, :error => i.errors.full_messages.join('; ')}
-          break
-        end
-      end
-    end
-
-    respond_to do |format|
-      format.json { render :json => resp }
-    end
-  end
-
-  # set order of sets
-  def set_order
-    resp = {status: :ok}
-
-    # get current ranks for sets
-    current_items = VocabularyTerm.order(:rank)
-    ranks = current_items.pluck(:rank)
-
-    r = 1
-    params[:ranks].each do |id|
-      if (i = VocabularyTerm.find(id))
-        i.rank = r
-        r = r + 1
-        if (!i.save)
-          resp = {:status => :err, :error => i.errors.full_messages.join('; ')}
-          break
-        end
-      end
-    end
-
-    respond_to do |format|
-      format.json { render :json => resp }
-    end
-  end
-
-
   def vocabulary_term_params
     params.require(:vocabulary_term).permit(
-        :term, :description, :reference_url
+        :id, :term, :description, :reference_url
+    )
+  end
+
+  def synonym_params
+    params.require(:vocabulary_term_synonym).permit(
+        :id, :synonym_id, :synonym, :description, :reference_url
     )
   end
 end
