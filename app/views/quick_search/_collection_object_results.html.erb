@@ -4,7 +4,7 @@
       <a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
       <h4>
         <a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;"style="padding-right:30px;">
-          <%= @collection_objects_count %> UMMA Collection Object<%= (@collection_objects_count == 1) ? "" : "s" %>
+          <%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
           (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
         </a>
         <div class="pull-right">

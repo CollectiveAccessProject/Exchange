@@ -462,6 +462,9 @@ $red:#BA0017;
 						.previewMediaCol{
 							padding-left: 0;
 							padding-right: 0;
+							p {
+								font-size: 12px;
+							}
 							.mediaTips{
 								float: right;
 								padding: 3px;
@@ -589,6 +592,9 @@ $red:#BA0017;
 		.previewMediaCol{
 			padding-left: 0;
 			padding-right: 0;
+			p {
+				font-size: 12px;
+			}
 		}
 	}
 }

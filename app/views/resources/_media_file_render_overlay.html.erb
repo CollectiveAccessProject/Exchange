@@ -116,7 +116,7 @@
 
 								<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
 							<% end %>
-							<%= f.input :copyright_notes, :input_html => {}, :as => :summernote %>
+							<%= f.input :copyright_notes, :input_html => {}, :as => :summernote, label: 'Copyright/Author Notes' %>
               <%= f.input :access,  collection: Rails.application.config.x.access_types, label: 'Publication Status'%>
 
 							<%= hidden_field(:media_file, :resource_id, :value => @resource.id) %>
@@ -177,7 +177,7 @@
 		<%
 						when "CollectiveaccessLink"
 		%>
-						  UMMA Collection Object
+						  UMMA Object
 		<%
 						end
 		%>

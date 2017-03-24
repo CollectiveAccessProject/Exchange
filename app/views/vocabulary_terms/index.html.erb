@@ -8,30 +8,36 @@
 <h2>Vocabulary terms</h2>
 
 <div id="sets-status">
-  <div class="flash-notice" id="sets-status-message">
-
-  </div>
+  <div class="flash-notice" id="sets-status-message"></div>
 </div>
 
-<div id="set_list">
-<% @vocabulary_term.each do |s| %><div class="setListItem row featuredAdminSetListRow" data-set_id="<%= s.id %>">
-  <div class="col-sm-6"><b><%= sanitize(s.term, tags: %w(strong em a font b sup sub u), attributes: %w(href style))  %></b>
-
-    <%
-      c = s.vocabulary_term_synonyms.count
-      if(c > 0)
-    %>
-        <div class="pull-right"><%= c.to_s %> <%= (c == 1) ? "synonym" : "synonyms" %></div>
-    <% end %>
-    <%
-      c = s.resources_vocabulary_terms.count
-      if(c > 0)
-    %>
-        <div class="pull-right"><%= c.to_s %>  resource <%= (c == 1) ? "reference" : "references" %></div>
-    <% end %>
-    <br/></div>
-	<div class="col-sm-3">
-		<%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_vocabulary_term_path(s), class: "btn btn-xs btn-default") %>
-		<%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, s, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
-	</div>
-</div><% end %>
+<div class="row" id="set_list">
+  <% @vocabulary_term.each do |s| %>
+    <div class="setListItem row featuredAdminSetListRow" data-set_id="<%= s.id %>">
+      <div class="col-sm-6">
+        <b><%= sanitize(s.term, tags: %w(strong em a font b sup sub u), attributes: %w(href style))  %></b>
+<%
+        c = s.vocabulary_term_synonyms.count
+        if(c > 0)
+%>
+          <div class="pull-right"><%= c.to_s %>
+            <%= (c == 1) ? "synonym" : "synonyms" %>
+          </div>
+<%
+	    end
+        c = s.resources_vocabulary_terms.count
+        if(c > 0)
+%>
+          <div class="pull-right">
+            <%= c.to_s %>  resource <%= (c == 1) ? "reference" : "references" %>
+          </div>
+        <% end %>
+        <br/>
+      </div>
+      <div class="col-sm-3">
+        <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_vocabulary_term_path(s), class: "btn btn-xs btn-default") %>
+	    <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, s, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
+      </div>
+    </div>
+  <% end %>
+</div>

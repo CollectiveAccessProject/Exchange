@@ -18,40 +18,40 @@
             <strong>How would you like to organize this <%= (@resource.is_resource) ? "Resource" : "Collection" %> within a Learning Collection?</strong>
           </div>
         </div>
-        <div class="row" style="margin-top: 30px;">
-          <div class="col-sm-6 col-md-5 col-md-offset-1 text-center">
+        <div class="row text-center" style="margin-top: 30px;">
+          <div class="col-sm-6 col-md-4 text-center">
             <%= link_to "Add to new Learning Collection", new_collection_with_id_path(@resource.id), {"class": "btn btn-default"} %>
           </div>
-          <div class="col-sm-6 col-md-5 text-center">
-          <% if (@available_collections && (@available_collections.length > 0)) %>
+          <div class="col-sm-5 text-center">
+          <% if (@available_collections.length > 0) %>
           	<div class="row">
 				<%= form_tag(set_resource_parent_with_id_path(@resource), method: "post") do %>
-					<div class="col-sm-3 text-right"><small>or use:</small></div>
-					<div class="col-sm-7">
+					<div class="col-sm-3" style="padding-right: 0px; padding-top:5px;">
+                    <small>or add it to:</small>
+					</div>
+					<div class="col-sm-6" style="padding-left: 0px; padding-right: 0px;">
 					<%=
-					  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, lambda {|t| strip_tags(t.title)}), class:'form-control')
+					  select_tag(:parent_id, options_from_collection_for_select(@available_collections, :id, lambda {|t| strip_tags(t.title)}), class:'form-control width=""')
 					%>
 					<script>
 						$(document).ready(function(){
 							var option_str = $('#parent_id option').text();
+							console.log($(option_str).text());
 						});
 					</script>
 					<%= hidden_field_tag(:id, @resource.id) %>
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-1" style="padding-left: 5px;">
 					<%=
-					  submit_tag("Go", "class": "btn btn-default", "id": "addToExistingCollection")
+					  submit_tag("Add", "class": "btn btn-default", "id": "addToExistingCollection")
 					%>
 					</div>
 				<% end %>
 			</div>
             <% end %>
           </div>
-        </div>
-        <div class="row" style="margin-top: 20px">
-
-          <div class="col-md-12 text-right">
-            <br/><a class="" data-dismiss="modal" aria-label="Close">Add it another time <i class="fa fa-times"></i></a>
+          <div class="col-sm-4 col-md-3 text-center">
+            <a class="btn btn-default" data-dismiss="modal" aria-label="Close">Add it another time</a>
           </div>
         </div>
       </div>
