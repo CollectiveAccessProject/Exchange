@@ -27,7 +27,8 @@
 					<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(rr, user_signed_in?) %><br/>
 				  <% end %>
 			</div>
-			<small>Response by <%= rr.user.name %></small>
+			<small>Response by <%= rr.user.name %><br/>
+			<%= rr.created_at.to_time.strftime(Rails.application.config.x.timestamp_format) %></small>
 		</div>
 <% end %>
 </div>

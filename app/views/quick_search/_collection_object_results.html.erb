@@ -62,6 +62,9 @@
                 <% if f.sourceable %>
                     <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
                     <% thumb = true %>
+  				      <div class="zoomControls searchZoom" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
+				        <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+				      </div>
                     <% break %>
                 <% end %>
             <% end %>
@@ -69,7 +72,7 @@
                 <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
             <% end %>
             <div class="text-left qsResultText">
-              <div class="small"><%= r.get_collection_object_field('artist') %> <%= r.get_collection_object_field('artist_nationality', { enclose_in_parens: true}) %></div>
+              <div class="small"><%= sanitize(r.get_collection_object_field('artist')) %> <%= sanitize(r.get_collection_object_field('artist_nationality', { enclose_in_parens: true})) %></div>
               <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
               <div class="qsMoreCaption">
                 <div class="small"><%= r.get_collection_object_field('date_created') %></div>
@@ -134,7 +137,7 @@
     </div>
   </div>
 </div>
-
+<%= render(partial: 'resources/media_overlay') %>
 <script>
     jQuery(document).ready(function() {
         jQuery("#collection_object_num_items_per_page, #collection_object_sort").on('change', function(e) {

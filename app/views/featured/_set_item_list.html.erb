@@ -31,4 +31,11 @@
 		end
 %>
   <% end %>
+  <script>
+  	$(document).ready(function(){
+  		$('.loadSet').click(function(){
+  			window.location.replace($(this).attr("href").replace(/\/get/, ""));
+  		});
+  	});
+  </script>
 </div>

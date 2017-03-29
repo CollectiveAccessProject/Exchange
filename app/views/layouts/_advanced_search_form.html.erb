@@ -130,6 +130,12 @@
               <label class="control-label" for="advOnDisplay"><input type="checkbox" name="on_display" id="advOnDisplay"> Currently on Display</label>
             </div>
           </div>
+          <div id="currentLocationField" class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advCurrentLocation">Current Location</label>
+              <%= autocomplete_field_tag(:current_location, "", autocomplete_current_location_path(0), :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, class:'form-control', id:'advCurrentLocation') %>
+            </div>
+          </div>
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advDateCreated">Date Created</label>
@@ -140,12 +146,6 @@
             <div class="form-group">
               <label class="control-label" for="advOtherDates">Other Dates</label>
               <input class="form-control" type="text" name="other_dates" id="advOtherDates">
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advCurrentLocation">Current Location</label>
-              <%= autocomplete_field_tag(:current_location, "", autocomplete_current_location_path(0), :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, class:'form-control', id:'advCurrentLocation') %>
             </div>
           </div>
         </div>
@@ -212,6 +212,10 @@
             } else {
                 $('#advancedSearchResource').slideDown();
             }
+        });
+        $('#currentLocationField').hide();
+        $('#advOnDisplay').click(function(){
+        	$('#currentLocationField').toggle();
         });
     });
 </script>
