@@ -29,7 +29,16 @@
 					<%= f.label :password_confirmation %>
 					<%= f.password_field :password_confirmation, autocomplete: "off", class:'form-control' %>
 				  </div>
-
+				  <div class="form-group col-sm-12">
+				    <div class="row">
+				      <div class="col-sm-4">
+				  	    <%= recaptcha_tags %>
+				      </div>
+					  <div class="row-sm-6">
+					    <h4 class="flashMessage"><%= flash[:recaptcha_error] %></h4>
+  					  </div>
+  					</div>
+				  </div>
 				  <div class="form-group col-sm-12">
 					<%= f.submit "Sign up", class:"btn btn-default btn-md" %>
 				  </div>

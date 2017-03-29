@@ -105,6 +105,7 @@ gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-shibboleth'
 gem 'dotenv-rails'
+gem 'recaptcha', require: "recaptcha/rails"
 
 # Intro Tour
 gem 'bootstrap-tour-rails'
