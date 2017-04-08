@@ -1,5 +1,5 @@
 <% content_for :page_title do %>
-  <title>Exchange: Vocabulary terms</title>
+    <title>Exchange: Vocabulary terms</title>
 <% end %>
 <div class="btn-group pull-right" role="group" id="new_featured_content_set">
   <%= link_to('New vocabulary term', new_vocabulary_term_path, class: "btn btn-default btn-lg") %>
@@ -13,31 +13,44 @@
 
 <div class="row" id="set_list">
   <% @vocabulary_term.each do |s| %>
-    <div class="setListItem row featuredAdminSetListRow" data-set_id="<%= s.id %>">
-      <div class="col-sm-6">
-        <b><%= sanitize(s.term, tags: %w(strong em a font b sup sub u), attributes: %w(href style))  %></b>
-<%
-        c = s.vocabulary_term_synonyms.count
-        if(c > 0)
-%>
-          <div class="pull-right"><%= c.to_s %>
-            <%= (c == 1) ? "synonym" : "synonyms" %>
-          </div>
-<%
-	    end
-        c = s.resources_vocabulary_terms.count
-        if(c > 0)
-%>
+      <div class="setListItem row featuredAdminSetListRow" data-set_id="<%= s.id %>">
+        <div class="col-sm-6">
+          <b><%= sanitize(s.term, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></b>
+          <%
+            l = []
+            c = s.vocabulary_term_synonyms.count
+            if (c > 0)
+              l.push(c.to_s + ((c == 1) ? " synonym" : " synonyms"))
+            end
+            c = s.resources_vocabulary_terms.count
+            if (c > 0)
+              l.push(c.to_s + " resource " + ((c == 1) ? "reference" : "references"))
+            end
+
+          %>
           <div class="pull-right">
-            <%= c.to_s %>  resource <%= (c == 1) ? "reference" : "references" %>
+            <%= l.join("; ") %>
           </div>
-        <% end %>
-        <br/>
+          <br/>
+
+          <% if (s.has_children?) %>
+              <div style="margin-left: 20px;">
+                <% s.children.each do |child| %>
+                    <div>
+                      <b><%= sanitize(child.term, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></b>
+                      <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_vocabulary_term_path(child), class: "btn btn-xs btn-default") %>
+                      <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, child, method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-xs btn-default' %>
+                    </div>
+                <% end %>
+              </div>
+          <% end %>
+        </div>
+        <div class="col-sm-5">
+          <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_vocabulary_term_path(s), class: "btn btn-xs btn-default") %>
+          <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Add sub-term'.html_safe, vocabulary_terms_add_child_path(s), class: "btn btn-xs btn-default") %>
+          <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, s, method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-xs btn-default' %>
+        </div>
+        <div class="col-sm-1"></div>
       </div>
-      <div class="col-sm-3">
-        <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_vocabulary_term_path(s), class: "btn btn-xs btn-default") %>
-	    <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, s, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
-      </div>
-    </div>
   <% end %>
 </div>

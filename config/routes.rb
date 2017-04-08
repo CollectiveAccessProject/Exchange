@@ -32,6 +32,10 @@ Rails.application.routes.draw do
   # add new resource to collection
   get '/resources/new/collection/:parent_id' => "resources#new", type: 'resource', as: "new_resource_for_collection_with_id"
 
+  # add new CRC set
+  get '/crc/new' => 'resources#new', type: 'crcset', as: "new_crcset"
+
+
   # media files only exist in resource context, so we basically only need create, update and delete
   # @todo: implement update
   resources :media_files, except: [:index, :show, :new, :edit]
@@ -144,6 +148,7 @@ Rails.application.routes.draw do
   get '/vocabulary_terms' => 'vocabulary_terms#index'
   resources :vocabulary_terms
   resources :vocabulary_term_synonyms
+  get '/vocabulary_terms/:id/add_child' => 'vocabulary_terms#new', as: 'vocabulary_terms_add_child'
   post '/vocabulary_terms/:id/add_synonym' => 'vocabulary_terms#add_synonym', as: 'vocabulary_terms_add_synonym'
   patch '/vocabulary_terms/:id/edit_synonym' => 'vocabulary_terms#edit_synonym', as: 'vocabulary_terms_edit_synonym'
   get '/vocabulary_terms/:id/remove_synonym' => 'vocabulary_terms#remove_synonym', as: 'vocabulary_terms_remove_synonym'

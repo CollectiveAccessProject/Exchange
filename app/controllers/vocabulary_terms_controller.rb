@@ -13,16 +13,21 @@ class VocabularyTermsController < ApplicationController
   end
 
   def index
-    @vocabulary_term = VocabularyTerm.all().order("term")
+    @vocabulary_term = VocabularyTerm.where(ancestry: nil).order("term")
   end
 
   def new
     @vocabulary_term = VocabularyTerm.new
+    @parent_id = params[:id]
   end
 
   def create
     @vocabulary_term = VocabularyTerm.new(vocabulary_term_params)
     # @vocabulary_term.user = current_user
+    if (parent_id = params[:parent_id])
+      puts "parent is " + parent_id
+      @vocabulary_term.parent_id= parent_id
+    end
 
     respond_to do |format|
       if @vocabulary_term.save
