@@ -46,6 +46,7 @@ class Resource < ActiveRecord::Base
   COLLECTION = 2
   COLLECTION_OBJECT = 3
   EXHIBITION = 4
+  CRCSET = 5
 
   has_settings :class_name => 'ResourceSettingObject'  do |s|
     s.key :media_formatting, :defaults => { :mode => :slideshow }
@@ -234,6 +235,7 @@ class Resource < ActiveRecord::Base
     label += " [COLLECTION]" if (self.is_collection)
     label += " [RESOURCE]" if (self.is_resource)
     label += " [EXHIBITION]" if (self.is_exhibition)
+    label += " [CRC SET]" if (self.is_crc_set)
 
     label
   end
@@ -269,6 +271,10 @@ class Resource < ActiveRecord::Base
     return (self.is_collection || self.is_exhibition)
   end
 
+  def is_crc_set
+    return self.resource_type == Resource::CRCSET;
+  end
+
 
   def resource_type_for_display(plural=false)
     case self.resource_type
@@ -280,6 +286,8 @@ class Resource < ActiveRecord::Base
         return plural ? "Collections" : "Collection"
       when Resource::EXHIBITION
         return plural ? "Exhibitions" : "Exhibition"
+      when Resource::CRCSET
+        return plural ? "CRC sets" : "CRC set"
     end
   end
 
@@ -293,6 +301,8 @@ class Resource < ActiveRecord::Base
         return :collections
       when Resource::EXHIBITION
         return :exhibitions
+      when Resource::CRCSET
+        return :crcset
     end
   end
 
@@ -302,7 +312,7 @@ class Resource < ActiveRecord::Base
   end
 
   def allow_responses
-    if((self.settings(:user_interaction).allow_responses > 0) && (!self.is_collection_object))
+    if((self.settings(:user_interaction).allow_responses > 0) && (!self.is_collection_object) && (!self.is_crc_set))
       return true
     end
 
