@@ -198,12 +198,14 @@
 
             </div>
           </div>
+          <% if !@resource.is_crc_set %>
           <h4>Add to collection</h4>
           <form class="collectionObjectAdd"><%=
           select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'detailCollectionList', id:'collectionObjectAddToCollectionID')
         %>
           <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectAddToCollection", data: {id: @resource.id}  %>
           </form>
+          <% end %>
         </div>
         <% end %>
 

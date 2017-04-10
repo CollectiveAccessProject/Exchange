@@ -853,3 +853,8 @@ dd > .alert, p > .alert, dt > .alert{
 #infoColHead h4{
 	margin: 0;
 }
+
+select.date, select.datetime {
+  display: inline;
+  width: unset;
+}

@@ -152,7 +152,15 @@ class ResourcesController < ApplicationController
       @child = Resource.find(child_id)
     end
 
-    @resource.resource_type = (params['type'] == 'collection') ? Resource::LEARNING_COLLECTION : Resource::RESOURCE # preset type
+    # preset type
+    case params['type']
+      when 'collection'
+        @resource.resource_type = Resource::LEARNING_COLLECTION
+      when 'crcset'
+        @resource.resource_type = Resource::CRCSET
+      else
+        @resource.resource_type = Resource::RESOURCE
+    end
   end
 
   # GET /resources/1/edit
@@ -200,6 +208,16 @@ class ResourcesController < ApplicationController
     parent_id = params[:resource][:parent_id].to_i
     child_id = params[:resource][:child_id].to_i
 
+    if (@resource.is_crc_set)
+      @resource.date_of_visit = Date.new(params['date_of_visit(1i)'].to_i,params['date_of_visit(2i)'].to_i,params['date_of_visit(3i)'].to_i)
+    end
+
+    [:subtitle, :copyright_notes].each do|f|
+      @resource.send(:"#{f}=", "")
+    end
+
+    @resource.copyright_license = 0 if (!params[:resource][:copyright_license])
+
     respond_to do |format|
       if @resource.save
         set_roles
@@ -236,7 +254,7 @@ class ResourcesController < ApplicationController
           rh.save
         end
 
-        format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been added.' }
+        format.html { redirect_to edit_resource_path(@resource), notice: @resource.resource_type_for_display + ' has been added.' }
         format.json { render :show, status: :created, location: @resource }
       else
         format.html { render :new }
@@ -248,12 +266,22 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1
   # PATCH/PUT /resources/1.json
   def update
+
+
+    [:subtitle, :copyright_notes].each do|f|
+      @resource.send(:"#{f}=", "")
+    end
+
+    if (@resource.is_crc_set)
+      @resource.date_of_visit = Date.new(params[:resource]['date_of_visit(1i)'].to_i,params[:resource]['date_of_visit(2i)'].to_i,params[:resource]['date_of_visit(3i)'].to_i)
+    end
+
     respond_to do |format|
       if (parent_id = params[:parent_id])
         # TODO: Verify that current user has privs to do this
         if (prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create)
 
-          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
+          format.html { redirect_to edit_resource_path(@resource), notice: @resource.resource_type_for_display + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
 
         else
@@ -267,7 +295,7 @@ class ResourcesController < ApplicationController
 
           @resource.index_for_search
 
-          format.html { redirect_to edit_resource_path(@resource), notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been updated.' }
+          format.html { redirect_to edit_resource_path(@resource), notice: @resource.resource_type_for_display + ' has been updated.' }
           format.json { render :show, status: :ok, location: @resource }
         else
           format.html { render :edit }
@@ -332,7 +360,7 @@ class ResourcesController < ApplicationController
     end
     @resource.destroy
     respond_to do |format|
-      format.html { redirect_to resources_url, notice: ((@resource.is_resource) ? "Resource" : "Collection") + ' has been removed.' }
+      format.html { redirect_to resources_url, notice: @resource.resource_type_for_display + ' has been removed.' }
       format.json { head :no_content }
     end
   end
@@ -585,7 +613,7 @@ class ResourcesController < ApplicationController
       add_child_resource_id = params[:add_child_resource_id]
       child_resource = Resource.find(add_child_resource_id)
       if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
-	raise StandardError, 'Access Denied'
+        raise StandardError, 'Access Denied'
       end
       prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).first_or_create
 
@@ -616,7 +644,7 @@ class ResourcesController < ApplicationController
       begin
         child_resource = Resource.find(add_child_resource_id)
         if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
-	  raise StandardError, 'Access Denied'
+          raise StandardError, 'Access Denied'
         end
         if (@resource.is_collection)
           if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
@@ -666,7 +694,7 @@ class ResourcesController < ApplicationController
       to_resource_id = params[:to_resource_id]
       to_resource = Resource.find(to_resource_id)
       if(!to_resource.can(:view, current_user) and !to_resource.can(:edit, current_user))
-	raise StandardError, 'Access Denied'
+        raise StandardError, 'Access Denied'
       end
       prel = RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id, caption: params[:caption]).first_or_create
 
@@ -688,7 +716,7 @@ class ResourcesController < ApplicationController
       to_resource_id = params[:related]
       to_resource = Resource.find(to_resource_id)
       if(!to_resource.can(:edit, current_user))
-	raise StandardError, 'Delete Access Denied'
+        raise StandardError, 'Delete Access Denied'
       end
       RelatedResource.where(resource_id: @resource.id, to_resource_id: to_resource_id).destroy_all
 
@@ -859,7 +887,7 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (!@resource.can(:edit, current_user))
-          raise "Only owner can change access settings"
+        raise "Only owner can change access settings"
       end
 
       to_user_id = params[:to_user_id]
@@ -880,7 +908,7 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (!@resource.can(:edit, current_user))
-          raise "Only owner can change access settings"
+        raise "Only owner can change access settings"
       end
       user_id = params[:user_id]
       ResourcesUser.where(resource_id: @resource.id, user_id: user_id).destroy_all
@@ -902,7 +930,7 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (!@resource.can(:edit, current_user))
-          raise "Only owner can change access settings"
+        raise "Only owner can change access settings"
       end
 
       to_group_id = params[:to_group_id]
@@ -923,7 +951,7 @@ class ResourcesController < ApplicationController
     begin
       # only owner can add user access
       if (!@resource.can(:edit, current_user))
-          raise "Only owner can change access settings"
+        raise "Only owner can change access settings"
       end
       group_id = params[:group_id]
       ResourcesGroup.where(resource_id: @resource.id, group_id: group_id).destroy_all

@@ -1,5 +1,5 @@
 <% content_for :page_title do %>
-  <title>Exchange: Your Dashboard</title>
+    <title>Exchange: Your Dashboard</title>
 <% end %>
 <div class="row">
   <div class="col-sm-10">
@@ -12,22 +12,29 @@
         <ul class="dropdown-menu">
           <li><%= link_to('New Resource <i class="fa fa-info-circle dbResourceTip pull-right"></i>'.html_safe, new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
           <li><%= link_to('New Collection<i class="fa fa-info-circle dbCollectionTip pull-right"></i>'.html_safe, new_collection_path, class:'btn btn-xs btn-noBg')  %></li>
+          <li><%= link_to('New CRC Set<i class="fa fa-info-circle dbCRCSetTip pull-right"></i>'.html_safe, new_crcset_path, class:'btn btn-xs btn-noBg')  %></li>
         </ul>
         <script>
-        	$(document).ready(function(){
-        		$('.dbResourceTip').popover({
-        			title: "What is a Resource?",
-        			content: 'An individual item in the Exchange covering one topic, item or idea.',
-        			placement: "left",
-        			trigger: "hover",
-        		});
-        		$('.dbCollectionTip').popover({
-        			title: "What is a Collection?",
-        			content: 'A group of Resources that illustrates a common theme or concept (i.e. for a course).',
-        			placement: "left",
-        			trigger: "hover"
-        		});
-        	});
+            $(document).ready(function(){
+                $('.dbResourceTip').popover({
+                    title: "What is a Resource?",
+                    content: 'An individual item in the Exchange covering one topic, item or idea.',
+                    placement: "left",
+                    trigger: "hover",
+                });
+                $('.dbCollectionTip').popover({
+                    title: "What is a Collection?",
+                    content: 'A group of Resources that illustrates a common theme or concept (i.e. for a course).',
+                    placement: "left",
+                    trigger: "hover"
+                });
+                $('.dbCRCSetTip').popover({
+                    title: "What is a CRC Set?",
+                    content: 'A group of Collection Objects to be requested for viewing on a museum visit.',
+                    placement: "left",
+                    trigger: "hover"
+                });
+            });
         </script>
       </div>
     </H1>
@@ -42,56 +49,56 @@
           <input type="text" name="search" class="form-control input-sm" placeholder="Enter search terms" id="dashboardSearch"><button type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         </div>
         <div class="col-sm-8 text-right">
-        	<div class="btn-group">
-				<a id="filter_dropdown" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter By <span class="caret"></span></a>
-				<ul class="dropdown-menu">
-					<li class="filter_head"> <h6>Publication Status</h6></li>
-					<li><%= link_to 'Published'.html_safe, filter_user_items_path(:pub_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
-					<li><%= link_to 'Unpublished'.html_safe, filter_user_items_path(:pub_filter => 0), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
-					<li class="filter_head"> <h6>Resource Type</h6></li>
-					<li><%= link_to 'Resource'.html_safe, filter_user_items_path(:type_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
-					<li class="filter_head"><%= link_to 'Learning Collection'.html_safe, filter_user_items_path(:type_filter => 2), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
-					<li class="filter_head"><%= link_to 'Collection Object'.html_safe, filter_user_items_path(:type_filter => 3), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
-					<li><hr/><%= link_to 'Clear Filters', remove_filter_path, :remote => true, :class => 'btn btn-xs btn-noBg remove_filter' %></li>
-				</ul>
-        	</div>
-        	<div class="btn-group">
-				<a id="sort_dropdown" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span> Sort By <span class="caret"></span></a>
-				<ul class="dropdown-menu">
-					<li><%= link_to 'Title', filter_user_items_path(:sort_type => 'title'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
-					<li><%= link_to 'Date Created', filter_user_items_path(:sort_type => 'created_at'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
-					<li><%= link_to 'Date Updated', filter_user_items_path(:sort_type => 'updated_at'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
-					<li><%= link_to 'Type', filter_user_items_path(:sort_type => 'resource_type'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>					
-				</ul>
-        	</div>
+          <div class="btn-group">
+            <a id="filter_dropdown" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filter By <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li class="filter_head"> <h6>Publication Status</h6></li>
+              <li><%= link_to 'Published'.html_safe, filter_user_items_path(:pub_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
+              <li><%= link_to 'Unpublished'.html_safe, filter_user_items_path(:pub_filter => 0), :remote => true, :class => 'btn btn-xs btn-noBg publish_filter' %></li>
+              <li class="filter_head"> <h6>Resource Type</h6></li>
+              <li><%= link_to 'Resource'.html_safe, filter_user_items_path(:type_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
+              <li class="filter_head"><%= link_to 'Learning Collection'.html_safe, filter_user_items_path(:type_filter => 2), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
+              <li class="filter_head"><%= link_to 'Collection Object'.html_safe, filter_user_items_path(:type_filter => 3), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
+              <li><hr/><%= link_to 'Clear Filters', remove_filter_path, :remote => true, :class => 'btn btn-xs btn-noBg remove_filter' %></li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <a id="sort_dropdown" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span> Sort By <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><%= link_to 'Title', filter_user_items_path(:sort_type => 'title'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
+              <li><%= link_to 'Date Created', filter_user_items_path(:sort_type => 'created_at'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
+              <li><%= link_to 'Date Updated', filter_user_items_path(:sort_type => 'updated_at'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
+              <li><%= link_to 'Type', filter_user_items_path(:sort_type => 'resource_type'), :remote => true, :class => 'btn btn-xs btn-noBg sort_option' %></li>
+            </ul>
+          </div>
         </div>
-		<script>
-			$(document).ready(function(){
-				$.ajax({
-					url: '<%= remove_filter_path %>',
-					type: 'GET',
-				});
-				$('.publish_filter').click(function(){
-					$('.publish_filter').removeClass('active_filter');
-					$(this).addClass('active_filter');
-					$('#filter_dropdown').dropdown('toggle');
-				});
-				$('.type_filter').click(function(){
-					$('.type_filter').removeClass('active_filter');
-					$(this).addClass('active_filter');
-					$('#filter_dropdown').dropdown('toggle');
-				});
-				$('.sort_option').click(function(){
-					$('.sort_option').removeClass('active_filter');
-					$(this).addClass('active_filter');
-					$('#sort_dropdown').dropdown('toggle');
-				});
-				$('.remove_filter').click(function(){
-					$('.publish_filter, .type_filter, .sort_option').removeClass('active_filter');
-					$('#filter_dropdown').dropdown('toggle');
-				});
-			});
-		</script>
+        <script>
+            $(document).ready(function(){
+                $.ajax({
+                    url: '<%= remove_filter_path %>',
+                    type: 'GET',
+                });
+                $('.publish_filter').click(function(){
+                    $('.publish_filter').removeClass('active_filter');
+                    $(this).addClass('active_filter');
+                    $('#filter_dropdown').dropdown('toggle');
+                });
+                $('.type_filter').click(function(){
+                    $('.type_filter').removeClass('active_filter');
+                    $(this).addClass('active_filter');
+                    $('#filter_dropdown').dropdown('toggle');
+                });
+                $('.sort_option').click(function(){
+                    $('.sort_option').removeClass('active_filter');
+                    $(this).addClass('active_filter');
+                    $('#sort_dropdown').dropdown('toggle');
+                });
+                $('.remove_filter').click(function(){
+                    $('.publish_filter, .type_filter, .sort_option').removeClass('active_filter');
+                    $('#filter_dropdown').dropdown('toggle');
+                });
+            });
+        </script>
       </div><!-- end row -->
     </form></div><!-- end dbUnit -->
     <div class="dbUnit"><HR/></div>
@@ -115,7 +122,7 @@
                 </ul>
               </div>
             </div>
-          <HR/>
+            <HR/>
           </div>
       <% end %>
     </div>
@@ -132,18 +139,18 @@
       </div><!-- end row -->
     </form></div><!-- end dbUnit -->
     <div class="dbActivityList">
-    <div class="dbUnit"><HR/></div>
-    <%
-      @activity_history.each do |h|
-    %>
-    <div class="dbUnit">
-      <p><span class="small"><%= h[:datetime] %></span>
-        <br/><%= h[:event] %>  <%= !h[:deleted] ? link_to(sanitize(h[:title]), h[:item]) : sanitize(h[:title]) %>  (<%= h[:item_type] %>) <%= time_ago_in_words(h[:created_at]) %> ago
-      </p>
-      <HR/>
+      <div class="dbUnit"><HR/></div>
+      <%
+        @activity_history.each do |h|
+      %>
+          <div class="dbUnit">
+            <p><span class="small"><%= h[:datetime] %></span>
+              <br/><%= h[:event] %>  <%= !h[:deleted] ? link_to(sanitize(h[:title]), h[:item]) : sanitize(h[:title]) %>  (<%= h[:item_type] %>) <%= time_ago_in_words(h[:created_at]) %> ago
+            </p>
+            <HR/>
+          </div>
+      <% end %>
     </div>
-    <% end %>
-      </div>
     <H4>
       Your Stats
     </H4>
@@ -170,91 +177,91 @@
     <div class="dbUnit">
       <div class="row">
         <div id="favoritesList">
-        <%
-        if(@favorites) 
-          @favorites.each do |f|
-          	next if (!f.resource)
+          <%
+            if(@favorites)
+              @favorites.each do |f|
+                next if (!f.resource)
           %>
-        <div class="col-sm-2 dbFavoriteContainer">
-          <div class="dbFavorite" id="dbFavorite<%= f.id %>">
-            <%= link_to("<i class='fa fa-times' aria-hidden='true'></i>".html_safe, remove_favorite_path(f), remote: true, method: :post, class: "cornerButton dbFavoriteDeleteControl", data: {id: f.id}) %>
+                  <div class="col-sm-2 dbFavoriteContainer">
+                    <div class="dbFavorite" id="dbFavorite<%= f.id %>">
+                      <%= link_to("<i class='fa fa-times' aria-hidden='true'></i>".html_safe, remove_favorite_path(f), remote: true, method: :post, class: "cornerButton dbFavoriteDeleteControl", data: {id: f.id}) %>
 
-            <%=
-              if (((m = f.resource.media_files.first)) && (m.sourceable))
-                link_to(f.resource.media_files.first.sourceable.preview(:thumbnail), f.resource)
-              else
-                # placeholder
-                "<div class='favorite-placeholder'></div>".html_safe
-              end
-            %>
-            <div>
-             <%= link_to(sanitize(f.resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)), f.resource) %>
-            </div>
-          </div>
-        </div><!--end col -->
-        <% end %>
-         <% end %>
-          </div>
+                      <%=
+                        if (((m = f.resource.media_files.first)) && (m.sourceable))
+                          link_to(f.resource.media_files.first.sourceable.preview(:thumbnail), f.resource)
+                        else
+                          # placeholder
+                          "<div class='favorite-placeholder'></div>".html_safe
+                        end
+                      %>
+                      <div>
+                        <%= link_to(sanitize(f.resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)), f.resource) %>
+                      </div>
+                    </div>
+                  </div><!--end col -->
+              <% end %>
+          <% end %>
+        </div>
       </div><!-- end row -->
     </div><!-- end dbUnit -->
   </div><!-- end col -->
 </div><!-- end row -->
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		exch_tour = new Tour({
-			name:"ExchangeTour",
-			steps: [{
-				title: 'Welcome to the Exchange',
-				content: 'The Exchange gives you tools to explore, create and manage sets of resources so that you can use them to learn, teach and collaborate!<br/><br/>All of the tools of the Exchange are available from here, your <strong>Dashboard</strong><br/><br/>Click "Next" to take a tour of the available tools and options in the Exchange, or else feel free to explore the site! A <a href="/user_guide" target="_blank">User Guide</a> is available for reference on creating and editing materials in the Exchange.',
-				orphan: true
-			},{
-				title: 'The Dashboard',
-				element: '.tour-dashboard',
-				placement: 'top',
-				content: 'The Dashboard provides an overview of your current materials, recent activity, saved items and collaborations. From here you can create new materials, edit existing ones, share them and search for other users (or your own!) materials<br/><br/>Lets break down each of these options by their sections.',
-				orphan: true
-			},{
-				title: 'Create a New Resource or Collection',
-				element: '#new_materials',
-				placement: 'left',
-				content: 'Resources and Collections are the core of the Exchange so get started by creating your first materials!<br/><br/>Collections provide organization and description, grouping together Resources and other Collections.<br/><br/>Resources describe specific objects and events, and can have images, video and audio files depicting them.<br/><br/>Learn more about <a href="/user_guide#resource_new" target="_blank">Resources</a> and <a href="/user_guide#collection_new" target="_blank">Collections</a>'
-			},{
-				title: 'Find a Resource or Collection',
-				element: '.tour-search-form',
-				placement: 'left',
-				content: 'The Exchange also allows you to search for other user’s Resources and Collections.<br/></br/>If you find something you like you can copy (or “fork”) it and edit it for your own needs and projects.<br/><br/>The search bar also shows you the materials you’ve created as well as artworks from the UMMA Collections you can add as Media.<br/><br/>More information is available on <a href="/user_guide#basic_search" target="_blank">Search and Advanced Search</a>'
-			},{
-				title: 'Your Collections &amp; Resources',
-				element: '.tour-collections-resources',
-				placement: 'right',
-				content: 'Once you’ve created or forked Collections and Resources, they will appear in this column. From here you can open them for editing, preview their layout and share them with other users or publish them to the web!<br/><br/>The search bar at top allows you to quickly find any materials you have created.<br/><br/>Materials can also be deleted from this section'
-			},{
-				title: 'Your Activity',
-				element: '.tour-activity',
-				placement: 'left',
-				content: 'Here you will be able to see your recent activity and return to recent Resources and Collections by clicking any item listed in the activity log'
-			},{
-				title: 'Favorites',
-				element: '.tour-favorites',
-				placement: 'top',
-				content: 'Clicking the favorite flag on any Collection or Resource will add it to your favorites. Track ongoing work, save the work of other’s for future reference or use this however best suits your needs!'
-			},{
-				title: 'Getting Started!',
-				orphan: true,
-				content: 'That’s it! Get started by creating a Collection or Resource, or by searching for what other users have created and go from there!<br/><br/>For more information on the tools and options in the Exchange see our <a href="/user_guide" target="_blank">User Guide</a> at any time for an in depth explanation.'
-			}],
-			container: "body",
-			debug: true,
-			backdrop: true,
-			orphan: false,
-			template: '<div class="popover tour"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-navigation"><button class="btn btn-default" data-role="end">End tour</button><button class="btn btn-default" data-role="prev">« Prev</button><span data-role="separator">\t</span><button class="btn btn-default" data-role="next">Next »</button></div></div>'
-		});
-		localStorage.clear();
-		
-		exch_tour.init();
-		if (!Cookies.get('toured')){
-			exch_tour.start();
-			Cookies.set('toured', true, {expires: 365});
-		}
-});
+    jQuery(document).ready(function() {
+        exch_tour = new Tour({
+            name:"ExchangeTour",
+            steps: [{
+                title: 'Welcome to the Exchange',
+                content: 'The Exchange gives you tools to explore, create and manage sets of resources so that you can use them to learn, teach and collaborate!<br/><br/>All of the tools of the Exchange are available from here, your <strong>Dashboard</strong><br/><br/>Click "Next" to take a tour of the available tools and options in the Exchange, or else feel free to explore the site! A <a href="/user_guide" target="_blank">User Guide</a> is available for reference on creating and editing materials in the Exchange.',
+                orphan: true
+            },{
+                title: 'The Dashboard',
+                element: '.tour-dashboard',
+                placement: 'top',
+                content: 'The Dashboard provides an overview of your current materials, recent activity, saved items and collaborations. From here you can create new materials, edit existing ones, share them and search for other users (or your own!) materials<br/><br/>Lets break down each of these options by their sections.',
+                orphan: true
+            },{
+                title: 'Create a New Resource or Collection',
+                element: '#new_materials',
+                placement: 'left',
+                content: 'Resources and Collections are the core of the Exchange so get started by creating your first materials!<br/><br/>Collections provide organization and description, grouping together Resources and other Collections.<br/><br/>Resources describe specific objects and events, and can have images, video and audio files depicting them.<br/><br/>Learn more about <a href="/user_guide#resource_new" target="_blank">Resources</a> and <a href="/user_guide#collection_new" target="_blank">Collections</a>'
+            },{
+                title: 'Find a Resource or Collection',
+                element: '.tour-search-form',
+                placement: 'left',
+                content: 'The Exchange also allows you to search for other user’s Resources and Collections.<br/></br/>If you find something you like you can copy (or “fork”) it and edit it for your own needs and projects.<br/><br/>The search bar also shows you the materials you’ve created as well as artworks from the UMMA Collections you can add as Media.<br/><br/>More information is available on <a href="/user_guide#basic_search" target="_blank">Search and Advanced Search</a>'
+            },{
+                title: 'Your Collections &amp; Resources',
+                element: '.tour-collections-resources',
+                placement: 'right',
+                content: 'Once you’ve created or forked Collections and Resources, they will appear in this column. From here you can open them for editing, preview their layout and share them with other users or publish them to the web!<br/><br/>The search bar at top allows you to quickly find any materials you have created.<br/><br/>Materials can also be deleted from this section'
+            },{
+                title: 'Your Activity',
+                element: '.tour-activity',
+                placement: 'left',
+                content: 'Here you will be able to see your recent activity and return to recent Resources and Collections by clicking any item listed in the activity log'
+            },{
+                title: 'Favorites',
+                element: '.tour-favorites',
+                placement: 'top',
+                content: 'Clicking the favorite flag on any Collection or Resource will add it to your favorites. Track ongoing work, save the work of other’s for future reference or use this however best suits your needs!'
+            },{
+                title: 'Getting Started!',
+                orphan: true,
+                content: 'That’s it! Get started by creating a Collection or Resource, or by searching for what other users have created and go from there!<br/><br/>For more information on the tools and options in the Exchange see our <a href="/user_guide" target="_blank">User Guide</a> at any time for an in depth explanation.'
+            }],
+            container: "body",
+            debug: true,
+            backdrop: true,
+            orphan: false,
+            template: '<div class="popover tour"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-navigation"><button class="btn btn-default" data-role="end">End tour</button><button class="btn btn-default" data-role="prev">« Prev</button><span data-role="separator">\t</span><button class="btn btn-default" data-role="next">Next »</button></div></div>'
+        });
+        localStorage.clear();
+
+        exch_tour.init();
+        if (!Cookies.get('toured')){
+            exch_tour.start();
+            Cookies.set('toured', true, {expires: 365});
+        }
+    });
 </script>

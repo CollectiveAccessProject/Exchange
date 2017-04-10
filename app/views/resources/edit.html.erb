@@ -1,16 +1,16 @@
 <script>
-// This completes the embed of media items started in the media embed modal
-// See media-item js plugin for that code
-function embedMedia(slug) {
-	embed_array = $('#embedForm').serializeArray();
+    // This completes the embed of media items started in the media embed modal
+    // See media-item js plugin for that code
+    function embedMedia(slug) {
+        embed_array = $('#embedForm').serializeArray();
 
-	embed = '<media ' + slug[1].replace("<em>", "").replace("</em>", "") + ' version="' + embed_array[0]['value'] + '" caption="' + embed_array[1]['value'] + '" float="' + embed_array[2]['value'] + '">';
-	$('#resource_body_text').summernote('insertText', embed);
-	$('#embedModal').modal('toggle');
-}
+        embed = '<media ' + slug[1].replace("<em>", "").replace("</em>", "") + ' version="' + embed_array[0]['value'] + '" caption="' + embed_array[1]['value'] + '" float="' + embed_array[2]['value'] + '">';
+        $('#resource_body_text').summernote('insertText', embed);
+        $('#embedModal').modal('toggle');
+    }
 </script>
 <% content_for :page_title do %>
-  <title>Exchange|Editing: <%= sanitize(@resource.title, :tags => %w()) %></title>
+    <title>Exchange|Editing: <%= sanitize(@resource.title, :tags => %w()) %></title>
 <% end %>
 
 <div class="row">
@@ -18,41 +18,41 @@ function embedMedia(slug) {
     <H4>
       <span id="resource_title_header">
 <%=
-        if(@resource.parents.first)
-	      render 'resources/resource_parent_display_header'
-	    else
-	  	  sanitize(@resource.title)
-	    end
+  if(@resource.parents.first)
+    render 'resources/resource_parent_display_header'
+  else
+    sanitize(@resource.title)
+  end
 %>
-<%=
-        if (!@resource.in_response_to_resource_id.nil? && (@resource.in_response_to_resource_id > 0))
-          (" (In response to " + link_to(strip_tags(@resource.in_response_to.title), @resource.in_response_to) + ")").html_safe
-        end
-%>
+        <%=
+          if (!@resource.in_response_to_resource_id.nil? && (@resource.in_response_to_resource_id > 0))
+            (" (In response to " + link_to(strip_tags(@resource.in_response_to.title), @resource.in_response_to) + ")").html_safe
+          end
+        %>
       </span>
-<%=
-      # if (@resource.parents.length == 0)
-      button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
-      # end
-%>
-      <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Add this Resource to a New or Existing Learning Collection"><span class="glyphicon glyphicon-info-sign"></span></small>
-
-      <% if (@resource.is_collection || @resource.is_exhibition) %>
-        <%= link_to "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "Add new sub-collection", new_subcollection_with_id_path(@resource.id), {"class": "btn btn-noBg btn-xs"} %>
-        <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Add a New or Exisitng Learning Collection to this Learning Collection as a Child"><span class="glyphicon glyphicon-info-sign"></span></small>
+      <% if (!@resource.is_crc_set) %>
+          <%=
+            button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
+          %>
+          <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Add this Resource to a New or Existing Learning Collection"><span class="glyphicon glyphicon-info-sign"></span></small>
       <% end %>
 
-	  
+      <% if (@resource.is_collection || @resource.is_exhibition) %>
+          <%= link_to "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + "Add new sub-collection", new_subcollection_with_id_path(@resource.id), {"class": "btn btn-noBg btn-xs"} %>
+          <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Add a New or Exisitng Learning Collection to this Learning Collection as a Child"><span class="glyphicon glyphicon-info-sign"></span></small>
+      <% end %>
+
+
       <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(@resource, user_signed_in?), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
       <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
-	  <script>
-	    $(document).ready(function(){
-	    	$('.addCollectionHelper').popover({
-	    		position: 'bottom'
-	    	});
-	    });
-	  </script>
+      <script>
+          $(document).ready(function(){
+              $('.addCollectionHelper').popover({
+                  position: 'bottom'
+              });
+          });
+      </script>
     </H4>
   </div><!-- end col -->
 </div><!-- end row -->
@@ -64,108 +64,108 @@ function embedMedia(slug) {
       </div>
     </div>
     <%= render 'form' %>
-    <div class="row" id="resource_tabs">
-      <div class="col-md-12">
-        <ul class="nav nav-tabs">
-          <% # if(@resource.is_resource) %>
-          <li class="active">
-            <a data-toggle="tab" href="#tab_formatting"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp;Formatting</a>
-          </li>
-          <% # end %>
-          <li>
-            <a data-toggle="tab" href="#tab_access"><i class="fa fa-key" aria-hidden="true"></i> &nbsp;Access</a>
-          </li>
-          <li><!-- # (@resource.is_resource) ? "" : " class='active'".html_safe  -->
-            <a data-toggle="tab" href="#tab_related"><i class="fa fa-exchange" aria-hidden="true"></i> &nbsp;Related</a>
-          </li>
-          <li>
-            <a data-toggle="tab" href="#tab_links"><i class="fa fa-external-link" aria-hidden="true"></i> &nbsp;Links</a>
-          </li>
-          <li>
-            <a data-toggle="tab" href="#tab_collections"><i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;Collections</a>
-          </li>
-          <% if @resource.is_collection_object == false %>
-			  <li>
-				<a data-toggle="tab" href="#tab_tags"><i class="fa fa-tags" aria-hidden="true"></i> &nbsp;Tags/Keywords</a>
-			  </li>
-		  
-			  <li style="<%= @resource.settings(:user_interaction).allow_comments == 1 ? '' : 'display:none' %>">
-				<a data-toggle="tab" href="#tab_comments"><i class="fa fa-comments-o" aria-hidden="true"></i> &nbsp;Comments</a>
-			  </li>
+    <%  if(!@resource.is_crc_set) %>
+        <div class="row" id="resource_tabs">
+          <div class="col-md-12">
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a data-toggle="tab" href="#tab_formatting"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp;Formatting</a>
+              </li>
+              <li>
+                <a data-toggle="tab" href="#tab_access"><i class="fa fa-key" aria-hidden="true"></i> &nbsp;Access</a>
+              </li>
+              <li><!-- # (@resource.is_resource) ? "" : " class='active'".html_safe  -->
+                <a data-toggle="tab" href="#tab_related"><i class="fa fa-exchange" aria-hidden="true"></i> &nbsp;Related</a>
+              </li>
+              <li>
+                <a data-toggle="tab" href="#tab_links"><i class="fa fa-external-link" aria-hidden="true"></i> &nbsp;Links</a>
+              </li>
+              <li>
+                <a data-toggle="tab" href="#tab_collections"><i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;Collections</a>
+              </li>
+              <% if (!@resource.is_collection_object) %>
+                  <li>
+                    <a data-toggle="tab" href="#tab_tags"><i class="fa fa-tags" aria-hidden="true"></i> &nbsp;Tags/Keywords</a>
+                  </li>
+                  <li style="<%= @resource.settings(:user_interaction).allow_comments == 1 ? '' : 'display:none' %>">
+                    <a data-toggle="tab" href="#tab_comments"><i class="fa fa-comments-o" aria-hidden="true"></i> &nbsp;Comments</a>
+                  </li>
+                  <li>
+                    <a data-toggle="tab" href="#tab_responses"><i class="fa fa-hashtag" aria-hidden="true"></i> Responses</a>
+                  </li>
+              <% end %>
+            </ul>
 
-			  <li>
-				<a data-toggle="tab" href="#tab_responses"><i class="fa fa-hashtag" aria-hidden="true"></i> Responses</a>
-			  </li>
-		  <% end %>          
-        </ul>
+            <div class="tab-content">
+              <div id="tab_formatting" class="tab-pane active">
+                <p><%= render 'resources/formatting_options' %></p>
+              </div>
+              <div id="tab_access" class="tab-pane">
+                <p><%= render 'resources/access' %></p>
+              </div>
+              <div id="tab_related" class="tab-pane">
+                <!--<div id="tab_related" class="tab-pane (!@resource.is_resource) ? "active" : """>-->
+                <p><%= render 'resources/related' %></p>
+              </div>
+              <div id="tab_links" class="tab-pane">
+                <p><%= render 'resources/links' %></p>
+              </div>
+              <div id="tab_collections" class="tab-pane">
+                <p><%= render 'resources/collections' %></p>
+              </div>
+              <% if (!@resource.is_collection_object) %>
+                  <div id="tab_tags" class="tab-pane">
+                    <p><%= render 'resources/tags' %></p>
+                  </div>
+                  <div id="tab_comments" class="tab-pane">
+                    <p><%= render 'resources/comments' %></p>
+                  </div>
 
-        <div class="tab-content">
-          <% # if(@resource.is_resource) %>
-          <div id="tab_formatting" class="tab-pane active">
-            <p><%= render 'resources/formatting_options' %></p>
-          </div>
-          <% # end %>
-          <div id="tab_access" class="tab-pane">
-            <p><%= render 'resources/access' %></p>
-          </div>
-          <div id="tab_related" class="tab-pane">
-          <!--<div id="tab_related" class="tab-pane (!@resource.is_resource) ? "active" : """>-->
-            <p><%= render 'resources/related' %></p>
-          </div>
-          <div id="tab_links" class="tab-pane">
-            <p><%= render 'resources/links' %></p>
-          </div>
-          <div id="tab_collections" class="tab-pane">
-            <p><%= render 'resources/collections' %></p>
-          </div>
-		  <div id="tab_tags" class="tab-pane">
-			<p><%= render 'resources/tags' %></p>
-		  </div>
-		  <div id="tab_comments" class="tab-pane">
-			<p><%= render 'resources/comments' %></p>
-			</div>
-		  <div id="tab_responses" class="tab-pane">
-			<p><%= render 'resources/responses' %></p>
-		  </div>
-        </div>
-      </div><!-- end col -->
-    </div><!-- end row -->
+                  <div id="tab_responses" class="tab-pane">
+                    <p><%= render 'resources/responses' %></p>
+                  </div>
+              <% end %>
+            </div>
+          </div><!-- end col -->
+        </div><!-- end row -->
+    <% end %>
+
   </div><!-- end col -->
   <div class="col-md-2 mediaColumn">
-  	  <% if (@resource.is_resource || @resource.is_collection_object) %>
-  	  	<h6><span class="mediaOrder" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Click and drag the Media Files in this column to set their order of appearance. The first Media File will display as the preview image for the Resource"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Media Files</span></h6>
-  	  <% end %>
-  	  <% if (@resource.is_collection) %>
-  	    <h6><span class="mediaOrder" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click and drag the Resources in this column to set their order of appearance. The first Resource will display as the preview image for the Collection"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Resources</span></h6>
-  	  <% end %>
-  	  <script>
-	     $('#mediatip').ready(function(){
- 			$('.mediaOrder').popover();
-	     });
-	  </script>
-      <% if (@resource.is_resource || @resource.is_collection_object) %>
-          <!-- Resource media list -->
-          <%= render(partial:'media_files/integrated_create_form') %>
-          <div id="resource_media_list_heading">
+    <% if (@resource.is_resource || @resource.is_collection_object) %>
+        <h6><span class="mediaOrder" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Click and drag the Media Files in this column to set their order of appearance. The first Media File will display as the preview image for the Resource"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Media Files</span></h6>
+    <% end %>
+    <% if (@resource.is_collection) %>
+        <h6><span class="mediaOrder" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click and drag the Resources in this column to set their order of appearance. The first Resource will display as the preview image for the Collection"> <span class="glyphicon glyphicon-info-sign"></span> Ordering Resources</span></h6>
+    <% end %>
+    <script>
+        $('#mediatip').ready(function(){
+            $('.mediaOrder').popover();
+        });
+    </script>
+    <% if (@resource.is_resource || @resource.is_collection_object) %>
+        <!-- Resource media list -->
+        <%= render(partial:'media_files/integrated_create_form') %>
+        <div id="resource_media_list_heading">
           <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Media'), "href": "#", "class": "btn btn-default btn-large", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
-          </div>
-          <div class="panel panel-default"><div class="panel-body" id="resource_media_list" data-resource_id="<%= @resource.id %>">
-           <%= render(partial: "resources/media_list") %>
-          </div><!-- end panel-body --></div><!-- end panel -->
-      <% else %>
-          <!-- Learning collection contents list -->
-          <div id="collection_contents_list_heading">
-            <%=
-              #link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large"
-              button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add Resource".html_safe, "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
-            %>
-          </div>
-          <div class="panel panel-default">
-	     
-		<div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">
+        </div>
+        <div class="panel panel-default"><div class="panel-body" id="resource_media_list" data-resource_id="<%= @resource.id %>">
+          <%= render(partial: "resources/media_list") %>
+        </div><!-- end panel-body --></div><!-- end panel -->
+    <% else %>
+        <!-- Learning collection contents list -->
+        <div id="collection_contents_list_heading">
+          <%=
+            #link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large"
+            button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + (@resource.is_crc_set ? "Add object" : "Add Resource"), "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
+          %>
+        </div>
+        <div class="panel panel-default">
+
+          <div class="panel-body" id="collection_contents_list" data-resource_id="<%= @resource.id %>">
             <%= render(partial: "resources/resource_list_simple") %>
           </div><!-- end panel-body --></div><!-- end panel -->
-      <% end %>
+    <% end %>
   </div><!-- end col -->
 </div><!-- end row -->
 <!-- 
@@ -173,21 +173,21 @@ function embedMedia(slug) {
 	This is necessary to do outside of the media_list partial to avoid text editing fields from getting clipped
 -->
 <% @resource.media_files.each do |f| %>
-	<% if f.sourceable %>
-		<%
-		begin
-			media_display = f.sourceable.render :large
-		rescue
-			media_display = f.sourceable.preview :large, '', '', f.caption
-		end
-		%>
-		<%= render partial: 'resources/media_file_render_overlay', locals: {media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: true} %>
-	<% end %>
+    <% if f.sourceable %>
+        <%
+          begin
+            media_display = f.sourceable.render :large
+          rescue
+            media_display = f.sourceable.preview :large, '', '', f.caption
+          end
+        %>
+        <%= render partial: 'resources/media_file_render_overlay', locals: {media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: true} %>
+    <% end %>
 <% end %>
 <!-- End media file modal -->
 <!-- Resource collection modal -->
 <div id="resource_collection_select_container">
-<%= render(partial:'resources/resource_collection_select') %>
+  <%= render(partial:'resources/resource_collection_select') %>
 </div>
 
 <!-- Add resource modal -->
@@ -195,10 +195,10 @@ function embedMedia(slug) {
 
 <%
   if((@resource.parents.count == 0) && (@resource.is_resource) && (session['mode'] == 'new'))
-      # Trigger modal on save if no parent is set for resources (not collections)
+    # Trigger modal on save if no parent is set for resources (not collections)
 %>
     <script type="text/javascript">
-    	jQuery("#selectResourceCollectionForm").modal();
+        jQuery("#selectResourceCollectionForm").modal();
     </script>
 <%
   end

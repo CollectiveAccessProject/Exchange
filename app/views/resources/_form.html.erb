@@ -1,161 +1,180 @@
 <%= simple_form_for @resource do |r| %>
-<div class="panel panel-default">
-    <div class="panel-body">
-		<div class="row">
-			<div class="col-sm-12">
-				<H3><%= (@resource.id) ? '' : 'New ' %><%= @resource.resource_type_for_display %> Information</H3>
-			</div>
-		</div>
-		<% if @resource.is_resource %>
-		  <div class="row">
-		    <div class="col-md-12">
-		      <%=
-          			# don't show resource type field – consider as immutable
-          			r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
-        	  %>
-              <% if(@resource.forked_from_resource_id && (@resource.forked_from_resource_id > 0))  %>
-                <em>Forked from
-                <%=  link_to sanitize(@resource.forked_from_resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)), resource_preview_url(@resource.forked_from_resource) %>
-                </em>
-              <% end %>
-		      <%= r.input :title, :input_html => {:rows => 2} %>
-			  <%= r.input :subtitle, :input_html => {:rows => 2} %>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-md-12">
-		      <%= r.input :body_text, :input_html => {}, :as => :summernote %>
-            	<% if(@resource.is_resource) and @resource.id %>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <H3><%= (@resource.id) ? '' : 'New ' %><%= @resource.resource_type_for_display %> Information</H3>
+          </div>
+        </div>
+        <% if @resource.is_resource %>
+            <div class="row">
+              <div class="col-md-12">
+                <%=
+                  # don't show resource type field – consider as immutable
+                  r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
+                %>
+                <% if(@resource.forked_from_resource_id && (@resource.forked_from_resource_id > 0))  %>
+                    <em>Forked from
+                      <%=  link_to sanitize(@resource.forked_from_resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)), resource_preview_url(@resource.forked_from_resource) %>
+                    </em>
+                <% end %>
+                <%= r.input :title, :input_html => {:rows => 2} %>
+
+                <% if (!@resource.is_crc_set) %>
+                    <%= r.input :subtitle, :input_html => {:rows => 2} %>
+                <% end %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <%= r.input :body_text, :input_html => {}, :as => :summernote %>
+                <% if(@resource.is_resource) and @resource.id %>
                     <div class="mediaEmbedHelpLink">
-                        <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
+                      <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">
                         <i class="fa fa-question-circle-o" aria-hidden="true"></i> How do I embed media in the body of my resource?
-                        </a>
+                      </a>
                     </div>
-            	    <div class="mediaEmbedHelp">
-                        You can easily embed media using the <em>media item</em> option in the tool bar. First
-                        click on the location in the text where the media should appear, then select from the <em>media item</em>
-                        list. A popup window will prompt you to select from the following options:
-                        <blockquote>
-                        	<strong>-Version: </strong>How wide the image should display (Options are: <em>Full</em>, <em>Half</em>, &amp; <em>Quarter</em>)<br/>
-                        	<strong>-Caption: </strong>Whether or not to include a caption with the media<br/>
-                        	<strong>-Float: </strong>How to align the media, either to the right or left with text wrapping around the image, or as a stand-alone that breaks with text above and below<br/>
-                        </blockquote>
-                        Once embedded the media tag will look like the example below and can be customized by setting the following options
-            		    <blockquote>
-            			    &lt;media [name] [version] [width=xxx] [height=yyy] [caption=yes/no] [float=left/right/none]&gt;
-            			    <br/>Ex. <em>&lt;media my-video thumbnail&gt;</em>
-              			    <br/>Ex. <em>&lt;media my-video thumbnail width=500 height=300 float=right&gt;</em>
-              		    </blockquote>
-             		    Names are shown under each media item. Version, width, height and float are optional.
-                        <br/>
-                        <br/>
-                        You may also enter these directly into the text if desired.
+                    <div class="mediaEmbedHelp">
+                      You can easily embed media using the <em>media item</em> option in the tool bar. First
+                      click on the location in the text where the media should appear, then select from the <em>media item</em>
+                      list. A popup window will prompt you to select from the following options:
+                      <blockquote>
+                        <strong>-Version: </strong>How wide the image should display (Options are: <em>Full</em>, <em>Half</em>, &amp; <em>Quarter</em>)<br/>
+                        <strong>-Caption: </strong>Whether or not to include a caption with the media<br/>
+                        <strong>-Float: </strong>How to align the media, either to the right or left with text wrapping around the image, or as a stand-alone that breaks with text above and below<br/>
+                      </blockquote>
+                      Once embedded the media tag will look like the example below and can be customized by setting the following options
+                      <blockquote>
+                        &lt;media [name] [version] [width=xxx] [height=yyy] [caption=yes/no] [float=left/right/none]&gt;
+                        <br/>Ex. <em>&lt;media my-video thumbnail&gt;</em>
+                        <br/>Ex. <em>&lt;media my-video thumbnail width=500 height=300 float=right&gt;</em>
+                      </blockquote>
+                      Names are shown under each media item. Version, width, height and float are optional.
+                      <br/>
+                      <br/>
+                      You may also enter these directly into the text if desired.
                     </div>
-                  <% end %>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-md-6">
-          		<% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
-          			<div class="form-group text optional resource_copyright_notes">
-              			<label class="text optional control-label" for="author_id">Author</label>
-              			<%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#content_resource_author_id", class:'form-control') %>
-           	  			<%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :content_resource_author_id) %>
-		  			</div>
-          		<% end %>
-          		<%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-		      	<%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
-		    </div>
-		    <div class="col-md-6">
-		      	<%= r.input :copyright_notes, :input_html => {:rows => 4}, label: 'Copyright/Author Notes' %>
-          		<div class="form-group text optional resource_copyright_notes">
-          			<label class="text optional control-label" for="resource_roles">Created For</label>
-					<div class="row">
-						<%=
-							buf = ''
-							Rails.application.config.x.user_roles.each do |k,v|
-								next if (v == :admin)
-								buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, ((@resource.id)) ? @resource.has_role?(v) : "checked", {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
-								#buf += + "<br/>"
-							end
-							buf.html_safe
-						%>
-					</div>
-        		</div>
-			</div>
-		  </div>
-		  <div class="row">
-		    <div class="col-md-12">
-		  	  <div class="pull-right">
-          		<% if (@resource.user_id == current_user.id) %>
-              	  <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-delete' %>
-          		<% end %>
-          		<%= r.button :submit, "Save" %>
-        	  </div>
-			  <%= r.input :in_response_to_resource_id, :input_html => {:value => @resource.in_response_to_resource_id}, as: :hidden, include_blank: false %>
-        	</div>
-		  </div>
-		<% else %>
-		  <div class="row">
-		    <div class="col-md-12">
-   	     	  <%=
-          		# don't show resource type field – consider as immutable
-          		r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
-        	  %>
-        	  <%  if(@resource.forked_from_resource_id && (@resource.forked_from_resource_id > 0))  %>
-           	    <em>Forked from
-           		<%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
-             	</em>
-        	  <% end %>
-			  <%= r.input :title, :input_html => {}, :as => :summernote %>
-			  <%= r.input :subtitle, :input_html => {}, :as => :summernote %>
-			  <%= r.input :body_text, :input_html => {}, :as => :summernote %>
-			</div>
-		  </div>
-		  <div class="row">
-		    <div class="col-md-6">
-          	  <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
+                <% end %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <% if (!@resource.is_crc_set) %>
+                <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
+                    <div class="form-group text optional resource_copyright_notes">
+                      <label class="text optional control-label" for="author_id">Author</label>
+                      <%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#content_resource_author_id", class:'form-control') %>
+                      <%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :content_resource_author_id) %>
+                    </div>
+                <% end %>
+                <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+                <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
+              <% end %>
+                    </div>
+              <div class="col-md-6">
+                <% if (!@resource.is_crc_set) %>
+                    <%= r.input :copyright_notes, :input_html => {:rows => 4}, label: 'Copyright/Author Notes' %>
+                <% else %>
+                    <%= r.input :date_of_visit, as: :datetime, label: 'Date/time of visit ', class: "date-control" %>
+                <% end %>
+
                 <div class="form-group text optional resource_copyright_notes">
-                  <label class="text optional control-label" for="author_id">Author</label>
-                  <%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#content_object_author_id", class:'form-control') %>
-                  <%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :content_object_author_id) %>
+                  <label class="text optional control-label" for="resource_roles">Created For</label>
+                  <div class="row">
+                    <%=
+                      buf = ''
+                      Rails.application.config.x.user_roles.each do |k,v|
+                        next if (v == :admin)
+                        buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, ((@resource.id)) ? @resource.has_role?(v) : "checked", {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
+                        #buf += + "<br/>"
+                      end
+                      buf.html_safe
+                    %>
+                  </div>
                 </div>
-          	  <% end %>
-		      <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-		      <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
-		    </div>
-			<div class="col-md-6">
-			  <%= r.input :copyright_notes, :input_html => {}, :as => :summernote, label: 'Copyright/Author Notes' %>
-        	  <div class="form-group text optional resource_copyright_notes">
-        	    <label class="text optional control-label" for="resource_roles">Created For</label>
-          	    <div class="row">
-            	  <%=
-              	  	buf = ''
-              	  	Rails.application.config.x.user_roles.each do |k,v|
-                      next if (v == :admin)
-                	  buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, ((@resource.id)) ? @resource.has_role?(v) : "checked", {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
-                	  #buf += + "<br/>"
-              	  	end
-              	  	buf.html_safe
-            	  %>
-          	    </div>
-        	  </div>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-md-12">
-		      <div class="pull-right">
-		      	<% if (@resource.user_id == current_user.id) %>
-              		<%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-delete' %>
-          	 	<% end %>
-		      	<%= r.button :submit, "Save" %>
-		      </div>
-              <%= r.input :child_id, :input_html => {:value => params['child_id']}, as: :hidden, include_blank: false %>
-              <%= r.input :parent_id, :input_html => {:value => params['parent_id']}, as: :hidden, include_blank: false %>
-              <%= r.input :in_response_to_resource_id, :input_html => {:value => @resource.in_response_to_resource_id}, as: :hidden, include_blank: false %>
-			</div><!-- end col -->
-		  </div><!-- end row -->
-		<% end %>
-	</div><!-- end panel-body -->
-</div><!-- end panel -->
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="pull-right">
+                  <% if (@resource.user_id == current_user.id) %>
+                      <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-delete' %>
+                  <% end %>
+                  <%= r.button :submit, "Save" %>
+                </div>
+                <%= r.input :in_response_to_resource_id, :input_html => {:value => @resource.in_response_to_resource_id}, as: :hidden, include_blank: false %>
+              </div>
+            </div>
+        <% else %>
+            <div class="row">
+              <div class="col-md-12">
+                <%=
+                  # don't show resource type field – consider as immutable
+                  r.hidden_field :resource_type, collection: Resource.resource_types, include_blank: false
+                %>
+                <%  if(@resource.forked_from_resource_id && (@resource.forked_from_resource_id > 0))  %>
+                    <em>Forked from
+                      <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
+                    </em>
+                <% end %>
+                <%= r.input :title, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Brief description of your upcoming visit" : nil %>
+                <% if (!@resource.is_crc_set) %>
+                    <%= r.input :subtitle, :input_html => {}, :as => :summernote %>
+                <% end %>
+                <%= r.input :body_text, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Additional information notes regarding your upcoming visit" : nil %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <% if (!@resource.is_crc_set) %>
+                    <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
+                        <div class="form-group text optional resource_copyright_notes">
+                          <label class="text optional control-label" for="author_id">Author</label>
+                          <%= autocomplete_field_tag(:find_user_id, @resource.get_author_name, :autocomplete_user_name, :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, :id_element => "#content_object_author_id", class:'form-control') %>
+                          <%= hidden_field_tag("resource[author_id]", @resource.author_id, :id => :content_object_author_id) %>
+                        </div>
+                    <% end %>
+                    <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
+                    <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
+                <% end %>
+              </div>
+              <div class="col-md-6">
+                <% if (!@resource.is_crc_set) %>
+                    <%= r.input :copyright_notes, :input_html => {}, :as => :summernote, label: 'Copyright/Author Notes' %>
+                <% else %>
+                    <%= r.input :date_of_visit, as: :datetime, label: 'Date/time of visit ', class: "date-control" %>
+                <% end %>
+
+                <div class="form-group text optional resource_copyright_notes">
+                  <label class="text optional control-label" for="resource_roles">Created For</label>
+                  <div class="row">
+                    <%=
+                      buf = ''
+                      Rails.application.config.x.user_roles.each do |k,v|
+                        next if (v == :admin)
+                        buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, ((@resource.id)) ? @resource.has_role?(v) : ((@resource.is_crc_set) ? nil : "checked"), {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
+                        #buf += + "<br/>"
+                      end
+                      buf.html_safe
+                    %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="pull-right">
+                  <% if (@resource.user_id == current_user.id) %>
+                      <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, @resource, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-delete' %>
+                  <% end %>
+                  <%= r.button :submit, "Save" %>
+                </div>
+                <%= r.input :child_id, :input_html => {:value => params['child_id']}, as: :hidden, include_blank: false %>
+                <%= r.input :parent_id, :input_html => {:value => params['parent_id']}, as: :hidden, include_blank: false %>
+                <%= r.input :in_response_to_resource_id, :input_html => {:value => @resource.in_response_to_resource_id}, as: :hidden, include_blank: false %>
+              </div><!-- end col -->
+            </div><!-- end row -->
+        <% end %>
+      </div><!-- end panel-body -->
+    </div><!-- end panel -->
 <% end %>

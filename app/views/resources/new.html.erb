@@ -1,15 +1,21 @@
 <div class="row">
-	<div class="col-sm-12">
-		<H4>
-		<%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
+  <div class="col-sm-12">
+    <H4>
+      <%= link_to '<span class="glyphicon glyphicon-arrow-up aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class:'btn btn-default btn-xs pull-right' %>
 
       <%=
         if (@new_parent && @new_parent.id)
-         link_to raw("Part of " + @new_parent.title), edit_resource_path(@new_parent)
+          link_to raw("Part of " + @new_parent.title), edit_resource_path(@new_parent)
         elsif (@child)
           link_to raw("Contains: " + @child.title), edit_resource_path(@child)
         elsif (!@resource.id)
-          (@resource.is_resource) ? 'New Resource' : 'New Collection'
+          if @resource.is_resource
+            'New Resource'
+          elsif @resource.is_crc_set
+            'New CRC Set'
+          else
+            'New Collection'
+          end
         end
       %>
       <%=
@@ -18,19 +24,19 @@
         end
       %>
     </H4>
-	</div><!-- end col -->
+  </div><!-- end col -->
 </div><!-- end row -->
 <div class="row">
-	<div class="col-sm-12">
-		<%= render 'form' %>
-	</div><!-- end col -->
+  <div class="col-sm-12">
+    <%= render 'form' %>
+  </div><!-- end col -->
 </div><!-- end row -->
 <script>
-$(".js-summernote").on("summernote.paste",function(e,ne) {
+    $(".js-summernote").on("summernote.paste",function(e,ne) {
 
-  var bufferText = ((ne.originalEvent || ne).clipboardData || window.clipboardData).getData('Text');
-  ne.preventDefault();
-  document.execCommand('insertText', false, bufferText);
+        var bufferText = ((ne.originalEvent || ne).clipboardData || window.clipboardData).getData('Text');
+        ne.preventDefault();
+        document.execCommand('insertText', false, bufferText);
 
-});
+    });
 </script>
