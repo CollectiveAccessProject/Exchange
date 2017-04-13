@@ -26,7 +26,7 @@
 %>
         <%=
           if (!@resource.in_response_to_resource_id.nil? && (@resource.in_response_to_resource_id > 0))
-            (" (In response to " + link_to(strip_tags(@resource.in_response_to.title), @resource.in_response_to) + ")").html_safe
+            (" In response to " + link_to(strip_tags(@resource.in_response_to.title), @resource.in_response_to)).html_safe
           end
         %>
       </span>
@@ -42,8 +42,9 @@
           <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Add a New or Exisitng Learning Collection to this Learning Collection as a Child"><span class="glyphicon glyphicon-info-sign"></span></small>
       <% end %>
 
-
-      <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(@resource, user_signed_in?), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
+	  <% if (!@resource.is_crc_set) %>
+      	<%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(@resource, user_signed_in?), class: 'btn btn-default btn-xs pull-right' %>&nbsp;&nbsp;
+      <% end %>
       <%= link_to '<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Dashboard'.html_safe, '/dashboard', class: 'btn btn-default btn-xs pull-right' %>
       <%= last_search_button(session, {'class': 'btn btn-default btn-xs pull-right'}) %>
       <script>

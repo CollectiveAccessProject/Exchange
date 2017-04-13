@@ -275,6 +275,9 @@ class Resource < ActiveRecord::Base
     return self.resource_type == Resource::CRCSET;
   end
 
+  def is_response(parent_id)
+    return self.in_response_to_resource_id == parent_id
+  end
 
   def resource_type_for_display(plural=false)
     case self.resource_type
@@ -460,7 +463,8 @@ class Resource < ActiveRecord::Base
       type = nil
     end
     if (type == nil)
-      return self.children.length
+      responses = Resource.where("in_response_to_resource_id = ? AND response_banned_on IS ?", self.id, nil)
+      return self.children.length - responses.length
     end
 
     # TODO: cache this

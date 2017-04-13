@@ -7,7 +7,7 @@
 <%
   if(@resource.parents.count > 0)
     @resource.parents.each do |p|
-      if p.can(:edit, current_user)
+      if (p.can(:edit, current_user) and !@resource.is_response(p.id))
 %>
         <%= (link_to sanitize("Part of: " + p.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), edit_resource_path(p), "class": "") +  (((parent_count = @resource.parents.count) > 1) ? " + " + ((parent_count - 1).to_s) + " more " : "") %>
 <%
