@@ -209,7 +209,7 @@ class ResourcesController < ApplicationController
     child_id = params[:resource][:child_id].to_i
 
     if (@resource.is_crc_set)
-      @resource.date_of_visit = DateTime.new(params['date_of_visit(1i)'].to_i,params['date_of_visit(2i)'].to_i,params['date_of_visit(3i)'].to_i,params[:resource]['date_of_visit(4i)'].to_i,params[:resource]['date_of_visit(5i)'].to_i, 0)
+      @resource.date_of_visit = DateTime.new(params[:resource]['date_of_visit(1i)'].to_i, params[:resource]['date_of_visit(2i)'].to_i, params[:resource]['date_of_visit(3i)'].to_i, params[:resource]['date_of_visit(4i)'].to_i, params[:resource]['date_of_visit(5i)'].to_i, 0)
     end
 
     [:subtitle, :copyright_notes].each do|f|

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315035957) do
+ActiveRecord::Schema.define(version: 20170410145114) do
 
   create_table "average_caches", force: :cascade do |t|
     t.integer  "rater_id",      limit: 4
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 20170315035957) do
     t.integer  "response_banned_on",         limit: 4
     t.text     "response_ban_reason",        limit: 65535
     t.text     "title_sort",                 limit: 65535,                   null: false
+    t.datetime "date_of_visit"
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "fk_rails_8c3d1e0d9a", using: :btree

@@ -59,6 +59,7 @@
               <li><%= link_to 'Resource'.html_safe, filter_user_items_path(:type_filter => 1), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
               <li class="filter_head"><%= link_to 'Learning Collection'.html_safe, filter_user_items_path(:type_filter => 2), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
               <li class="filter_head"><%= link_to 'Collection Object'.html_safe, filter_user_items_path(:type_filter => 3), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
+              <li class="filter_head"><%= link_to 'CRC Set'.html_safe, filter_user_items_path(:type_filter => 5), :remote => true, :class => 'btn btn-xs btn-noBg type_filter' %></li>
               <li><hr/><%= link_to 'Clear Filters', remove_filter_path, :remote => true, :class => 'btn btn-xs btn-noBg remove_filter' %></li>
             </ul>
           </div>
