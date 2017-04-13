@@ -19,18 +19,21 @@ module QuickSearchHelper
             ["Accession number", "idno"],
             ["Artist", "artist"],
             ["Creation date", "created_at"],
+	    ["Date Updated", "updated_at"],
             ["Rating", "rating"]]
       when (type == 'resource')
         return [
             ["Relevance", "_score"],
             ["Title", "title"],
             ["Creation date", "created_at"],
+	    ["Date Updated", "updated_at"],
             ["Rating", "rating"]]
       when (type == 'collection')
         return [
             ["Relevance", "_score"],
             ["Title", "title"],
             ["Creation date", "created_at"],
+	    ["Date Updated", "upated_at"],
             ["Rating", "rating"]]
       when (type == 'exhibition')
         return [
