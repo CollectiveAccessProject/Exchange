@@ -27,7 +27,7 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <%= r.input :body_text, :input_html => {}, :as => :summernote %>
+                <%= r.input :body_text, :input_html => {} %>
                 <% if(@resource.is_resource) and @resource.id %>
                     <div class="mediaEmbedHelpLink">
                       <a href="#" onCLick="$('.mediaEmbedHelp').slideToggle();">

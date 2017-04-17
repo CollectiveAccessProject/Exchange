@@ -46,6 +46,9 @@ $red:#BA0017;
 	background-color:#FFFFFF;
 	padding:20px;
 }
+.note-editor{
+	padding: 0 !important;
+}
 .tab-content .panel{
 	background-color:#FFFFFF;
 	hr{
@@ -166,8 +169,12 @@ $red:#BA0017;
 	}
 	small{
 		font-size:10px;
+		line-height: 13px;
 		display:inline-block;
 		color:$gray !important;
+		p{
+			font-size: 10px;
+		}
 	}
 	i.fa-angle-double-right {
 		margin-left:-10px;

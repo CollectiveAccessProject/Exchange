@@ -965,6 +965,23 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def load_media_modal
+    @modal_data = {"target" => params[:target_div], "display" => params[:media_display], "id" => params[:media_id], "title" => params[:resource_title], "media_files" => params[:media_files], "editable" => params[:editable], "resource_id" => params[:resource_id]}
+    @otherMedia = []
+    params[:media_files].each do |mf|
+		@otherMedia.push(MediaFile.find(mf))
+	end
+    
+    respond_to do |format|
+      format.js {render :action => "load_media_modal"}
+    end
+  end
+
+  def load_fullscreen_slides
+  	offset = params[:page] * 10
+    @new_slides = MediaFile.where("resource_id = ?", params[:resource_id]).offset(offset)
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_resource

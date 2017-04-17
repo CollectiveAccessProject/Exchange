@@ -158,6 +158,9 @@ Rails.application.routes.draw do
   get '/filter_user_items' => 'dashboard#filter_user_items', as: 'filter_user_items'
   get '/remove_filter' => 'dashboard#remove_filter', as: 'remove_filter'
 
+  # Rendering AJAX modals for resources
+  get '/resources/:id/load_media_modal' => 'resources#load_media_modal', as: 'load_media_modal'
+
   # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 

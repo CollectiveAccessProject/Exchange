@@ -5,7 +5,7 @@
 <% 
 	# Set allowed HTML tags/attributes for the body text
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
-	body_attrs_allowed = %w(href style src alt class id float target width height title)
+	body_attrs_allowed = %w(href style src alt class id float target width height title data-link-target)
 	# Set the maxHeight of the body text. Necessary for collapse to work and setting a variable here for future changes
 	max_text_height = '10000px'
 %>
@@ -49,6 +49,10 @@
       # generate count of publically available media files
       # need to enforce access control
       available_media = 0
+      media_file_list = []
+      @resource.media_files.each do |sf|
+      	media_file_list.push(sf)
+      end
       @resource.media_files.each do |f|
         if f.access == 1
           available_media = available_media + 1
@@ -72,36 +76,24 @@
                       <% end %>
                       <div class="col-md-3">
                         <div class="thumbnail previewThumbnail">
-                          <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-                            <%= f.sourceable.preview :thumbnail  %>
-                          </a>
-                          
+                          <%
+                            begin
+                              media_display = f.sourceable.render(:large)
+                            rescue
+                              media_display = f.sourceable.preview :large
+                            end
+                          	target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
+                          	anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
+                          %>
+                          <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
                           <% if (fzoom = is_zoomable(f)) %>
 							<div class="zoomControls">
 							  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
 							</div>
 						  <% end %>
                         </div>
-                        <%
-                          begin
-                            media_display = f.sourceable.render(:large)
-                          rescue
-                            media_display = f.sourceable.preview :large
-                          end
-                        %>
-                        <%=
-                          # this renders a bootstrap model that is triggered if you click on the preview above
-                          # it's in a partial because it's about a billion nested divs :-)
-                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title}
-                        %>
-                        <script>
-                            $(document).ready(function(){
-                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
-                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
-                                });
-                                $('.popoverWrapper').tooltip();
-                            });
-                        </script>
+                        <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
+                        <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
                       </div><!-- end col -->
                   <%
 
@@ -119,17 +111,22 @@
             @resource.media_files.each do |f|
               if f.access == 1
                 if f.sourceable
+                  begin
+					media_display = f.sourceable.render(:large)
+				  rescue
+					media_display = f.sourceable.preview :large
+				  end
+				  target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
+				  anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
                   if counter == 4
                     counter = 0
           %>
-                          </div>
-                          <div class="row">
-                      <% end %>
+                    </div>
+                    <div class="row">
+                  <% end %>
                       <div class="col-md-3">
                         <div class="thumbnail previewThumbnail">
-                          <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-                            <%= f.sourceable.preview :thumbnail  %>
-                          </a>
+                          <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
                           <div class="caption small">
                             <%= sanitize(f.caption) %>
                             <div class="row">
@@ -149,26 +146,8 @@
                           </div>
                           
                         </div>
-                        <%
-                          begin
-                            media_display = f.sourceable.render(:large)
-                          rescue
-                            media_display = f.sourceable.preview :large, '', '', f.caption
-                          end
-                        %>
-                        <%=
-                          # this renders a bootstrap model that is triggered if you click on the preview above
-                          # it's in a partial because it's about a billion nested divs :-)
-                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title }
-                        %>
-                        <script>
-                            $(document).ready(function(){
-                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
-                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
-                                });
-                                $('.popoverWrapper').tooltip();
-                            });
-                        </script>
+                        <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
+                         <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
                       </div><!-- end col -->
                   <%
 
@@ -213,27 +192,27 @@
                     %>
 
                                 <div class="item <%= (counter == 1) ? 'active' : '' %>">
-                                  <a href="#" data-toggle="modal" data-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>">
-
                                     <%=
+                                      begin
+                            			media_display = f.sourceable.render :large
+                            		  rescue
+                            			media_display = f.sourceable.preview :large, '', '', f.caption
+                          			  end
+                                      target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
+                          			  anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
                                       case
                                         when ((f.sourceable.class.to_s == 'YoutubeLink') || (f.sourceable.class.to_s == 'VimeoLink'))
                                           # render video inline so it's playable
-                                          f.sourceable.render :medium
+                                          link_to (f.sourceable.render :medium), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div 
                                         else
-                                          f.sourceable.preview :large, '', '', f.caption
+                                          link_to (f.sourceable.preview :large, '', '', f.caption), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div
                                       end
                                     %>
-                                  </a>
                                   <% if (fzoom = is_zoomable(f)) %>
 									<div class="zoomControls" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
 									  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
 									</div>
 								  <% end %>
-                                  <!--This is a legacy caption container, leave until we move to production -->
-                                  <!--<div class="captionContainer">
-                                    <div class="slideshowCaption"><%= sanitize(f.caption)  %></div>
-                                  </div>-->
                                 </div>
                             <%
                               counter = counter + 1
@@ -252,27 +231,8 @@
                 if f.access == 1
                   if f.sourceable
             %>
-                        <%
-                          begin
-                            media_display = f.sourceable.render :large
-                            rescue
-                            media_display = f.sourceable.preview :large, '', '', f.caption
-                          end
-                        %>
-                        <%=
-                          # this renders a bootstrap model that is triggered if you click on the preview above
-                          # it's in a partial because it's about a billion nested divs :-)
-
-                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title}
-                        %>
-                        <script>
-                            $(document).ready(function(){
-                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
-                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
-                                });
-                                $('.popoverWrapper').tooltip();
-                            });
-                        </script>
+                        <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
+                        <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
                     <%
                       end
                       end
@@ -288,38 +248,33 @@
                 });
             </script>
         <% end %>
-    <%
+<%
       when "embed"
+%>
+	  <div class="row">
+<%
         if available_media > 0
           @resource.media_files.each do |f|
             if f.sourceable
               if f.access == 1
-
-    %>
-                        <%
-                          begin
-                            media_display = f.sourceable.render :large
-                          rescue
-                            media_display = f.sourceable.preview :large, caption: f.caption
-                          end
-                        %>
-                        <%=
-                          render partial: 'media_file_render_overlay', locals: { media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: false, r_title: @resource.title}
-                        %>
-                        <script>
-                            $(document).ready(function(){
-                                $('#link<%= (f.sourceable.class.to_s + f.sourceable.id.to_s) %>').click(function(){
-                                    $('#<%=(f.sourceable.class.to_s + f.sourceable.id.to_s) %>').modal("show");
-                                });
-                                $('.popoverWrapper').tooltip();
-                            });
-                        </script>
-                    <%
-                      end
-                      end
-                      end
-                      end
-                    %>
+			    begin
+				  media_display = f.sourceable.render :large
+				rescue
+				  media_display = f.sourceable.preview :large, caption: f.caption
+				end
+				target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
+				anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
+%>
+                <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
+                <%= link_to '', load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
+                <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+<%
+              end
+            end
+          end
+        end
+%>
+	</div>
     <% end %>
     <%=
       # This is in a partial because its a lot of nested divs and duplicates functionality in the main slideshow

@@ -579,7 +579,7 @@ class Resource < ActiveRecord::Base
         else
           caption_include = ''
         end
-        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed #{sizeClass}\" #{cssFloat}><a href=\"#\" id=\"\link#{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(prev_version.to_sym, width, height, caption_include) + "</a></div>")
+        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed #{sizeClass}\" #{cssFloat}><a class=\"modalOpen\" href=\"#\" id=\"\link#{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\" data-link-target=\"\##{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}Link\">" + mf.sourceable.preview(prev_version.to_sym, width, height, caption_include) + "</a></div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end

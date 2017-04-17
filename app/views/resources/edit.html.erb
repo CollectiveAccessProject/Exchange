@@ -181,8 +181,59 @@
           rescue
             media_display = f.sourceable.preview :large, '', '', f.caption
           end
+          target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
+		  anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
         %>
-        <%= render partial: 'resources/media_file_render_overlay', locals: {media: media_display, media_id: f.id.to_s,  modal_id: f.sourceable.class.to_s + f.sourceable.id.to_s, editable: true} %>
+        <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+        <% 
+        if f.get_media_class(f.sourceable_type).to_s == 'CollectionobjectLink'
+			col = CollectionobjectLink.find(f.sourceable_id)
+			rc = Resource.find(col.resource_id)
+			cap_fields = JSON.parse(rc.indexing_data)
+			short_caption = ''
+			long_caption = ''
+			if cap_fields['artist']
+				short_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
+				long_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
+			end
+			if cap_fields['title']
+				short_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em>')
+				long_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em><br/>')
+			end
+			material_fields = ''
+			if cap_fields['support']
+				material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
+			else
+				material_fields = cap_fields['medium'].to_s
+			end
+			if cap_fields['date_created']
+				long_caption += sanitize(cap_fields['date_created'].to_s + '<br/>')
+			end
+			if material_fields != ''
+				long_caption += sanitize(material_fields.to_s + '<br/>')
+			end
+			if cap_fields['credit_line']
+				long_caption += sanitize(cap_fields['credit_line'].to_s + '<br/>')
+			end
+			if cap_fields['idno']
+				long_caption += sanitize(cap_fields['idno'].to_s)
+			end
+		%>
+        <script>
+        	var captions = captions || {}
+			captions['<%= f.id %>'] = {}
+			captions['<%= f.id %>']['short_caption'] = '<%= escape_javascript(short_caption.html_safe) %>';
+			captions['<%= f.id %>']['long_caption'] = '<%= escape_javascript(long_caption.html_safe) %>';
+        	$('.mediaLoad').bind('ajax:success', function(){
+        		var caption_type = '<%= f.caption_type %>';
+				set_caption_display('<%= f.id %>', caption_type);
+        	});
+        	$('.modal').on('click', '#<%= f.id %>_caption_type', function(e){
+				caption_val = $("#<%= f.id %>_caption_type input:radio[name = 'media_file[caption_type]']:checked").val();
+				set_caption_display('<%= f.id %>', caption_val);
+			});
+        </script>
+        <% end %>
     <% end %>
 <% end %>
 <!-- End media file modal -->
@@ -204,3 +255,34 @@
 <%
   end
 %>
+
+<script>
+	function set_caption_display(scope_id, caption_val){
+		var caption_field = '.' +  scope_id + '_caption_field';
+		var caption_display = '.' +  scope_id + '_caption_display';
+		var caption_text_field = '#' + scope_id + '_caption_text';
+
+		if(caption_val == 1){
+			$(caption_display).hide();
+			$(caption_field).show();
+			$(caption_field + ' .summernote').prop('disabled', false);
+			$(caption_text_field).prop("disabled", true);
+		} else {
+			$(caption_text_field).prop("disabled", false);
+			if(caption_val == 2){
+				var caption_head = '<h5>No Caption</h5>';
+				var caption_text = ' ';
+			} else if(caption_val == 3) {
+				var caption_head = captions[scope_id]['short_caption'];
+				var caption_text = captions[scope_id]['short_caption'];
+			} else if(caption_val == 4) {
+				var caption_head = captions[scope_id]['long_caption'];
+				var caption_text = captions[scope_id]['long_caption'];
+			}
+			$(caption_display).show().html(caption_head);
+			$(caption_field + ' .summernote').prop('disabled', true);
+			$(caption_field).hide();
+			$(caption_text_field).prop("value", caption_text);
+		}
+	}
+</script>
