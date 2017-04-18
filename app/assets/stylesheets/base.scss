@@ -1074,6 +1074,18 @@ li.tagList {
         height: 200px;
         overflow-y: hidden;
         white-space: normal;
+	color: #000;
+	padding: 2%;
+}
+.dropdown-media-hidden{
+	position: absolute;
+	background-color: $gray;
+	height: inherit;
+	padding: 10%;
+	text-align: center;
+	opacity: 0.95;
+	color: #fff;
+	pointer-events: none; 
 }
 #dropdown-media {
   width: 800px;
