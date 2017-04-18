@@ -12,7 +12,7 @@ jQuery(document).ready(function() {
         jQuery("#resource_media_list .mediaListIcon").each(function(k,m) {
             ranks.push(jQuery(m).data('media_id'));
         });
-
+console.log("ranks", ranks);
         if (resource_id && (Object.keys(ranks).length > 0)) {
             jQuery.getJSON("/resources/" + resource_id + "/set_media_order", {ranks: ranks}, function(data) {
                 jQuery("#resources-status").slideDown(250);
@@ -468,3 +468,13 @@ jQuery(document).on('sortstop', "#related_resource_list", function(e, ui) {
         });
     }
 });
+
+//
+// Media list paging
+jQuery(document).on("ajax:success", ".mediaListPaging", function(e, data) {
+    if(data.status == 'ok') {
+        jQuery("#resource_media_list").html(data.html)
+    }
+    return false;
+});
+//
