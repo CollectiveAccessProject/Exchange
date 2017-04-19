@@ -5,7 +5,7 @@ class ResourcesController < ApplicationController
   include CommentableController
   include TaggableController
 
-  respond_to :html, :json
+  respond_to :html, :json, :js
 
   # UI autocomplete on resource title (used by related resources lookup)
   autocomplete :resource, :title, :full => true, :extra_data => [:id, :collection_identifier, :resource_type, :indexing_data], :display_value => :get_autocomplete_label
@@ -964,7 +964,10 @@ class ResourcesController < ApplicationController
       format.json { render :json => resp }
     end
   end
-
+  
+  #
+  # Methods below are for AJAX load of resources
+  #
   def load_media_modal
     @modal_data = {"target" => params[:target_div], "display" => params[:media_display], "id" => params[:media_id], "title" => params[:resource_title], "media_files" => params[:media_files], "editable" => params[:editable], "resource_id" => params[:resource_id]}
     @otherMedia = []
@@ -977,9 +980,50 @@ class ResourcesController < ApplicationController
     end
   end
 
-  def load_fullscreen_slides
-  	offset = params[:page] * 10
-    @new_slides = MediaFile.where("resource_id = ?", params[:resource_id]).offset(offset)
+  def load_fullscreen_slideshow
+    @slideshow_id = params[:resource_id]
+    
+    respond_to do |format|
+      format.js {render :action => "load_fullscreen_slideshow"}
+    end
+  end
+
+  def load_slides
+  	offset = params[:page].to_i * 10
+    #new_slides = MediaFile.where("resource_id = ?", params[:resource_id]).offset(offset).limit(10)
+    res = Resource.find(params[:resource_id])
+    new_slides = res.media_files.slice(offset, 10)
+    new_slide_html = ''
+    new_slides.each do |ns|
+      if ns.sourceable
+      	if ns.access == 1
+      		begin
+				media_display = ns.sourceable.render :large
+			rescue
+				media_display = ns.sourceable.preview :large, '', '', ns.caption
+			end
+			new_slide_html += '<div class="item"><div class="carouselImageHeight">'
+			new_slide_html += media_display
+			new_slide_html += '</div>'
+			if ns.sourceable_type != 'CollectionobjectLink'
+				new_slide_html += '<div class="captionContainer idle-fade"><div class="slideshowCaption">'
+				new_slide_html += ns.caption
+				new_slide_html += '</div></div>'
+			end
+			if (fzoom = is_zoomable(ns))
+				new_slide_html += "<div class='zoomControls' onload='$(this).css(\"top\", function(){ console.log($(this).prev().(\".previewMediaCaption.\").height() * -1);});'><a href='#' class='leafletZoom' data-dismiss='modal' onclick='$(\"#mediaViewerModal\").removeData(\"iiif\"); jQuery(\"#mediaViewerModal\").data(\"iiif\", \""
+				new_slide_html += riiif_info_path(fzoom)
+				new_slide_html += "\").modal(\"show\"); return false;'><i class='fa fa-search-plus' aria-hidden='true'></i>Zoom</a></div>"
+			end
+			new_slide_html += '</div>'
+      	end
+      end
+    end
+    #what = {"ids" => slide_ids} 
+    respond_to do |format|
+      format.html { render text: new_slide_html }
+    #  format.js {render :action => "load_slides"}
+    end
   end
 
   private

@@ -85,7 +85,7 @@
                           	target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
                           	anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
                           %>
-                          <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
+                          <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :resource_id => @resource.id, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
                           <% if (fzoom = is_zoomable(f)) %>
 							<div class="zoomControls">
 							  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
@@ -126,7 +126,7 @@
                   <% end %>
                       <div class="col-md-3">
                         <div class="thumbnail previewThumbnail">
-                          <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
+                          <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :resource_id => @resource.id, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
                           <div class="caption small">
                             <%= sanitize(f.caption) %>
                             <div class="row">
@@ -178,7 +178,8 @@
                     <% end %>
                   </div>
                   <div class="col-xs-2 text-right">
-                    <a id="openFullscreen" href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link fa-2x"></i></a>
+                    <!--<a id="openFullscreen" href="#" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link fa-2x"></i></a>-->
+                    <%= link_to '<i class="fa fa-external-link fa-2x"></i>'.html_safe, load_fullscreen_slideshow_path(:resource_id => @resource.id), :remote => true, :class => 'slideshowLoad' %>
                   </div>
                 </div>
                 <div id="resourceCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
@@ -190,7 +191,6 @@
                         if f.access == 1
                           if f.sourceable
                     %>
-
                                 <div class="item <%= (counter == 1) ? 'active' : '' %>">
                                     <%=
                                       begin
@@ -203,9 +203,9 @@
                                       case
                                         when ((f.sourceable.class.to_s == 'YoutubeLink') || (f.sourceable.class.to_s == 'VimeoLink'))
                                           # render video inline so it's playable
-                                          link_to (f.sourceable.render :medium), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div 
+                                          link_to (f.sourceable.render :medium), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :resource_id => @resource.id, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div 
                                         else
-                                          link_to (f.sourceable.preview :large, '', '', f.caption), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div
+                                          link_to (f.sourceable.preview :large, '', '', f.caption), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :resource_id => @resource.id, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div
                                       end
                                     %>
                                   <% if (fzoom = is_zoomable(f)) %>
@@ -216,6 +216,9 @@
                                 </div>
                             <%
                               counter = counter + 1
+                              if counter > 10
+                              	break
+                              end
                               end
                               end
                               end
@@ -227,26 +230,55 @@
             <%
               # Create Modals for each slide, necessary to do separately to allow modals to pop-over
               # outside of slideshow
+              load_count = 0
               @resource.media_files.each do |f|
                 if f.access == 1
                   if f.sourceable
+                  	load_count += 1
             %>
                         <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
                         <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
                     <%
-                      end
-                      end
-                      end
+                  end
+                end
+              end
                     %>
             <script>
                 //Generates slide count and position for use above
-                var totalItems = $('.item').length;
+                var totalItems = '<%= load_count %>';
                 $('.num').html('1/'+totalItems+'');
                 $('#resourceCarousel').on('slid.bs.carousel', function() {
                     currentIndex = ($('div.active').index() + 1);
                     $('.num').html(''+currentIndex+'/'+totalItems+'');
                 });
-            </script>
+				$(document).ready(function(){
+					$('#resourceCarousel').on('slide.bs.carousel', function(){
+						var slide = 1
+						slide += $('div.active').index() + 1;
+						console.log(slide);
+						if(slide % 9 == 0){
+							console.log('Loading More Slides');
+							var page_no = (slide / 9) + 1
+							loadMoreSlides(page_no);
+						}
+					});
+				});
+				function loadMoreSlides(page_no){
+					$.ajax({
+						url: "/resources/<%= @resource.id %>/load_slides",
+						type: "GET",
+						dataType: "html",
+						data: {
+							resource_id: '<%= @resource.id %>',
+							page: page_no
+						},
+						success: function(html) {
+							console.log('Return up to 10 slides and append them');
+							$('#carouselFocus').append(html);
+						}
+					});
+				}
+			  </script>
         <% end %>
 <%
       when "embed"
@@ -266,7 +298,7 @@
 				anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
 %>
                 <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
-                <%= link_to '', load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
+                <%= link_to '', load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :resource_id => @resource.id, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
                 <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <%
               end
@@ -280,8 +312,9 @@
       # This is in a partial because its a lot of nested divs and duplicates functionality in the main slideshow
       # which is potentially confusing
       # Placing this partial here makes it avaialable regardless of media format setting
-      render partial: 'resource_slideshow_fullscreen'
+      # render partial: 'resource_slideshow_fullscreen'
     %>
+    <div class="modal fade modal-wide modal-black" id="carousel-full" tabindex="-1" role="dialog" aria-labelledby="fullCarousel-label" aria-hidden="true"></div>
     <% if @resource.settings(:text_placement).placement.to_s == "below" %>
         <% if @resource.settings(:text_formatting).show_all == 0 %>
             <div class="col-md-12">
@@ -774,11 +807,22 @@
 
     // Bind the launch fullscreen option to all links to the fullscreen slideshow
     // Also set focus on carousel-control to enable keyboard commands onload, delay gives time for element to be visible
-    $('a#openFullscreen, a#modalSlideshow').click(function(){
-        launchIntoFullscreen(document.documentElement); // the whole page
-        setTimeout(function(){
-            $('.carousel-control').focus();
-        }, 500);
+    $(document).on('click', '.slideshowLoad', function(){
+        console.log($( document.activeElement ));
+		if($('#carousel-full').has('.jumbotron').length > 0){
+			$('#carousel-full').modal('toggle');
+			event.stopPropagation();
+			event.preventDefault();
+		} else {
+			$('#carousel-full').modal('toggle');
+		}
+		launchIntoFullscreen(document.documentElement); // the whole page
+        $(document).ajaxComplete(function(){
+			setTimeout(function(){
+				$('a#rightFullCarousel').focus();
+				console.log("Trying to set focus");
+			}, 5000);
+		});
     });
 
     function exitFullscreen() {
@@ -794,7 +838,7 @@
     // Exit fullscreen and fullscreen modal with one click
     // If Esc is used, it will have to be hit twice, once to escape fullscreen and once to close the modal
     // There seems to be no way around this behavior
-    $('#fullscreenClose').click(function(){
+    $(document).on('click', '#fullscreenClose', function(){
         exitFullscreen();
     });
     // Enforce Esc as key to close the modal

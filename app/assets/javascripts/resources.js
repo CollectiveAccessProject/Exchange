@@ -5,24 +5,26 @@ jQuery(document).ready(function() {
     //
 	// Modal AJAX Loads
 	//
-	jQuery('.modalOpen').click(function(){
+	jQuery(document).on('click', '.modalOpen', function(){
 		var target_link = jQuery(this).attr('data-link-target');
 		var target_modal = jQuery(target_link).attr('data-modal-target');
-		console.log("Is this working?");
 		jQuery(target_link).trigger('click');
 	});
-	jQuery('.mediaLoad').click(function(event){
+	jQuery(document).on('click', '.mediaLoad', function(event){
 		var this_id = jQuery(this).attr("data-modal-target");
 		if(jQuery(this_id).has('.modal-dialog').length > 0){
 			jQuery(this_id).modal('show');
 			event.stopPropagation();
 			event.preventDefault();
-			console.log("Prevented default click action");
 		} else {
 			jQuery(this_id).modal('show');
 		}
 	});
 	jQuery('.popoverWrapper').tooltip();
+    
+    //
+    // Slideshow AJAX Loads
+    //
     
     //
     // Media list drag and drop

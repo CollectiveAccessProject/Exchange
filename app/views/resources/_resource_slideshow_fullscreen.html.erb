@@ -1,4 +1,4 @@
-<div class="modal fade modal-wide modal-black" id="carousel-full" tabindex="-1" role="dialog" aria-labelledby="fullCarousel-label" aria-hidden="true">
+<!--<div class="modal fade modal-wide modal-black" id="carousel-full" tabindex="-1" role="dialog" aria-labelledby="fullCarousel-label" aria-hidden="true">-->
 	<!--<div class="modal-dialog">-->
 		<div id="slideJumbo" class="jumbotron">
 			<div class="container jumboPadding">
@@ -14,7 +14,8 @@
 						<div class="carousel-inner scaleImg blackCaption" role="listbox">
 		<%
 					  counter = 1
-					  @resource.media_files.each do |f| 
+					  res = Resource.find(resource)
+					  res.media_files.each do |f| 
 						if f.sourceable
 							if f.access == 1
 							 
@@ -44,15 +45,15 @@
 		%>
 						</div><!-- end carousel-inner -->
 		<%
-						if @resource.media_files.count > 1
+						if res.media_files.count > 1
 		%>
 						  <!-- Left and right controls -->
 						  <a id="leftFullCarousel" class="left carousel-control idle-fade" href="#slideCarousel" role="button" data-slide="prev">
-							<span class="control-arrow glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							<span class="control-arrow glyphicon glyphicon-chevron-left" aria-hidden="true" tabindex="0"></span>
 							<span class="sr-only">Previous</span>
 						  </a>
 						  <a id="rightFullCarousel" class="right carousel-control idle-fade" href="#slideCarousel" role="button" data-slide="next">
-							<span class="control-arrow glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							<span class="control-arrow glyphicon glyphicon-chevron-right" aria-hidden="true" tabindex="0"></span>
 							<span class="sr-only">Next</span>
 						  </a>	
 						<% end %>
@@ -62,7 +63,7 @@
 			</div>
 		</div>
 	<!--</div>-->
-</div>
+<!--</div>-->
 <script>
 	$(document).ready(function(){
 		var i = null;

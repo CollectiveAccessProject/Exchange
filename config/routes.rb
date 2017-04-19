@@ -160,6 +160,10 @@ Rails.application.routes.draw do
 
   # Rendering AJAX modals for resources
   get '/resources/:id/load_media_modal' => 'resources#load_media_modal', as: 'load_media_modal'
+  get '/resources/:id/load_fullscreen_slideshow' => 'resources#load_fullscreen_slideshow', as: 'load_fullscreen_slideshow'
+
+  # Pagination for slideshow results
+  get 'resources/:id/load_slides' => 'resources#load_slides', as: 'load_slides'
 
   # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'

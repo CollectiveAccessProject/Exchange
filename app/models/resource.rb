@@ -550,7 +550,7 @@ class Resource < ActiveRecord::Base
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
 	if mf.access == 0
 	  body_text_proc.gsub!(m[0], "")
-          return body_text_proc
+	  next
         end
         version = (((defined? m[2]) && m[2]) ? m[2].sub!("version=", "").gsub!('"', "") : :thumbnail)
         width = ((defined? m[3]) && m[3]) ? m[3].sub!("width=", "").gsub!('"', "") : 160

@@ -16,7 +16,8 @@
 		<% if (!editable) %>
 			<div class="row">
 				<div class="col-sm-12 scaleImg text-center">
-					<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a><br/>
+					<!--<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a><br/>-->
+					<%= link_to '<i class="fa fa-external-link"></i> Slideshow'.html_safe, load_fullscreen_slideshow_path(:resource_id => r_id), :remote => true, :class => 'slideshowLoad' %><br/>
 					<% if (fzoom = is_zoomable(media_file)) %>
 						<div class="zoomControls">
 							<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
@@ -190,7 +191,7 @@
 									count = count + 1
 		%>
 									<li class="moRelated <%= af.sourceable.id.to_s == media_file.sourceable.id.to_s ? 'moCurrent' : '' %>" >
-										<a class="intModalOpen" data-dismiss="modal" href="#" id="<%= 'modal' + af.sourceable.class.to_s + af.sourceable.id.to_s %>" data-link-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>Link">
+										<a class="modalOpen" data-dismiss="modal" href="#" id="<%= 'modal' + af.sourceable.class.to_s + af.sourceable.id.to_s %>" data-link-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>Link">
 										<%= af.sourceable.preview :thumbnail %>
 										</a>
 									</li>
@@ -217,15 +218,11 @@
 </div>
 <script>
 	$(document).ready(function(){
-		$('.intModalOpen').click(function(){
+		$('.modalOpen').click(function(){
 			if($(this).parent('.moCurrent').length){
 				console.log("Modal already open");
 				return false;
 			}
-			var target_link = $(this).attr('data-link-target');
-			var target_modal = $(target_link).attr('data-modal-target');
-			console.log("Partial working?");
-			$(target_link).trigger('click');
 		});
 	});
 </script>
