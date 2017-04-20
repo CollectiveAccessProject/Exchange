@@ -180,26 +180,6 @@
 				<div class="col-xs-10 moWrapper">
 					<div id="moResults_<%= media_file.id %>" class="moContainer">
 						<ul class="moResults">
-
-		<%
-						count = 0
-						
-						media_files.each do |af|
-
-							if af.sourceable
-								if af.access == 1
-									count = count + 1
-		%>
-									<li class="moRelated <%= af.sourceable.id.to_s == media_file.sourceable.id.to_s ? 'moCurrent' : '' %>" >
-										<a class="modalOpen" data-dismiss="modal" href="#" id="<%= 'modal' + af.sourceable.class.to_s + af.sourceable.id.to_s %>" data-link-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>Link">
-										<%= af.sourceable.preview :thumbnail %>
-										</a>
-									</li>
-		<%
-								end
-							end
-						end
-		%>
 						</ul>
 					</div>
 				</div>
@@ -218,11 +198,6 @@
 </div>
 <script>
 	$(document).ready(function(){
-		$('.modalOpen').click(function(){
-			if($(this).parent('.moCurrent').length){
-				console.log("Modal already open");
-				return false;
-			}
-		});
+		$('.moResults').append($('#modalScrollList').html());
 	});
 </script>

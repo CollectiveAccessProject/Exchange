@@ -969,7 +969,14 @@ class ResourcesController < ApplicationController
   # Methods below are for AJAX load of resources
   #
   def load_media_modal
-    @modal_data = {"target" => params[:target_div], "display" => params[:media_display], "id" => params[:media_id], "title" => params[:resource_title], "media_files" => params[:media_files], "editable" => params[:editable], "resource_id" => params[:resource_id]}
+  	params.permit(:target_div, :media_id, :resource_title, :media_files, :editable, :resource_id)
+    @modal_data = {"target" => params[:target_div], "id" => params[:media_id], "title" => params[:resource_title], "media_files" => params[:media_files], "editable" => params[:editable], "resource_id" => params[:resource_id]}
+    file = MediaFile.find(params[:media_id])
+    begin
+		@media_display = file.sourceable.render :large
+	rescue
+		@media_display = file.sourceable.preview :large, caption: file.caption
+	end
     @otherMedia = []
     params[:media_files].each do |mf|
 		@otherMedia.push(MediaFile.find(mf))
@@ -981,6 +988,7 @@ class ResourcesController < ApplicationController
   end
 
   def load_fullscreen_slideshow
+  	params.permit(:resource_id, :page)
     @slideshow_id = params[:resource_id]
     
     respond_to do |format|
@@ -990,9 +998,12 @@ class ResourcesController < ApplicationController
 
   def load_slides
   	offset = params[:page].to_i * 10
-    #new_slides = MediaFile.where("resource_id = ?", params[:resource_id]).offset(offset).limit(10)
     res = Resource.find(params[:resource_id])
     new_slides = res.media_files.slice(offset, 10)
+    media_file_list = []
+    res.media_files.each do |mf|
+    	media_file_list.push(mf)
+    end
     new_slide_html = ''
     new_slides.each do |ns|
       if ns.sourceable
@@ -1001,15 +1012,12 @@ class ResourcesController < ApplicationController
 				media_display = ns.sourceable.render :large
 			rescue
 				media_display = ns.sourceable.preview :large, '', '', ns.caption
-			end
-			new_slide_html += '<div class="item"><div class="carouselImageHeight">'
+		  	end
+			new_slide_html += '<div class="item"><div class="carouselImageHeight"><a class="modalOpen" href="#" id="link'
+			new_slide_html += ns.sourceable.class.to_s + ns.sourceable.id.to_s + '"'
+			new_slide_html +=  'data-link-target="#' +  ns.sourceable.class.to_s + ns.sourceable.id.to_s + 'Link">'
 			new_slide_html += media_display
-			new_slide_html += '</div>'
-			if ns.sourceable_type != 'CollectionobjectLink'
-				new_slide_html += '<div class="captionContainer idle-fade"><div class="slideshowCaption">'
-				new_slide_html += ns.caption
-				new_slide_html += '</div></div>'
-			end
+			new_slide_html += '</a></div>'
 			if (fzoom = is_zoomable(ns))
 				new_slide_html += "<div class='zoomControls' onload='$(this).css(\"top\", function(){ console.log($(this).prev().(\".previewMediaCaption.\").height() * -1);});'><a href='#' class='leafletZoom' data-dismiss='modal' onclick='$(\"#mediaViewerModal\").removeData(\"iiif\"); jQuery(\"#mediaViewerModal\").data(\"iiif\", \""
 				new_slide_html += riiif_info_path(fzoom)
@@ -1019,10 +1027,52 @@ class ResourcesController < ApplicationController
       	end
       end
     end
-    #what = {"ids" => slide_ids} 
     respond_to do |format|
       format.html { render text: new_slide_html }
-    #  format.js {render :action => "load_slides"}
+    end
+  end
+
+  def load_thumbnails
+  	offset = params[:page].to_i * 8
+    res = Resource.find(params[:resource_id])
+    new_thumbs = res.media_files.slice(offset, 8)
+    new_thumb_html = '<div class="row">'
+    counter = 0
+    new_thumbs.each do |nt|
+      if nt.sourceable
+        if nt.access == 1
+          if counter % 4 == 0
+            new_thumb_html += '</div><div class="row">'
+          end
+          media_display = nt.sourceable.preview :thumbnail
+          new_thumb_html += '<div class="col-md-3"><div class="thumbnail previewThumbnail">'
+          new_thumb_html += '<a class="modalOpen" href="#" id="link'
+		  new_thumb_html += nt.sourceable.class.to_s + nt.sourceable.id.to_s + '"'
+		  new_thumb_html +=  'data-link-target="#' +  nt.sourceable.class.to_s + nt.sourceable.id.to_s + 'Link">'
+		  new_thumb_html += media_display
+		  new_thumb_html += '</a>'
+		  new_thumb_html += '<div class="caption small">'
+          if params[:caption]
+          	new_thumb_html += view_context.sanitize(nt.caption)
+          end
+          new_thumb_html += '<div class="row"><div class="col-sm-8">'
+          if nt.display_collectionobject_link == 1
+            new_thumb_html += view_context.link_to "View Object Record".html_safe, get_resource_view_path(nt.get_original_resource_id, user_signed_in?)
+          end
+          new_thumb_html += '</div><div class="col-sm-4">'
+		  if (fzoom = is_zoomable(nt))
+			new_thumb_html += "<div class='zoomControls' onload='$(this).css(\"top\", function(){ console.log($(this).prev().(\".previewMediaCaption.\").height() * -1);});'><a href='#' class='leafletZoom' data-dismiss='modal' onclick='$(\"#mediaViewerModal\").removeData(\"iiif\"); jQuery(\"#mediaViewerModal\").data(\"iiif\", \""
+			new_thumb_html += riiif_info_path(fzoom)
+			new_thumb_html += "\").modal(\"show\"); return false;'><i class='fa fa-search-plus' aria-hidden='true'></i>Zoom</a></div>"
+		  end
+		  new_thumb_html += '</div></div></div></div></div>'
+		  counter += 1
+		end
+	  end
+	end
+	new_thumb_html += '</div></div>'
+	respond_to do |format|
+      format.html { render text: new_thumb_html }
     end
   end
 
