@@ -94,7 +94,7 @@
                 %>
                 <%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
                 <% if r.total_ratings > 0 %>
-                    <div class='small'><strong>Average Rating: </strong><%= r.avg_rating %></div>
+                    <div class='small'><span class="rateTitle"><strong>Rating: </strong></span><%= rating_for r, 'quality', star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png" %></div>
                 <% end %>
               </div>
             </div>

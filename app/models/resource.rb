@@ -275,6 +275,9 @@ class Resource < ActiveRecord::Base
     return self.resource_type == Resource::CRCSET;
   end
 
+  def is_response(parent_id)
+    return self.in_response_to_resource_id == parent_id
+  end
 
   def resource_type_for_display(plural=false)
     case self.resource_type
@@ -460,7 +463,8 @@ class Resource < ActiveRecord::Base
       type = nil
     end
     if (type == nil)
-      return self.children.length
+      responses = Resource.where("in_response_to_resource_id = ? AND response_banned_on IS ?", self.id, nil)
+      return self.children.length - responses.length
     end
 
     # TODO: cache this
@@ -544,6 +548,10 @@ class Resource < ActiveRecord::Base
 
     matches.each do |m|
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
+	if mf.access == 0
+	  body_text_proc.gsub!(m[0], "")
+	  next
+        end
         version = (((defined? m[2]) && m[2]) ? m[2].sub!("version=", "").gsub!('"', "") : :thumbnail)
         width = ((defined? m[3]) && m[3]) ? m[3].sub!("width=", "").gsub!('"', "") : 160
         height = ((defined? m[4]) && m[4]) ? m[4].sub!("height=", "").gsub!('"', "") : 120
@@ -575,7 +583,7 @@ class Resource < ActiveRecord::Base
         else
           caption_include = ''
         end
-        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed #{sizeClass}\" #{cssFloat}><a href=\"#\" id=\"\link#{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\">" + mf.sourceable.preview(prev_version.to_sym, width, height, caption_include) + "</a></div>")
+        body_text_proc.gsub!(m[0], "<div class=\"mediaEmbed #{sizeClass}\" #{cssFloat}><a class=\"modalOpen\" href=\"#\" id=\"\link#{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}\" data-link-target=\"\##{mf.sourceable.class.to_s}#{mf.sourceable.id.to_s}Link\">" + mf.sourceable.preview(prev_version.to_sym, width, height, caption_include) + "</a></div>")
       else
         body_text_proc.gsub!(m[0], "<div class=\"mediaEmbedError\" #{cssFloat}>Media with slug " + m[1] + " does not exist</div>")
       end

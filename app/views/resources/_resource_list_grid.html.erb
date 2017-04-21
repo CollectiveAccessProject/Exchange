@@ -13,7 +13,7 @@
 	<div class="row collectionDetailContents">
 	<% resource.resource_hierarchies.each do |rel| %>
 <%
-		next if (!rel.child_resource.can(:view, current_user) and !rel.child_resource.can(:edit, current_user))
+		next if ((!rel.child_resource.can(:view, current_user) and !rel.child_resource.can(:edit, current_user)) or rel.child_resource.is_response(resource.id))
 		i = i+1
 %>
 		

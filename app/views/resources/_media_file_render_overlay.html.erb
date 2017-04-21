@@ -1,289 +1,228 @@
-<div class="modal modal-wide" id="<%= modal_id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header green-header">
-        <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
-        <% media_file = MediaFile.find(media_id) %>
-        <h2 class="modal-title" id="addMediaFormLabel"><%= editable ?  "Edit media" : truncate(sanitize(r_title), length: 60, omission: '...', separator: '<br>', escape: false)  %></h2>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="row">
-            	<div class="col-sm-12 text-center scaleImg">
- 		        	<%= media %>
-        		</div>
-        	</div>
-        	<% if (!editable) %>
-				<div class="row">
-					<div class="col-sm-12 scaleImg text-center">
-						<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a><br/>
-						<% if (fzoom = is_zoomable(media_file)) %>
-							<div class="zoomControls">
-								<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-							</div>
-						<% end %>
-					</div>
-				</div>
-			<% end %>
-          </div>
-          <div class="col-sm-6">
-          	<div class="row">
-          		<div class="col-sm-12">
-
-					<% if (editable) %>
-						<%= simple_form_for(media_file, :remote => false, html: { id: 'editMediaFormElements', data: { :url => '/media_files', :format => :js}}) do |f| %>
-							<%= f.error_notification %>
-							<div id="form-status">
-							  <div class="flash-notice" id="form-status-message"></div>
-							</div>
-							<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
-								<%
-									col = CollectionobjectLink.find(media_file.sourceable_id)
-									rc = Resource.find(col.resource_id)
-									cap_fields = JSON.parse(rc.indexing_data)
-									short_caption = ''
-									long_caption = ''
-									if cap_fields['artist']
-										short_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
-										long_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
-									end
-									if cap_fields['title']
-										short_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em>')
-										long_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em><br/>')
-									end
-									material_fields = ''
-									if cap_fields['support']
-										material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
-									else
-										material_fields = cap_fields['medium'].to_s
-									end
-									if cap_fields['date_created']
-										long_caption += sanitize(cap_fields['date_created'].to_s + '<br/>')
-									end
-									if material_fields != ''
-										long_caption += sanitize(material_fields.to_s + '<br/>')
-									end
-									if cap_fields['credit_line']
-										long_caption += sanitize(cap_fields['credit_line'].to_s + '<br/>')
-									end
-									if cap_fields['idno']
-										long_caption += sanitize(cap_fields['idno'].to_s)
-									end
-								%>
-								<div class="row">
-									<div class="col-sm-6">
-										<div id="<%= media_file.id %>_caption_type" class="captionRadios">
-											<label class="control-label">Caption Type</label><br/>
-											<%= f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div id="<%= media_file.id %>_display_collectionobject_link" class="captionRadios">
-											<label class="control-label">Display link to Collection Object?</label><br/>
-											<%= f.collection_radio_buttons :display_collectionobject_link, [[1, "Yes"], [0, "No"]], :first, :last %>
-										</div>
-									</div>
-								</div>
-								<script>
-									var captions = captions || {}
-									captions['<%= media_file.id %>'] = {}
-									captions['<%= media_file.id %>']['short_caption'] = '<%= escape_javascript(short_caption) %>';
-									captions['<%= media_file.id %>']['long_caption'] = '<%= escape_javascript(long_caption) %>';
-									$(document).ready(function(){
-										var caption_type = '<%= media_file.caption_type %>';
-										set_caption_display('<%= media_file.id %>', caption_type);
-										$('#<%= media_file.id %>_caption_type').click(function(){
-											caption_val = $("#<%= media_file.id %>_caption_type input:radio[name = 'media_file[caption_type]']:checked").val();
-											set_caption_display('<%= media_file.id %>', caption_val);
-										});
-									});
-
-								</script>
-
-								<div class="<%= media_file.id %>_caption_display captionDisplay">
-								</div>
-								<div class="<%= media_file.id %>_caption_field">
-									<%= f.input :caption, :input_html => {}, :as => :summernote %>
-								</div>
-									<input id="<%= media_file.id %>_caption_text" type="hidden" name="media_file[caption]" value="">
-							<% else %>
-								<%= f.input :caption, :input_html => {}, :as => :summernote %>
-							<% end %>
-							<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
-								<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false, :readonly => true, :disabled => true %>
-							<% else %>
-
-								<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
-							<% end %>
-							<%= f.input :copyright_notes, :input_html => {}, :as => :summernote, label: 'Copyright/Author Notes' %>
-              <%= f.input :access,  collection: Rails.application.config.x.access_types, label: 'Publication Status'%>
-
-							<%= hidden_field(:media_file, :resource_id, :value => @resource.id) %>
-							<input type="hidden" name='modal_id' value="<%= modal_id %>">
-
-							<%= f.button :submit %>
-
-						<% end %>
-					<% else %>
-						<%= sanitize(media_file.caption) %>
-						<br/>
-						<br/>
-						<%= sanitize(media_file.copyright_notes) %>
-						Media Source:
-		<%
-						media_source = media_file.get_media_class(media_file.sourceable_type)
-						case media_source.to_s
-						when "CollectionobjectLink"
-		%>
-		<%
-						# construct URL for link to UMMA Catalog
-						r = Resource.find(media_file.sourceable.resource_id)
-						# collection_url = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'http://quod.lib.umich.edu/m/musart/x-\1-sl-\2')
-		%>
-						  UMMA Object Record<br/>
-						  <% if media_file.display_collectionobject_link != 0 %>
-						  	<%= link_to "View Object Record", get_resource_view_path(r.id, user_signed_in?) %>
-						  <% end %>
-		<%
-						when "FlickrLink"
-		%>
-						  Flickr<br/>
-						  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
-		<%
-						when "GoogledocsLink"
-		%>
-						  Googledocs<br/>
-						  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
-		<%
-						when "YoutubeLink"
-		%>
-						  Youtube<br/>
-						  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
-		<%
-						when "VimeoLink"
-		%>
-						  Vimeo<br/>
-						  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
-		<%
-						when "SoundcloudLink"
-		%>
-						  Soundcloud<br/>
-						  Original Link: <%= media_file.sourceable.original_link %>
-		<%
-						when "LocalFile"
-		%>
-						  Local file upload
-		<%
-						when "CollectiveaccessLink"
-		%>
-						  UMMA Object
-		<%
-						end
-		%>
-					<br/>
-					<%= media_file.get_license_type %>
+<div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header green-header">
+	<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
+	<% media_file = MediaFile.find(media_id) %>
+	<h2 class="modal-title" id="addMediaFormLabel"><%= editable ?  "Edit media" : truncate(sanitize(r_title), length: 60, omission: '...', separator: '<br>', escape: false)  %></h2>
+  </div>
+  <div class="modal-body">
+	<div class="row">
+	  <div class="col-sm-6">
+		<div class="row">
+			<div class="col-sm-12 text-center scaleImg">
+				<%= media.html_safe %>
+			</div>
+		</div>
+		<% if (!editable) %>
+			<div class="row">
+				<div class="col-sm-12 scaleImg text-center">
+					<!--<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a><br/>-->
+					<%= link_to '<i class="fa fa-external-link"></i> Slideshow'.html_safe, load_fullscreen_slideshow_path(:resource_id => r_id), :remote => true, :class => 'slideshowLoad' %><br/>
+					<% if (fzoom = is_zoomable(media_file)) %>
+						<div class="zoomControls">
+							<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+						</div>
 					<% end %>
 				</div>
 			</div>
-			<hr/>
-			<% if (!editable) %>
-				<h5>Other Media from this Resource</h5>
-					<script>
-						$('body').on('click', '#scroll-right_<%= media_file.id %>', function(){
-							$("#moResults_<%= media_file.id %>").animate({
-								scrollLeft: "+=135px"
-							}, "slow");
-						});
-					</script>
-					<script>
-						$('body').on('click', '#scroll-left_<%= media_file.id %>', function(){
-							$("#moResults_<%= media_file.id %>").animate({
-								scrollLeft: "-=135px"
-							}, "slow");
-						});
-					</script>
-					<script>
-						$('.moContainer').on('click', function(){
-							var scrollPos = $(this).scrollLeft();
-							$('.modal').on('shown.bs.modal', function(){
-								$('.moContainer').scrollLeft(scrollPos);
-							});
-						});
-					</script>
-				<div class="row">
-					<div class="col-xs-1 related_scroll">
-						<a id="scroll-left_<%= media_file.id %>" href="#" role="button">
-							<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-							<span class="sr-only">Move Left</span>
-						</a>
-					</div>
-					<div class="col-xs-10 moWrapper">
-						<div id="moResults_<%= media_file.id %>" class="moContainer">
-							<ul class="moResults">
+		<% end %>
+	  </div>
+	  <div class="col-sm-6">
+		<div class="row">
+			<div class="col-sm-12">
 
-			<%
-							count = 0
-							@resource.media_files.each do |af|
-
-								if af.sourceable
-									if af.access == 1
-										count = count + 1
-			%>
-										<li class="moRelated <%= af.sourceable.id.to_s == media_file.sourceable.id.to_s ? 'moCurrent' : '' %>" >
-											<a href="#" data-dismiss="modal" data-toggle="modal" data-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>">
-											<%= af.sourceable.preview :thumbnail %>
-											</a>
-										</li>
-			<%
-									end
-								end
-							end
-			%>
-							</ul>
+				<% if (editable) %>
+					<%= simple_form_for(media_file, :remote => false, html: { id: 'editMediaFormElements', data: { :url => '/media_files', :format => :js}}) do |f| %>
+						<%= f.error_notification %>
+						<div id="form-status">
+						  <div class="flash-notice" id="form-status-message"></div>
 						</div>
-					</div>
-					<div class="col-xs-1 related_scroll">
-					<a id="scroll-right_<%= media_file.id %>" href="#" role="button">
-						<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-						<span class="sr-only">Move Right</span>
+						<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
+							<div class="row">
+								<div class="col-sm-6">
+									<div id="<%= media_file.id %>_caption_type" class="captionRadios">
+										<label class="control-label">Caption Type</label><br/>
+										<%= f.collection_radio_buttons :caption_type, [[1, "Custom"], [2, "None"], [3, "Short"], [4, "Long"]], :first, :last %>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div id="<%= media_file.id %>_display_collectionobject_link" class="captionRadios">
+										<label class="control-label">Display link to Collection Object?</label><br/>
+										<%= f.collection_radio_buttons :display_collectionobject_link, [[1, "Yes"], [0, "No"]], :first, :last %>
+									</div>
+								</div>
+							</div>
+							<script>
+								//var captions = captions || {}
+								//captions['<%= media_file.id %>'] = {}
+								//captions['<%= media_file.id %>']['short_caption'] = '<%# escape_javascript(short_caption.html_safe) %>';
+								//captions['<%= media_file.id %>']['long_caption'] = '<%# escape_javascript(long_caption.html_safe) %>';
+
+							</script>
+
+							<div class="<%= media_file.id %>_caption_display captionDisplay">
+							</div>
+							<div class="<%= media_file.id %>_caption_field">
+								<%= f.input :caption, :input_html => {}, :as => :summernote %>
+							</div>
+								<input id="<%= media_file.id %>_caption_text" type="hidden" name="media_file[caption]" value="">
+						<% else %>
+							<%= f.input :caption, :input_html => {}, :as => :summernote %>
+						<% end %>
+						<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
+							<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false, :readonly => true, :disabled => true %>
+						<% else %>
+
+							<%= f.input :copyright_license, collection: Resource.license_types, :include_blank => false %>
+						<% end %>
+						<%= f.input :copyright_notes, :input_html => {}, :as => :summernote, label: 'Copyright/Author Notes' %>
+		  <%= f.input :access,  collection: Rails.application.config.x.access_types, label: 'Publication Status'%>
+
+						<%= hidden_field(:media_file, :resource_id, :value => r_id) %>
+						<input type="hidden" name='modal_id' value="<%= media_file.sourceable.class.to_s + media_file.sourceable.id.to_s %>">
+
+						<%= f.button :submit %>
+
+					<% end %>
+				<% else %>
+					<%= sanitize(media_file.caption) %>
+					<br/>
+					<br/>
+					<%= sanitize(media_file.copyright_notes) %>
+					Media Source:
+	<%
+					media_source = media_file.get_media_class(media_file.sourceable_type)
+					case media_source.to_s
+					when "CollectionobjectLink"
+	%>
+	<%
+					# construct URL for link to UMMA Catalog
+					r = Resource.find(media_file.sourceable.resource_id)
+					# collection_url = r.collection_identifier.gsub(/([0-9]+)\/([0-9.]+)/, 'http://quod.lib.umich.edu/m/musart/x-\1-sl-\2')
+	%>
+					  UMMA Object Record<br/>
+					  <% if media_file.display_collectionobject_link != 0 %>
+						<%= link_to "View Object Record", get_resource_view_path(r.id, user_signed_in?) %>
+					  <% end %>
+	<%
+					when "FlickrLink"
+	%>
+					  Flickr<br/>
+					  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+	<%
+					when "GoogledocsLink"
+	%>
+					  Googledocs<br/>
+					  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+	<%
+					when "YoutubeLink"
+	%>
+					  Youtube<br/>
+					  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+	<%
+					when "VimeoLink"
+	%>
+					  Vimeo<br/>
+					  Original Link: <a href="<%= media_file.sourceable.original_link %>" target="_blank"><%= media_file.sourceable.original_link %></a>
+	<%
+					when "SoundcloudLink"
+	%>
+					  Soundcloud<br/>
+					  Original Link: <%= media_file.sourceable.original_link %>
+	<%
+					when "LocalFile"
+	%>
+					  Local file upload
+	<%
+					when "CollectiveaccessLink"
+	%>
+					  UMMA Object
+	<%
+					end
+	%>
+				<br/>
+				<%= media_file.get_license_type %>
+				<% end %>
+			</div>
+		</div>
+		<hr/>
+		<% if (!editable) %>
+			<h5>Other Media from this Resource</h5>
+				<script>
+					$('body').on('click', '#scroll-right_<%= media_file.id %>', function(){
+						$("#moResults_<%= media_file.id %>").animate({
+							scrollLeft: "+=135px"
+						}, "slow");
+					});
+				</script>
+				<script>
+					$('body').on('click', '#scroll-left_<%= media_file.id %>', function(){
+						$("#moResults_<%= media_file.id %>").animate({
+							scrollLeft: "-=135px"
+						}, "slow");
+					});
+				</script>
+				<script>
+					$('.moContainer').on('click', function(){
+						var scrollPos = $(this).scrollLeft();
+						$('.modal').on('shown.bs.modal', function(){
+							$('.moContainer').scrollLeft(scrollPos);
+						});
+					});
+				</script>
+			<div class="row">
+				<div class="col-xs-1 related_scroll">
+					<a id="scroll-left_<%= media_file.id %>" href="#" role="button">
+						<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+						<span class="sr-only">Move Left</span>
 					</a>
 				</div>
-				</div>
-			<% end %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-    <script>
-	function set_caption_display(scope_id, caption_val){
-		var caption_field = '.' +  scope_id + '_caption_field';
-		var caption_display = '.' +  scope_id + '_caption_display';
-		var caption_text_field = '#' + scope_id + '_caption_text';
+				<div class="col-xs-10 moWrapper">
+					<div id="moResults_<%= media_file.id %>" class="moContainer">
+						<ul class="moResults">
 
-		if(caption_val == 1){
-			$(caption_display).hide();
-			$(caption_field).show();
-			$(caption_field + ' .summernote').prop('disabled', false);
-			$(caption_text_field).prop("disabled", true);
-		} else {
-			$(caption_text_field).prop("disabled", false);
-			if(caption_val == 2){
-				var caption_head = '<h5>No Caption</h5>';
-				var caption_text = ' ';
-			} else if(caption_val == 3) {
-				var caption_head = captions[scope_id]['short_caption'];
-				var caption_text = captions[scope_id]['short_caption'];
-			} else if(caption_val == 4) {
-				var caption_head = captions[scope_id]['long_caption'];
-				var caption_text = captions[scope_id]['long_caption'];
-			}
-			$(caption_display).show().html(caption_head);
-			$(caption_field + ' .summernote').prop('disabled', true);
-			$(caption_field).hide();
-			$(caption_text_field).prop("value", caption_text);
-		}
-	}
-	</script>
+		<%
+						count = 0
+						
+						media_files.each do |af|
+
+							if af.sourceable
+								if af.access == 1
+									count = count + 1
+		%>
+									<li class="moRelated <%= af.sourceable.id.to_s == media_file.sourceable.id.to_s ? 'moCurrent' : '' %>" >
+										<a class="modalOpen" data-dismiss="modal" href="#" id="<%= 'modal' + af.sourceable.class.to_s + af.sourceable.id.to_s %>" data-link-target="#<%= af.sourceable.class.to_s + af.sourceable.id.to_s %>Link">
+										<%= af.sourceable.preview :thumbnail %>
+										</a>
+									</li>
+		<%
+								end
+							end
+						end
+		%>
+						</ul>
+					</div>
+				</div>
+				<div class="col-xs-1 related_scroll">
+				<a id="scroll-right_<%= media_file.id %>" href="#" role="button">
+					<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+					<span class="sr-only">Move Right</span>
+				</a>
+			</div>
+			</div>
+		<% end %>
+	  </div>
+	</div>
+  </div>
 </div>
+</div>
+<script>
+	$(document).ready(function(){
+		$('.modalOpen').click(function(){
+			if($(this).parent('.moCurrent').length){
+				console.log("Modal already open");
+				return false;
+			}
+		});
+	});
+</script>

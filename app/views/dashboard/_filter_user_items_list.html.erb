@@ -1,9 +1,16 @@
 <% filtered.each do |f| %>
 	<div class="dbUnit">
-		<div><b><%= sanitize(f.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></b> (<%= f.resource_type_for_display %>) [<%= (f.access == 1) ? "Published" : "Not published" %>]</div>
-		<%= ((f.subtitle.length > 0) ? sanitize("<p>" + f.subtitle  + "</p>") : "") %>
+		<% if(!f.is_crc_set) %>
+		  <div><b><%= sanitize(f.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></b> (<%= f.resource_type_for_display %>) [<%= (f.access == 1) ? "Published" : "Not published" %>]</div>
+		  <%= ((f.subtitle.length > 0) ? sanitize("<p>" + f.subtitle  + "</p>") : "") %>
+		<% else %>
+		  <div><b><%= sanitize(f.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></b> (<%= f.resource_type_for_display %>)</div>
+		  <p>Date &amp; Time of Visit: <%= f.date_of_visit.strftime("%a, %b %d, %Y @ %l:%M %p") %></p>
+		<% end %>
 		<div>
-		  <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(f, user_signed_in?), class:'btn btn-default btn-xs' %>
+		  <% if(!f.is_crc_set) %>
+		    <%= link_to '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Preview'.html_safe, get_resource_view_path(f, user_signed_in?), class:'btn btn-default btn-xs' %>
+		  <% end %>
 		  <%= link_to '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_resource_path(f), class:'btn btn-default btn-xs' %>
 		  <div class="btn-group">
 			<a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <i class="fa fa-caret-right"></i></a>

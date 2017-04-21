@@ -22,7 +22,7 @@ exchangeLoadMediaForSummernote = function() {
             media_img = $(this).find('img').attr('src');
             media_iframe = $(this).find('iframe').attr('src');
             media_title = $(this).find('small[class^="slug_"]').html();
-
+	    media_access = $(this).attr('data-access');
             thumb = "";
             if ('undefined' !== typeof(media_img)) {
                 thumb = '<img src="' + media_img + '"/>';
@@ -31,8 +31,12 @@ exchangeLoadMediaForSummernote = function() {
             } else {
             	thumb = '<div class="itemIconPadding"><i class="fa fa-image fa-5x"></i></div>';
             }
-
-            $('#dropdown-media').append('<div class="col-sm-3 dropdown-media-item" style="color: #000; padding: 2%;">' +
+	    if(media_access == '0'){
+	        media_item_attrs = '<div class="col-sm-3 dropdown-media-item"><span class="dropdown-media-hidden">Media is unpublished and cannot be embedded</span>';
+	    } else {
+ 		media_item_attrs = '<div class="col-sm-3 dropdown-media-item">';
+  	    }
+            $('#dropdown-media').append(media_item_attrs +
                 '<div class="media-item-thumb">' + thumb + '</div>' +
                 '<span class="media-item-title">' + media_title + '</span>' +
                 '</div>'
@@ -47,10 +51,8 @@ jQuery(document).ready(function($) {
     $('.container').on('click', '.dropdown-media-item', function() {
 	//Create modal for setting embed options
 	var re = /\(([^)]+)\)$/;
-	console.log($(this).find('.media-item-title').html());
 	slug = re.exec( $(this).find('.media-item-title').html());
 	slug[1].replace('<em>', '').replace('</em>', '')
-	console.log(slug);
 	function embedModal(slug){
 		html = '<div id="embedModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"';
 		html += '<div class="modal-dialog">';
