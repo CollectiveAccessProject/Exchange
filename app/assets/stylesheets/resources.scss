@@ -379,7 +379,7 @@ $red:#BA0017;
 	.carousel-inner{
 		text-align:center;
 		vertical-align: top;
-		img{
+		iframe, img, .iconPadding{
 			/* width:100%; */
 			height:50vh;
 			object-fit:contain !important;

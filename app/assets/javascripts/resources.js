@@ -5,9 +5,16 @@ jQuery(document).ready(function() {
     //
 	// Modal AJAX Loads
 	//
-	jQuery(document).on('click', '.modalOpen', function(){
+	jQuery(document).on('click', '.modalOpen', function(event){
+		if($(this).parent('moCurrent').length > 0){
+			event.stopPropagation();
+			event.preventDefault();
+			return false;
+		}
 		var target_link = jQuery(this).attr('data-link-target');
 		var target_modal = jQuery(target_link).attr('data-modal-target');
+		$('.moCurrent').removeClass('moCurrent');
+		$(".moRelated > a[data-link-target*='" + target_link + "']").parent().addClass('moCurrent');
 		jQuery(target_link).trigger('click');
 	});
 	jQuery(document).on('click', '.mediaLoad', function(event){
@@ -25,6 +32,68 @@ jQuery(document).ready(function() {
     //
     // Slideshow AJAX Loads
     //
+    //Generates slide count and position for use above
+	var totalItems = jQuery('#resourceCarousel').attr('data-ajax-media');
+	var res_id = jQuery('#resourceCarousel').attr('data-ajax-id');
+	var loaded_pages = []
+	var page_no = 0
+	$('.num').html('1/'+totalItems+'');
+	$('#resourceCarousel').on('slid.bs.carousel', function() {
+		currentIndex = ($('div.active').index() + 1);
+		$('.num').html(''+currentIndex+'/'+totalItems+'');
+		if(currentIndex % 9 == 0){
+			page_no = currentIndex / 9
+			if($.inArray(page_no, loaded_pages) == -1){
+				loadMoreSlides(res_id, page_no);
+				loaded_pages.push(page_no);
+			}
+		}
+	});
+	$('#prevSlide').on('click', function(e) {
+		
+		oldIndex = ($('div.active').index() + 1);
+		if(oldIndex == 1){
+			e.preventDefault();
+			e.stopPropagation();
+			load_pages = Math.floor(totalItems/10);
+			for(var i = 1; i < load_pages; i++){
+				if($.inArray(i, loaded_pages) == -1){
+					loadMoreSlides(res_id, i);
+					loaded_pages.push(i);
+				}
+			}
+			setTimeout(function(){ $('#resourceCarousel').carousel('prev'); }, 2000);
+		}
+		
+	});
+    //
+    // Thumbnail AJAX Loads
+    //
+    if(jQuery('#thumbnailContainer').length > 0){
+		var caption = jQuery('#thumbnailContainer').attr('data-ajax-caption');
+		var available_media = jQuery('#thumbnailContainer').attr('data-ajax-media');
+		var res_id = jQuery('#thumbnailContainer').attr('data-ajax-id');
+		var type = '<%= @resource.settings(:media_formatting).mode.to_s %>';
+		var doc_height = $(document).height();
+		var scroll_pos = 0;
+		var page = 2;
+		var timeout = null;
+		var pages = available_media / 8;
+		if (available_media > 16) {
+			$(window).scroll(function(){
+				scroll_pos = $(window).scrollTop();
+				if(!timeout){
+					timeout = setTimeout(function(){
+						clearTimeout(timeout);
+						timeout = null;
+						if(page != false){
+							page = infiniteThumbs(res_id, page, pages, caption, doc_height, scroll_pos);
+						}
+					}, 200);
+				}
+			});
+		}
+	}
     
     //
     // Media list drag and drop
@@ -502,3 +571,49 @@ jQuery(document).on("ajax:success", ".mediaListPaging", function(e, data) {
     return false;
 });
 //
+// AJAX Load Functions
+//
+function infiniteThumbs(res_id, page, pages, caption, doc_height, scroll_pos){
+	if(page > pages){
+		return false;
+	} else {
+		if (doc_height - $(window).scrollTop() < 750){
+			new_page = loadThumbs(res_id, page, caption);
+			doc_height = $(document).height();
+			return new_page;
+		}
+	}
+	return page;
+}
+function loadThumbs(res_id, page_no, caption){
+	console.log(page_no);
+	$.ajax({
+		url: "/resources/" + res_id + "/load_thumbnails",
+		type: "GET",
+		dataType: "html",
+		data: {
+			resource_id: res_id,
+			page: page_no,
+			caption: caption
+		},
+		success: function(html) {
+			$('#thumbnailContainer').append(html);
+		}
+	});
+	new_page = page_no + 1;
+	return new_page;
+}
+function loadMoreSlides(res_id, pages){
+	$.ajax({
+		url: "/resources/" + res_id + "/load_slides",
+		type: "GET",
+		dataType: "html",
+		data: {
+			resource_id: res_id,
+			page: pages,
+		},
+		success: function(html) {
+			$('#carouselFocus').append(html);
+		}
+	});
+}
