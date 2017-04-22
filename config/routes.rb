@@ -89,8 +89,8 @@ Rails.application.routes.draw do
   post '/resources/:id/save_preferences' => 'resources#save_preferences',  defaults: { format: 'json' }
 
   get '/resources/:id' => 'resources#show', mode: :preview,  as: 'resource_preview'
-  get '/resources/:id' => 'resources#view',  as: 'resource_view'
-
+  get '/resources/:id/view' => 'resources#view',  as: 'resource_view'
+  
   get '/quick_search/query' => 'quick_search#query', as: 'quick_search'
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
   get '/quick_search/query_results/:type/:page/:query' => 'quick_search#query_results', as: 'query_results'
