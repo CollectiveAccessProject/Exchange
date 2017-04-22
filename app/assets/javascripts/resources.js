@@ -55,14 +55,14 @@ jQuery(document).ready(function() {
 		if(oldIndex == 1){
 			e.preventDefault();
 			e.stopPropagation();
-			load_pages = Math.floor(totalItems/10);
+			load_pages = Math.ceil(totalItems/10);
 			for(var i = 1; i < load_pages; i++){
 				if($.inArray(i, loaded_pages) == -1){
 					loadMoreSlides(res_id, i);
 					loaded_pages.push(i);
 				}
 			}
-			setTimeout(function(){ $('#resourceCarousel').carousel('prev'); }, 2000);
+			setTimeout(function(){ $('#resourceCarousel').carousel('prev'); }, 2500);
 		}
 		
 	});
