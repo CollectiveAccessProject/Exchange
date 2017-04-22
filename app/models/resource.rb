@@ -124,8 +124,8 @@ class Resource < ActiveRecord::Base
   #
   def can(action, user)
     # owner/author can do anything
-    return true if (self.user_id == user.id)
-    return true if (self.author_id && (self.author_id == user.id))
+    return true if (user && (self.user_id == user.id))
+    return true if (user && (self.author_id && (self.author_id == user.id)))
 
     # For now we allow public access to *ANY* collection object
     # regardess of how access is set, per JT's request
@@ -137,7 +137,7 @@ class Resource < ActiveRecord::Base
     end
 
     # is user in ACL?
-    if (f = ResourcesUser.where({resource_id: self.id, user_id: user.id}).first)
+    if (user && (f = ResourcesUser.where({resource_id: self.id, user_id: user.id}).first))
       case
         when ((action == :view) && (f.access >= 1))
           return true
@@ -149,7 +149,7 @@ class Resource < ActiveRecord::Base
     end
 
     # is user in group that has access to this resource?
-    if (f = ResourcesGroup.joins([:group, :user_groups]).where(resources_groups: {resource_id: self.id}, user_groups: {user_id: user.id}).first)
+    if (user && (f = ResourcesGroup.joins([:group, :user_groups]).where(resources_groups: {resource_id: self.id}, user_groups: {user_id: user.id}).first))
       case
         when ((action == :view) && (f.access >= 1))
           return true
