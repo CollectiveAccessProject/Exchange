@@ -1017,17 +1017,15 @@ class ResourcesController < ApplicationController
   # Methods below are for AJAX load of resources
   #
   def load_media_modal
+  	f = MediaFile.find(params[:media_id])
+  	r = Resource.find(params[:resource_id])
   	params.permit(:target_div, :media_id, :resource_title, :media_files, :editable, :resource_id)
-    @modal_data = {"target" => params[:target_div], "id" => params[:media_id], "title" => params[:resource_title], "media_files" => params[:media_files], "editable" => params[:editable], "resource_id" => params[:resource_id]}
-    file = MediaFile.find(params[:media_id])
+  	target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
+    @modal_data = {"target" => target_div, "id" => f.id, "title" => r.title, "editable" => params[:editable], "resource_id" => r.id}
     begin
-		@media_display = file.sourceable.render :large
+		@media_display = f.sourceable.render :large
 	rescue
-		@media_display = file.sourceable.preview :large, caption: file.caption
-	end
-    @otherMedia = []
-    params[:media_files].each do |mf|
-		@otherMedia.push(MediaFile.find(mf))
+		@media_display = f.sourceable.preview :large, caption: f.caption
 	end
     
     respond_to do |format|
