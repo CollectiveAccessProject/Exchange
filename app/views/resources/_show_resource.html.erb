@@ -54,7 +54,7 @@
       @resource.media_files.each do |f|
         if f.access == 1
           available_media = available_media + 1
-          media_file_list.push(f)
+          media_file_list.push(f.id)
           if f.access == 1
 			modal_scroll += '<li class="moRelated"><a class="modalOpen" data-dismiss="modal" href="#" id="' + 'modal' + f.sourceable.class.to_s + f.sourceable.id.to_s + '" data-link-target="#' + f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link">'
 			modal_scroll += f.sourceable.preview :thumbnail
@@ -227,7 +227,7 @@
 				anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
 %>
                 <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
-                <%= link_to '', load_media_modal_path(:target_div => target_div, :media_id => f.id.to_s, :resource_title => @resource.title, :resource_id => @resource.id, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
+                <%= link_to '', load_media_modal_path(f, :target_div => target_div, :media_id => f.id.to_s, :resource_title => @resource.title, :resource_id => @resource.id, :media_files => media_file_list), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
                 <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <%
               end
