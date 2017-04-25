@@ -48,7 +48,7 @@ namespace :exchange do
 																												}
 
 			log.info "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
-			
+
 			# add 'main' record data with hardcoded mapping
 			object_list_for_display.each do |_, value|
 				if value.is_a?(Hash) && value['collectiveaccess_id'].present?
@@ -69,17 +69,14 @@ namespace :exchange do
 																	else
 																		0
 																end
-						puts "SET COPYRIGHT TO " + value['copyright_type'] + " / " + copyright_license.to_s
 					else
 						copyright_license = 0
 					end
 
-					puts "notes are " + copyright_notes
-
 					if(value['body_text'])
 						body_text = HTMLEntities.new.decode(value['body_text'])
 						body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([A-Za-z0-9., _\(\)-]+)<\/span>/, '<a href="../../quick_search/query?utf8=true&q=\1:&quot;\2&quot;">\2</a>')
-						body_text_clean = body_text_search.gsub(/<strong>Additional Object [A-Za-z\(\)]+<\/strong><br \/><br \/>/, ' ')	
+						body_text_clean = body_text_search.gsub(/<strong>Additional Object [A-Za-z\(\)]+<\/strong><br \/><br \/>/, ' ')
 					end
 
 					if (Resource.where(collectiveaccess_id: value['collectiveaccess_id']).
@@ -145,7 +142,7 @@ namespace :exchange do
 					if (r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first)
 						puts "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
 						#puts value.inspect
-						r.update(indexing_data: JSON.generate(value))
+						r.update(indexing_data: JSON.generate(value), location: value['current_location'], on_display: value['current_location'] ? true : false)
 					end
 				end
 			end
