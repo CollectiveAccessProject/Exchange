@@ -1,10 +1,14 @@
 <%
   size = media_size_for_version(version)
 %>
-<iframe
-width="<% size[:width] %>"
-height="<% size[:height] %>"
-scrolling="no"
-frameborder="no"
-src="https://w.soundcloud.com/player/?url=<%= u(plugin_model.original_link) %>&amp;auto_play=false&amp;buying=false&amp;liking=false&amp;sharing=false&amp;hide_related=true&amp;show_user=false&amp;show_reposts=false&amp;show_playcount=false&amp;show_comments=false&amp;show_artwork=true&amp;visual=false"
-></iframe>
+<% if version.to_s == 'thumbnail' %>
+	<%= image_tag('soundcloud_logo_79x50.jpg') %>
+<% else %>
+	<iframe
+	width="<% size[:width] %>"
+	height="<% size[:height] %>"
+	scrolling="no"
+	frameborder="no"
+	src="https://w.soundcloud.com/player/?url=<%= u(plugin_model.original_link) %>&amp;auto_play=false&amp;buying=false&amp;liking=false&amp;sharing=false&amp;hide_related=true&amp;show_user=false&amp;show_reposts=false&amp;show_playcount=false&amp;show_comments=false&amp;show_artwork=true&amp;visual=false"
+	></iframe>
+<% end %>

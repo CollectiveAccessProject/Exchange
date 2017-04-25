@@ -30,7 +30,7 @@ $ ->
       }
     
       
-  $('#resource_copyright_notes, #resource_title, #resource_subtitle, #featured_content_set_title, #featured_content_set_subtitle').each -> 
+  $('#media_file_caption, #media_file_copyright_notes, #resource_copyright_notes, #resource_title, #resource_subtitle, #featured_content_set_title, #featured_content_set_subtitle').each -> 
     $(this).summernote
       height : 75,
       toolbar : [

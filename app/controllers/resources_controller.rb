@@ -141,8 +141,12 @@ class ResourcesController < ApplicationController
     end
 
     # Set response pointer
-    # TODO: does user have access to resource this is in response to?
     if ((in_response_to_resource_id = params[:in_response_to_resource_id].to_i) > 0)
+      parent_resource = Resource.find(in_response_to_resource_id)
+      if (!parent_resource.can(:view, current_user))
+        redirect_to root_path, notice: "You cannot add a response to that resource"
+        return
+      end
       @resource.in_response_to_resource_id = in_response_to_resource_id
     end
 
@@ -224,12 +228,22 @@ class ResourcesController < ApplicationController
 
         if (parent_id > 0)
           # TODO: Verify that current user has privs to do this
+          parent_res = Resource.find(parent_id)
+	  if(!parent_res.can(:edit, current_user))
+	    redirect_to root_path notice: 'You do not have permission to add materials to this Resource'
+	    return  
+	  end
           prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create
         end
 
         # Set response pointer
         # TODO: does user have access to resource this is in response to?
         if ((in_response_to_resource_id = params[:in_response_to_resource_id].to_i) > 0)
+          parent_resource = Resource.find(in_response_to_resource_id)
+          if (!parent_resource.can(:view, current_user))
+            redirect_to root_path, notice: "You cannot add a response to that resource"
+            return
+          end
           @resource.in_response_to_resource_id = in_response_to_resource_id
         end
 
@@ -237,7 +251,10 @@ class ResourcesController < ApplicationController
         # TODO: Verify that current user has privs to do this
         if (child_id > 0)
           child = Resource.find(child_id)
-          # if (child.user_id == current_user.id)
+	  if(!child.can(:view, current_user))
+	    redirect_to root_path, notice: 'You do not have editing privliges for that child resource'
+	    return
+	  end
           prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: child_id).first_or_create
           child.save
         end
@@ -249,6 +266,11 @@ class ResourcesController < ApplicationController
         #
         # TODO: does user have access to resource this is in response to?
         if (@resource && @resource.in_response_to_resource_id && (@resource.in_response_to_resource_id > 0))
+          parent_resource = Resource.find(in_response_to_resource_id)
+          if (!parent_resource.can(:view, current_user))
+            redirect_to root_path, notice: "You cannot add a response to that resource"
+            return
+          end
           # Add resource as child of what we're responding to (not sure why UMMA wants this?)
           rh = ResourceHierarchy.where(resource_id: @resource.in_response_to_resource_id, child_resource_id: @resource.id).first_or_create
           rh.save
@@ -279,6 +301,11 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       if (parent_id = params[:parent_id])
         # TODO: Verify that current user has privs to do this
+        parent_resource = Resource.find(in_response_to_resource_id)
+        if (!parent_resource.can(:edit, current_user))
+          redirect_to root_path, notice: "You do not have editing privledges on that parent resource"
+          return
+        end
         if (prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create)
 
           format.html { redirect_to edit_resource_path(@resource), notice: @resource.resource_type_for_display + ' has been updated.' }
@@ -335,6 +362,10 @@ class ResourcesController < ApplicationController
 
   def toggle_access
     # TODO: can user edit this?
+    if (!@resource.can(:edit, current_user))
+      redirect_to root_path notice: 'You do not have edit access to that Resource'
+      return
+    end
     if (@resource.access == 0)
       @resource.access = 1
       @resource.save
@@ -367,7 +398,10 @@ class ResourcesController < ApplicationController
 
   # add new comment
   def add_comment
-    # TODO: make sure user is allowed to do this for this resource
+    if(!@resouce.can(:view, current_user) || @resource.settings(:user_interaction).allow_comments != 1)
+      redirect_to root_path notice: 'You do not have permission to add a comment to that resource'
+      return
+    end
     if (super(@resource, true))
       resp = {status: :ok, html: render_to_string("resources/_comments", layout: false)}
     else
@@ -383,6 +417,10 @@ class ResourcesController < ApplicationController
 
   def remove_comment
     # TODO: make sure user is allowed to do this for this resource
+    if(!@resouce.can(:edit, current_user))
+      redirect_to root_path notice: 'You do not have the ability to remove comments from this resource'
+      return
+    end
     t = Comment.where(id: params[:comment_id], commentable_id: @resource.id, commentable_type: :Resource).first
     t.destroy
 
@@ -413,7 +451,10 @@ class ResourcesController < ApplicationController
 
   # add new tag
   def add_tag
-    # TODO: make sure user is allowed to do this for this resource
+    if(!@resouce.can(:view, current_user) || @resource.settings(:user_interation).allow_tags != 1)
+      redirect_to root_path notice: 'You do not have the ability to add tags to this resource'
+      return
+    end
     if (super(@resource, true))
       @resource.update_search_index
       resp = {status: :ok, html: render_to_string("resources/_tags", layout: false)}
@@ -428,7 +469,10 @@ class ResourcesController < ApplicationController
   end
 
   def remove_tag
-    # TODO: make sure user is allowed to do this for this resource
+    if(!@resouce.can(:edit, current_user))
+      redirect_to root_path notice: 'You do not have the ability to remove tags from this resource'
+      return
+    end
     if(t = Tag.where(id: params[:tag_id], taggable_id: @resource.id, taggable_type: :Resource).first)
       t.destroy
 
@@ -446,6 +490,10 @@ class ResourcesController < ApplicationController
   # add new vocabulary term
   def add_term
     # TODO: make sure user is allowed to do this for this resource
+    if(!@resouce.can(:view, current_user) || @resource.settings(:user_interation).allow_tags != 1)
+      redirect_to root_path notice: 'You do not have the ability to add vocabulary terms to this resource'
+      return
+    end
 
     if (ResourcesVocabularyTerm.where(vocabulary_term_id: params[:term_id], resource_id: @resource.id, user_id: current_user.id, ip: request.remote_ip).first_or_create)
       @resource.update_search_index
