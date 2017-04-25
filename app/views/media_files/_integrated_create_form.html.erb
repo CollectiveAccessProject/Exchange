@@ -92,6 +92,7 @@
 			if(last_clicked != 0){
 				$('.captionRadios, #create-form-caption-display').hide();
 				$('#create-form-caption').show();
+				$('#create-form-caption .summernote, #create-form-short-caption-text, #create-form-long-caption-text').prop('disabled', true);
 				$('#create-form-caption .summernote').prop('disabled', false);
 				$('#media_file_copyright_license').prop('disabled', false);
 			} else {

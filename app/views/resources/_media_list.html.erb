@@ -1,6 +1,8 @@
-<% 
-	media_file_list = @resource.media_files
-	@resource.media_files.slice(start, Rails.application.config.x.max_media_per_media_list_page).each do |f| 
+<%
+	media_file_list = []
+	@resource.media_files.each do |sf|
+      	media_file_list.push(sf.id)
+    end
 %>
     <% if f.sourceable %>
     	<%
@@ -14,7 +16,7 @@
     	%>
         <div class="mediaListIcon" data-media_id="<%= f.id %>" data-access="<%= f.access %>">
           <%= link_to '<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, f, method: :delete, remote: true, data: {confirm: 'Are you sure you want to delete this media?'}, class: 'cornerButton' %>
-    	  <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(:target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list, :editable => true, :resource_id => @resource.id), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
+    	  <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(f, :target_div => target_div, :media_display => media_display, :media_id => f.id.to_s, :resource_title => @resource.title, :media_files => media_file_list, :editable => true, :resource_id => @resource.id), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
     	  <small class="slug_<%= f.sourceable.id.to_s %>"><%= sanitize(f.caption) %> (<em><%= f.slug %></em>)</small>
         </div>
         <%=
