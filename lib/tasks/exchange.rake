@@ -141,7 +141,8 @@ namespace :exchange do
 					log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
 					if (r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first)
 						puts "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
-						#puts value.inspect
+						value['on_display'] = value['current_location'] ? 1 : 0
+					
 						r.update(indexing_data: JSON.generate(value), location: value['current_location'], on_display: value['current_location'] ? true : false)
 					end
 				end
