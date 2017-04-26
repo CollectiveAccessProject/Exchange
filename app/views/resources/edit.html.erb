@@ -151,7 +151,7 @@
           <%= button_tag raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Media'), "href": "#", "class": "btn btn-default btn-large", "id": "addMedia", data: {"toggle": "modal", "target": "#addMediaForm"} %>
         </div>
         <div class="panel panel-default"><div class="panel-body" id="resource_media_list" data-resource_id="<%= @resource.id %>">
-          <%= render(partial: "resources/media_list") %>
+          <%= render(partial: "resources/media_list", locals: {start: 0}) %>
         </div><!-- end panel-body --></div><!-- end panel -->
     <% else %>
         <!-- Learning collection contents list -->
@@ -173,7 +173,7 @@
 	Rendering Modal for Media File editing
 	This is necessary to do outside of the media_list partial to avoid text editing fields from getting clipped
 -->
-<% @resource.media_files.each do |f| %>
+<% @resource.media_files.slice(0, Rails.application.config.x.max_media_per_media_list_page).each do |f| %>
     <% if f.sourceable %>
         <%
           begin

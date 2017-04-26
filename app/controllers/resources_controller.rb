@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :except => [:view]
-  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :add_group_access, :remove_group_access, :set_response_info]
+  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :add_group_access, :remove_group_access, :set_response_info, :get_media_list]
 
   include CommentableController
   include TaggableController
@@ -795,6 +795,25 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       format.json { render json: resp }
+    end
+  end
+
+
+  def get_media_list
+    resp = {status: :ok}
+
+    # TODO: Check if user has access to resource for which media list is being generated
+
+    start = params[:start].to_i
+    start = 0 if ((start < 0) || (start.nil?) || (start > @resource.media_files.count))
+    begin
+      resp = {:status => :ok, :html => render_to_string("resources/_media_list", layout: false, locals: { start: start})}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
     end
   end
 

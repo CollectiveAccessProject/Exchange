@@ -53,5 +53,6 @@ module Exchange
 
     # maximum number of search results per page
     WillPaginate.per_page = config.x.max_search_results_per_page = 12
+    config.x.max_media_per_media_list_page = 12
   end
 end

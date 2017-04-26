@@ -4,7 +4,6 @@
       	media_file_list.push(sf.id)
     end
 %>
-<% @resource.media_files.each do |f| %>
     <% if f.sourceable %>
     	<%
     		begin
@@ -29,9 +28,26 @@
         %>
     <% end %>
 <% end %>
+
+<div class="mediaListPaging">
+  <% if (start > 0) %>
+      <%=
+        s = start - Rails.application.config.x.max_media_per_media_list_page
+        s = 0 if (s < 0)
+        l = '<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>' + " Previous " + Rails.application.config.x.max_media_per_media_list_page.to_s
+        link_to(l.html_safe, get_media_list_path(@resource, s), remote: true, as: :json, class: 'mediaListPaging') %><br/>
+  <% end %>
+  <% if (@resource.media_files.count > start + Rails.application.config.x.max_media_per_media_list_page) %>
+      <%=
+        l = "Next " + Rails.application.config.x.max_media_per_media_list_page.to_s + ' <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>'
+        link_to(l.html_safe, get_media_list_path(@resource, start + Rails.application.config.x.max_media_per_media_list_page), remote: true, as: :json, class: 'mediaListPaging')
+      %>
+  <% end %>
+</div>
+
 <script type="text/javascript">
-  jQuery(document).ready(function() {
-    jQuery("#resource_media_list").sortable();
-  });
-  exchangeLoadMediaForSummernote();
+    jQuery(document).ready(function() {
+        jQuery("#resource_media_list").sortable();
+    });
+    exchangeLoadMediaForSummernote();
 </script>

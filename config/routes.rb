@@ -85,6 +85,8 @@ Rails.application.routes.draw do
   get '/resources/:id/set_link_order' => 'resources#set_link_order', as: "set_link_order"
   get '/resources/:id/set_related_resource_order' => 'resources#set_related_resource_order', as: "set_related_resource_order"
 
+  get '/resources/:id/get_media_list/:start' => 'resources#get_media_list', as: "get_media_list"
+
   # save preferences via ajax, get JSON in return
   post '/resources/:id/save_preferences' => 'resources#save_preferences',  defaults: { format: 'json' }
 
