@@ -1,5 +1,5 @@
 class ResourcesController < ApplicationController
-  before_filter :authenticate_user!, :except => [:view]
+  before_filter :authenticate_user!, :except => [:view, :autocomplete_current_location]
   before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :add_group_access, :remove_group_access, :set_response_info, :get_media_list]
 
   include CommentableController
@@ -68,22 +68,11 @@ class ResourcesController < ApplicationController
   #
   def autocomplete_current_location
     term = params[:term]
-    agg = Resource.search(
-        aggs: {
-            current_location: { terms: { field: :current_location}}
-        }
-    )
-
-    field_values = []
-    agg.response['aggregations'].each do |aggname, v|
-      v["buckets"].each do |k|
-        next if !k['key'].include?(term)
-        field_values.push(k['key'])
-      end
-    end
-
-
-    render :json => field_values.map { |r| {:label => r, :value => r} }
+     u = Resource.where(
+        'LOWER(resources.location) LIKE ?',
+        "%#{term}%"
+    ).order(:location).group(:location)
+    render :json => u.map { |r| {:id => r.id, :label => r.location, :value => r.location} }
   end
 
   # GET /resources

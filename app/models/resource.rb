@@ -831,7 +831,7 @@ class Resource < ActiveRecord::Base
         # collection - no extra fields
       when Resource::COLLECTION_OBJECT
         # collection object
-        {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Additional Classification/Object Type', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'current_location' => 'Current location'}.each do |f, l|
+        {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Additional Classification/Object Type', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
           if (params[f] && (params[f].length > 0))
             v = params[f].gsub(/["']+/, '')
             query_elements.push(f + ':"' + v + '"')

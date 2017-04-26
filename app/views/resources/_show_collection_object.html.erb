@@ -189,6 +189,12 @@
               <% end  %>
             </div>
         <% end %>
+         <% if (@resource.on_display) %>
+            <div class="unit">
+              <h4>On display</h4>
+              <%= @resource.location %>
+            </div>
+        <% end %>
 
         <%# render(partial: 'resources/resource_responses', layout: false) %>
         <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>

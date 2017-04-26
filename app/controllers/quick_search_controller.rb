@@ -99,7 +99,7 @@ class QuickSearchController < ApplicationController
       params.permit(:type,
                     :title, :keywords, :style, :medium, :classification, :additional_classification,
                     :artist, :artist_nationality, :credit_line, :places, :on_display,
-                    :date_created, :other_dates, :current_location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location,
+                    :date_created, :other_dates, :location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location,
                     :min_rating, :max_rating
       )
       res = Resource::advancedsearch(params, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort])
