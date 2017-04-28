@@ -235,7 +235,7 @@ class Resource < ActiveRecord::Base
     label += " [COLLECTION]" if (self.is_collection)
     label += " [RESOURCE]" if (self.is_resource)
     label += " [EXHIBITION]" if (self.is_exhibition)
-    label += " [CRC SET]" if (self.is_crc_set)
+    label += " [STUDY SET]" if (self.is_crc_set)
 
     label
   end
@@ -290,7 +290,7 @@ class Resource < ActiveRecord::Base
       when Resource::EXHIBITION
         return plural ? "Exhibitions" : "Exhibition"
       when Resource::CRCSET
-        return plural ? "CRC sets" : "CRC set"
+        return plural ? "Study sets" : "Study set"
     end
   end
 
@@ -315,7 +315,7 @@ class Resource < ActiveRecord::Base
   end
 
   def allow_responses
-    if((self.settings(:user_interaction).allow_responses > 0) && (!self.is_collection_object) && (!self.is_crc_set))
+    if((self.settings(:user_interaction).allow_responses > 0) && (!self.is_collection_object))
       return true
     end
 
@@ -757,7 +757,39 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions}
+    if (!options[:type] || (options[:type] == 'crc_set'))
+      begin
+        crc_sets_length = length
+        crc_sets_length = options[:lengthsByType]['crc_set'] if (options[:lengthsByType] && options[:lengthsByType]['crc_set'])
+
+        sort = searchSortForType(options[:sortsByType], 'crc_set')
+
+        qdef = {
+            query: {
+                query_string:  {
+                    query: query_proc + " AND resource_type:" + Resource::CRCSET.to_s
+                }
+            }
+        }
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        crc_sets = Resource.search(qdef).per_page(exhibitions_length)
+
+        if (!options[:models])
+          crc_sets = crc_sets.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
+          end
+        else
+          crc_sets = crc_sets.page(options[:page]).records
+        end
+      rescue
+        # no search?
+        crc_sets = []
+      end
+    end
+
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, crc_sets: crc_sets}
   end
 
   # "Advanced" search of resources (broken out by type) and media files

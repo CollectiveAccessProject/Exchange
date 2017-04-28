@@ -41,6 +41,12 @@ module QuickSearchHelper
             ["Title", "title"],
             ["Creation date", "created_at"],
             ["Rating", "rating"]]
+      when (type == 'crcset')
+        return [
+            ["Relevance", "_score"],
+            ["Title", "title"],
+            ["Creation date", "created_at"]
+        ]
       else
         return []
     end

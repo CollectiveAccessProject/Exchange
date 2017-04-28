@@ -20,9 +20,7 @@
                 <% end %>
                 <%= r.input :title, :input_html => {:rows => 2} %>
 
-                <% if (!@resource.is_crc_set) %>
-                    <%= r.input :subtitle, :input_html => {:rows => 2} %>
-                <% end %>
+              <%= r.input :subtitle, :input_html => {:rows => 2} %>
               </div>
             </div>
             <div class="row">
@@ -59,7 +57,6 @@
             </div>
             <div class="row">
               <div class="col-md-6">
-                <% if (!@resource.is_crc_set) %>
                 <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
                     <div class="form-group text optional resource_copyright_notes">
                       <label class="text optional control-label" for="author_id">Author</label>
@@ -69,12 +66,12 @@
                 <% end %>
                 <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
                 <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
-              <% end %>
+
                     </div>
               <div class="col-md-6">
-                <% if (!@resource.is_crc_set) %>
                     <%= r.input :copyright_notes, :input_html => {:rows => 4}, label: 'Copyright/Author Notes' %>
-                <% else %>
+
+                <% if (@resource.is_crc_set) %>
                     <%= r.input :date_of_visit, as: :datetime, label: 'Date/time of visit ', class: "date-control" %>
                 <% end %>
 
@@ -117,7 +114,7 @@
                       <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
                     </em>
                 <% end %>
-                <%= r.input :title, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Brief description of your upcoming visit" : nil %>
+                <%= r.input :title, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Brief description of upcoming visit" : nil %>
                 <% if (!@resource.is_crc_set) %>
                     <%= r.input :subtitle, :input_html => {}, :as => :summernote %>
                 <% end %>
@@ -126,7 +123,6 @@
             </div>
             <div class="row">
               <div class="col-md-6">
-                <% if (!@resource.is_crc_set) %>
                     <% if((current_user.has_role? :admin) || (current_user.has_role? :staff)) %>
                         <div class="form-group text optional resource_copyright_notes">
                           <label class="text optional control-label" for="author_id">Author</label>
@@ -136,12 +132,12 @@
                     <% end %>
                     <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
                     <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
-                <% end %>
+
               </div>
               <div class="col-md-6">
-                <% if (!@resource.is_crc_set) %>
+
                     <%= r.input :copyright_notes, :input_html => {}, :as => :summernote, label: 'Copyright/Author Notes' %>
-                <% else %>
+                <% if (@resource.is_crc_set) %>
                     <%= r.input :date_of_visit, as: :datetime, label: 'Date/time of visit ', class: "date-control" %>
                 <% end %>
 
@@ -152,7 +148,7 @@
                       buf = ''
                       Rails.application.config.x.user_roles.each do |k,v|
                         next if (v == :admin)
-                        buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, ((@resource.id)) ? @resource.has_role?(v) : ((@resource.is_crc_set) ? nil : "checked"), {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
+                        buf += "<div class='col-md-4'>" + (check_box_tag("roles[]", v.to_s, ((@resource.id)) ? @resource.has_role?(v) : "checked", {id: 'role_' + v.to_s}) + ' ' + k.to_s) + "</div>"
                         #buf += + "<br/>"
                       end
                       buf.html_safe

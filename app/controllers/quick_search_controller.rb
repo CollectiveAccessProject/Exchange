@@ -42,6 +42,8 @@ class QuickSearchController < ApplicationController
         resp = {:status => :ok, :page => @page, :type => type, :length => l, :query => @query, :html => render_to_string("quick_search/_collection_results", layout: false)}
       when (type == "exhibition")
         resp = {:status => :ok, :page => @page, :type => type, :length => l, :query => @query, :html => render_to_string("quick_search/_exhibition_results", layout: false)}
+      when (type == "crc_set")
+        resp = {:status => :ok, :page => @page, :type => type, :length => l, :query => @query, :html => render_to_string("quick_search/_crc_set_results", layout: false)}
       else
         raise "Invalid type"
     end
@@ -79,10 +81,10 @@ class QuickSearchController < ApplicationController
     @sort = params[:sort]
 
     session[:items_per_page] = {} if (!session[:items_per_page])
-    ['resource', 'collection', 'collection_object', 'exhibition'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
+    ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
 
     session[:sort] = {} if (!session[:sort])
-    ['resource', 'collection', 'collection_object', 'exhibition'].map {|n| session[:sort][n] = "" if (!session[:sort].key?(n))}
+    ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:sort][n] = "" if (!session[:sort].key?(n))}
 
 
     @length = itemsPerPageForType(session, @type) if (!@length || (@length <= 0))
@@ -157,6 +159,16 @@ class QuickSearchController < ApplicationController
           @exhibitions_needs_next_paging = @exhibitions_needs_paging && (@page < @exhibitions_num_pages)
           @exhibitions_page = @page
           @exhibitions_count = @exhibitions.respond_to?(:total_entries) ? @exhibitions.total_entries : 0
+        when (@type == 'crc_set')
+          @crc_sets_length = @length
+          @crc_sets = res[:crc_sets]
+          @crc_sets_needs_paging = (@crc_sets.total_entries > @length)
+          @crc_sets_num_pages = (@crc_sets.total_entries / @length.to_f).ceil
+          @page = 1 if (@page > @crc_sets_num_pages)
+          @crc_sets_needs_previous_paging = (@page > 1)
+          @crc_sets_needs_next_paging = @crc_sets_needs_paging && (@page < @crc_sets_num_pages)
+          @crc_sets_page = @page
+          @crc_sets_count = @crc_sets.respond_to?(:total_entries) ? @crc_sets.total_entries : 0
         else
           @resources_length = itemsPerPageForType(session, 'resource')
           @resources = res[:resources]
@@ -195,6 +207,15 @@ class QuickSearchController < ApplicationController
           @exhibitions_needs_next_paging = @exhibitions_needs_paging
           @exhibitions_page = @page
           @exhibitions_count = @exhibitions.respond_to?(:total_entries) ? @exhibitions.total_entries : 0
+
+          @crc_sets_length = itemsPerPageForType(session, 'crc_set')
+          @crc_sets = res[:crc_sets]
+          @crc_sets_needs_paging = @crc_sets.respond_to?(:total_entries) ?  (@crc_sets.total_entries > @crc_sets_length) : false
+          @crc_sets_num_pages = @crc_sets_needs_paging ? (@crc_sets.total_entries / @crc_sets_length.to_f).ceil : 1
+          @crc_sets_needs_previous_paging = false
+          @crc_sets_needs_next_paging = @crc_sets_needs_paging
+          @crc_sets_page = @page
+          @crc_sets_count = @crc_sets.respond_to?(:total_entries) ? @crc_sets.total_entries : 0
       end
 
 
@@ -217,7 +238,8 @@ class QuickSearchController < ApplicationController
           resources: res[:resources].respond_to?(:pluck) ? res[:resources].pluck(:id) : [],
           collection_objects: res[:collection_objects].respond_to?(:pluck) ? res[:collection_objects].pluck(:id) : [],
           collections: res[:collections].respond_to?(:pluck) ? res[:collections].pluck(:id) : [],
-          exhibitions: res[:exhibitions].respond_to?(:pluck) ? res[:exhibitions].pluck(:id) : []
+          exhibitions: res[:exhibitions].respond_to?(:pluck) ? res[:exhibitions].pluck(:id) : [],
+          crc_sets: res[:crc_sets].respond_to?(:pluck) ? res[:crc_sets].pluck(:id) : []
       }
 
     rescue
