@@ -4,6 +4,8 @@ class DashboardController < ApplicationController
   before_filter :init_resources
 
   def index
+
+		@is_staff = current_user && current_user.has_role?(:staff)
 	
 	# User's Resources are generated in the method below
 	

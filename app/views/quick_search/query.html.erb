@@ -36,7 +36,7 @@
 <% if(@collections.total_entries > 0) %>
     <%= render :partial => "quick_search/collection_results" %>
 <% end %>
-<% if(@crc_sets.total_entries > 0) %>
+<% if(@is_staff && @crc_sets.total_entries > 0) %>
     <%= render :partial => "quick_search/crc_set_results" %>
 <% end %>
 <% if(@exhibitions.total_entries > 0) %>

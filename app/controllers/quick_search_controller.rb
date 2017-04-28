@@ -234,12 +234,14 @@ class QuickSearchController < ApplicationController
       end
 
 
+      @is_staff = current_user && current_user.has_role?(:staff)
+
       session[:last_search_results] = {
           resources: res[:resources].respond_to?(:pluck) ? res[:resources].pluck(:id) : [],
           collection_objects: res[:collection_objects].respond_to?(:pluck) ? res[:collection_objects].pluck(:id) : [],
           collections: res[:collections].respond_to?(:pluck) ? res[:collections].pluck(:id) : [],
           exhibitions: res[:exhibitions].respond_to?(:pluck) ? res[:exhibitions].pluck(:id) : [],
-          crc_sets: res[:crc_sets].respond_to?(:pluck) ? res[:crc_sets].pluck(:id) : []
+          crc_sets: (@is_staff && res[:crc_sets].respond_to?(:pluck)) ? res[:crc_sets].pluck(:id) : []
       }
 
     rescue

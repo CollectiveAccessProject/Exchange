@@ -202,6 +202,9 @@ class ResourcesController < ApplicationController
     child_id = params[:resource][:child_id].to_i
 
     if (@resource.is_crc_set)
+      if(!current_user.has_role?(:staff))
+        redirect_to root_path, notice: "You do not have access to create this type of resource"
+      end
       @resource.date_of_visit = DateTime.new(params[:resource]['date_of_visit(1i)'].to_i, params[:resource]['date_of_visit(2i)'].to_i, params[:resource]['date_of_visit(3i)'].to_i, params[:resource]['date_of_visit(4i)'].to_i, params[:resource]['date_of_visit(5i)'].to_i, 0)
     end
 
@@ -1134,6 +1137,9 @@ class ResourcesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_resource
     @resource = Resource.find(params[:id])
+    if (@resource.is_crc_set && !current_user.has_role?(:staff))
+      redirect_to root_path, notice: "That resource is not accessible"
+    end
   end
 
   # return collections available to the current user
