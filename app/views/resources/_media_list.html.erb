@@ -1,8 +1,7 @@
 <%
 	media_file_list = []
-	@resource.media_files.each do |sf|
-      	media_file_list.push(sf.id)
-    end
+	@resource.media_files.each do |f|
+      	media_file_list.push(f.id)
 %>
     <% if f.sourceable %>
     	<%
