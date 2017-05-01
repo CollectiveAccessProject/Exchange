@@ -1,10 +1,6 @@
 <%
-	media_file_list = []
-	@resource.media_files.each do |f|
-      	media_file_list.push(f.id)
-%>
-    <% if f.sourceable %>
-    	<%
+	@resource.media_files.slice(start, Rails.application.config.x.max_media_per_media_list_page).each do |f| 
+    	if f.sourceable
     		begin
               media_display = f.sourceable.render :large
             rescue

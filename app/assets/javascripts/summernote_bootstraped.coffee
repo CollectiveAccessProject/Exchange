@@ -38,7 +38,7 @@ $ ->
         ['font', [ 'superscript', 'subscript']],
       ]
 
-  $('.mediaLoad').bind('ajax:success', ((e) ->
+  $(document).on('ajax:success', '.mediaLoad',  ((e) ->
     $('#media_file_caption, #media_file_copyright_notes').each ->  
       $(this).summernote
         height : 75,

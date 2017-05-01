@@ -172,14 +172,9 @@
 	Rendering Modal for Media File editing
 	This is necessary to do outside of the media_list partial to avoid text editing fields from getting clipped
 -->
-<% @resource.media_files.slice(0, Rails.application.config.x.max_media_per_media_list_page).each do |f| %>
+<% @resource.media_files.each do |f|  %>
     <% if f.sourceable %>
         <%
-          begin
-            media_display = f.sourceable.render :large
-          rescue
-            media_display = f.sourceable.preview :large, '', '', f.caption
-          end
           target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
 		  anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
         %>
@@ -223,7 +218,7 @@
 			captions['<%= f.id %>'] = {}
 			captions['<%= f.id %>']['short_caption'] = '<%= escape_javascript(short_caption.html_safe) %>';
 			captions['<%= f.id %>']['long_caption'] = '<%= escape_javascript(long_caption.html_safe) %>';
-        	$('.mediaLoad').bind('ajax:success', function(){
+        	$(document).on('ajax:success', '.mediaLoad', function(){
         		var caption_type = '<%= f.caption_type %>';
 				set_caption_display('<%= f.id %>', caption_type);
         	});
