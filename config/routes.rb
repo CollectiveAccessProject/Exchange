@@ -168,7 +168,7 @@ Rails.application.routes.draw do
   get 'resources/:id/load_slides' => 'resources#load_slides', as: 'load_slides'
 
   # Pagination for thumbnail results
-  get '/resources/:id/load_thumbnails' => 'resources#load_thumbnails', as: 'load_thumbnails'
+  get '/resources/:id/load_thumbnails/:start&:caption' => 'resources#load_thumbnails', as: 'load_thumbnails'
 
   # PDFJS viewer
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'

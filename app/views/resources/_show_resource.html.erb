@@ -66,90 +66,13 @@
       case @resource.settings(:media_formatting).mode.to_s
         when "thumbnails"
     %>
-        <div id="thumbnailContainer" class="row" data-ajax-id='<%= @resource.id %>' data-ajax-media='<%= available_media %>' data-ajax-caption=false>
-          <div class="row">
-          <%
-            total_count = 0
-            @resource.media_files.each do |f|
-              if f.sourceable
-                if f.access == 1
-                  if total_count % 4 == 0
-%>
-					</div><div class="row">
-				  <% end %>
-                      <div class="col-md-3">
-                        <div class="thumbnail previewThumbnail">
-                          <a class="modalOpen" href="#" id="<%= 'link' + f.sourceable.class.to_s + f.sourceable.id.to_s %>" data-link-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>Link">
-						  	<%= media_display = f.sourceable.preview :thumbnail %>
-						  </a>
-                          <% if (fzoom = is_zoomable(f)) %>
-							<div class="zoomControls">
-							  <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-							</div>
-						  <% end %>
-                        </div>
-                      </div><!-- end col -->
-<%
-					total_count = total_count + 1
-					if total_count == 16
-                      break
-                    end
-				end
-            end
-        end
-%>
-			</div>
-          </div><!-- end row -->
-
+    	<div id="thumbnailContainer" class="col-sm-12">
+    		<%= render(partial: "media_thumbnails", locals: {start: 0, caption: 0}) %>
+    	</div>
     <% when "thumbnailsCaption" %>
-        <div id="thumbnailContainer" class="row" data-ajax-id='<%= @resource.id %>' data-ajax-media='<%= available_media %>' data-ajax-caption=true>
-		  <div class="row">
-<%
-            total_count = 0
-            @resource.media_files.each do |f|
-              if f.access == 1
-                if f.sourceable
-                  if total_count % 4 == 0
-%>
-					</div><div class="row">
-<%
-                  end
-%>
-                  <div class="col-md-3">
-                    <div class="thumbnail previewThumbnail">
-                      <a class="modalOpen" href="#" id="<%= 'link' + f.sourceable.class.to_s + f.sourceable.id.to_s %>" data-link-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>Link">
-					    <%= media_display = f.sourceable.preview :thumbnail %>
-					  </a>
-                      <div class="caption small">
-                      	    <%= sanitize(f.caption) %>
-                        <div class="row">
-                          <div class="col-sm-8">
-                            <% if f.display_collectionobject_link == 1 %>
-                          	  <%= link_to "View Object Record".html_safe, get_resource_view_path(f.get_original_resource_id, user_signed_in?) %>
-                          	<% end %>
-                          </div>
-                          <div class="col-sm-4">
-                            <% if (fzoom = is_zoomable(f)) %>
-						      <div class="zoomControls">
-						        <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-						      </div>
-						    <% end %>
-					      </div>
-					    </div>
-                      </div>  
-                    </div>
-                  </div><!-- end col -->
-<%
-				  total_count = total_count + 1
-				  if total_count == 16
-                    break
-                  end
-                end
-              end
-            end
-%>
-      	</div>
-      </div><!-- end row -->
+        <div id="thumbnailContainer" class="col-sm-12">
+		  	<%= render(partial: "media_thumbnails", locals: {start: 0, caption: 1}) %>
+      	</div><!-- end row -->
     <%
       when "slideshow"
         if available_media > 0
@@ -269,6 +192,8 @@
             </script>
         <% end %>
     <% end %>
+    <div class="row">
+    	<div class="col-sm-12">
     <% if(@resource.settings(:user_interaction).allow_responses > 0) %>
         <div class="panel panel-default">
           <div class="panel-body">
@@ -327,6 +252,8 @@
           </div>
         </div>
     <% end %>
+		</div>
+	</div>
     <div class="row">
       <div class="col-md-12">
         <div class="row" id="detailTags">

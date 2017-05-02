@@ -570,6 +570,14 @@ jQuery(document).on("ajax:success", ".mediaListPaging", function(e, data) {
     }
     return false;
 });
+// Media list paging
+jQuery(document).on("ajax:success", ".thumbnailPaging", function(e, data) {
+    if(data.status == 'ok') {
+        jQuery("#thumbnailContainer").html(data.html)
+	console.log('Returning data');
+    }
+    return false;
+});
 //
 // AJAX Load Functions
 //

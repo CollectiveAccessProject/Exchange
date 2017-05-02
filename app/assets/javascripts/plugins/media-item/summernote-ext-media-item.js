@@ -42,7 +42,9 @@ exchangeLoadMediaForSummernote = function() {
                 '</div>'
             );
         });
-        $('#dropdown-media').append('</div></div>');
+        $('#dropdown-media').append('</div>');
+	$('#dropdown-media').append('<div class="row"><div class="col-sm-12 text-center">' + $('.mediaListPaging').html() + '</div></div>');
+        $('#dropdown-media').append('</div>');
     }
 }
 

@@ -1,11 +1,6 @@
 <%
 	@resource.media_files.slice(start, Rails.application.config.x.max_media_per_media_list_page).each do |f| 
     	if f.sourceable
-    		begin
-              media_display = f.sourceable.render :large
-            rescue
-              media_display = f.sourceable.preview :large, '', '', f.caption
-            end
     		target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
 		  	anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
     	%>

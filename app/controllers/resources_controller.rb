@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :except => [:view, :autocomplete_current_location]
-  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :add_group_access, :remove_group_access, :set_response_info, :get_media_list]
+  before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :add_group_access, :remove_group_access, :set_response_info, :get_media_list, :load_thumbnails]
 
   include CommentableController
   include TaggableController
@@ -1090,46 +1090,21 @@ class ResourcesController < ApplicationController
   end
 
   def load_thumbnails
-  	offset = params[:page].to_i * 8
-    res = Resource.find(params[:resource_id])
-    new_thumbs = res.media_files.slice(offset, 8)
-    new_thumb_html = '<div class="row">'
-    counter = 0
-    new_thumbs.each do |nt|
-      if nt.sourceable
-        if nt.access == 1
-          if counter % 4 == 0
-            new_thumb_html += '</div><div class="row">'
-          end
-          media_display = nt.sourceable.preview :thumbnail
-          new_thumb_html += '<div class="col-md-3"><div class="thumbnail previewThumbnail">'
-          new_thumb_html += '<a class="modalOpen" href="#" id="link'
-		  new_thumb_html += nt.sourceable.class.to_s + nt.sourceable.id.to_s + '"'
-		  new_thumb_html +=  'data-link-target="#' +  nt.sourceable.class.to_s + nt.sourceable.id.to_s + 'Link">'
-		  new_thumb_html += media_display
-		  new_thumb_html += '</a>'
-		  new_thumb_html += '<div class="caption small">'
-          if params[:caption]
-          	new_thumb_html += view_context.sanitize(nt.caption)
-          end
-          new_thumb_html += '<div class="row"><div class="col-sm-8">'
-          if nt.display_collectionobject_link == 1
-            new_thumb_html += view_context.link_to "View Object Record".html_safe, get_resource_view_path(nt.get_original_resource_id, user_signed_in?)
-          end
-          new_thumb_html += '</div><div class="col-sm-4">'
-		  if (fzoom = is_zoomable(nt))
-			new_thumb_html += "<div class='zoomControls' onload='$(this).css(\"top\", function(){ console.log($(this).prev().(\".previewMediaCaption.\").height() * -1);});'><a href='#' class='leafletZoom' data-dismiss='modal' onclick='$(\"#mediaViewerModal\").removeData(\"iiif\"); jQuery(\"#mediaViewerModal\").data(\"iiif\", \""
-			new_thumb_html += riiif_info_path(fzoom)
-			new_thumb_html += "\").modal(\"show\"); return false;'><i class='fa fa-search-plus' aria-hidden='true'></i>Zoom</a></div>"
-		  end
-		  new_thumb_html += '</div></div></div></div></div>'
-		  counter += 1
-		end
-	  end
-	end
-	new_thumb_html += '</div></div>'
-	respond_to do |format|
-      format.html { render text: new_thumb_html }
+  	resp = {status: :ok}
+
+    # TODO: Check if user has access to resource for which media list is being generated
+
+    start = params[:start].to_i
+    caption = params[:caption]
+    start = 0 if ((start < 0) || (start.nil?) || (start > @resource.media_files.count))
+    begin
+      resp = {:status => :ok, :html => render_to_string("resources/_media_thumbnails", layout: false, locals: { start: start, caption: caption})}
+    rescue StandardError => ex
+      resp = {:status => :err, :error => ex.message}
+    end
+
+    respond_to do |format|
+      format.json { render :json => resp }
     end
   end
 
