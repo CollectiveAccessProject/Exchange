@@ -25,8 +25,8 @@ class QuickSearchController < ApplicationController
   def query_results
     begin
       setup
-    rescue
-      raise "Search error"
+    rescue Exception => e
+      raise "Search error: " + e.message
     end
 
     params.permit(:type, :length)
@@ -58,8 +58,8 @@ class QuickSearchController < ApplicationController
   def advanced
     begin
       setup(advanced:true)
-    rescue
-      raise "Search error"
+    rescue Exception => e
+      raise "Search error: " + e.message
     end
   end
 
@@ -244,9 +244,8 @@ class QuickSearchController < ApplicationController
           crc_sets: (@is_staff && res[:crc_sets].respond_to?(:pluck)) ? res[:crc_sets].pluck(:id) : []
       }
 
-    rescue
-      # search error
-      raise "Search error"
+    rescue Exception => e
+      raise "Search error: " + e.message
     end
   end
 
