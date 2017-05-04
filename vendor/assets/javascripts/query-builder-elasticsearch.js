@@ -37,6 +37,7 @@
             is_null:          function(){ return "_missing_:";},
             equal:             function(v){ return v; },
             contains:         function(v){ return v; },
+            begins_with:         function(v){ return v + "*"; },
             between:          function(v){ return '[' + v[0] + ' TO '+ v[1] + "]"; },
         }
     });

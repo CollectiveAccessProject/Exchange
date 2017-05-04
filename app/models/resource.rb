@@ -628,7 +628,7 @@ class Resource < ActiveRecord::Base
     length = WillPaginate.per_page if (!length)
 
     # Quote parts of query that appear to be identifiers
-    query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&]+)/, '"\1"')
+    query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
 
     if (!options[:type] || (options[:type] == 'resource'))
