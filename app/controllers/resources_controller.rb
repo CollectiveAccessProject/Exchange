@@ -208,7 +208,7 @@ class ResourcesController < ApplicationController
       @resource.date_of_visit = DateTime.new(params[:resource]['date_of_visit(1i)'].to_i, params[:resource]['date_of_visit(2i)'].to_i, params[:resource]['date_of_visit(3i)'].to_i, params[:resource]['date_of_visit(4i)'].to_i, params[:resource]['date_of_visit(5i)'].to_i, 0)
     end
 
-    [:subtitle, :copyright_notes].each do|f|
+    [:copyright_notes].each do|f|
       @resource.send(:"#{f}=", "")
     end
 
@@ -327,7 +327,10 @@ class ResourcesController < ApplicationController
 
   # POST /resources/fork/1
   def fork
-    # TODO: user can read this? And duplicate it?
+    if(!@resource.can(:view, current_user) or @resource.is_collection_object or @resource.copyright_license == 0)
+      redirect_to root_path, notice: "That resource cannot be copied"
+      return
+    end
     r = @resource.dup
     r.forked_from_resource_id = @resource.id
     r.user_id = current_user.id
@@ -390,7 +393,7 @@ class ResourcesController < ApplicationController
 
   # add new comment
   def add_comment
-    if(!@resouce.can(:view, current_user) || @resource.settings(:user_interaction).allow_comments != 1)
+    if(!@resource.can(:view, current_user) || @resource.settings(:user_interaction).allow_comments != 1)
       redirect_to root_path notice: 'You do not have permission to add a comment to that resource'
       return
     end
@@ -409,7 +412,7 @@ class ResourcesController < ApplicationController
 
   def remove_comment
     # TODO: make sure user is allowed to do this for this resource
-    if(!@resouce.can(:edit, current_user))
+    if(!@resource.can(:edit, current_user))
       redirect_to root_path notice: 'You do not have the ability to remove comments from this resource'
       return
     end
@@ -443,7 +446,7 @@ class ResourcesController < ApplicationController
 
   # add new tag
   def add_tag
-    if(!@resouce.can(:view, current_user) || @resource.settings(:user_interation).allow_tags != 1)
+    if(!@resource.can(:view, current_user) || @resource.settings(:user_interaction).allow_tags != 1)
       redirect_to root_path notice: 'You do not have the ability to add tags to this resource'
       return
     end
@@ -461,7 +464,7 @@ class ResourcesController < ApplicationController
   end
 
   def remove_tag
-    if(!@resouce.can(:edit, current_user))
+    if(!@resource.can(:edit, current_user))
       redirect_to root_path notice: 'You do not have the ability to remove tags from this resource'
       return
     end
@@ -482,7 +485,7 @@ class ResourcesController < ApplicationController
   # add new vocabulary term
   def add_term
     # TODO: make sure user is allowed to do this for this resource
-    if(!@resouce.can(:view, current_user) || @resource.settings(:user_interation).allow_tags != 1)
+    if(!@resource.can(:view, current_user) || @resource.settings(:user_interaction).allow_tags != 1)
       redirect_to root_path notice: 'You do not have the ability to add vocabulary terms to this resource'
       return
     end

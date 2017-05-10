@@ -66,6 +66,7 @@
 <!--</div>-->
 <script>
 	$(document).ready(function(){
+		$('#slideJumbo .idle-fade').css("opacity", "1");
 		var i = null;
 		var old_page_coords = 0;
 		$('#slideJumbo').mousemove(function(){
@@ -77,5 +78,17 @@
 			}
 			old_page_coords = page_coords;
 		});
+	});
+</script>
+<script>
+	$(document).on('keydown', function(e){
+		if(e.keyCode == 37){
+			e.preventDefault();
+			$('.carousel-control.left').trigger('click');
+		}
+		if(e.keyCode == 39){
+			e.preventDefault();
+			$('.carousel-control.right').trigger('click');
+		}
 	});
 </script>

@@ -385,7 +385,9 @@
         </div>
 
         <div class="detailButtonsResource text-center">
-          <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
+          <% if @resource.copyright_license %>
+            <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
+          <% end %>
           <!-- AddToAny BEGIN -->
           <a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
           <script>
@@ -673,11 +675,11 @@
 			$('#carousel-full').modal('toggle');
 		}
 		launchIntoFullscreen(document.documentElement); // the whole page
-        $(document).ajaxComplete(function(){
-			setTimeout(function(){
-				$('a#rightFullCarousel').focus();
-				console.log("Trying to set focus");
-			}, 5000);
+        $(document).on('ajaxComplete', function(){
+			var i = null;
+			i = setTimeout(`$('#slideJumbo .idle-fade').css("opacity", "0");`, 3000);
+			$('#slideJumbo .idle-fade').css("opacity", "1");
+			clearTimeout(i);
 		});
     });
 

@@ -111,6 +111,32 @@
         <%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %>
       </div>
     </div><!-- end row -->
+    <div class="row" id="detailTags">
+	  <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+		  <div class="col-sm-12">
+			<% # if @resource.comments.count > 0 %>
+			<a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
+			<div id="commentPanel" class="detailComments collapse">
+			  <% @resource.comments.each do |c| %>
+				  <div>
+					<%= c.comment %>
+					<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+				  </div>
+			  <% end %>
+			  <%= form_tag '/resources/add_comment' do %>
+				  <%= hidden_field_tag 'id', @resource.id %>
+				  <div class="form-group">
+					<label>Add Comment</label>
+					<%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+				  </div>
+				  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+			  <% end %>
+			</div>
+			<% # end %>
+		  </div>
+
+	  <% end %>
+	</div>
   </div><!-- end col -->
   <div class="col-sm-2 resourceSidePanel">
     <% if user_signed_in? || session.key?(:last_search_type) %>
@@ -147,7 +173,7 @@
           </div>
         </div>
         <div class="detailButtonsResource text-center">
-          <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
+          <%# link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
           <!-- AddToAny BEGIN -->
 			<a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
 			<script>
@@ -157,9 +183,9 @@
 			</script>
 		  <!-- AddToAny END -->
           <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-              <a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
-          <% end %>
-          <a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
+			  <a href="#commentButton" onclick="$('#commentPanel').collapse('show')" title="Comment"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+		  <% end %>
+          <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
         </div>
         <div class="unit">
           <% rel_resource = @resource.get_collection_object_references.map {|v| v} %>

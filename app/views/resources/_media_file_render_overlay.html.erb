@@ -162,14 +162,6 @@
 						}, "slow");
 					});
 				</script>
-				<script>
-					$('.moContainer').on('click', function(){
-						var scrollPos = $(this).scrollLeft();
-						$('.modal').on('shown.bs.modal', function(){
-							$('.moContainer').scrollLeft(scrollPos);
-						});
-					});
-				</script>
 			<div class="row">
 				<div class="col-xs-1 related_scroll">
 					<a id="scroll-left_<%= media_file.id %>" href="#" role="button">
