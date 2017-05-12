@@ -7,7 +7,7 @@
 	<%= render "devise/shared/omniauth_links" %>
 	<%= link_to "<div class='icon'><i class='fa fa-sign-in'></i></div> Log in as Exchange User".html_safe, '#', :class => "btn btn-default btn-small oauth-button", :id => "exchange_sign_in" %>
 </div>
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+<%= form_for(resource, as: resource_name, url: session_path(resource_name), :html => {:class => 'login_new_user'}) do |f| %>
  		  <div class="panel panel-default">
     		<div class="panel-body">   			
 			  <div class="row">
@@ -50,7 +50,7 @@
 		
 	</div><!-- end col -->
 	<div class="col-sm-4 col-sm-offset-4 text-center">
-		<%= link_to "New User? Register Here".html_safe, '#', :class => "btn btn-default btn-small exchange_register", :id => "exchange_sign_in" %>
+		<%= link_to "New User? Register Here".html_safe, new_registration_path(resource_name), :class => "btn btn-default btn-small exchange_register", :id => "exchange_sign_in" %>
 	</div><!-- end col -->
 </div><!-- end row -->
 <script>
