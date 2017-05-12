@@ -5,6 +5,7 @@
 		</H2>
 <div class="form-group">
 	<%= render "devise/shared/omniauth_links" %>
+	<%= link_to "<div class='icon'><i class='fa fa-sign-in'></i></div> Log in as Exchange User".html_safe, '#', :class => "btn btn-default btn-small oauth-button", :id => "exchange_sign_in" %>
 </div>
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
  		  <div class="panel panel-default">
@@ -46,5 +47,16 @@
   </div>
 			</div><!-- end panel-body -->
 		</div><!-- end panel -->
+		
+	</div><!-- end col -->
+	<div class="col-sm-4 col-sm-offset-4 text-center">
+		<%= link_to "New User? Register Here".html_safe, '#', :class => "btn btn-default btn-small exchange_register", :id => "exchange_sign_in" %>
 	</div><!-- end col -->
 </div><!-- end row -->
+<script>
+	$(document).ready(function(){
+		$('#exchange_sign_in').on('click', function(){
+			$('#new_user').fadeIn("slow");
+		});
+	});
+</script>

@@ -916,7 +916,7 @@ li.tagList {
 }
 /* LOGIN FORM */
 .oauth-buttons{
-	margin-bottom:20px;
+	margin-bottom:0px;
 }
 .oauth-button{
 	padding: 10px 10px 10px 10px;
@@ -946,6 +946,14 @@ li.tagList {
 .oauth-button .fa{
 	font-size:25px;
 	margin-top:2px;
+}
+
+#new_user {
+	display: none;
+}
+
+.exchange_register{
+	margin-top: 25px;
 }
 /* forms */
 .form-group{
