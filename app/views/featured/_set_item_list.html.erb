@@ -20,7 +20,11 @@
 %>
       <div class="col-sm-4 featuredItemCol">
       	<h3><%= (item.title.chop.length > 0) ? item.title.html_safe : item.resource.title.html_safe %></H3>
-        <%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+      	<% if item.resource.media_files.count > 0 %>
+        	<%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+        <% else %>
+        	<%= link_to('<i class="fa fa-picture-o fa-5x fa-align-center featuredPlaceholder" aria-hidden="true"></i>'.html_safe, resource_path(item.resource_id)) %>
+        <% end %>
         <p><%= item.subtitle %></p>
       </div>
 <%
