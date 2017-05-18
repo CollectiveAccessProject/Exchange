@@ -3,7 +3,7 @@
     <div class="col-sm-12">
       <a href="#" onClick="$('#resourceResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
       <h4>
-        <a href="#" onClick="$('#resourceResultsContainer').toggle(); return false;"style="padding-right:35vw;">
+        <a href="#" onClick="$('#resourceResultsContainer').toggle(); return false;">
         	<%= @resources_count %> Resource<%= (@resources_count == 1) ? "" : "s" %>
         	(page <%= @resources_page.to_s + "/" + @resources_num_pages.to_s %>)
 		</a>
@@ -28,7 +28,7 @@
       <% if (current_user && @available_collections && (@available_collections.length > 0)) %>
           <div>
             <form class="resourceResultsAdd">
-              Add checked results to collection <%=
+              Add checked results to existing collection <%=
               if(@available_collections.length > 25)
                 autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#resource_add_to_collection_id", :placeholder => "Search for a collection") + hidden_field_tag(:resource_add_to_collection_id)
               else

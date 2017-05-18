@@ -336,11 +336,49 @@ h4{
 		:-ms-input-placeholder {  
 		   color: white;  
 		}
+		#subQuickSearch{
+			text-align:right;
+			position:absolute;
+			bottom:-23px;
+			right:0px;
+			font-size:10px;
+			color: #fff;
+			.subQuerySpacer{
+				padding: 0 5px;
+			}
+			a{
+				font-size:10px;
+				text-transform:none;
+				padding:0px;
+			}
+		}
 		#advSearchLink {
 			text-align:right;
 			position:absolute;
 			bottom:-23px;
-			right:55px;
+			right:88px;
+			a{
+				font-size:10px;
+				text-transform:none;
+				padding:0px;
+			}
+		}
+		#logoutLink {
+			text-align:right;
+			position:absolute;
+			bottom:-23px;
+			right:0px;
+			a{
+				font-size:10px;
+				text-transform:none;
+				padding:0px;
+			}
+		}
+		#newResLink {
+			text-align:right;
+			position:absolute;
+			bottom:-23px;
+			right:150px;
 			a{
 				font-size:10px;
 				text-transform:none;
@@ -351,7 +389,7 @@ h4{
         text-align:right;
         position:absolute;
         bottom:-23px;
-        right:0px;
+        right:40px;
         a{
           font-size:10px;
           text-transform:none;
@@ -1241,4 +1279,28 @@ blockquote .linkListCaption, blockquote .relatedResourceListCaption {
 /* REGISTRATION PAGE */
 .flashMessage{
 	color: $red;
+}
+
+/* NEW RESOURCE DROPDOWN */
+
+#newResourceContainer{
+	display: none;
+	top: 70px;
+	left: 15px;
+	width: 125px;
+	li > a{
+		display: block;
+		padding: 3px 20px;
+		font-weight: normal;
+		letter-spacing: normal;
+		font-size: 12px;
+	}
+	li > a:hover{
+		border: none;
+		padding: 3px 20px;
+	}
+	li:hover{
+		background-color: none;
+		border: none;
+	}
 }

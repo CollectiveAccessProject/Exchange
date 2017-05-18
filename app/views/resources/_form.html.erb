@@ -4,6 +4,13 @@
         <div class="row">
           <div class="col-sm-12">
             <H3><%= (@resource.id) ? '' : 'New ' %><%= @resource.resource_type_for_display %> Information</H3>
+            <% if not (@resource.id) %>
+            	<div class="row">
+            		<div class="col-sm-8">
+            			<div class="alert alert-info" role="alert">Please provide some basic descriptive information about your new <%= @resource.resource_type_for_display %>. Once you've saved this information you will be able to add media, upload files, create connections to other Exchange Resources, tag and comment on this <%= @resource.resource_type_for_display %>.</div>
+            		</div>
+            	</div>
+            <% end %>
           </div>
         </div>
         <% if @resource.is_resource %>

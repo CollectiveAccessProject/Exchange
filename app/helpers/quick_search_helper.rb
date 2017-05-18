@@ -17,7 +17,7 @@ module QuickSearchHelper
             ["Relevance", "_score"],
             ["Title", "title"],
             ["Accession number", "idno"],
-            ["Artist", "artist"],
+            ["Artist (Sort on First Name)", "artist"],
             ["Creation date", "created_at"],
 	    ["Date Updated", "updated_at"],
             ["Rating", "rating"]]
