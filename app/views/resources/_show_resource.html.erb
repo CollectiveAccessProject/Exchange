@@ -579,15 +579,15 @@
           <div class="unit authorLink">
             <% if @resource.author_id  %>
                 <% author_name = @resource.get_author_name(:omit_email => true).to_s %>
-                <h4>Created by</h4><%= link_to sanitize(author_name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author:"' + author_name + '"' %> <i class="fa fa-external-link-square" aria-hidden="true"></i>
+                <h4>Created by</h4><%= link_to sanitize(author_name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author_id:' + @resource.author_id.to_s %> <i class="fa fa-external-link-square" aria-hidden="true"></i>
 
             <% else %>
-                <h4>Created by</h4><%= link_to sanitize(@resource.user.name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author:"' + @resource.user.name + '"'%> <i class="fa fa-external-link-square" aria-hidden="true"></i>
+                <h4>Created by</h4><%= link_to sanitize(@resource.user.name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author_id:' + @resource.user.id.to_s%> <i class="fa fa-external-link-square" aria-hidden="true"></i>
             <% end %>
           </div><!-- end unit -->
         <% if (@resource.copyright_license) %>
             <div class="unit">
-              <h4>Copyright/Author Notes</h4>
+              <h4><i class="fa fa-copyright"></i> &amp; Author Notes</h4>
               <%= @resource.get_license_type %>
               <% if (@resource.copyright_notes.present?) %>
                   (<%= sanitize(@resource.copyright_notes, tags: %w(strong em a font b sup sub u i br), attributes: %w(href style)) %>)
