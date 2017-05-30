@@ -299,6 +299,15 @@ namespace :exchange do
 		end
   end
 
+    desc 'Swap Rights URL for New Image Request URL'
+    task update_collection_objects_rights_url: :environment do
+    	Resource.where(resource_type: Resource::COLLECTION_OBJECT).each do |co|
+    	  body_text = co.body_text
+    	  rights_url_replace = body_text.gsub(/http:\/\/www.umma.umich.edu\/collections\/resources.html/, 'http://umma.umich.edu/request-image')
+    	  co.update_attribute(:body_text, rights_url_replace)
+    	end
+    end
+
 	desc 'Update cached average resource ratings'
 	task update_cached_average_resource_ratings: :environment do
 		test_count = 0

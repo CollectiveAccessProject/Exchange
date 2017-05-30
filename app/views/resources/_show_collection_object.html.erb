@@ -111,6 +111,35 @@
         <%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %>
       </div>
     </div><!-- end row -->
+    <div class="row" id="detailTags">
+	  <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
+		  <div class="col-sm-12">
+			<% # if @resource.comments.count > 0 %>
+			<a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
+			<div id="commentPanel" class="detailComments collapse">
+			  <% @resource.comments.each do |c| %>
+				  <div>
+					<%= c.comment %>
+					<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
+					<% if current_user.has_role?(:admin) %>
+						<%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_comment_from_resources_path(@resource) + "?comment_id=" + c.id.to_s, {remote: true, class: :commentRemoveLink}) %>
+					<% end %>
+				  </div>
+			  <% end %>
+			  <%= form_tag '/resources/add_comment' do %>
+				  <%= hidden_field_tag 'id', @resource.id %>
+				  <div class="form-group">
+					<label>Add Comment</label>
+					<%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+				  </div>
+				  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+			  <% end %>
+			</div>
+			<% # end %>
+		  </div>
+
+	  <% end %>
+	</div>
   </div><!-- end col -->
   <div class="col-sm-2 resourceSidePanel">
     <% if user_signed_in? || session.key?(:last_search_type) %>
@@ -147,7 +176,7 @@
           </div>
         </div>
         <div class="detailButtonsResource text-center">
-          <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
+          <%# link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
           <!-- AddToAny BEGIN -->
 			<a class="a2a_dd" href="https://www.addtoany.com/share"><i class="fa fa-share-alt"></i></a>
 			<script>
@@ -157,9 +186,9 @@
 			</script>
 		  <!-- AddToAny END -->
           <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-              <a href="#detailComments"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
-          <% end %>
-          <a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i></a>
+			  <a href="#commentButton" onclick="$('#commentPanel').collapse('show')" title="Comment"><i class="fa fa-comments-o" aria-hidden="true"></i></a>
+		  <% end %>
+          <span id="favoriteControl"><%= render partial: "favorites/favorite_control", locals: { resource: @resource} %></span>
         </div>
         <div class="unit">
           <% rel_resource = @resource.get_collection_object_references.map {|v| v} %>
@@ -182,7 +211,7 @@
         </div><!-- end unit -->
         <% if (@resource.copyright_license) %>
             <div class="unit">
-              <h4>Copyright/Author Notes</h4>
+              <h4><i class="fa fa-copyright"></i> &amp; Author Notes</h4>
               <%= @resource.get_license_type %>
               <% if (@resource.copyright_notes.present?) %>
                   (<%= sanitize(@resource.copyright_notes).html_safe %>)
@@ -205,7 +234,7 @@
             </div>
           </div>
           <% if !@resource.is_crc_set %>
-          <h4>Add to collection</h4>
+          <h4>Add to Existing Collection/Resource</h4>
           <form class="collectionObjectAdd"><%=
           select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'detailCollectionList', id:'collectionObjectAddToCollectionID')
         %>

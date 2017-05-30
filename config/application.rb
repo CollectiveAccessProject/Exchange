@@ -38,7 +38,7 @@ module Exchange
     config.x.license_types = { "All Rights Reserved" =>  0, "Creative Commons by-nc-sa" => 1, "Creative Commons by-nc"=> 2, "Creative Commons by-nc-nd"=> 3, "Creative Commons by"=> 4, "Creative Commons by-sa"=> 5, "Creative Commons by-nd"=> 6, "No copyright restrictions"=> 7, "United States Government work"=> 8, "Web Use Permitted" => 9 }
     config.x.resource_types = { "Resource"=> 1, "Learning collection"=> 2, "Collection object" => 3, "Exhibition" => 4 }
     config.x.group_types = { User: 1 }
-    config.x.access_types = { Published: 1, Unpublished: 0 }
+    config.x.access_types = { Public: 1, Restricted: 0 }
 
    config.x.user_roles = {
           "Administrator" => :admin, "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,

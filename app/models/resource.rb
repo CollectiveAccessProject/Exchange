@@ -622,14 +622,15 @@ class Resource < ActiveRecord::Base
   # STATIC
   def self.quicksearch(query, options={})
     query_proc = query.dup
-
     options[:page] = 1 if (!options[:page] || (options[:page] < 1))
     length = options[:length]
     length = WillPaginate.per_page if (!length)
-
+	query_proc.gsub!(/author_id:([0-9]+)/, '(author_id:\1 OR user_id:\1)')
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
+    
+    
 
     if (!options[:type] || (options[:type] == 'resource'))
       begin
