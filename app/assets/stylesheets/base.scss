@@ -298,7 +298,7 @@ h4{
 	}
 	@media(min-width: 767px){
 		.form-control{
-			background-color:rgba(255,255,255,0.1);
+			background-color:rgba(255,255,255,0.5);
 			border:none;
 			color:white;
 			box-shadow: none;
@@ -308,9 +308,10 @@ h4{
 		}
 		.form-control:focus{
 			border:none;
+                        color:black;
 			box-shadow: none;
 			outline: 0 none;
-			background-color:rgba(255,255,255,0.2);
+			background-color:rgba(255,255,255,0.8);
 		}
 		.btn-default{
 			border:none;

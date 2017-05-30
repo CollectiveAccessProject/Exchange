@@ -7,6 +7,15 @@ class FeaturedContentSetsController < ApplicationController
   # UI autocomplete on resource title (used by related resources lookup)
   autocomplete :resource, :title, :full => true, :extra_data => [:id, :collection_identifier, :resource_type], :display_value => :get_autocomplete_label
 
+ # Override resource title autocompleter
+  def autocomplete_resource_title
+    term = params[:term]
+    u = Resource.where(
+        'LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?',
+        "%#{term}%", "#{term}%"
+    ).order(:id).all
+    render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
+  end
 
   def verify_access
     raise StandardError, "Not allowed" if (!current_user.has_role? :admin)
