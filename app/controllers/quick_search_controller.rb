@@ -104,12 +104,12 @@ class QuickSearchController < ApplicationController
                     :date_created, :other_dates, :location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location,
                     :min_rating, :max_rating
       )
-      res = Resource::advancedsearch(params, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort])
+      res = Resource::advancedsearch(params, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort], user: current_user)
 
       @query = res[:query]
       @query_for_display = res[:query_for_display]
     else
-      res = Resource::quicksearch(@query, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort])
+      res = Resource::quicksearch(@query, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort], user: current_user)
     end
 
     if (@type)

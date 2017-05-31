@@ -193,6 +193,12 @@ class Resource < ActiveRecord::Base
     record['role'] = record['affiliation'] = self.roles.pluck("name")
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
     record['tag'] = self.tags.pluck("tag")
+    
+    # Index ACL values
+    record['read_users'] = ResourcesUser.where({resource_id: self.id, access: 1}).pluck(:user_id)
+    record['edit_users'] = ResourcesUser.where({resource_id: self.id, access: 2}).pluck(:user_id)
+    record['read_groups'] = ResourcesGroup.where({resource_id: self.id, access: 1}).pluck(:group_id)
+    record['edit_groups'] = ResourcesGroup.where({resource_id: self.id, access: 2}).pluck(:group_id)
 
     # break out other date types
     other_date_regexp = Regexp.new("\\(([^\\)]+)\\)")
@@ -630,8 +636,17 @@ class Resource < ActiveRecord::Base
     query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
     
+    acl_str = ["access:1"]
+    if(options[:user])
+    	acl_str.push("read_users:" + options[:user].id.to_s)
+    	acl_str.push("edit_users:" + options[:user].id.to_s)
+    	
+    	options[:user].groups.each do |g|
+    		acl_str.push("read_groups:" + g.id.to_s)
+    		acl_str.push("edit_groups:" + g.id.to_s)
+    	end
+    end
     
-
     if (!options[:type] || (options[:type] == 'resource'))
       begin
         resources_length = length
@@ -642,7 +657,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::RESOURCE.to_s
+                    query: query_proc + " AND resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -675,7 +690,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::COLLECTION.to_s
+                    query: query_proc + " AND resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -701,6 +716,7 @@ class Resource < ActiveRecord::Base
 
         sort = searchSortForType(options[:sortsByType], 'collection_object')
 
+		# We don't check access on collection objects – they're all public no matter their settings
         qdef = {
             query: {
                 query_string:  {
@@ -736,7 +752,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s
+                    query: query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -768,7 +784,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::CRCSET.to_s
+                    query: query_proc + " AND resource_type:" + Resource::CRCSET.to_s + " AND access:1"
                 }
             }
         }
@@ -804,6 +820,17 @@ class Resource < ActiveRecord::Base
     query_elements = []
     query_display = []
     query_values = {'type' => resource_type }
+    
+    acl_str = ["access:1"]
+    if(options[:user])
+    	acl_str.push("read_users:" + options[:user].id.to_s)
+    	acl_str.push("edit_users:" + options[:user].id.to_s)
+    	
+    	options[:user].groups.each do |g|
+    		acl_str.push("read_groups:" + g.id.to_s)
+    		acl_str.push("edit_groups:" + g.id.to_s)
+    	end
+    end
 
     # basic fields
     if (params['keywords'] && (params['keywords'].length > 0))
@@ -905,7 +932,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query + " AND resource_type:" + Resource::RESOURCE.to_s
+                    query: query + " AND resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -938,7 +965,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query + " AND resource_type:" + Resource::COLLECTION.to_s
+                    query: query + " AND resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -1002,7 +1029,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query + " AND resource_type:" + Resource::EXHIBITION.to_s
+                    query: query + " AND resource_type:" + Resource::EXHIBITION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
