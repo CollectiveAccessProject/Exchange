@@ -3,11 +3,11 @@
     <div class="col-sm-12">
       <a href="#" onClick="$('#crcsetResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
       <h4>
-        <a href="#" onClick="$('#crcsetResultsContainer').toggle(); return false;">
+        <a id="crc_title_link" href="#" onClick="$('#crcsetResultsContainer').toggle(); return false;">
           <%= @crc_sets_count %> Study set<%= (@crc_sets_count == 1) ? "" : "s" %>
           (page <%= @crc_sets_page.to_s + "/" + @crc_sets_num_pages.to_s %>)
         </a>
-        <div class="pull-right">
+        <div id="crc_right" class="pull-right">
           <form class="searchPaging">
             <div class="searchFormElement">Results Per Page <%= select_tag("crcset_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['crcset']), {id: "crcset_num_items_per_page"}) %></div>
             <div class="searchFormElement">Sort by <%= select_tag("crcset_sort", options_for_select(sortOptions('crcset'), @sort_defaults['crcset']), {id: "crcset_sort"}) %></div>
@@ -145,5 +145,9 @@
                 return true;
             });
         });
+        resizeBar("#crc_title_link", "#crc_right");	
+		$(window).on('resize', function(){
+			resizeBar("#crc_title_link", "#crc_right");	
+		});
     });
 </script>

@@ -625,3 +625,14 @@ function loadMoreSlides(res_id, pages){
 		}
 	});
 }
+
+//
+// Quick Search Bar Resizing
+//
+function resizeBar(left_element, right_element){
+	var right_pos = $(right_element).position().left;
+	var left_pos = $(left_element).position().left;
+	var left_width = $(left_element).width();
+	var spacing = (right_pos) - (left_width + left_pos)
+	$(left_element).width(spacing + left_width); 
+}

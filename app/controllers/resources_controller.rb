@@ -707,7 +707,37 @@ class ResourcesController < ApplicationController
                                             access: true
                                         })
             @media_file.set_sourceable_media({collectionobject_link: {original_link: add_child_resource_id}});
-
+			if (child_resource.is_collection_object)
+			  @media_file.display_collectionobject_link = 1
+			  @media_file.caption_type = 4
+			  cap_fields = JSON.parse(child_resource.indexing_data)
+			  long_caption = ''
+			  if cap_fields['artist']
+				long_caption += cap_fields['artist'].to_s + '<br/>'
+			  end
+			  if cap_fields['title']
+			    long_caption += '<em>' + cap_fields['title'].to_s + '</em><br/>'
+			  end
+			  material_fields = ''
+			  if cap_fields['support']
+				material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
+			  else
+				material_fields = cap_fields['medium'].to_s
+			  end
+			  if cap_fields['date_created']
+			    long_caption += cap_fields['date_created'].to_s + '<br/>'
+			  end
+			  if material_fields != ''
+				long_caption += material_fields.to_s + '<br/>'
+			  end
+			  if cap_fields['credit_line']
+				long_caption += cap_fields['credit_line'].to_s + '<br/>'
+			  end
+			  if cap_fields['idno']
+				long_caption += cap_fields['idno'].to_s
+			  end
+			  @media_file.caption = long_caption
+			end
             # TODO: does user have access to this resource?
             @media_file.resource_id = @resource.id
             @media_file.save

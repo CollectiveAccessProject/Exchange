@@ -15,7 +15,7 @@
 				  </a>
 				  <div class="caption small">
 						<%= 
-							if caption == 1
+							if caption.to_i == 1
 								sanitize(f.caption)
 							end
 						%>
