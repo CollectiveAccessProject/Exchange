@@ -5,7 +5,7 @@
         <h3><%= set.subtitle.html_safe %></h3>
     <% end %>
     <% if (set.body_text.chop.length > 0) %>
-        <h4><%= set.body_text.html_safe %></h4>
+        <h4 id="featuredSetBody"><%= set.body_text.html_safe %></h4>
     <% end %>
   </div>
 </div>
@@ -20,10 +20,31 @@
 %>
       <div class="col-sm-4 featuredItemCol">
       	<h3><%= (item.title.chop.length > 0) ? item.title.html_safe : item.resource.title.html_safe %></H3>
-      	<% if item.resource.media_files.count > 0 %>
-        	<%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
-        <% else %>
-        	<%= link_to('<i class="fa fa-picture-o fa-5x fa-align-center featuredPlaceholder" aria-hidden="true"></i>'.html_safe, resource_path(item.resource_id)) %>
+<% 
+		collectionImage = false
+      	if item.resource.is_collection
+			item.resource.resource_hierarchies.each do |child|
+				if child.child_resource.media_files.count > 0
+%>
+					<%= link_to(child.child_resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+<%
+					collectionImage = true
+					break
+				end
+			end
+			if collectionImage == false
+%>
+				<%= link_to('<i class="fa fa-picture-o fa-5x fa-align-center featuredPlaceholder" aria-hidden="true"></i>'.html_safe, resource_path(item.resource_id)) %>
+<%
+			end
+		else
+%>
+					
+			<% if item.resource.media_files.count > 0 %>
+				<%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+			<% else %>
+				<%= link_to('<i class="fa fa-picture-o fa-5x fa-align-center featuredPlaceholder" aria-hidden="true"></i>'.html_safe, resource_path(item.resource_id)) %>
+        	<% end %>
         <% end %>
         <p><%= item.subtitle %></p>
       </div>
