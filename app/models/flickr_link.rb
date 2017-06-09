@@ -29,7 +29,6 @@ class FlickrLink < ActiveRecord::Base
       end
 	rescue
       raise "Can not fetch this image. Access may be restricted by the rights holder."
-      return false
     end
 	
     self.media_file.thumbnail_url = version['source']
