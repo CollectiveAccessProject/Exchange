@@ -9,7 +9,7 @@ class FlickrLink < ActiveRecord::Base
 
   def extract_key_from_link
     if original_link
-      s = URI::Parser.new.parse(original_link).path.match(/\/([0-9]+)/)[1]
+      s = URI::Parser.new.parse(original_link).path.match(/\/([0-9]+)\//)[1]
       if s.is_a?(String) && (s.length > 0)
         self.photo_id = s.to_i
       end
@@ -22,15 +22,16 @@ class FlickrLink < ActiveRecord::Base
   def set_thumbnail
     # Get list of available photo sizes from Flickr
     begin
-    p = flickr.photos.getSizes(photo_id: self.photo_id)
-    rescue
-      raise "Can not fetch this image. Access may be restricted by the rights holder."
+      p = flickr.photos.getSizes(photo_id: self.photo_id)
+    
+      if (!(version = p.find {|p| p['label'] == 'Original' }))  # try to use the highest resolution original
+        version = p.pop   # otherwise use the last one in the list (presumably the best?)
       end
-
-    if (!(version = p.find {|p| p['label'] == 'Original' }))  # try to use the highest resolution original
-      version = p.pop   # otherwise use the last one in the list (presumably the best?)
+	rescue
+      raise "Can not fetch this image. Access may be restricted by the rights holder."
+      return false
     end
-
+	
     self.media_file.thumbnail_url = version['source']
     self.media_file.save
   end
