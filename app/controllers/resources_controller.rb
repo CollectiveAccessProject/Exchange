@@ -293,10 +293,12 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       if (parent_id = params[:parent_id])
         # TODO: Verify that current user has privs to do this
-        parent_resource = Resource.find(in_response_to_resource_id)
-        if (!parent_resource.can(:edit, current_user))
-          redirect_to root_path, notice: "You do not have editing privledges on that parent resource"
-          return
+        if ((in_response_to_resource_id = params[:in_response_to_resource_id].to_i) > 0)
+            parent_resource = Resource.find(in_response_to_resource_id)
+            if (!parent_resource.can(:edit, current_user))
+              redirect_to root_path, notice: "You do not have editing privleges on that parent resource"
+              return
+            end
         end
         if (prel = ResourceHierarchy.where(resource_id: parent_id, child_resource_id: @resource.id).first_or_create)
 
