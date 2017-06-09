@@ -187,6 +187,7 @@ class Resource < ActiveRecord::Base
         record = record.merge(index_data_hash)
       end
     end
+    record['on_display'] = record['on_display'] ? 1 : 0
 
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
