@@ -3,11 +3,11 @@
     <div class="col-sm-12">
       <a href="#" onClick="$('#resourceResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
       <h4>
-        <a href="#" onClick="$('#resourceResultsContainer').toggle(); return false;">
+        <a id="resource_title_link" href="#" onClick="$('#resourceResultsContainer').toggle(); return false;">
         	<%= @resources_count %> Resource<%= (@resources_count == 1) ? "" : "s" %>
         	(page <%= @resources_page.to_s + "/" + @resources_num_pages.to_s %>)
 		</a>
-        <div class="pull-right">
+        <div id="resource_right" class="pull-right">
           <form class="searchPaging">
             <div class="searchFormElement">Results Per Page <%= select_tag("resource_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['resource']), {id: "resource_num_items_per_page"}) %></div>
             <div class="searchFormElement">Sort by <%= select_tag("resource_sort", options_for_select(sortOptions('resource'), @sort_defaults['resource']), {id: "resource_sort"}) %></div>
@@ -199,5 +199,9 @@
             }, 'json');
             return false;
         });
+        resizeBar("#resource_title_link", "#resource_right");	
+		$(window).on('resize', function(){
+			resizeBar("#resource_title_link", "#resource_right");
+		});
     });
 </script>

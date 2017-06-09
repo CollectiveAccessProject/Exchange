@@ -71,6 +71,7 @@
         i = 0
         style = ""
         @featured_content_set.featured_content_set_items.each do |item|
+            next if !item.resource or !item.resource.media_files or !item.resource.media_files.first or !item.resource.media_files.first.sourceable
           i = i + 1
           if i == 5
             break
@@ -82,7 +83,7 @@
                   <%
                     if (@featured_content_set.subtitle.chop.length > 0)
                   %>
-                      <p><%= @featured_content_set.subtitle %></p>
+                      <p><%= sanitize(@featured_content_set.subtitle, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></p>
                   <%
                     end
                   %>
