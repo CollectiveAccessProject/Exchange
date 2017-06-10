@@ -23,17 +23,19 @@ class FlickrLink < ActiveRecord::Base
     # Get list of available photo sizes from Flickr
     begin
       p = flickr.photos.getSizes(photo_id: self.photo_id)
-    
+      
       if (!(version = p.find {|p| p['label'] == 'Original' }))  # try to use the highest resolution original
         version = p.pop   # otherwise use the last one in the list (presumably the best?)
       end
 	rescue
-      raise "Can not fetch this image. Access may be restricted by the rights holder."
-      return false
+	    self.media_file.destroy
+        raise "Can not fetch this image. Access may be restricted by the rights holder."
     end
 	
-    self.media_file.thumbnail_url = version['source']
-    self.media_file.save
+	if self.media_file
+        self.media_file.thumbnail_url = version['source']
+        self.media_file.save
+    end
   end
 
   def get_params

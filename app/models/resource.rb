@@ -123,7 +123,8 @@ class Resource < ActiveRecord::Base
   # Access control
   #
   def can(action, user)
-    # owner/author can do anything
+    # owner/author/admin can do anything
+    return true if (user && (user.has_role? :admin))
     return true if (user && (self.user_id == user.id))
     return true if (user && (self.author_id && (self.author_id == user.id)))
 
