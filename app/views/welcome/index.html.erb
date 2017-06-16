@@ -67,50 +67,73 @@
     <div class="fullDivideWrapper"><div class="fullDivide"></div></div>
     <div class="row hpFeatures">
 
-      <%
+<%
         i = 0
         style = ""
         @featured_content_set.featured_content_set_items.each do |item|
-            next if !item.resource or !item.resource.media_files or !item.resource.media_files.first or !item.resource.media_files.first.sourceable
-          i = i + 1
-          if i == 5
-            break
-          end
-          if(i == 1)
-      %>
-              <div class='col-sm-6'>
-                <H1><%= sanitize(@featured_content_set.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>
-                  <%
-                    if (@featured_content_set.subtitle.chop.length > 0)
-                  %>
-                      <p><%= sanitize(@featured_content_set.subtitle, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></p>
-                  <%
+            next if !item.resource or !item.resource.media_files 
+            
+            mf = nil
+            
+            if item.resource.is_collection
+                item.resource.children.each do|r| 
+                    r.media_files.each do|m| 
+                        next if !m.sourceable
+                        mf = m
+                        break
                     end
-                  %>
+                    break if mf
+                end
+            else 
+                item.resource.media_files.each do|m| 
+                    next if !m.sourceable
+                    mf = m
+                    break
+                end
+            end
+            next if !mf
+            
+            i = i + 1
+            if i == 5
+                break
+            end
+        if(i == 1)
+%>
+            <div class='col-sm-6'>
+                <H1><%= sanitize(@featured_content_set.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>
+<%
+                if (@featured_content_set.subtitle.chop.length > 0)
+%>
+                    <p><%= sanitize(@featured_content_set.subtitle, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></p>
+<%
+                end
+%>
                 </H1>
-          <%
-            end
-            if((i == 1) || (i == 3))
-              style = "col-sm-10 col-sm-offset-2"
-            else
-              style= "col-sm-9 col-sm-offset-1"
-            end
-          %>
-          <div class="row">
+<%
+        end
+
+        if((i == 1) || (i == 3))
+            style = "col-sm-10 col-sm-offset-2"
+        else
+            style= "col-sm-9 col-sm-offset-1"
+        end
+%>
+        <div class="row">
             <div class="<%= style.html_safe %>">
-              <%= link_to(item.resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
-              <h3><%= (item.title.chop.length > 0) ? sanitize(item.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) : sanitize(item.resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H3>
+                <%= link_to(mf.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+                <h3><%= (item.title.chop.length > 0) ? sanitize(item.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) : sanitize(item.resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H3>
             </div>
-          </div>
-          <%
-            if(i == 2)
-          %>
-              </div><div class='col-sm-6'>
-          <%
-            end
-          %>
-      <% end %>
-      </div>
+        </div>
+<%
+        if(i == 2)
+%>
+            </div>
+            <div class='col-sm-6'>
+<%
+        end
+    end 
+%>
+        </div>
     </div><!-- end row -->
     <div class="row">
       <div class="col-sm-12 text-center">
