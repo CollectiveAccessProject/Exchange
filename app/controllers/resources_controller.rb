@@ -1,5 +1,5 @@
 class ResourcesController < ApplicationController
-  before_filter :authenticate_user!, :except => [:view, :autocomplete_current_location]
+  before_filter :authenticate_user!, :except => [:view, :show, :autocomplete_current_location]
   before_action :set_resource, only: [:show, :edit, :view, :update, :fork, :toggle_access, :destroy, :add_comment, :add_tag, :add_term, :add_link, :remove_comment, :remove_tag, :remove_term, :remove_link, :save_preferences, :add_related_resource, :remove_related_resource, :add_child_resource, :add_child_resources, :set_media_order, :set_resource_order, :remove_parent, :add_user_access, :remove_user_access, :add_group_access, :remove_group_access, :set_response_info, :get_media_list, :load_thumbnails]
 
   include CommentableController
@@ -1165,7 +1165,7 @@ class ResourcesController < ApplicationController
   #
   #
   def get_available_collections_and_resources(resource)
-    #return nil if (!current_user)
+    return nil if (!current_user)
 
     ids = resource.parents.pluck(:id)
     ids.push(resource.id)
