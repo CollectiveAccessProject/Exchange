@@ -25,12 +25,16 @@
       	if item.resource.is_collection
 			item.resource.resource_hierarchies.each do |child|
 				if child.child_resource.media_files.count > 0
+				    child.child_resource.media_files.each do |m| 
+				        next if !m.sourceable
 %>
-					<%= link_to(child.child_resource.media_files.first.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+					    <%= link_to(m.sourceable.preview(:medium), resource_path(item.resource_id)) %>
 <%
-					collectionImage = true
-					break
+                        collectionImage = true
+                        break
+					end
 				end
+				break if collectionImage
 			end
 			if collectionImage == false
 %>

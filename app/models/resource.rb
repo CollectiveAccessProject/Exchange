@@ -181,14 +181,14 @@ class Resource < ActiveRecord::Base
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
 
-
     if (indexing_data)
       index_data_hash = JSON.parse(indexing_data)
       if index_data_hash.is_a? Hash
         record = record.merge(index_data_hash)
       end
     end
-    record['on_display'] = record['on_display'] ? 1 : 0
+
+    record['on_display'] = record['on_display'] ? "1" : "0"
 
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
@@ -896,7 +896,12 @@ class Resource < ActiveRecord::Base
         {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Additional Classification/Object Type', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
           if (params[f] && (params[f].length > 0))
             v = params[f].gsub(/["']+/, '')
-            query_elements.push(f + ':"' + v + '"')
+            
+            if (f == 'on_display')
+                query_elements.push(f + ':' + (v ? "1" : "0"))
+            else
+                query_elements.push(f + ':"' + v + '"')
+            end
             query_display.push(l + ":" +v)
             query_values[f] = v
           end
