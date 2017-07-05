@@ -73,7 +73,7 @@ class QuickSearchController < ApplicationController
 
     params.permit(:query, :q, :page, :type, :length, :sort)
     @query = params[:q] if (!(@query = params[:query]))
-    #@query = @query.gsub(/[^[:word:]\s]/, '')
+    @query = @query.gsub(/[^[:word:]\s\/\-\.]/, '') if @query
     @page = params[:page].to_i
     @page = 1 if (@page < 1)
     @type = params[:type]   # restrict search to a specific result type (resources, collections, collection_objects, exhibitions)
@@ -246,7 +246,7 @@ class QuickSearchController < ApplicationController
       }
 
     rescue Exception => e
-      raise "Search error: " + e.message
+      raise "Search error: " + e.message + @query
     end
   end
 

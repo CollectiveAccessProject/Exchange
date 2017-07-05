@@ -17,6 +17,11 @@ $white:#FFFFFF;
 #collectionsResultsContainer, #colObjectResultsContainer, #resourceResultsContainer, #crcsetResultsContainer{
 	margin-bottom:40px;
 }
+
+#collection_object_title_link, #resource_title_link, #collection_title_link, #crc_title_link{
+	display: inline-block;
+}
+
 .qsResult{
 	position:relative;
 	text-align:center;
