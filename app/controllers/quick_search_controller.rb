@@ -247,7 +247,7 @@ class QuickSearchController < ApplicationController
       }
 
     rescue Exception => e
-      raise "Search error: " + e.message
+      raise "Search error: " + e.message + @query
     end
   end
 
