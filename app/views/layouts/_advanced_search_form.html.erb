@@ -133,7 +133,10 @@
           <div id="currentLocationField" class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advCurrentLocation">Current Location</label>
-              <%= autocomplete_field_tag(:location, "", autocomplete_current_location_path(0), :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, class:'form-control', id:'advCurrentLocation') %>
+              <%= 
+                #autocomplete_field_tag(:location, "", autocomplete_current_location_path(0), :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, class:'form-control', id:'advCurrentLocation') 
+                    select_tag(:location, get_current_locations_for_objects, style: "width: 100%") 
+                %>
             </div>
           </div>
           <div class="col-sm-3">

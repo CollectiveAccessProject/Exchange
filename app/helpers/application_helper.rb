@@ -244,3 +244,16 @@ def is_zoomable(media_file)
 			return false
 	end
 end
+
+#
+#
+#
+def get_current_locations_for_objects
+    locs = []
+    Resource.select(:location).distinct.order(:location).each do|l|
+        next if (!l or !l.location or (l.location.length == 0))
+        locs.push([l.location, l.location])
+    end
+    
+    options_for_select(locs)
+end  
