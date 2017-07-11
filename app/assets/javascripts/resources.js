@@ -201,6 +201,17 @@ console.log("ranks", ranks);
     jQuery('.modal').on('hide.bs.modal', function(e) {
         jQuery(this).find('iframe').attr('src', jQuery(this).find('iframe').attr('src'));
     });
+    
+    // Clear media editor modal content on clone
+    jQuery('#media_editor_modal').on('hide.bs.modal', function(e) {
+        jQuery('#media_editor_modal').html('');
+    });
+    
+    //
+    jQuery('.resource-coll-opt-out').on('click', function(e) {
+        window.sessionStorage.setItem("rcoll_optout_" + jQuery(e.currentTarget).data('resource_id'), "1");
+    });
+    
 
     //
     // AJAX tagging

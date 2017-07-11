@@ -40,8 +40,8 @@ class ResourcesController < ApplicationController
   def autocomplete_resource_title
     term = params[:term]
     u = Resource.where(
-        'LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?',
-        "%#{term}%", "#{term}%"
+        'LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ? OR LOWER(resources.artist) LIKE ?',
+        "%#{term}%", "#{term}%", "%#{term}%"
     ).order(:id).all
     render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
   end
@@ -339,9 +339,10 @@ class ResourcesController < ApplicationController
     if (r.save)
       # dupe media
       @resource.media_files.each do |m|
+        next if (!m.sourceable)
         mf = m.dup
         mf.resource_id = r.id
-
+        
         sf = m.sourceable.dup
         if (sf.save)
 
@@ -1066,7 +1067,7 @@ class ResourcesController < ApplicationController
   	f = MediaFile.find(params[:media_id])
   	r = Resource.find(params[:resource_id])
   	params.permit(:target_div, :media_id, :resource_title, :media_files, :editable, :resource_id)
-  	target_div = '#' + f.sourceable.class.to_s + f.sourceable.id.to_s
+  	target_div = '#media_editor_modal'
     @modal_data = {"target" => target_div, "id" => f.id, "title" => r.title, "editable" => params[:editable], "resource_id" => r.id}
     begin
 		@media_display = f.sourceable.render :large

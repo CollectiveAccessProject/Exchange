@@ -188,8 +188,10 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    record['on_display'] = record['on_display'] ? "1" : "0"
-
+    if (record['resource_type'].to_i == Resource::COLLECTION_OBJECT)
+        record['on_display'] = record['on_display'] ? "1" : "0"
+    end
+    
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
     record['role'] = record['affiliation'] = self.roles.pluck("name")

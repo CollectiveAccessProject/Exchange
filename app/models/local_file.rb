@@ -42,6 +42,7 @@ class LocalFile < ActiveRecord::Base
   end
 
   def set_thumbnail
+    return if !self.media_file
     # TODO: convert non-image formats to images before setting as thumbnail
 
     if(self.file.path(:original))

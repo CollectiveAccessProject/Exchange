@@ -20,6 +20,7 @@ class FlickrLink < ActiveRecord::Base
   end
 
   def set_thumbnail
+    return if !self.media_file
     # Get list of available photo sizes from Flickr
     begin
       p = flickr.photos.getSizes(photo_id: self.photo_id)

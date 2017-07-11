@@ -85,6 +85,7 @@ namespace :exchange do
 																		 copyright_license: copyright_license,
 																		 body_text: body_text_clean,
 																		 subtitle: HTMLEntities.new.decode(value['subtitle']),
+																		 artist: HTMLEntities.new.decode(value['artist']),
 																		 resource_type: Resource::COLLECTION_OBJECT,
 																		 collection_identifier: value['subtitle'],
 																		 collectiveaccess_id: value['collectiveaccess_id'],
@@ -111,7 +112,7 @@ namespace :exchange do
 									end
 
 									m.set_sourceable_media({collectiveaccess_link: { original_link: u }})
-									m.update({title: key.to_s + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id})
+									m.update({title: key.to_s + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id, alt_text: value['physical_description'] ? value['physical_description'].slice(0, 1024) : ""})
 
 									i += 1
 								end

@@ -16,6 +16,7 @@ class VimeoLink < ActiveRecord::Base
   end
 
   def set_thumbnail
+    return if !self.media_file
     resp = HTTParty.get("http://vimeo.com/api/v2/video/#{self.key}.json").parsed_response.first
     self.media_file.thumbnail_url = resp['thumbnail_large']
     self.media_file.save

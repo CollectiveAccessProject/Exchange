@@ -16,6 +16,7 @@ class CollectiveaccessLink < ActiveRecord::Base
   end
 
   def set_thumbnail
+    return if !self.media_file
     # TODO: maybe use native resolution?
     #self.media_file.thumbnail_url = self.base_url + self.key + "/full/!2000,2000/0/default.jpg"
     self.media_file.thumbnail_url = self.base_url + self.key + "/full//0/default.jpg"
