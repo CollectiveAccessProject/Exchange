@@ -35,7 +35,9 @@
                 <%= r.input :email, :input_html => {} %>
                 <%= r.input :new_password, :input_html => {} %>
                 <%= r.input :confirm_new_password, :input_html => {} %>
-
+                <div class="form-group is_disabled optional">
+                    <label class="is_disabled optional control-label" for="is_disabled">Disabled? </label> <%= r.check_box :is_disabled, :input_html => {} %>
+                </div>
                 <div class="form-group roles optional">
                   <label class="roles optional control-label" for="roles">Roles</label><br/>
                   <%= select_tag(:roles, options_for_select(@roles_list, @user.roles.pluck("name")), { multiple: true, rows: 3 }) %>

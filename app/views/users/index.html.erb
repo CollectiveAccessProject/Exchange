@@ -4,7 +4,10 @@
 <h2>User logins</h2>
 
 <% @users.each do |u| %><div class="row">
-   <div class="col-md-5"><%= u.name + " (" + u.email + ")" %></div>
+   <div class="col-md-5">
+        <%= u.name + " (" + u.email + ")" %>
+        <%= ((u.is_disabled == 1) ? "<div class='btn btn-xs btn-danger'>DISABLED</div>" : "").html_safe %>
+   </div>
       <div class="col-md-2">
         <%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit'.html_safe, edit_user_path(u), class: "btn btn-xs btn-default") %>
         <%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete'.html_safe, u, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-default' %>
