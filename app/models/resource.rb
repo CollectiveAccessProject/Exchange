@@ -191,13 +191,13 @@ class Resource < ActiveRecord::Base
     if (record['resource_type'].to_i == Resource::COLLECTION_OBJECT)
         record['on_display'] = record['on_display'] ? "1" : "0"
     end
-    
+
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
     record['role'] = record['affiliation'] = self.roles.pluck("name")
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
     record['tag'] = self.tags.pluck("tag")
-    
+
     # Index ACL values
     record['read_users'] = ResourcesUser.where({resource_id: self.id, access: 1}).pluck(:user_id)
     record['edit_users'] = ResourcesUser.where({resource_id: self.id, access: 2}).pluck(:user_id)
@@ -639,18 +639,22 @@ class Resource < ActiveRecord::Base
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
-    
+
     acl_str = ["access:1"]
     if(options[:user])
     	acl_str.push("read_users:" + options[:user].id.to_s)
     	acl_str.push("edit_users:" + options[:user].id.to_s)
-    	
+
     	options[:user].groups.each do |g|
     		acl_str.push("read_groups:" + g.id.to_s)
     		acl_str.push("edit_groups:" + g.id.to_s)
     	end
     end
-    
+
+    if (!query_proc)
+        query_proc = ''
+    end
+
     if (!options[:type] || (options[:type] == 'resource'))
       begin
         resources_length = length
@@ -661,7 +665,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -694,7 +698,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -724,7 +728,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::COLLECTION_OBJECT.to_s
+                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s
                 }
             }
         }
@@ -756,7 +760,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::EXHIBITION.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::EXHIBITION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -788,7 +792,7 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + " AND resource_type:" + Resource::CRCSET.to_s + " AND access:1"
+                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::CRCSET.to_s + " AND access:1"
                 }
             }
         }
@@ -824,12 +828,12 @@ class Resource < ActiveRecord::Base
     query_elements = []
     query_display = []
     query_values = {'type' => resource_type }
-    
+
     acl_str = ["access:1"]
     if(options[:user])
     	acl_str.push("read_users:" + options[:user].id.to_s)
     	acl_str.push("edit_users:" + options[:user].id.to_s)
-    	
+
     	options[:user].groups.each do |g|
     		acl_str.push("read_groups:" + g.id.to_s)
     		acl_str.push("edit_groups:" + g.id.to_s)
@@ -895,10 +899,10 @@ class Resource < ActiveRecord::Base
         # collection - no extra fields
       when Resource::COLLECTION_OBJECT
         # collection object
-        {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Additional Classification/Object Type', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
+        {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
           if (params[f] && (params[f].length > 0))
             v = params[f].gsub(/["']+/, '')
-            
+
             if (f == 'on_display')
                 query_elements.push(f + ':' + (v ? "1" : "0"))
             else

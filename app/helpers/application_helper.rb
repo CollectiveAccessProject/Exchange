@@ -250,10 +250,11 @@ end
 #
 def get_current_locations_for_objects
     locs = []
+    locs.push(['None', ' '])
     Resource.select(:location).distinct.order(:location).each do|l|
         next if (!l or !l.location or (l.location.length == 0))
         locs.push([l.location, l.location])
     end
-    
+
     options_for_select(locs)
-end  
+end

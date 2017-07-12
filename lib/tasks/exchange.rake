@@ -75,7 +75,7 @@ namespace :exchange do
 
 					if(value['body_text'])
 						body_text = HTMLEntities.new.decode(value['body_text'])
-						body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([A-Za-z0-9., _\(\)-]+)<\/span>/, '<a href="../../quick_search/query?utf8=true&q=\1:&quot;\2&quot;">\2</a>')
+						body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([A-Za-z0-9., _\(\)-]+)<\/span>/, '<a href="../../quick_search/query?utf8=true&q=\1: &quot;\2&quot;">\2</a>')
 						body_text_clean = body_text_search.gsub(/<strong>Additional Object [A-Za-z\(\)]+<\/strong><br \/><br \/>/, ' ')
 					end
 
@@ -143,7 +143,7 @@ namespace :exchange do
 					if (r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first)
 						puts "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
 						value['on_display'] = value['current_location'] ? 1 : 0
-					
+
 						r.update(indexing_data: JSON.generate(value), location: value['current_location'], on_display: value['current_location'] ? true : false)
 					end
 				end
@@ -277,20 +277,20 @@ namespace :exchange do
 		body_text_examine = File.open("test/text_body_text.html", "w")
 		test_count = 0
 		Resource.where(resource_type: Resource::COLLECTION_OBJECT).each do |co|
-			body_text = co.body_text		
-			body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([\d\p{L}\b\.,\&'\-\(\)\; ]+)<\/span>/, '<a href="/quick_search/query?utf8=true&q=\1:&quot;\2&quot;">\2</a>')	
+			body_text = co.body_text
+			body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([\d\p{L}\b\.,\&'\-\(\)\; ]+)<\/span>/, '<a href="/quick_search/query?utf8=true&q=\1: &quot;\2&quot;">\2</a>')
 
-			body_text_search = body_text_search.gsub(/(?<=<strong>Medium &amp;|& Support<\/strong>)(?:\t| |)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=medium:\1">\1</a>')
-			
-			body_text_search = body_text_search.gsub(/(?<=<strong>Primary Object Classification<\/strong>)(?:\t| |\n|)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=classification:&quot;\1&quot;">\1</a>')
-			
-			body_text_search = body_text_search.gsub(/(?<=<strong>Primary Object Type<\/strong>)(?:\t| |\n|)<br(?: \/|\/|)>(?:([\p{L}\b.,' ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=classification:&quot;\1&quot;">\1</a>')
-			
-			body_text_search = body_text_search.sub(/(?<=<strong>Additional Object Classification\(s\)<\/strong>)(?:\t| |)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=additional_classification:&quot;\1&quot;">\1</a>')
-			
-			body_text_search = body_text_search.gsub(/(?<=<strong>Additional Object Types\(s\)<\/strong>)(?:\t| |)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=additional_classification:&quot;\1&quot;">\1</a>')
+			body_text_search = body_text_search.gsub(/(?<=<strong>Medium &amp;|& Support<\/strong>)(?:\t| |)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=medium: \1">\1</a>')
 
-			body_text_search = body_text_search.gsub(/(?<=<strong>Object Creation Place<\/strong>)(?:\t| |)<br \/>(?:([\p{L}\b.,'\(\) ]+)<br \/>)+/, '<br /><a href="/quick_search/query?utf8=true&q=places:&quot;\1&quot;">\1</a><br />')
+			body_text_search = body_text_search.gsub(/(?<=<strong>Primary Object Classification<\/strong>)(?:\t| |\n|)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=classification: &quot;\1&quot;">\1</a>')
+
+			body_text_search = body_text_search.gsub(/(?<=<strong>Primary Object Type<\/strong>)(?:\t| |\n|)<br(?: \/|\/|)>(?:([\p{L}\b.,' ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=classification: &quot;\1&quot;">\1</a>')
+
+			body_text_search = body_text_search.sub(/(?<=<strong>Additional Object Classification\(s\)<\/strong>)(?:\t| |)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=additional_classification: &quot;\1&quot;">\1</a>')
+
+			body_text_search = body_text_search.gsub(/(?<=<strong>Additional Object Types\(s\)<\/strong>)(?:\t| |)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=additional_classification: &quot;\1&quot;">\1</a>')
+
+			body_text_search = body_text_search.gsub(/(?<=<strong>Object Creation Place<\/strong>)(?:\t| |)<br \/>(?:([\p{L}\b.,'\(\) ]+)<br \/>)+/, '<br /><a href="/quick_search/query?utf8=true&q=places: &quot;\1&quot;">\1</a><br />')
 			first_place_pos = body_text_search.index(/<br(?: \/|\/|)>(?:\t| |\n|)<br(?: \/|\/|)>(?:\t| |\n|)<strong>Object Creation Place<\/strong>(?:\t| |\n|)<br(?: \/|\/|)>/)
 			body_text_search = body_text_search.gsub(/<br(?: \/|\/|)>(?:\t| |\n|)<br(?: \/|\/|)>(?:\t| |\n|)<strong>Object Creation Place<\/strong>(?:\t| |\n|)<br(?: \/|\/|)>/, " ")
 			if first_place_pos

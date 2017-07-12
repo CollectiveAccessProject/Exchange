@@ -2,7 +2,7 @@
 <% content_for :page_title do %>
   <title>Exchange: <%= sanitize(@resource.title, :tags => %w()) %></title>
 <% end %>
-<% 
+<%
 	# Set allowed HTML tags/attributes for the body text
 	body_tags_allowed = %w(strong em a font b sup sub u img br p span div li ul ol table tr th td i)
 	body_attrs_allowed = %w(href style src alt class id float target width height title data-link-target)
@@ -508,7 +508,7 @@
                     tag_array.sort_by!{|a| a[:t_tag]}
                     tag_array.each do |l|
                   %>
-                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag:"' + sanitize(l[:t_tag] + '"') %><br/>
+                      <%= link_to l[:t_tag], '/quick_search/query?utf8=✓&q=tag: "' + sanitize(l[:t_tag] + '"') %><br/>
                   <% end %>
 
 
@@ -527,7 +527,7 @@
                 key_array.sort_by!{|a| a[:v_term]}
                 key_array.each do |l|
               %>
-                  <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword:"' + sanitize(l[:v_term]) + '"' %><br/>
+                  <%= link_to l[:v_term], '/quick_search/query?utf8=✓&q=keyword: "' + sanitize(l[:v_term]) + '"' %><br/>
               <% end %>
             </div>
         <% end %>
@@ -548,7 +548,7 @@
                   end
                   aff_array.sort_by!{|a| a[:a_term]}
                   aff_array.each do |a|
-                    buf += link_to a[:a_term], '/quick_search/query?utf8=✓&q=role:' + a[:a_val]
+                    buf += link_to a[:a_term], '/quick_search/query?utf8=✓&q=role: ' + a[:a_val]
                     buf += '<br/>'
                   end
                   sanitize(buf)
