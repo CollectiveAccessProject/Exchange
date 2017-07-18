@@ -27,7 +27,7 @@
       <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
           <div>
             <form class="collectionObjectResultsAdd">
-              Add checked results existing to collection/resource <%=
+              Add checked results to existing collection/resource <%=
 
               if(@available_collections_and_resources.length > 25)
                 autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collection_add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:collection_add_to_collection_id)
@@ -84,7 +84,7 @@
           </div>
 
           <%
-            if(col == 6)
+            if(col % 6 == 0)
           %>
               </div>
               <div class="row">

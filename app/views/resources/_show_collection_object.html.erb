@@ -67,7 +67,7 @@
                 <%
                   if f.sourceable
                 %>
-                  <%= f.sourceable.preview :huge  %>
+                  <a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><%= f.sourceable.preview :huge  %></a>
                     <!--<div class="slideshowCaption"><%= sanitize(f.caption)  %></div>-->
                     <%=
                       # Example of how to output image using IIIF
@@ -96,7 +96,7 @@
       	<% else %>
    		  <% @resource.media_files.each do |f| %>
       		<div class="collectionObjectPreview">
-      			<%= f.sourceable.preview :huge %>
+      			<a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><%= f.sourceable.preview :huge  %></a>
       			<div class="zoomControls">
 				  <a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
 				</div>

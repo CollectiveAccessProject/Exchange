@@ -145,12 +145,6 @@
               <input class="form-control" type="text" name="date_created" id="advDateCreated">
             </div>
           </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advOtherDates">Other Dates</label>
-              <input class="form-control" type="text" name="other_dates" id="advOtherDates">
-            </div>
-          </div>
         </div>
         <div class="row additionalFields" id="advancedSearchExhibition">
           <div class="col-sm-12">
@@ -253,7 +247,9 @@
                         e.preventDefault();
                         return false;
                     }
+                    
                     $("#queryBuilderFormQ").val(q);
+                    console.log(q);
                     return true;
                 });
             });

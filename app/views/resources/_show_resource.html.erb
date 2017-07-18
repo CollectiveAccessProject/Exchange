@@ -150,14 +150,15 @@
 				anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
 %>
                 <!--Modal Container loaded here, content will be loaded via AJAX if/when requested-->
-                <%= link_to '', load_media_modal_path(f, :media_id => f.id.to_i, :resource_id => @resource.id.to_i), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
-                <div class="modal modal-wide" id="<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+                <%= link_to '', load_media_modal_path(f, :media_id => f.id.to_i, :resource_id => @resource.id.to_i), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => '#media_editor_modal' %>
+                
 <%
               end
             end
           end
         end
 %>
+		<div class="modal modal-wide" id="media_editor_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 	</div>
     <%=
       # This is in a partial because its a lot of nested divs and duplicates functionality in the main slideshow
@@ -383,9 +384,9 @@
             %>
           </div>
         </div>
-
+		
         <div class="detailButtonsResource text-center">
-          <% if @resource.copyright_license %>
+          <% if @resource.get_license_type != 'All Rights Reserved' %>
             <%= link_to '<i class="fa fa-clone" aria-hidden="true"></i>'.html_safe, fork_resource_path(@resource), method: :post, :title => 'Copy and Customize' %>
           <% end %>
           <!-- AddToAny BEGIN -->
