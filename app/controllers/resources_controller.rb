@@ -258,7 +258,7 @@ class ResourcesController < ApplicationController
         #
         # TODO: does user have access to resource this is in response to?
         if (@resource && @resource.in_response_to_resource_id && (@resource.in_response_to_resource_id > 0))
-          parent_resource = Resource.find(in_response_to_resource_id)
+          parent_resource = Resource.find(@resource.in_response_to_resource_id)
           if (!parent_resource.can(:view, current_user))
             redirect_to root_path, notice: "You cannot add a response to that resource"
             return
