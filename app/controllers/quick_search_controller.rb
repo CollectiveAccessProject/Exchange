@@ -73,6 +73,7 @@ class QuickSearchController < ApplicationController
 
     params.permit(:query, :q, :page, :type, :length, :sort)
     @query = params[:q] if (!(@query = params[:query]))
+    @query = "*" if (@query.length == 0)
     @query = @query.gsub(/[^[:word:]\s\/\-\.\:\_\*]/, '') if @query
     @page = params[:page].to_i
     @page = 1 if (@page < 1)
