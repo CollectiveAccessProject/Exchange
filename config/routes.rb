@@ -95,9 +95,9 @@ Rails.application.routes.draw do
   
   get '/quick_search/query' => 'quick_search#query', as: 'quick_search'
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
-  get '/quick_search/query_results/:type/:page/:query' => 'quick_search#query_results', as: 'query_results', constraints: { :query => /[\*]+|.*|[A-Za-z0-9]+[%\/\.\-]+.*+/ }
-  get '/quick_search/query_results/:type/:page/:query/:length/:sort' => 'quick_search#query_results', as: 'query_results_with_length_and_sort', constraints: { :query => /[\*]+|.*|[A-Za-z0-9]+[%\/\.\-]+.*+/ }
-  get '/quick_search/query_results/:type/:page/:query/:length' => 'quick_search#query_results', as: 'query_results_with_length', constraints: { :query => /[\*]+|.*|[A-Za-z0-9]+[%\/\.\-]+.*/ }
+  get '/quick_search/query_results/:type/:page/*query' => 'quick_search#query_results', as: 'query_results'
+  get '/quick_search/query_results/:type/:page/*query/:length/:sort' => 'quick_search#query_results', as: 'query_results_with_length_and_sort'
+  get '/quick_search/query_results/:type/:page/*query/:length' => 'quick_search#query_results', as: 'query_results_with_length'
   get '/quick_search/autocomplete_collection_title' => 'quick_search#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'quick_search_autocomplete_resource_title'
   get '/quick_search/autocomplete_collection_resource_title' => 'quick_search#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'quick_search_autocomplete_collection_resource_title'
 
