@@ -95,7 +95,7 @@
 <script>
     jQuery(document).ready(function() {
         jQuery("#exhibition_num_items_per_page, #exhibition_sort").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "exhibition", page: @exhibitions_page, query: @query) %>/" + jQuery("#exhibition_num_items_per_page").val() + "/" + jQuery("#exhibition_sort").val(), function(data) {
+            jQuery.getJSON("<%= query_results_path(type: "exhibition", page: @exhibitions_page, query: @query) %>?length=" + jQuery("#exhibition_num_items_per_page").val() + "&sort=" + jQuery("#exhibition_sort").val(), function(data) {
                 jQuery("#results_exhibition").html(data.html);
                 return true;
             });

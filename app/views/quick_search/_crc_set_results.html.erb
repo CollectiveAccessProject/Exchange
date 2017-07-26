@@ -140,7 +140,7 @@
 <script>
     jQuery(document).ready(function() {
         jQuery("#crcset_num_items_per_page, #crcset_sort").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crc_sets_page, query: @query) %>/" + jQuery("#crcset_num_items_per_page").val() + "/" + jQuery("#crcset_sort").val(), function(data) {
+            jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crc_sets_page, query: @query) %>?length=" + jQuery("#crcset_num_items_per_page").val() + "&sort=" + jQuery("#crcset_sort").val(), function(data) {
                 jQuery("#results_crcset").html(data.html);
                 return true;
             });

@@ -865,16 +865,20 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    if (params['min_rating'].to_i == params['max_rating'].to_i)
-      d = v = params['min_rating']
-    else
-      v = '[' + params['min_rating'] + ' TO ' + params['max_rating'] + ']'
-      d = "Between " + params['min_rating'] + ' and ' + params['max_rating']
-    end
+    if (params['min_rating'].to_i == 0) && (params['max_rating'].to_i == 5) 
+        # noop
+    else 
+        if (params['min_rating'].to_i == params['max_rating'].to_i)
+          d = v = params['min_rating']
+        else
+          v = '[' + params['min_rating'] + ' TO ' + params['max_rating'] + ']'
+          d = "Between " + params['min_rating'] + ' and ' + params['max_rating']
+        end
 
-    query_elements.push('rating:' + v)
-    query_display.push("Rating: " + d)
-    query_values['rating'] = v
+        query_elements.push('rating:' + v)
+        query_display.push("Rating: " + d)
+        query_values['rating'] = v
+    end
 
 
     if (params['author_id'] && (params['author_id'].to_i > 0))
@@ -900,7 +904,7 @@ class Resource < ActiveRecord::Base
       when Resource::COLLECTION_OBJECT
         # collection object
         {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
-          if (params[f] && (params[f].length > 0))
+          if (params[f] && (params[f].strip.length > 0))
             v = params[f].gsub(/["']+/, '')
 
             if (f == 'on_display')
@@ -915,7 +919,7 @@ class Resource < ActiveRecord::Base
       when Resource::EXHIBITION
         # exhibition
         {'exhibition_artist' => 'Artist', 'exhibition_artist_nationality' => 'Artist nationality', 'exhibition_dates' => 'Exhibiton dates', 'exhibition_location' => 'Location'}.each do |f, l|
-          if (params[f] && (params[f].length > 0))
+          if (params[f] && (params[f].strip.length > 0))
             v = params[f].gsub(/["']+/, '')
             query_elements.push(f + ':"' + v + '"')
             query_display.push(l + ":" +v)

@@ -141,7 +141,7 @@
 <script>
     jQuery(document).ready(function() {
         jQuery("#collection_object_num_items_per_page, #collection_object_sort").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>/" + jQuery("#collection_object_num_items_per_page").val() + "/" + jQuery("#collection_object_sort").val(), function(data) {
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?length=" + jQuery("#collection_object_num_items_per_page").val() + "&sort=" + jQuery("#collection_object_sort").val(), function(data) {
                 jQuery("#results_collection_object").html(data.html);
                 return true;
             });

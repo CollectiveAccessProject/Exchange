@@ -160,7 +160,7 @@
 <script>
     jQuery(document).ready(function() {
         jQuery("#resource_num_items_per_page, #resource_sort").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "resource", page: @resources_page, query: @query) %>/" + jQuery("#resource_num_items_per_page").val() + "/" + jQuery("#resource_sort").val(), function(data) {
+            jQuery.getJSON("<%= query_results_path(type: "resource", page: @resources_page, query: @query) %>?length=" + jQuery("#resource_num_items_per_page").val() + "&sort=" + jQuery("#resource_sort").val(), function(data) {
                 jQuery("#results_resource").html(data.html);
                 return true;
             });

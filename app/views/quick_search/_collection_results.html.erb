@@ -137,7 +137,7 @@
 <script>
     jQuery(document).ready(function() {
         jQuery("#collection_num_items_per_page, #collection_sort").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>/" + jQuery("#collection_num_items_per_page").val() + "/" + jQuery("#collection_sort").val(), function(data) {
+            jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?length=" + jQuery("#collection_num_items_per_page").val() + "&sort=" + jQuery("#collection_sort").val(), function(data) {
                 jQuery("#results_collection").html(data.html);
                 return true;
             });
