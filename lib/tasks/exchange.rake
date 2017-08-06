@@ -12,22 +12,73 @@ namespace :exchange do
 	task refresh_umma_collections_data: :environment do
 		log = ActiveSupport::Logger.new('log/refresh_umma_collections_data.log')
 		log.info "Task started at #{Time.now}"
+		
+		
+		#
+		# Size of fetch
+		#
+		start = 0
+		limit = 100
+		
+		#
+	    # Enable deletion of collection objects removed from CA set
+	    #
+		remove_deleted_objects = true
 
 		CollectiveAccess.set_credentials ENV['COLLECTIVEACCESS_USER'], ENV['COLLECTIVEACCESS_KEY']
 
 		user_id = User.where(email: 'admin@exchange.umma.umich.edu').first.id
 
 		query = 'ca_objects.access_specific:exchange'		# CA query to use to pull relevant objects
-		#query = 'ca_objects.idno:"2014" OR ca_objects.idno:"1954" OR ca_objects.idno:"2010" OR ca_objects.idno:"2010" OR ca_objects.idno:"1983" OR ca_objects.idno:"2014" OR ca_objects.idno:"2013" OR ca_objects.idno:"1988" OR ca_objects.idno:"2011" OR ca_objects.idno:"1998" OR ca_objects.idno:"2005" OR ca_objects.idno:"1997" OR ca_objects.idno:"1954" OR ca_objects.idno:"1961/1.170" OR ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248"'
-		#query = 'ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248"'
-		#query = 'ca_objects.idno:"2010/1.275" OR ca_objects.idno:"1983/1.248" OR ca_objects.idno:"1997/1.206" OR ca_objects.idno:"1954/1.536" OR ca_objects.idno:"2008/2.255" OR ca_objects.idno:"1993/2.13.1" OR ca_objects.idno:"2002/2.145" OR ca_objects.idno:"2000/2.158.1" OR ca_objects.idno:"1955/1.89" OR ca_objects.idno:"1949/1.199" OR ca_objects.idno:"1948/1.331"'
-
-
-		start = 0
-		limit = 100
-
+		
+		# get last pull timestamp
+		ts = ''
+		if l = SyncLog.order("created_at").last
+		    query_limit =  query +  (query ? " AND " : "") + "modified:\"after " + l.updated_at.strftime("%Y-%m-%d") + "\""
+		else 
+		    query_limit = query
+		end
+		
+		
+		delete_count = 0
+		update_count = 0
+		if remove_deleted_objects
+		    print "Fetching current list of CollectiveAccess object_ids\n"
+		    valid_collectiveaccess_ids = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
+                url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
+                port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+                endpoint: 'object_ids',
+                get_params: {
+                        q: query,
+                        noCache: 0
+                } 
+		    Resource.where(resource_type: Resource::COLLECTION_OBJECT).each do |r|
+		    
+		        cid = r.collectiveaccess_id.to_i
+		        if ((cid > 0) and (!valid_collectiveaccess_ids.key?(cid.to_s)))
+		            begin
+		                r.destroy
+		                delete_count = delete_count + 1
+		            rescue => e
+		            
+		            end
+		        end
+		    end
+		end
+		
 		# query UMMA collections to get list of all records in chunks of 100 and
 		# create or update exchange resources based on collectiveaccess_id
+		
+		valid_collectiveaccess_ids = []
+		
+		synclog = SyncLog.new(num_deleted: delete_count, num_updated: update_count)
+		synclog.save
+		
+        if l 
+            print "Pulling updates made to collection objects after " + l.updated_at.strftime("%Y-%m-%d") + "\n"
+        else
+            print "Pulling all collection objects\n"
+        end
 		begin
 			log.info "Query CollectiveAccess simple services with start=#{start}"
 			log.debug "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
@@ -35,26 +86,27 @@ namespace :exchange do
 			#puts "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
 
 			# query exchangeObjectListForDisplay service
-			#puts "q=" + query
+			#puts "q=" + query_limit
 			object_list_for_display = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
 																												url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
 																												port: ENV['COLLECTIVEACCESS_PORT'].to_i,
 																												endpoint: 'exchangeObjectListForDisplay',
 																												get_params: {
-																														q: query,
+																														q: query_limit,
 																														start: start,
 																														limit: limit,
 																														noCache: Rails.env.development? ? 1 : 0
 																												}
 
 			log.info "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
+			print "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
 
 			# add 'main' record data with hardcoded mapping
 			object_list_for_display.each do |_, value|
 				if value.is_a?(Hash) && value['collectiveaccess_id'].present?
 					log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']}"
 					puts  "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} :: #{value['subtitle']}"
-
+                    update_count = update_count + 1
 					copyright_notes = value['copyright_holder'].present? ? HTMLEntities.new.decode(value['copyright_holder']) : ''
 					copyright_notes += value['copyright_text'].present? ? "\n" + HTMLEntities.new.decode(value['copyright_text']) : ''
 
@@ -101,6 +153,7 @@ namespace :exchange do
 							value['media'].split('|').each do |u|
 								if ((key = /representation:([\d]+)/.match(u)))
 									representation_id = key[1]
+									
 									m = nil
 									if ((cl = CollectiveaccessLink.where(key: key.to_s, id: sourceable_ids).first) && cl.id)
 										m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
@@ -122,13 +175,16 @@ namespace :exchange do
 				end
 			end
 
+            synclog.num_updated = update_count
+            synclog.save
+
 			# query indexing data service
 			object_list_for_search = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
 																											 url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
 																											 port: ENV['COLLECTIVEACCESS_PORT'].to_i,
 																											 endpoint: 'exchangeObjectListForSearch',
 																											 get_params: {
-																													 q: query,
+																													 q: query_limit,
 																													 start: start,
 																													 limit: limit,
 																													 noCache: Rails.env.development? ? 1 : 0
@@ -139,12 +195,28 @@ namespace :exchange do
 			# add indexing data
 			object_list_for_search.each do |_, value|
 				if value.is_a?(Hash) && value['collectiveaccess_id'].present?
+				    
+			        valid_collectiveaccess_ids.push(value['collectiveaccess_id'].to_i)
+			        
 					log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
 					if (r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first)
 						puts "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
 						value['on_display'] = value['current_location'] ? 1 : 0
+						
+						
+						value['start_date'] = nil
+						value['end_date'] = nil
+						if value['date_created_sortable']
+                            date_list = value['date_created_sortable'].split("|")
+                            if(date_list[0]) 
+                                date_bounds = date_list[0].split("/")
+                                value['start_date'] = date_bounds[0] if date_bounds[0]
+                                value['end_date'] = date_bounds[1] if date_bounds[1]
+                            end
+                        end
+						
 
-						r.update(indexing_data: JSON.generate(value), location: value['current_location'], on_display: value['current_location'] ? true : false)
+						r.update(indexing_data: JSON.generate(value), location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'])
 					end
 				end
 			end
@@ -157,6 +229,7 @@ namespace :exchange do
 			# end
 
 		end while object_list_for_display.size > 1
+		
 
 		log.info "Task finished at #{Time.now}"
 	end
@@ -209,6 +282,12 @@ namespace :exchange do
 		#Version.destroy_all
 		Link.destroy_all
 		Resource.destroy_all
+		SyncLog.destroy_all
+	end
+	
+	desc 'Clear CA sync log, forcing full resync with CA on next use of refresh_umma_collections_data'
+	task :clean_sync_log => :environment do
+		SyncLog.destroy_all
 	end
 
 	desc 'Regenerate media previews'

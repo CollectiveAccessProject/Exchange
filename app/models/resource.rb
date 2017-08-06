@@ -2,24 +2,24 @@ class Resource < ActiveRecord::Base
   rolify
   ratyrate_rateable "quality"
 
-  has_many :related_resources, -> { order 'related_resources.rank' }, :dependent => :delete_all
+  has_many :related_resources, -> { order 'related_resources.rank' }, :dependent => :destroy
 
-  has_many :resources, through: 'related_resources', source: :related
+  has_many :resources, through: 'related_resources', source: :related, :dependent => :destroy
 
-  has_many :resource_hierarchies, -> { order 'resource_hierarchies.rank' },  :dependent => :delete_all
-  has_many :children, -> { order 'resource_hierarchies.rank' }, through: 'resource_hierarchies', source: :child_resource
+  has_many :resource_hierarchies, -> { order 'resource_hierarchies.rank' },  :dependent => :destroy
+  has_many :children, -> { order 'resource_hierarchies.rank' }, through: 'resource_hierarchies', source: :child_resource, :dependent => :destroy
 
-  has_many :media_files, -> { order 'media_files.rank' },  :dependent => :delete_all
+  has_many :media_files, -> { order 'media_files.rank' },  :dependent => :destroy
   has_many :links, -> { order 'links.rank' }
   has_many :favorites
 
-  has_many :resources_users, :dependent => :delete_all
-  has_many :resources_groups, :dependent => :delete_all
+  has_many :resources_users, :dependent => :destroy
+  has_many :resources_groups, :dependent => :destroy
 
   has_many :users, through: 'resources_users'
   belongs_to :users, class_name: 'User', foreign_key: 'author_id'
 
-  has_many :resources_vocabulary_terms, class_name: 'ResourcesVocabularyTerm',  :dependent => :delete_all
+  has_many :resources_vocabulary_terms, class_name: 'ResourcesVocabularyTerm',  :dependent => :destroy
   has_many :vocabulary_terms, through: :resources_vocabulary_terms, class_name: 'VocabularyTerm'
   has_many :vocabulary_term_synonyms, through: :vocabulary_terms, class_name: 'VocabularyTermSynonym'
 
@@ -86,20 +86,27 @@ class Resource < ActiveRecord::Base
 
   # ElasticSearch mappings
   settings do
+    mappings _all: {
+        type: "string", analyzer: "english", search_analyzer: "english"
+      }
     mappings dynamic: true do
-      indexes :title, type: 'string', analyzer: 'standard', fields: {
+      indexes :subtitle, type: 'string',analyzer: 'english'
+      indexes :source, type: 'string',analyzer: 'english'
+      indexes :copyright_notes, type: 'string',analyzer: 'english'
+      indexes :location, type: 'string',analyzer: 'english'
+      indexes :title, type: 'string', analyzer: 'english', fields: {
           raw: {
               type: 'string',
               index: 'not_analyzed'
           }
       }
-      indexes :idno, type: 'string', analyzer: 'standard', fields: {
+      indexes :idno, type: 'string', analyzer: 'english', fields: {
           raw: {
               type: 'string',
               index: 'not_analyzed'
           }
       }
-      indexes :artist, type: 'string', analyzer: 'standard', fields: {
+      indexes :artist, type: 'string', analyzer: 'english', fields: {
           raw: {
               type: 'string',
               index: 'not_analyzed'
@@ -637,7 +644,7 @@ class Resource < ActiveRecord::Base
     length = WillPaginate.per_page if (!length)
 	query_proc.gsub!(/author_id:([0-9]+)/, '(author_id:\1 OR user_id:\1)')
     # Quote parts of query that appear to be identifiers
-    query_proc.gsub!(/(?<![A-Za-z])([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
+    query_proc.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
 
     acl_str = ["access:1"]
@@ -665,7 +672,8 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    default_operator: "AND",
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -698,7 +706,8 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    default_operator: "AND",
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -728,7 +737,8 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s
+                    default_operator: "AND",
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s
                 }
             }
         }
@@ -760,7 +770,8 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::EXHIBITION.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    default_operator: "AND",
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::EXHIBITION.to_s + " AND (" + acl_str.join(" OR ") + ")"
                 }
             }
         }
@@ -792,7 +803,8 @@ class Resource < ActiveRecord::Base
         qdef = {
             query: {
                 query_string:  {
-                    query: query_proc + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::CRCSET.to_s + " AND access:1"
+                    default_operator: "AND",
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::CRCSET.to_s + " AND access:1"
                 }
             }
         }
@@ -909,6 +921,9 @@ class Resource < ActiveRecord::Base
 
             if (f == 'on_display')
                 query_elements.push(f + ':' + (v ? "1" : "0"))
+            elsif (f == 'date_created')
+                query_elements.push('start_date:<=' + v + '.1231232359')
+                query_elements.push('end_date:>=' + v)
             else
                 query_elements.push(f + ':"' + v + '"')
             end

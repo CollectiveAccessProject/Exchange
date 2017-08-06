@@ -1,4 +1,4 @@
 <%=
   size = media_size_for_version(version)
-  image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
+  image_tag plugin_model.media_file.thumbnail.thumb(size[:area]).url, alt: plugin_model.media_file.alt_text, title: plugin_model.media_file.alt_text if (defined? plugin_model.media_file.thumbnail.stored? && plugin_model.media_file.thumbnail.stored?)
 %>

@@ -74,13 +74,20 @@ class QuickSearchController < ApplicationController
     params.permit(:query, :q, :page, :type, :length, :sort)
     @query = params[:q] if (!(@query = params[:query]))
     @query = "*" if (@query and @query.length == 0)
-    @query = @query.gsub(/[^[:word:]\s\/\-\.\:\_\*]/, '') if @query
+    
+    @query_proc = @query.dup
+    
+    @query_proc = @query.gsub(/[^[:word:]\s\/\-\.\:\_\*\"]/, '') if @query_proc
     @page = params[:page].to_i
     @page = 1 if (@page < 1)
     @type = params[:type]   # restrict search to a specific result type (resources, collections, collection_objects, exhibitions)
 
     @length = params[:length].to_i
     @sort = params[:sort]
+    
+    
+    # rewrite for date search
+    @query_proc = @query_proc.gsub(/date_created:([\d]+)/, '(start_date:<=\\1' + '.1231232359' + ' AND end_date:>=\\1)') if @query_proc
 
     session[:items_per_page] = {} if (!session[:items_per_page])
     ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
@@ -111,7 +118,7 @@ class QuickSearchController < ApplicationController
       @query = res[:query]
       @query_for_display = res[:query_for_display]
     else
-      res = Resource::quicksearch(@query, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort], user: current_user)
+      res = Resource::quicksearch(@query_proc, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort], user: current_user)
     end
 
     if (@type)

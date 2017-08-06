@@ -167,7 +167,7 @@ module ApplicationHelper
         {
             id: "date_created",
             field: "date_created",
-            label: "Date created",
+            label: "Year created",
             type: "string"
         },
         {
