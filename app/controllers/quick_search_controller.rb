@@ -75,7 +75,7 @@ class QuickSearchController < ApplicationController
     @query = params[:q] if (!(@query = params[:query]))
     @query = "*" if (@query and @query.length == 0)
     
-    @query_proc = @query.dup
+    @query_proc = @query.dup if @query
     
     @query_proc = @query.gsub(/[^[:word:]\s\/\-\.\:\_\*\"]/, '') if @query_proc
     @page = params[:page].to_i
