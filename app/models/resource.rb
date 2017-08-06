@@ -838,6 +838,7 @@ class Resource < ActiveRecord::Base
     length = WillPaginate.per_page if (!length)
 
     query_elements = []
+    query_elements_string = []  # used a pre-rewritten query
     query_display = []
     query_values = {'type' => resource_type }
 
@@ -907,6 +908,8 @@ class Resource < ActiveRecord::Base
       end
 
     end
+    
+    query_elements_string = query_elements.dup
 
     case resource_type
       when Resource::RESOURCE
@@ -929,6 +932,8 @@ class Resource < ActiveRecord::Base
             end
             query_display.push(l + ":" +v)
             query_values[f] = v
+            
+            query_elements_string.push(f + ':"' + v + '"')
           end
         end
       when Resource::EXHIBITION
@@ -939,6 +944,7 @@ class Resource < ActiveRecord::Base
             query_elements.push(f + ':"' + v + '"')
             query_display.push(l + ":" +v)
             query_values[f] = v
+            query_elements_string.push(f + ':"' + v + '"')
           end
         end
       else
@@ -1083,7 +1089,7 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, query_for_display: query_for_display, query_elements: query_elements, query_values: query_values, query: query}
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, query_for_display: query_for_display, query_elements: query_elements, query_values: query_values, query: query, query_string: query_elements_string.join(" AND ")}
   end
 
   def destroy

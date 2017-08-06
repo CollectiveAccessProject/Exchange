@@ -87,7 +87,7 @@ class QuickSearchController < ApplicationController
     
     
     # rewrite for date search
-    @query_proc = @query_proc.gsub(/date_created:([\d]+)/, '(start_date:<=\\1' + '.1231232359' + ' AND end_date:>=\\1)') if @query_proc
+    @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*/, '(start_date:<=\\1' + '.1231232359' + ' AND end_date:>=\\1)') if @query_proc
 
     session[:items_per_page] = {} if (!session[:items_per_page])
     ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
@@ -115,7 +115,7 @@ class QuickSearchController < ApplicationController
       )
       res = Resource::advancedsearch(params, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort], user: current_user)
 
-      @query = res[:query]
+      @query = res[:query_string]
       @query_for_display = res[:query_for_display]
     else
       res = Resource::quicksearch(@query_proc, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort], user: current_user)
