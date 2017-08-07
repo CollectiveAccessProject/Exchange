@@ -99,7 +99,7 @@ namespace :exchange do
 																												}
 
 			log.info "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
-			print "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
+			#print "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
 
 			# add 'main' record data with hardcoded mapping
 			object_list_for_display.each do |_, value|
@@ -215,8 +215,14 @@ namespace :exchange do
                             end
                         end
 						
-
-						r.update(indexing_data: JSON.generate(value), location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'])
+						value['style'] = '' if !value['style'] or value['style'] == '-'
+						value['classification'] = '' if !value['classification'] or value['classification'] == '-'
+						value['additional_classification'] = '' if !value['additional_classification'] or value['additional_classification'] == '-'
+						value['medium'] = '' if !value['medium'] or value['medium'] == '-'
+						value['support'] = '' if !value['support'] or value['support'] == '-'
+						value['artist_nationality'] = '' if !value['artist_nationality'] or value['artist_nationality'] == '-'
+						
+						r.update(indexing_data: JSON.generate(value), classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
 					end
 				end
 			end

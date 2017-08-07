@@ -128,7 +128,7 @@ module ApplicationHelper
         },
         {
             id: "idno",
-            field: "idno",
+            field: "collection_identifier",
             label: "Collection object identifier",
             type: "string"
         },
@@ -167,8 +167,8 @@ module ApplicationHelper
         {
             id: "date_created",
             field: "date_created",
-            label: "Year created",
-            type: "string"
+            label: "Date created",
+            type: "integer"
         },
         {
             id: "credit_line",
@@ -257,4 +257,30 @@ def get_current_locations_for_objects
     end
 
     options_for_select(locs)
+end
+
+def get_field_values_for_objects(f)
+    vals = []
+    Resource.select(f).distinct.order(f).each do|l|
+        next if (!l or !l[f] or (l[f].length == 0))
+        vals.push(l[f])
+    end
+    
+    if (f == 'classification') 
+        Resource.select('additional_classification').distinct.order('additional_classification').each do|l|
+            next if (!l or !l['additional_classification'] or (l['additional_classification'].length == 0))
+            vals.push(l['additional_classification'])
+        end
+    end
+    
+        
+       vals = vals.collect { |f| f.strip.downcase.split(/;/) }.flatten.select { |f| f.strip != '-'}.uniq.sort
+        
+        opts = []
+        vals.each do |v| 
+            opts.push([v, v])
+        end
+    opts.unshift(['None', ' '])
+
+    options_for_select(opts)
 end

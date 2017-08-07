@@ -91,6 +91,7 @@ class QuickSearchController < ApplicationController
     
     
     # rewrite for date search
+    @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i, '(start_date:>=\\1' + ' AND end_date:<=\\3)') if @query_proc
     @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*/, '(start_date:<=\\1' + ' AND end_date:>=\\1)') if @query_proc
 
     session[:items_per_page] = {} if (!session[:items_per_page])
@@ -113,7 +114,7 @@ class QuickSearchController < ApplicationController
     if (options && options[:advanced])
       params.permit(:type,
                     :title, :keywords, :style, :medium, :classification, :additional_classification,
-                    :artist, :artist_nationality, :credit_line, :places, :on_display,
+                    :artist, :artist_nationality, :credit_line, :places, :on_display, :collection_identifier,
                     :date_created, :other_dates, :location, :exhibition_artist, :exhibition_artist_nationality, :exhibition_dates, :exhibition_location,
                     :min_rating, :max_rating
       )

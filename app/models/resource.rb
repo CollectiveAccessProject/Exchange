@@ -921,15 +921,22 @@ class Resource < ActiveRecord::Base
         # collection - no extra fields
       when Resource::COLLECTION_OBJECT
         # collection object
-        {'style' => 'Style, Group, Movement', 'medium' => 'Medium and Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
+        {'collection_identifier' => 'Identifier', 'style' => 'Style, Group, Movement', 'medium' => 'Medium', 'support' => 'Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
           if (params[f] && (params[f].strip.length > 0))
             v = params[f].gsub(/["']+/, '')
 
             if (f == 'on_display')
                 query_elements.push(f + ':' + (v ? "1" : "0"))
             elsif (f == 'date_created')
-                query_elements.push('start_date:<=' + v)
-                query_elements.push('end_date:>=' + v)
+            
+                m = /["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i.match(v)
+                if m
+                    query_elements.push('start_date:>=' + m[1])
+                    query_elements.push('end_date:<=' + m[3])
+                else
+                    query_elements.push('start_date:<=' + v)
+                    query_elements.push('end_date:>=' + v)
+                end
             else
                 query_elements.push(f + ':"' + v + '"')
             end

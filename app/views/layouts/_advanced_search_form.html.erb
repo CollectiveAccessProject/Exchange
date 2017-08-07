@@ -80,25 +80,35 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advStyle">Style, Group, Movement</label>
-              <input class="form-control" type="text" name="style" id="advStyle">
+              <%= 
+                select_tag(:style, get_field_values_for_objects('style'), style: "width: 100%") 
+                %>
             </div>
           </div>
           <div class="col-sm-3">
             <div class="form-group">
-              <label class="control-label" for="advMedium">Medium and Support</label>
-              <input class="form-control" type="text" name="medium" id="advMedium">
+              <label class="control-label" for="advMedium">Medium</label>
+             <%= 
+                select_tag(:medium, get_field_values_for_objects('medium'), style: "width: 100%") 
+                %>
+              
             </div>
           </div>
           <div class="col-sm-3">
             <div class="form-group">
-              <label class="control-label" for="advClassification">Classification/ Object Type</label>
-              <input class="form-control" type="text" name="classification" id="advClassification">
+              <label class="control-label" for="advMedium">Support</label>
+             <%= 
+                select_tag(:support, get_field_values_for_objects('support'), style: "width: 100%") 
+                %>
+              
             </div>
           </div>
           <div class="col-sm-3">
             <div class="form-group">
-              <label class="control-label" for="advAdditionalClassification">Additional Classification/ Object Type</label>
-              <input class="form-control" type="text" name="additional_classification" id="advAdditionalClassification">
+              <label class="control-label" for="advClassification">Classification / Object Type</label>
+               <%= 
+                select_tag(:classification, get_field_values_for_objects('classification'), style: "width: 100%") 
+                %>
             </div>
           </div>
           <div class="col-sm-3">
@@ -110,7 +120,9 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advArtistNationality">Artist Maker Nationality</label>
-              <input class="form-control" type="text" name="artist_nationality" id="advArtistNationality">
+              <%= 
+                select_tag(:artist_nationality, get_field_values_for_objects('artist_nationality'), style: "width: 100%") 
+                %>
             </div>
           </div>
           <div class="col-sm-3">
@@ -141,8 +153,15 @@
           </div>
           <div class="col-sm-3">
             <div class="form-group">
-              <label class="control-label" for="advDateCreated">Year Created</label>
+              <label class="control-label" for="advDateCreated">Date Created</label>
+              <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Enter a year, or a range of years separated by 'to' (Ex. 1984 to 1988)"> <span class="glyphicon glyphicon-info-sign"></span></small>
               <input class="form-control" type="text" name="date_created" id="advDateCreated">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advDateCreated">Identifier</label>
+              <input class="form-control" type="text" name="collection_identifier" id="advIdentifier">
             </div>
           </div>
         </div>
