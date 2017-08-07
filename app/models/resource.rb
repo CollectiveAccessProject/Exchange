@@ -204,6 +204,9 @@ class Resource < ActiveRecord::Base
     record['role'] = record['affiliation'] = self.roles.pluck("name")
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
     record['tag'] = self.tags.pluck("tag")
+    
+    record['start_date'] = record['start_date'].to_i
+    record['end_date'] = record['end_date'].to_i
 
     # Index ACL values
     record['read_users'] = ResourcesUser.where({resource_id: self.id, access: 1}).pluck(:user_id)
@@ -616,7 +619,7 @@ class Resource < ActiveRecord::Base
   #
   # Translate sort options to ElasticSearch sortable fields
   #
-  def self.searchSortForType(sortsByType, type=nil)
+  def self.search_sort_for_type(sortsByType, type=nil)
     sort = sortsByType[type] if (type && sortsByType && sortsByType[type])
 
     case sort
@@ -667,7 +670,7 @@ class Resource < ActiveRecord::Base
         resources_length = length
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
-        sort = searchSortForType(options[:sortsByType], 'resource')
+        sort = search_sort_for_type(options[:sortsByType], 'resource')
 
         qdef = {
             query: {
@@ -701,7 +704,7 @@ class Resource < ActiveRecord::Base
         collections_length = length
         collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
-        sort = searchSortForType(options[:sortsByType], 'collection')
+        sort = search_sort_for_type(options[:sortsByType], 'collection')
 
         qdef = {
             query: {
@@ -731,7 +734,7 @@ class Resource < ActiveRecord::Base
         collection_objects_length = length
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
-        sort = searchSortForType(options[:sortsByType], 'collection_object')
+        sort = search_sort_for_type(options[:sortsByType], 'collection_object')
 
 		# We don't check access on collection objects – they're all public no matter their settings
         qdef = {
@@ -765,7 +768,7 @@ class Resource < ActiveRecord::Base
         exhibitions_length = length
         exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
-        sort = searchSortForType(options[:sortsByType], 'exhibition')
+        sort = search_sort_for_type(options[:sortsByType], 'exhibition')
 
         qdef = {
             query: {
@@ -798,7 +801,7 @@ class Resource < ActiveRecord::Base
         crc_sets_length = length
         crc_sets_length = options[:lengthsByType]['crc_set'] if (options[:lengthsByType] && options[:lengthsByType]['crc_set'])
 
-        sort = searchSortForType(options[:sortsByType], 'crc_set')
+        sort = search_sort_for_type(options[:sortsByType], 'crc_set')
 
         qdef = {
             query: {
@@ -925,7 +928,7 @@ class Resource < ActiveRecord::Base
             if (f == 'on_display')
                 query_elements.push(f + ':' + (v ? "1" : "0"))
             elsif (f == 'date_created')
-                query_elements.push('start_date:<=' + v + '.1231232359')
+                query_elements.push('start_date:<=' + v)
                 query_elements.push('end_date:>=' + v)
             else
                 query_elements.push(f + ':"' + v + '"')
@@ -965,7 +968,7 @@ class Resource < ActiveRecord::Base
         resources_length = length
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
-        sort = searchSortForType(options[:sortsByType], 'resource')
+        sort = search_sort_for_type(options[:sortsByType], 'resource')
 
         qdef = {
             query: {
@@ -998,7 +1001,7 @@ class Resource < ActiveRecord::Base
       collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
       begin
-        sort = searchSortForType(options[:sortsByType], 'collection')
+        sort = search_sort_for_type(options[:sortsByType], 'collection')
 
         qdef = {
             query: {
@@ -1030,7 +1033,7 @@ class Resource < ActiveRecord::Base
         collection_objects_length = length
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
-        sort = searchSortForType(options[:sortsByType], 'collection_object')
+        sort = search_sort_for_type(options[:sortsByType], 'collection_object')
 
         qdef = {
             query: {
@@ -1062,7 +1065,7 @@ class Resource < ActiveRecord::Base
       exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
       begin
-        sort = searchSortForType(options[:sortsByType], 'exhibition')
+        sort = search_sort_for_type(options[:sortsByType], 'exhibition')
 
         qdef = {
             query: {

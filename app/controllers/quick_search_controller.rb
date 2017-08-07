@@ -18,7 +18,7 @@ class QuickSearchController < ApplicationController
     begin
       setup
     rescue Exception => e
-      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
 
@@ -26,7 +26,8 @@ class QuickSearchController < ApplicationController
     begin
       setup
     rescue Exception => e
-      raise "Search error: " + e.message
+      #raise "Search error: " + e.message
+      redirect_to("/", :flash => { :error => "Search could not be completed"})
     end
 
     params.permit(:type, :length)
@@ -45,7 +46,9 @@ class QuickSearchController < ApplicationController
       when (type == "crc_set")
         resp = {:status => :ok, :page => @page, :type => type, :length => l, :query => @query, :html => render_to_string("quick_search/_crc_set_results", layout: false)}
       else
-        raise "Invalid type"
+        #raise "Invalid type"
+        redirect_to("/", :flash => { :error => "Search could not be completed: invalid type" })
+        return
     end
 
     respond_to do |format|
@@ -59,7 +62,8 @@ class QuickSearchController < ApplicationController
     begin
       setup(advanced:true)
     rescue Exception => e
-      raise "Search error: " + e.message
+      #raise "Search error: " + e.message
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
 
@@ -87,7 +91,7 @@ class QuickSearchController < ApplicationController
     
     
     # rewrite for date search
-    @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*/, '(start_date:<=\\1' + '.1231232359' + ' AND end_date:>=\\1)') if @query_proc
+    @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*/, '(start_date:<=\\1' + ' AND end_date:>=\\1)') if @query_proc
 
     session[:items_per_page] = {} if (!session[:items_per_page])
     ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
@@ -254,7 +258,8 @@ class QuickSearchController < ApplicationController
       }
 
     rescue Exception => e
-      raise "Search error: " + e.message + @query
+      #raise "Search error: " + e.message + @query
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
 
