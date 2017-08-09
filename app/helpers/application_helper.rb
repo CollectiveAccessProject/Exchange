@@ -273,9 +273,11 @@ def get_field_values_for_objects(f)
         end
     end
     
-        
-       vals = vals.collect { |f| f.strip.downcase.split(/;/) }.flatten.select { |f| f.strip != '-'}.uniq.sort
-        
+    if (f == 'artist_nationality') or (f == 'style') 
+        vals = vals.collect { |f| f.strip.split(/;/) }.flatten.select { |f| f.strip != '-'}.uniq.sort
+    else
+        vals = vals.collect { |f| f.strip.downcase.split(/;/) }.flatten.select { |f| f.strip != '-'}.uniq.sort
+    end
         opts = []
         vals.each do |v| 
             opts.push([v, v])

@@ -88,19 +88,13 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advMedium">Medium</label>
-             <%= 
-                select_tag(:medium, get_field_values_for_objects('medium'), style: "width: 100%") 
-                %>
-              
+              <input class="form-control" type="text" name="medium" id="advIdentifier">
             </div>
           </div>
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advMedium">Support</label>
-             <%= 
-                select_tag(:support, get_field_values_for_objects('support'), style: "width: 100%") 
-                %>
-              
+              <input class="form-control" type="text" name="support" id="advIdentifier">
             </div>
           </div>
           <div class="col-sm-3">
@@ -110,6 +104,7 @@
                 select_tag(:classification, get_field_values_for_objects('classification'), style: "width: 100%") 
                 %>
             </div>
+            <br/>
           </div>
           <div class="col-sm-3">
             <div class="form-group">
@@ -133,8 +128,15 @@
           </div>
           <div class="col-sm-3">
             <div class="form-group">
-              <label class="control-label" for="advPlaces">Related Places</label>
-              <input class="form-control" type="text" name="places" id="advPlaces">
+              <label class="control-label" for="advDateCreated">Object Identifier</label>
+              <input class="form-control" type="text" name="collection_identifier" id="advIdentifier">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advDateCreated">Date Created</label>
+              <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Enter a year, or a range of years separated by 'to' (Ex. 1984 to 1988)"> <span class="glyphicon glyphicon-info-sign"></span></small>
+              <input class="form-control" type="text" name="date_created" id="advDateCreated">
             </div>
           </div>
           <div class="col-sm-3">
@@ -149,19 +151,6 @@
                 #autocomplete_field_tag(:location, "", autocomplete_current_location_path(0), :"data-autocomplete-label" => "Sorry, no matches found.", :size => 40, class:'form-control', id:'advCurrentLocation') 
                     select_tag(:location, get_current_locations_for_objects, style: "width: 100%") 
                 %>
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advDateCreated">Date Created</label>
-              <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Enter a year, or a range of years separated by 'to' (Ex. 1984 to 1988)"> <span class="glyphicon glyphicon-info-sign"></span></small>
-              <input class="form-control" type="text" name="date_created" id="advDateCreated">
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advDateCreated">Identifier</label>
-              <input class="form-control" type="text" name="collection_identifier" id="advIdentifier">
             </div>
           </div>
         </div>
