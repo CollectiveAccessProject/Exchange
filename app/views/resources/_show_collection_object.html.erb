@@ -121,19 +121,21 @@
 				  <div>
 					<%= c.comment %>
 					<br/><small>&mdash; by <i><%= c.user_name %>  (<%= c.updated_at.to_time.strftime(Rails.application.config.x.timestamp_format) %>)</i></small>
-					<% if current_user.has_role?(:admin) %>
+					<% if current_user && current_user.has_role?(:admin) %>
 						<%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, remove_comment_from_resources_path(@resource) + "?comment_id=" + c.id.to_s, {remote: true, class: :commentRemoveLink}) %>
 					<% end %>
 				  </div>
 			  <% end %>
-			  <%= form_tag '/resources/add_comment' do %>
-				  <%= hidden_field_tag 'id', @resource.id %>
-				  <div class="form-group">
-					<label>Add Comment</label>
-					<%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
-				  </div>
-				  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
-			  <% end %>
+			  <% if current_user %>
+				  <%= form_tag '/resources/add_comment' do %>
+					  <%= hidden_field_tag 'id', @resource.id %>
+					  <div class="form-group">
+						<label>Add Comment</label>
+						<%= text_area_tag 'comment[comment]', nil, class:'form-control' %>
+					  </div>
+					  <%= submit_tag 'Save', class:'btn btn-default btn-sm' %>
+				  <% end %>
+			<% end %>
 			</div>
 			<% # end %>
 		  </div>
