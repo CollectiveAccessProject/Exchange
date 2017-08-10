@@ -38,6 +38,39 @@
 						  <div class="flash-notice" id="form-status-message"></div>
 						</div>
 						<% if media_file.get_media_class(media_file.sourceable_type).to_s == 'CollectionobjectLink' %>
+							<%
+								col = CollectionobjectLink.find(media_file.sourceable_id)
+								rc = Resource.find(col.resource_id)
+								cap_fields = JSON.parse(rc.indexing_data)
+								short_caption = ''
+								long_caption = ''
+								if cap_fields['artist']
+									short_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
+									long_caption += sanitize(cap_fields['artist'].to_s + '<br/>')
+								end
+								if cap_fields['title']
+									short_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em>')
+									long_caption += sanitize('<em>' + cap_fields['title'].to_s + '</em><br/>')
+								end
+								material_fields = ''
+								if cap_fields['support']
+									material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
+								else
+									material_fields = cap_fields['medium'].to_s
+								end
+								if cap_fields['date_created']
+									long_caption += sanitize(cap_fields['date_created'].to_s + '<br/>')
+								end
+								if material_fields != ''
+									long_caption += sanitize(material_fields.to_s + '<br/>')
+								end
+								if cap_fields['credit_line']
+									long_caption += sanitize(cap_fields['credit_line'].to_s + '<br/>')
+								end
+								if cap_fields['idno']
+									long_caption += sanitize(cap_fields['idno'].to_s)
+								end
+							%>
 							<div class="row">
 								<div class="col-sm-6">
 									<div id="<%= media_file.id %>_caption_type" class="captionRadios">
@@ -53,11 +86,16 @@
 								</div>
 							</div>
 							<script>
-								//var captions = captions || {}
-								//captions['<%= media_file.id %>'] = {}
-								//captions['<%= media_file.id %>']['short_caption'] = '<%# escape_javascript(short_caption.html_safe) %>';
-								//captions['<%= media_file.id %>']['long_caption'] = '<%# escape_javascript(long_caption.html_safe) %>';
-
+								var captions = captions || {}
+								captions['<%= media_file.id %>'] = {}
+								captions['<%= media_file.id %>']['short_caption'] = '<%= escape_javascript(short_caption).html_safe %>';
+								captions['<%= media_file.id %>']['long_caption'] = '<%= escape_javascript(long_caption).html_safe %>';
+								var caption_type = '<%= media_file.caption_type %>';
+								set_caption_display('<%= media_file.id %>', caption_type);
+								$('#<%= media_file.id %>_caption_type').on('click', function(){
+									caption_val = $("#<%= media_file.id %>_caption_type input:radio[name = 'media_file[caption_type]']:checked").val();
+									set_caption_display('<%= media_file.id %>', caption_val);
+								});
 							</script>
 
 							<div class="<%= media_file.id %>_caption_display captionDisplay">
@@ -192,4 +230,33 @@
 	$(document).ready(function(){
 		$('.moResults').append($('#modalScrollList').html());
 	});
+</script>
+<script>
+function set_caption_display(scope_id, caption_val){
+	var caption_field = '.' +  scope_id + '_caption_field';
+	var caption_display = '.' +  scope_id + '_caption_display';
+	var caption_text_field = '#' + scope_id + '_caption_text';
+	if(caption_val == 1){
+		$(caption_display).hide();
+		$(caption_field).show();
+		$(caption_field + ' .summernote').prop('disabled', false);
+		$(caption_text_field).prop("disabled", true);
+	} else {
+		$(caption_text_field).prop("disabled", false);
+		if(caption_val == 2){
+			var caption_head = '<h5>No Caption</h5>';
+			var caption_text = ' ';
+		} else if(caption_val == 3) {
+			var caption_head = captions[scope_id]['short_caption'];
+			var caption_text = captions[scope_id]['short_caption'];
+		} else if(caption_val == 4) {
+			var caption_head = captions[scope_id]['long_caption'];
+			var caption_text = captions[scope_id]['long_caption'];
+		}
+		$(caption_display).show().html(caption_head);
+		$(caption_field + ' .summernote').prop('disabled', true);
+		$(caption_field).hide();
+		$(caption_text_field).prop("value", caption_text);
+	}
+}
 </script>
