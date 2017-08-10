@@ -388,7 +388,7 @@
 						<h4>Created by</h4><%= link_to sanitize(author_name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author_id:' + @resource.author_id.to_s %> <i class="fa fa-external-link-square" aria-hidden="true"></i>
 				
 					<% else %>
-						<h4>Created by</h4><%= link_to sanitize(@resource.user.name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author_id:"' + @resource.user.id.to_s %> <i class="fa fa-external-link-square" aria-hidden="true"></i>
+						<h4>Created by</h4><%= link_to sanitize(@resource.user.name + '<br/><strong>Other Resources by this Author</strong>'), '/quick_search/query?utf8=✓&q=author_id:' + @resource.user.id.to_s %> <i class="fa fa-external-link-square" aria-hidden="true"></i>
 					<% end %>
 				  </div><!-- end unit -->  
 				  <% if (@resource.copyright_license) %>

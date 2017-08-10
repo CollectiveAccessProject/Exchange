@@ -207,11 +207,15 @@ console.log("ranks", ranks);
         jQuery('#media_editor_modal').html('');
     });
     
-    //
+    // Block add to collection modal from appearing for duration of session
     jQuery('.resource-coll-opt-out').on('click', function(e) {
         window.sessionStorage.setItem("rcoll_optout_" + jQuery(e.currentTarget).data('resource_id'), "1");
     });
     
+    // Block add to collection modal from appearing ever again
+    jQuery('#res_collection_optout_perm').on('click', function(e){
+    	Cookies.set('rcoll_optout_perm_' + jQuery(e.currentTarget).data('resource_id'), true, {expires: 10000});
+    });
 
     //
     // AJAX tagging

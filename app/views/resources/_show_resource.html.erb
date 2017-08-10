@@ -55,7 +55,7 @@
         if f.access == 1
           available_media = available_media + 1
           media_file_list.push(f.id)
-          if f.access == 1
+          if f.sourceable == 1
 			modal_scroll += '<li class="moRelated"><a class="modalOpen" data-dismiss="modal" href="#" id="' + 'modal' + f.sourceable.class.to_s + f.sourceable.id.to_s + '" data-link-target="#' + f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link">'
 			modal_scroll += f.sourceable.preview :thumbnail
 			modal_scroll += '</a></li>'

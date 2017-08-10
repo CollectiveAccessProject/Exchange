@@ -54,7 +54,16 @@
             <a class="btn btn-default resource-coll-opt-out" data-resource_id="<%= @resource.id.to_s %>" data-dismiss="modal" aria-label="Close">Add it another time</a>
           </div>
         </div>
+        <div class="row text-center">
+        	<div id="res_collection_optout_perm_container" class="col-sm-4 col-md-3 col-sm-offset-8 col-md-offset-9 text-center">
+        	</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+<script>
+	if(!Cookies.get('rcoll_optout_perm_<%= @resource.id.to_s %>')){
+		$('#res_collection_optout_perm_container').html('<small><a href="#" id="res_collection_optout_perm" data-resource_id="<%= @resource.id.to_s %>" data-dismiss="modal" aria-label="collection_opt_out">Don\'t Ask Again</a></small>');
+	}
+</script>
