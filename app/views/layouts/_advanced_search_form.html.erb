@@ -238,6 +238,24 @@
                     operators: ['equal', 'not_equal', 'between', 'begins_with', 'contains'],
                     filters: <%= get_filters_for_query_builder(current_user).to_json.html_safe %>
                 });
+                
+                $('#builderUI').on('afterUpdateRuleOperator.queryBuilder', function(e, r) {
+                    console.log("CHANGE", e, r, r.operator);
+                    if (r.operator.type == 'contains') {
+                        //builderUI_rule_0_value_0
+                        $('select[name=' + r.id + '_value_0]').prop('disabled', true).hide();
+                        if ($('input[name=' + r.id + '_value_0]').length === 0) {
+                            $('select[name=' + r.id + '_value_0]').parent().append("<input class='form-control' type='text' name='" + r.id + "_value_0'/>");
+                        } else {
+                            $('input[name=' + r.id + '_value_0]').prop('disabled', false).show();
+                        }
+                    } else {
+                        $('select[name=' + r.id + '_value_0]').prop('disabled', false).show();
+                        $('input[name=' + r.id + '_value_0]').prop('disabled', true).hide();
+                        console.log("SELECT");
+                    }
+                    e.builder.trigger('change', r);
+                });
 
                 if (sessionStorage.getItem('qrules')) {
                     $('#builderUI').queryBuilder('setRules', JSON.parse(sessionStorage.getItem('qrules')));
@@ -257,7 +275,6 @@
                     }
                     
                     $("#queryBuilderFormQ").val(q);
-                    console.log(q);
                     return true;
                 });
             });
