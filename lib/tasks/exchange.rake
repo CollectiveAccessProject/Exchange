@@ -127,6 +127,7 @@ namespace :exchange do
 
 					if(value['body_text'])
 						body_text = HTMLEntities.new.decode(value['body_text'])
+						body_text = body_text.gsub(/http:\/\/www.umma.umich.edu\/collections\/resources.html/, 'http://umma.umich.edu/request-image')
 						body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([A-Za-z0-9., _\(\)-]+)<\/span>/, '<a href="../../quick_search/query?utf8=true&q=\1:&quot;\2&quot;">\2</a>')
 						body_text_clean = body_text_search.gsub(/<strong>Additional Object [A-Za-z\(\)]+<\/strong><br \/><br \/>/, ' ')
 					end
@@ -235,7 +236,6 @@ namespace :exchange do
 			# end
 
 		end while object_list_for_display.size > 1
-		
 
 		log.info "Task finished at #{Time.now}"
 	end
