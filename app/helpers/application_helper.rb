@@ -72,26 +72,26 @@ module ApplicationHelper
   def get_filters_for_query_builder(current_user=nil)
 
     # TODO: cache these values - we shouldn't hit Elastic every time
-    agg = Resource.search(
-        aggs: {
-            artist_types: { terms: { field: :artist_type}},
-           # place_types: { terms: { field: :place_type}},
-            #artist_nationality: { terms: { field: :artist_nationality}},
-            classification: { terms: { field: :classification}},
-            medium: { terms: { field: :medium}},
-            support: { terms: { field: :support}},
-            keywords: { terms: { field: :keyword}},
-            style: { terms: { field: :style}}
-        }
-    )
-
-    field_values = {}
-    agg.response['aggregations'].each do |aggname, v|
-      field_values[aggname] = []
-      v["buckets"].each do |k|
-        field_values[aggname].push(k['key'])
-      end
-    end
+    # agg = Resource.search(
+#         aggs: {
+#             artist_types: { terms: { field: :artist_type}},
+#            # place_types: { terms: { field: :place_type}},
+#             #artist_nationality: { terms: { field: :artist_nationality}},
+#             #classification: { terms: { field: :classification}},
+#             medium: { terms: { field: :medium}},
+#             #support: { terms: { field: :support}},
+#             keywords: { terms: { field: :keyword}},
+#             #style: { terms: { field: :style}}
+#         }
+#     )
+# 
+#     field_values = {}
+#     agg.response['aggregations'].each do |aggname, v|
+#       field_values[aggname] = []
+#       v["buckets"].each do |k|
+#         field_values[aggname].push(k['key'])
+#       end
+#     end
 
     affiliations = Rails.application.config.x.user_roles.invert
 
@@ -112,13 +112,13 @@ module ApplicationHelper
             field: "author",
             label: "Author",
             type: "string"
-        }, {
+        }, 
+        {
             id: "keyword",
             field: "keyword",
             label: "Keyword",
             type: "string",
-            input: "select",
-            values: field_values["keywords"]
+            input: "text"
         },
         {
             id: "tag",
@@ -148,15 +148,16 @@ module ApplicationHelper
             id: "artist_nationality",
             field: "artist_nationality",
             label: "Artist nationality",
-            type: "string"
+            type: "string",
+            input: "select",
+            values: get_field_values('artist_nationality')
         },
         {
             id: "artist_type",
             field: "artist_type",
             label: "Artist type",
             type: "string",
-            input: "select",
-            values: field_values["artist_types"]
+            input: "text"
         },
         {
             id: "places",
@@ -182,7 +183,7 @@ module ApplicationHelper
             label: "Medium",
             type: "string",
             input: "select",
-            values: field_values["medium"]
+            values: get_field_values('medium')
         },
         {
             id: "support",
@@ -190,7 +191,7 @@ module ApplicationHelper
             label: "Support",
             type: "string",
             input: "select",
-            values: field_values["support"]
+            values: get_field_values('support')
         },
         {
             id: "Classification",
@@ -198,7 +199,7 @@ module ApplicationHelper
             label: "Object classification",
             type: "string",
             input: "select",
-            values: field_values["classification"]
+            values: get_field_values('classification')
         },
         {
             id: "style",
@@ -206,7 +207,7 @@ module ApplicationHelper
             label: "Style or movement",
             type: "string",
             input: "select",
-            values: field_values["style"]
+            values: get_field_values('style')
         },
         {
             id: "rating",
@@ -259,7 +260,9 @@ def get_current_locations_for_objects
     options_for_select(locs)
 end
 
-def get_field_values_for_objects(f)
+def get_field_values(f)
+    return Rails.cache.read("field_values_" + f) if Rails.cache.exist? "field_values_" + f
+    
     vals = []
     Resource.select(f).distinct.order(f).each do|l|
         next if (!l or !l[f] or (l[f].length == 0))
@@ -278,10 +281,17 @@ def get_field_values_for_objects(f)
     else
         vals = vals.collect { |f| f.strip.downcase.split(/;/) }.flatten.select { |f| f.strip != '-'}.uniq.sort
     end
-        opts = []
-        vals.each do |v| 
-            opts.push([v, v])
-        end
+    
+    Rails.cache.write("field_values_" + f, vals)
+    vals
+end
+
+def get_field_values_for_objects(f)
+    vals = get_field_values(f)        
+    opts = []
+    vals.each do |v| 
+        opts.push([v, v])
+    end
     opts.unshift(['None', ' '])
 
     options_for_select(opts)
