@@ -196,7 +196,7 @@ class Resource < ActiveRecord::Base
     end
 
     if (record['resource_type'].to_i == Resource::COLLECTION_OBJECT)
-        record['on_display'] = record['on_display'] ? "1" : "0"
+        record['on_display'] = record['on_display'] == 1 ? "1" : "0"
     end
 
     # pseudo fields

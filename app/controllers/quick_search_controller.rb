@@ -7,11 +7,20 @@ class QuickSearchController < ApplicationController
     term = params[:term]
     mode = params[:mode]
 
-    u = Resource.where(
-        '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?)',
-        "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::RESOURCE])
-    ).order(:id).all
-    render :json => u.map { |r| {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
+    editable_res = ResourcesUser.where('user_id=? AND access>=?', current_user.id, 1)
+    rids = editable_res.map {|x| x.resource_id}
+	
+	if rids and rids.length > 0
+        u = Resource.where(
+            '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?) AND resources.id IN (?)',
+            "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::RESOURCE]), rids
+        ).order(:id).all
+    
+        d = u.map { |r|  {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
+    else 
+        d = []
+    end
+    render :json => d
   end
 
   def query
@@ -93,6 +102,9 @@ class QuickSearchController < ApplicationController
     # rewrite for date search
     @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i, '(start_date:>=\\1' + ' AND end_date:<=\\3)') if @query_proc
     @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*/, '(start_date:<=\\1' + ' AND end_date:>=\\1)') if @query_proc
+
+    # rewrite on_display
+    @query_proc = @query_proc.gsub(/on_display:["]*([A-Za-z]+)["]*/, 'on_display:1') if @query_proc
 
     session[:items_per_page] = {} if (!session[:items_per_page])
     ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
@@ -296,7 +308,6 @@ class QuickSearchController < ApplicationController
 	user_res.each do |us|
 		collections.push(Resource.find(us.id))
 	end
-    #return Resource.where("resource_type = ? AND user_id = ?", Resource::COLLECTION, current_user.id).order(title_sort: :asc)
     return collections
   end
 
@@ -315,7 +326,6 @@ class QuickSearchController < ApplicationController
 	user_res.each do |us|
 		resources.push(Resource.find(us.id))
 	end
-    #return Resource.where("resource_type IN (?) AND user_id = ?", [Resource::COLLECTION, Resource::RESOURCE], current_user.id).order(title_sort: :asc)
     return resources
   end
 end
