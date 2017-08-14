@@ -251,7 +251,7 @@ end
 #
 def get_current_locations_for_objects
     locs = []
-    locs.push(['None', ' '])
+    locs.push(['All galleries', ' '])
     Resource.select(:location).distinct.order(:location).each do|l|
         next if (!l or !l.location or (l.location.length == 0))
         locs.push([l.location, l.location])
