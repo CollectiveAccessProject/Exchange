@@ -7,19 +7,22 @@ class QuickSearchController < ApplicationController
     term = params[:term]
     mode = params[:mode]
 
-    editable_res = ResourcesUser.where('user_id=? AND access>=?', current_user.id, 1)
+    editable_res = ResourcesUser.where('user_id=? AND access >= ?', current_user.id, 1)
     rids = editable_res.map {|x| x.resource_id}
 	
 	if rids and rids.length > 0
         u = Resource.where(
-            '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?) AND resources.id IN (?)',
-            "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::RESOURCE]), rids
+            '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?) AND (resources.id IN (?) OR resources.author_id = ? OR resources.user_id = ?)',
+            "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::RESOURCE]), rids, current_user.id, current_user.id
         ).order(:id).all
-    
-        d = u.map { |r|  {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
     else 
-        d = []
+       u = Resource.where(
+            '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?) AND (resources.author_id = ? OR resources.user_id = ?)',
+            "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::RESOURCE]), current_user.id, current_user.id
+        ).order(:id).all
     end
+        
+    d = u.map { |r|  {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
     render :json => d
   end
 
