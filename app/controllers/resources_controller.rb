@@ -219,7 +219,6 @@ class ResourcesController < ApplicationController
         set_roles
 
         if (parent_id > 0)
-          # TODO: Verify that current user has privs to do this
           parent_res = Resource.find(parent_id)
 	  if(!parent_res.can(:edit, current_user))
 	    redirect_to root_path notice: 'You do not have permission to add materials to this Resource'
@@ -229,7 +228,6 @@ class ResourcesController < ApplicationController
         end
 
         # Set response pointer
-        # TODO: does user have access to resource this is in response to?
         if ((in_response_to_resource_id = params[:in_response_to_resource_id].to_i) > 0)
           parent_resource = Resource.find(in_response_to_resource_id)
           if (!parent_resource.can(:view, current_user))
@@ -240,7 +238,6 @@ class ResourcesController < ApplicationController
         end
 
         # Set resource under newly created collection or resource
-        # TODO: Verify that current user has privs to do this
         if (child_id > 0)
           child = Resource.find(child_id)
 	  if(!child.can(:view, current_user))
@@ -255,8 +252,6 @@ class ResourcesController < ApplicationController
 
         @resource.index_for_search
 
-        #
-        # TODO: does user have access to resource this is in response to?
         if (@resource && @resource.in_response_to_resource_id && (@resource.in_response_to_resource_id > 0))
           parent_resource = Resource.find(@resource.in_response_to_resource_id)
           if (!parent_resource.can(:view, current_user))
@@ -292,7 +287,6 @@ class ResourcesController < ApplicationController
 
     respond_to do |format|
       if (parent_id = params[:parent_id])
-        # TODO: Verify that current user has privs to do this
         if ((in_response_to_resource_id = params[:in_response_to_resource_id].to_i) > 0)
             parent_resource = Resource.find(in_response_to_resource_id)
             if (!parent_resource.can(:edit, current_user))
@@ -359,7 +353,7 @@ class ResourcesController < ApplicationController
   end
 
   def toggle_access
-    # TODO: can user edit this?
+    # can user edit this?
     if (!@resource.can(:edit, current_user))
       redirect_to root_path notice: 'You do not have edit access to that Resource'
       return
@@ -414,7 +408,6 @@ class ResourcesController < ApplicationController
   end
 
   def remove_comment
-    # TODO: make sure user is allowed to do this for this resource
     if(!@resource.can(:edit, current_user))
       redirect_to root_path notice: 'You do not have the ability to remove comments from this resource'
       return
@@ -487,7 +480,6 @@ class ResourcesController < ApplicationController
 
   # add new vocabulary term
   def add_term
-    # TODO: make sure user is allowed to do this for this resource
     if(!@resource.can(:view, current_user) || @resource.settings(:user_interaction).allow_tags != 1)
       redirect_to root_path notice: 'You do not have the ability to add vocabulary terms to this resource'
       return
@@ -850,10 +842,12 @@ class ResourcesController < ApplicationController
     resp = {status: :ok}
 
     # TODO: Check if user has access to resource for which media is being reordered
+    offset = params[:offset].to_i
 
     # get current ranks for media
     current_media = MediaFile.where(resource_id: params[:id]).order(:rank)
     ranks = current_media.pluck(:rank)
+    ranks = ranks.slice(offset, Rails.application.config.x.max_media_per_media_list_page)
 
     params[:ranks].each do |media_id|
       if (mf = MediaFile.where(resource_id: params[:id], id: media_id).first)

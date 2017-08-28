@@ -101,13 +101,15 @@ jQuery(document).ready(function() {
     jQuery("#resource_media_list").sortable();
     jQuery(document).on('sortstop', "#resource_media_list", function(e, ui) {
         var resource_id =  jQuery("#resource_media_list").data("resource_id");
+        var offset =  jQuery("#resource_media_list").data("offset");
+        if (!offset) { offset = 0; }
         var ranks = [];
         jQuery("#resource_media_list .mediaListIcon").each(function(k,m) {
             ranks.push(jQuery(m).data('media_id'));
         });
-console.log("ranks", ranks);
+        
         if (resource_id && (Object.keys(ranks).length > 0)) {
-            jQuery.getJSON("/resources/" + resource_id + "/set_media_order", {ranks: ranks}, function(data) {
+            jQuery.getJSON("/resources/" + resource_id + "/set_media_order", {ranks: ranks, offset: offset}, function(data) {
                 jQuery("#resources-status").slideDown(250);
 
                 jQuery("#resources-status-message").html((data && data.status && (data.status == 'ok')) ? "Saved media order" : "Could not save media sort order: " + data.error);
@@ -588,8 +590,7 @@ jQuery(document).on("ajax:success", ".mediaListPaging", function(e, data) {
 // Media list paging
 jQuery(document).on("ajax:success", ".thumbnailPaging", function(e, data) {
     if(data.status == 'ok') {
-        jQuery("#thumbnailContainer").html(data.html)
-	console.log('Returning data');
+        jQuery("#thumbnailContainer").html(data.html);
     }
     return false;
 });
@@ -609,7 +610,6 @@ function infiniteThumbs(res_id, page, pages, caption, doc_height, scroll_pos){
 	return page;
 }
 function loadThumbs(res_id, page_no, caption){
-	console.log(page_no);
 	$.ajax({
 		url: "/resources/" + res_id + "/load_thumbnails",
 		type: "GET",
