@@ -684,7 +684,7 @@ class ResourcesController < ApplicationController
         if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
           raise StandardError, 'Access Denied'
         end
-        if (@resource.is_collection)
+        if (@resource.is_collection or @resource.is_crc_set)
           if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
             exists = exists + 1
           else
