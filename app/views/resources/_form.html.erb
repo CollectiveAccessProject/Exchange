@@ -124,6 +124,8 @@
                 <%= r.input :title, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Brief description of upcoming visit" : nil %>
                 <% if (!@resource.is_crc_set) %>
                     <%= r.input :subtitle, :input_html => {}, :as => :summernote %>
+                <% else %>
+                    <input type="hidden" name="resource[subtitle]" value=""/>
                 <% end %>
                 <%= r.input :body_text, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Additional information notes regarding your upcoming visit" : nil %>
               </div>
