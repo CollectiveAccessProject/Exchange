@@ -51,7 +51,9 @@
 
               </div>
             </div>
-
+<%
+    if groups_for_user(current_user).length > 0
+%>
             <h4>Groups</h4>
 
             <div class="form-group">
@@ -87,6 +89,7 @@
             <% end %>
         <% end %>
       </div>
+<% end %>
     </div>
 
   </div><!-- end panel-body -->

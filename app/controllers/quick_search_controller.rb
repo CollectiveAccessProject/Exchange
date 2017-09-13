@@ -13,7 +13,7 @@ class QuickSearchController < ApplicationController
 	if rids and rids.length > 0
         u = Resource.where(
             '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?) AND (resources.id IN (?) OR resources.author_id = ? OR resources.user_id = ?)',
-            "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::CRCSET]), rids, current_user.id, current_user.id
+            "%#{term}%", "#{term}%", ((mode == Resource::COLLECTION) ? [Resource::COLLECTION] : [Resource::COLLECTION, Resource::RESOURCE, Resource::CRCSET]), rids, current_user.id, current_user.id
         ).order(:id).all
     else 
        u = Resource.where(
