@@ -135,7 +135,8 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advDateCreated">Date Created</label>
-              <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-content="Enter a year, or a range of years separated by 'to' (Ex. 1984 to 1988)"> <span class="glyphicon glyphicon-info-sign"></span></small>
+              <small class="creationDateSearchHelper" data-toggle="popover" data-trigger="hover" data-content="Enter a year, or a range of years separated by 'to' (Ex. 1984 to 1988)"> <span class="glyphicon glyphicon-info-sign"></span></small>
+
               <input class="form-control" type="text" name="date_created" id="advDateCreated">
             </div>
           </div>
@@ -222,6 +223,9 @@
         $('#advOnDisplay').click(function(){
         	$('#currentLocationField').toggle();
         });
+	$('.creationDateSearchHelper').popover({
+		position: 'top'
+	});
     });
 </script>
 
