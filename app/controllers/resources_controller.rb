@@ -654,6 +654,7 @@ class ResourcesController < ApplicationController
         raise StandardError, 'Access Denied'
       end
       prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).first_or_create
+    @resource.touch
 
       resp = {:status => :ok, :html => render_to_string("resources/_resource_list_simple", layout: false)}
     rescue StandardError => ex
@@ -739,7 +740,7 @@ class ResourcesController < ApplicationController
             created = created + 1
           end
         end
-
+        @resource.touch
       rescue StandardError => ex
         resp = {:status => :err, :error => ex.message}
         break

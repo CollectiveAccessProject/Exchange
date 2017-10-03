@@ -422,7 +422,7 @@ namespace :exchange do
 	task sync_crc_sets: :environment do
 		CollectiveAccess.set_credentials ENV['COLLECTIVEACCESS_USER'], ENV['COLLECTIVEACCESS_KEY']
 		
-		print "Looking for CRC sets to sync"
+		print "Looking for CRC sets to sync\n"
 		Resource.where(resource_type: Resource::CRCSET, crc_sync_date: nil).each do |r|
 		
 		    objs = r.children.select { |c| c.resource_type == Resource::COLLECTION_OBJECT }
@@ -463,8 +463,53 @@ namespace :exchange do
                         },
                         "set_content" => content_idnos
                     }
-                    print "Added CRC_" + r['slug'].to_s + " to CollectiveAccess\n"
+                    print "Added CRC_" + r['slug'].to_s + " to CollectiveAccess (set_id was " + res['set_id'].to_s + "\n"
                     r.crc_sync_date = Time.now.to_i
+                    r.crc_set_id = res['set_id'].to_i
+                    r.save
+            end
+		end
+		
+		print "Looking for CRC sets to update\n"
+		Resource.where(resource_type: Resource::CRCSET).where("crc_sync_date < unix_timestamp(updated_at)-10").each do |r|
+		
+		    objs = r.children.select { |c| c.resource_type == Resource::COLLECTION_OBJECT }
+		    content_idnos = objs.map {|c| 
+		        c.collection_identifier
+		    }
+		
+		    if content_idnos.length() > 0
+                res = CollectiveAccess.put hostname: ENV['COLLECTIVEACCESS_HOST'], table_name: 'ca_sets', endpoint: 'item', url_string: 'id/' + r['crc_set_id'].to_s,
+                    url_root: ENV['COLLECTIVEACCESS_URL_ROOT'], port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+                 request_body: 
+                        {
+                        "remove_all_attributes" => 1,
+                        "remove_all_labels" => 1,
+                        "preferred_labels" => [{
+                            "locale" => "en_US",
+                            "name" => r['title']
+                        }],
+                        "attributes" => {
+                            "set_class" => [{
+                                "locale" => "en_US",
+                                "set_class" => "object_study"
+                            }],
+                            "set_date" => [{
+                                "set_date_value" => r['date_of_visit'],
+                                "set_date_type" => "use_date",
+                                "crc_start_time" => "",
+                                "crc_end_time" => ""
+                            }],
+                            "set_notes" => [{
+                                "locale" => "en_US",
+                                "set_notes" => r['body_text']
+                            }]
+                        },
+                        "set_content" => content_idnos
+                    }
+                    print res
+                    print "Updated CRC_" + r['slug'].to_s + " with CollectiveAccess\n"
+                    r.crc_sync_date = Time.now.utc.to_i + (4 * 3600)
                     r.save
             end
 		end

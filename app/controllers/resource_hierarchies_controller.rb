@@ -10,6 +10,7 @@ class ResourceHierarchiesController < ApplicationController
     #
     # TODO: Is user allowed to do this?
     #
+    @resource.touch
     @resource_hierarchy.destroy
     respond_to do |format|
       format.html { redirect_to edit_resource_path(@resource), notice: 'Child was removed.' }
