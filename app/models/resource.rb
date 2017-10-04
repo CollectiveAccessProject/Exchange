@@ -3,6 +3,7 @@ class Resource < ActiveRecord::Base
   ratyrate_rateable "quality"
 
   has_many :related_resources, -> { order 'related_resources.rank' }, :dependent => :destroy
+  has_many :collectionobject_links, :dependent => :destroy
 
   has_many :resources, through: 'related_resources', source: :related, :dependent => :destroy
 
