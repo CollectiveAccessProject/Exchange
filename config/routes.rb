@@ -98,6 +98,8 @@ Rails.application.routes.draw do
   get '/quick_search/query_results/:type/:page/*query' => 'quick_search#query_results', as: 'query_results', constraints: { :query => /.+/ }
   get '/quick_search/autocomplete_collection_title' => 'quick_search#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'quick_search_autocomplete_resource_title'
   get '/quick_search/autocomplete_collection_resource_title' => 'quick_search#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'quick_search_autocomplete_collection_resource_title'
+  get '/advanced_search/autocomplete_collection_title' => 'quick_search#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'advanced_search_autocomplete_resource_title'
+  get '/advanced_search/autocomplete_collection_resource_title' => 'quick_search#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'advanced_search_autocomplete_collection_resource_title'
 
   get '/dashboard' => 'dashboard#index', as: 'dashboard'
 

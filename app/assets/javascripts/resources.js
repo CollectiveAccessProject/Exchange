@@ -216,7 +216,7 @@ jQuery(document).ready(function() {
     
     // Block add to collection modal from appearing ever again
     jQuery('#res_collection_optout_perm').on('click', function(e){
-    	Cookies.set('rcoll_optout_perm_' + jQuery(e.currentTarget).data('resource_id'), true, {expires: 10000});
+    	Cookies.set('rcoll_optout_perm_' + jQuery(e.currentTarget).data('resource_id'), true);
     });
 
     //

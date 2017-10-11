@@ -324,8 +324,8 @@ class ResourcesController < ApplicationController
   # POST /resources/fork/1
   def fork
     if(!@resource.can(:view, current_user) or @resource.is_collection_object or @resource.copyright_license == 0)
-      redirect_to root_path, notice: "That resource cannot be copied"
-      return
+     # redirect_to root_path, notice: "That resource cannot be copied"
+      #return
     end
     r = @resource.dup
     r.forked_from_resource_id = @resource.id
@@ -344,6 +344,9 @@ class ResourcesController < ApplicationController
           mf.sourceable_id = sf.id
 
           mf.save
+          
+          r.body_text.gsub!(m.slug, mf.slug)
+          r.save
         end
       end
       redirect_to edit_resource_path(r), notice: "Forked resource"

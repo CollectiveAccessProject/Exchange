@@ -632,6 +632,8 @@ class Resource < ActiveRecord::Base
         {field: "artist.raw", direction: "asc"}
       when "created_at"
         {field: "created_at", direction: "desc" }
+      when "start_date"
+        {field: "start_date", direction: "asc" }
       when "rating"
         {field: "rating", direction: "desc" }
       else

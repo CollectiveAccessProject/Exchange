@@ -1,9 +1,9 @@
 <% filtered.each do |f| %>
 	<div class="dbUnit">
-
+ <% if(f.is_crc_set == 0) %>
 		  <div><b><%= sanitize(f.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></b> (<%= f.resource_type_for_display %>) [<%= (f.access == 1) ? "Published" : "Not published" %>]</div>
 		  <%= ((f.subtitle.length > 0) ? sanitize("<p>" + f.subtitle  + "</p>") : "") %>
-    <% if(f.is_crc_set) %>
+    <% else %>
 		  <div><b><%= sanitize(f.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></b> (<%= f.resource_type_for_display %>)</div>
 		  <p>Date &amp; Time of Visit: <%= f.date_of_visit.strftime("%a, %b %d, %Y @ %l:%M %p") %></p>
 		<% end %>

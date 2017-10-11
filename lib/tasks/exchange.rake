@@ -359,11 +359,11 @@ namespace :exchange do
 
 	desc 'Update Collection Object Body Text'
 	task reformat_co_body_text: :environment do
-		body_text_examine = File.open("test/text_body_text.html", "w")
+		#body_text_examine = File.open("test/text_body_text.html", "w")
 		test_count = 0
 		Resource.where(resource_type: Resource::COLLECTION_OBJECT).each do |co|
 			body_text = co.body_text
-			body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([\d\p{L}\b\.,\&'\-\(\)\; ]+)<\/span>/, '<a href="/quick_search/query?utf8=true&q=\1: &quot;\2&quot;">\2</a>')
+			body_text_search = body_text.gsub(/<span class="co-search co-([a-z_]+)">([\d\p{L}\b\.,\&\'\-\(\)\; ]+)<\/span>/, '<a href="/quick_search/query?utf8=true&q=\1: &quot;\2&quot;">\2</a>')
 
 			body_text_search = body_text_search.gsub(/(?<=<strong>Medium &amp;|& Support<\/strong>)(?:\t| |)<br(?: \/|\/|)>(?:([\d\p{L}\b\.,\&'\-\(\) ]+))+/, '<br><a href="/quick_search/query?utf8=true&q=medium: \1">\1</a>')
 
@@ -443,7 +443,7 @@ namespace :exchange do
                         },
                         "preferred_labels" => [{
                             "locale" => "en_US",
-                            "name" => r['title']
+                            "name" => strip_tags(r['title'])
                         }],
                         "attributes" => {
                             "set_class" => [{
@@ -463,7 +463,7 @@ namespace :exchange do
                         },
                         "set_content" => content_idnos
                     }
-                    print "Added CRC_" + r['slug'].to_s + " to CollectiveAccess (set_id was " + res['set_id'].to_s + "\n"
+                    print "Added CRC_" + r['slug'].to_s + " to CollectiveAccess (set_id was " + res['set_id'].to_s + ")\n"
                     r.crc_sync_date = Time.now.to_i
                     r.crc_set_id = res['set_id'].to_i
                     r.save
@@ -487,8 +487,11 @@ namespace :exchange do
                         "remove_all_labels" => 1,
                         "preferred_labels" => [{
                             "locale" => "en_US",
-                            "name" => r['title']
+                            "name" => strip_tags(r['title'])
                         }],
+                        "intrinsic_fields" => {
+                            "user_id" => 62
+                        },
                         "attributes" => {
                             "set_class" => [{
                                 "locale" => "en_US",
@@ -507,7 +510,7 @@ namespace :exchange do
                         },
                         "set_content" => content_idnos
                     }
-                    print res
+                   # print res
                     print "Updated CRC_" + r['slug'].to_s + " with CollectiveAccess\n"
                     r.crc_sync_date = Time.now.utc.to_i + (4 * 3600)
                     r.save

@@ -189,7 +189,10 @@
     # Trigger modal on save if no parent is set for resources (not collections)
 %>
     <script type="text/javascript">
-    	if(!window.sessionStorage.getItem("rcoll_optout_<%= @resource.id.to_s %>") && !Cookies.get('rcoll_optout_perm')) {
+        console.log("cookie", Cookies.get('rcoll_optout_perm'));
+        console.log("rcoll_optout_perm_<%= @resource.id.to_s %>", window.sessionStorage.getItem("rcoll_optout_perm_<%= @resource.id.to_s %>"));
+    	// if(!window.sessionStorage.getItem("rcoll_optout_perm_<%= @resource.id.to_s %>") && !Cookies.get('rcoll_optout_perm')) {
+    	if(!Cookies.get("rcoll_optout_perm_<%= @resource.id.to_s %>") && !Cookies.get('rcoll_optout_perm')) {
             jQuery("#selectResourceCollectionForm").modal();
         }
     </script>
