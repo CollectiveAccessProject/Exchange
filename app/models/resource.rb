@@ -392,7 +392,11 @@ class Resource < ActiveRecord::Base
 
     all_resource_ids = rel_resource_ids + resource_ids
 
-    Resource.find(all_resource_ids)
+    begin
+        Resource.find(all_resource_ids)
+    rescue
+        return []
+    end
   end
 
   #
