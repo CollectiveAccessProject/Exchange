@@ -7,9 +7,20 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  # def create
-  #   super
-  # end
+   def create
+     super
+     
+     
+        
+        # link to role groups
+        roles = User.roles
+        roles.each do|r|
+            g = Group.where(group_code: r[1].to_s).first
+            if g
+                item = UserGroup.where(group_id: g.id, user_id: @user.id, access_type: 2).first_or_create
+            end
+        end
+     end
 
   # DELETE /resource/sign_out
   # def destroy

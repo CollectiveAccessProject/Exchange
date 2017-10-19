@@ -29,7 +29,19 @@
 </div><% end %>
 
   <% else %>
-      <h3>No groups defined</h3>
+      <h3>You have not created any groups</h3>
   <% end %>
+    <hr/>
+    <div id="set_list">
+  <% if (@umich_groups && (@umich_groups.length > 0)) %>
+        <h4>MCommunity groups to which you belong</h4>
+      <% @umich_groups.each do |g| %><div class="setListItem row featuredAdminSetListRow" data-group_id="<%= g.id %>">
+  <div class="col-sm-9"><b><%= sanitize(g.name, tags: %w(strong em a font b sup sub u), attributes: %w(href style))  %></b><br/>(<%= g.slug %>)
+    [<%= ((c = g.user_groups.count) == 1 ? "1 user" : c.to_s + " users") %>]
+    <% if(g.description && (g.description.length > 0)) %>
+        <blockquote><%= g.description %></blockquote>
+    <% end %>
+  </div>
+</div><% end %><% end %>
 
 </div>

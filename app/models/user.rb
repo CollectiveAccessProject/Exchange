@@ -36,5 +36,10 @@ class User < ActiveRecord::Base
   def set_default_role
     self.add_role(:visitor)
   end
+  
+  def self.roles
+    Rails.application.config.x.user_roles
+  end
+  
 
 end

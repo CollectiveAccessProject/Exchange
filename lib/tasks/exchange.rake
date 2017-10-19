@@ -517,4 +517,17 @@ namespace :exchange do
             end
 		end
 	end
+	
+	desc 'Create Exchange groups for roles if not already present'
+	task create_groups_for_roles: :environment do
+        roles = User.roles
+        roles.each do|r|
+            if Group.where({name: r[0], group_type: 3, group_code: r[1], user_id: nil})
+                print "Found group for role " + r[0] + " (" + r[1].to_s + ")\n"
+            else
+                g = Group.where({name: r[0], group_type: 3, group_code: r[1], user_id: nil}).first_or_create
+                print "Created group for role " + r[0] + " (" + r[1].to_s + ")\n"
+            end 
+        end
+	end
 end

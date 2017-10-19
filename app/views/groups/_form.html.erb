@@ -14,7 +14,6 @@
                 <%= r.input :slug, hint: '<i class="fa fa-info-circle"></i> Abbreviation used to uniquely identify group, use only letters, numbers and dashes'.html_safe %>
             <% end %>
             <%= r.input :description, :input_html => { rows: 2 } %>
-            <%= r.input :group_type, collection: Group.group_types, include_blank: false %>
 
             <% if(!@group.created_at.nil?) %>
                 <div class="row form-group">

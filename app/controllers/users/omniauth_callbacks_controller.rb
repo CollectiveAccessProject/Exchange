@@ -47,17 +47,16 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
             end
                 if connected
                   # authentication succeeded
-                  ldap.search( :base => "ou=Groups,dc=umich,dc=edu", :filter => "(&(member=uid=" + username + ",ou=People,dc=umich,dc=edu)(cn=umma*))" ) do |entry|
+                  ldap.search( :base => "ou=Groups,dc=umich,dc=edu", :filter => "(&(member=uid=" + username + ",ou=People,dc=umich,dc=edu))" ) do |entry|
                     groupname = entry[:cn][0]
                     if groupname
                         begin 
                             g = Group.where(name: groupname).first
                             if g 
-                             #raise "Group ID IS  " + g.id.to_s
+                                #raise "Group ID IS  " + g.id.to_s
                             else                                
                                 g = Group.new({name: groupname, group_type: 2})
                                 g.save
-                                #raise "Created " + groupname + " with ID " + g.id.to_s
                             end
                             
                             # add user to group
@@ -69,6 +68,15 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
                   end
                 end
             
+        end
+        
+        # link to role groups
+        roles = User.roles
+        roles.each do|r|
+            g = Group.where(group_code: r[1].to_s).first
+            if g
+                item = UserGroup.where(group_id: g.id, user_id: @user.id, access_type: 2).first_or_create
+            end
         end
     
       flash[:notice] = I18n.t 'devise.omniauth_callbacks.success', :kind => 'Shibboleth'
