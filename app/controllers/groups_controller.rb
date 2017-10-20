@@ -26,7 +26,7 @@ class GroupsController < ApplicationController
 
   def index
     @groups = Group.where({user_id: current_user.id, group_type: 1})
-    @umich_groups = Group.joins([:user_groups]).where({"user_groups.user_id": current_user.id, "groups.group_type": 2})
+    @umich_groups = Group.joins([:user_groups]).where({"user_groups.user_id": current_user.id, "groups.group_type": 2}).order("lower(groups.name)");
     respond_to do |format|
       format.html { render :show }
       format.json { render :show }
