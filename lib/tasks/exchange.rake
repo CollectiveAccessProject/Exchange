@@ -263,34 +263,34 @@ namespace :exchange do
 		end
 	end
 
-	desc 'Remove all resources and media from database'
-	task :clean => :environment do
-		MediaFile.new.external_media_classes do |c|
-			t = c.constantize
-			t.destroy_all
-		end
-		MediaFile.destroy_all
-		CollectionobjectLink.destroy_all
-		CollectiveaccessLink.destroy_all
-		FlickrLink.destroy_all
-		GoogledocsLink.destroy_all
-		SoundcloudLink.destroy_all
-		CollectionObjectLink.destroy_all
-		VimeoLink.destroy_all
-		YoutubeLink.destroy_all
-		RelatedResource.destroy_all
-		ResourceHierarchy.destroy_all
-		#ResourceParent.destroy_all
-		Tag.destroy_all
-		Comment.destroy_all
-		Favorite.destroy_all
-		#Setting.destroy_all
-		#Version.destroy_all
-		Link.destroy_all
-		Resource.destroy_all
-		SyncLog.destroy_all
-	end
-	
+	# desc 'Remove all resources and media from database'
+# 	task :clean => :environment do
+# 		MediaFile.new.external_media_classes do |c|
+# 			t = c.constantize
+# 			t.destroy_all
+# 		end
+# 		MediaFile.destroy_all
+# 		CollectionobjectLink.destroy_all
+# 		CollectiveaccessLink.destroy_all
+# 		FlickrLink.destroy_all
+# 		GoogledocsLink.destroy_all
+# 		SoundcloudLink.destroy_all
+# 		CollectionObjectLink.destroy_all
+# 		VimeoLink.destroy_all
+# 		YoutubeLink.destroy_all
+# 		RelatedResource.destroy_all
+# 		ResourceHierarchy.destroy_all
+# 		#ResourceParent.destroy_all
+# 		Tag.destroy_all
+# 		Comment.destroy_all
+# 		Favorite.destroy_all
+# 		#Setting.destroy_all
+# 		#Version.destroy_all
+# 		Link.destroy_all
+# 		Resource.destroy_all
+# 		SyncLog.destroy_all
+# 	end
+# 	
 	desc 'Clear CA sync log, forcing full resync with CA on next use of refresh_umma_collections_data'
 	task :clean_sync_log => :environment do
 		SyncLog.destroy_all
@@ -522,12 +522,90 @@ namespace :exchange do
 	task create_groups_for_roles: :environment do
         roles = User.roles
         roles.each do|r|
-            if Group.where({name: r[0], group_type: 3, group_code: r[1], user_id: nil})
+            if Group.where({name: "Exchange-" + r[0], group_type: 3, group_code: r[1], user_id: nil}).length > 0
                 print "Found group for role " + r[0] + " (" + r[1].to_s + ")\n"
             else
-                g = Group.where({name: r[0], group_type: 3, group_code: r[1], user_id: nil}).first_or_create
+                g = Group.where({name: "Exchange-" + r[0], group_type: 3, group_code: r[1], user_id: nil}).first_or_create
                 print "Created group for role " + r[0] + " (" + r[1].to_s + ")\n"
             end 
+        end
+	end
+	
+	desc 'Find and reload missing media'
+	task reload_missing_media: :environment do
+	
+		CollectiveAccess.set_credentials ENV['COLLECTIVEACCESS_USER'], ENV['COLLECTIVEACCESS_KEY']
+	    
+		#
+		# Size of fetch
+		#
+		start = 0
+		limit = 100
+	    query_limit = "ca_objects.access_specific:exchange"
+	    #query_limit = "2010/1.169.12"
+	  
+	  begin  
+	    object_list = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
+            url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
+            port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+            endpoint: 'exchangeObjectListForDisplay',
+            get_params: {
+                    q: query_limit,
+                    start: start,
+                    limit: limit,
+                    noCache: Rails.env.development? ? 1 : 0
+            }
+
+			print "Got response from 'exchangeObjectListForDisplay' with size #{object_list.size}\n"
+
+			# add 'main' record data with hardcoded mapping
+			object_list.each do |_, value|
+				if value.is_a?(Hash) && value['collectiveaccess_id'].present?
+				        
+						r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first
+					
+						if (value['media'])
+							sourceable_ids = r.media_files.select { |m| m.sourceable_type == 'CollectiveaccessLink' }.map { |a| a.sourceable_id}
+							#puts "MEDIA = " + value['title'] + "\n"
+
+							i = 1;
+							#print value['media'] + "\n"
+							value['media'].split('|').each do |u|
+								if ((key = /representation:([\d]+)/.match(u)))
+									representation_id = key[1]
+									
+									m = nil
+									if ((cl = CollectiveaccessLink.where(key: key.to_s, id: sourceable_ids).first) && cl.id)
+										m = MediaFile.where(sourceable_id: cl.id, sourceable_type: 'CollectiveaccessLink').first
+									end
+
+									if (!m)
+										m = MediaFile.new(title: key.to_s + ":" + i.to_s, caption: value['caption_text'], copyright_notes: '')
+										m.save
+									end
+									
+									begin
+									    m.thumbnail.width.to_s
+									rescue
+                                        print "UPDATE MISSING IMAGE " + value['title'] + " (" + u + ")\n"
+                                        m.set_sourceable_media({collectiveaccess_link: { original_link: u }})
+                                        m.update({title: key.to_s + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id, alt_text: value['physical_description'] ? value['physical_description'].slice(0, 1024) : ""})
+                                    end
+									i += 1
+								end
+							end
+						end
+					end
+				end
+	        start = start + limit
+	    end while object_list.size > 1
+	end
+	
+	desc 'Lookup UMich groups for users'
+	task lookup_umich_groups_for_users: :environment do
+	    User.find_each do |user|
+	        print "Getting group for " + user.name + "\n"
+	        Group.get_umich_groups_for_user(user)
         end
 	end
 end

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get '/groups/:id/autocomplete_group_user_name' => 'groups#autocomplete_user_name', as: 'autocomplete_group_user_name'
   post '/groups/:id/add_group_user' => 'groups#add_user', as: 'group_add_user'
   get '/groups/:id/remove_group_user' => 'groups#remove_user', as: 'group_remove_user'
+  get '/groups/:id/get_umich_groups_for_user' => 'groups#get_umich_groups_for_user', as: 'get_umich_groups_for_user'
 
 
   # add user guide and other pages in About

@@ -2,7 +2,7 @@ class GroupsController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html, :json
-  before_action :set_group, only: [:edit, :update, :destroy, :add_user, :remove_user]
+  before_action :set_group, only: [:edit, :update, :destroy, :add_user, :remove_user, :get_umich_groups_for_user]
 
   # UI autocomplete on user name/email (used by user lookup)
   autocomplete :user, :name, :full => true, :extra_data => [:id]
@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
   # GET /groups
   # GET /groups.json
   def show
-    @groups = Group.where({user_id: current_user.id})
+    index
   end
 
   def index
@@ -138,6 +138,15 @@ class GroupsController < ApplicationController
       format.json { render :json => resp }
     end
   end
+  
+  #
+  #
+  #
+  def get_umich_groups_for_user
+      Group.get_umich_groups_for_user(current_user)
+     redirect_to "/groups/index", flash: {notice: "Reloaded groups"}
+  end
+  
 
   private
   # Use callbacks to share common setup or constraints between actions.

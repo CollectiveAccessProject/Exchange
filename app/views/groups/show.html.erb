@@ -35,7 +35,10 @@
   <% if (@umich_groups && (@umich_groups.length > 0)) %>
     <hr/>
     <div id="set_list">
-        <h4>MCommunity groups to which you belong</h4>
+        <h4>
+            MCommunity groups to which you belong 
+            <div class="pull-right"><%= link_to('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Update UMich Groups'.html_safe, get_umich_groups_for_user_path(current_user), method: :get, class: "btn btn-xs btn-default") %> <small class="addCollectionHelper" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Immediately begin an update of your UMich group list in the Exchange. NOTE: may take up to two minutes to complete the update."><span class="glyphicon glyphicon-info-sign"></span></small></div>
+        </h4> 
         <% @umich_groups.each do |g| %>
             <div class="setListItem row featuredAdminSetListRow" data-group_id="<%= g.id %>">
                 <div class="col-sm-12">
@@ -52,3 +55,11 @@
     </div>
   <% end %>
   </div>
+  
+  <script>
+          $(document).ready(function(){
+              $('.addCollectionHelper').popover({
+                  position: 'bottom'
+              });
+          });
+      </script>
