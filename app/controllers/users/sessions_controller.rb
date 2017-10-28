@@ -9,9 +9,6 @@ class Users::SessionsController < Devise::SessionsController
   # POST /resource/sign_in
    def create
      super
-     
-     
-        
         # link to role groups
         roles = User.roles
         roles.each do|r|
