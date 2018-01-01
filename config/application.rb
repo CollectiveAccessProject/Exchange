@@ -47,6 +47,7 @@ module Exchange
     } 
 
     config.x.user_access_types = {"Can View" => 1, "Can Edit" => 2}
+    config.x.group_membership_types = {"Group Member" => 1, "Group administrator" => 3}     # "Editor" => 2, 
 
     # date/time format used to tags, comments, etc.
     config.x.timestamp_format = '%B %e %Y @ %l:%M %P'

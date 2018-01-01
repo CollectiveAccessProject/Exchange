@@ -25,7 +25,7 @@ class GroupsController < ApplicationController
   end
 
   def index
-    @groups = Group.where({user_id: current_user.id, group_type: 1})
+    @groups = Group.joins(:user_groups).where("(groups.user_id = ? AND groups.group_type = 1) OR (user_groups.user_id = ? AND user_groups.access_type = 3)", current_user.id, current_user.id)
     @umich_groups = Group.joins([:user_groups]).where({"user_groups.user_id": current_user.id, "groups.group_type": 2}).order("lower(groups.name)");
     respond_to do |format|
       format.html { render :show }
@@ -41,7 +41,8 @@ class GroupsController < ApplicationController
   # GET /groups/1/edit
   def edit
     respond_to do |format|
-    if (@group.user_id != current_user.id)
+    #if (@group.user_id != current_user.id)
+    if @group.can_edit(current_user) == false
       format.html { redirect_to @group, notice: 'Invalid group.' }
       format.json { render json: ["Invalid group"], status: :unprocessable_entity }
     end
@@ -74,7 +75,8 @@ class GroupsController < ApplicationController
   def update
     respond_to do |format|
 
-      if (@group.user_id != current_user.id)
+      #if (@group.user_id != current_user.id)
+      if @group.can_edit(current_user) == false
         format.html { redirect_to @group, notice: 'Invalid group.' }
         format.json { render json: ["Invalid group"], status: :unprocessable_entity }
       else

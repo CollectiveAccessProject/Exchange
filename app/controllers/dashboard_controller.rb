@@ -121,8 +121,12 @@ class DashboardController < ApplicationController
   	# Get Resources for users from Resources and ResourcesUser
   	@resources = []
   	@counts = {collections: 0, resources: 0, collection_objects: 0}
-  	editable_res = ResourcesUser.where('user_id=? AND access=?', current_user.id, 2)
+  	editable_res = ResourcesUser.where('user_id=? AND access=2', current_user.id)
     editable_res.each do |ed|
+    	@resources.push(Resource.find(ed.resource_id))
+    end
+    editable_res_by_group = ResourcesGroup.joins(:user_groups).where('user_groups.user_id = ? AND user_groups.access_type >= 2', current_user.id)
+    editable_res_by_group.each do |ed|
     	@resources.push(Resource.find(ed.resource_id))
     end
     user_res = Resource.where('user_id=? OR author_id=? ', current_user.id, current_user.id)

@@ -3,5 +3,6 @@ class ResourcesUser < ActiveRecord::Base
 
   belongs_to :resource
   belongs_to :user
+  has_many :user_group, :primary_key => :user_id, :foreign_key => :user_id
 
 end

@@ -14,10 +14,12 @@ class User < ActiveRecord::Base
 
   validates :name, :presence => true
 
-  has_many :user_groups
+  has_many :user_groups, :dependent => :destroy
   has_many :groups, :through => :user_groups
   has_many :favorites
-  has_many :resources, through: 'resources_users'
+  has_many :resources, through: 'resources_users', :dependent => :destroy
+  has_many :resources, :dependent => :destroy
+  has_many :resources_users, :dependent => :destroy
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create! do |user|

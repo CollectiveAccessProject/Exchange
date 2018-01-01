@@ -148,7 +148,12 @@ namespace :exchange do
 
 						if (value['media'])
 							sourceable_ids = r.media_files.select { |m| m.sourceable_type == 'CollectiveaccessLink' }.map { |a| a.sourceable_id}
-							#puts "MEDIA = " + value['title']
+							#puts "MEDIA = " + value['media']
+							
+							# Get existing keys for resource
+							existing_mfs = MediaFile.where("(resource_id = ?) AND (sourceable_type = 'CollectiveaccessLink')", r.id)
+							existing_keys = existing_mfs.pluck('title');
+							
 
 							i = 1;
 							value['media'].split('|').each do |u|
@@ -167,10 +172,15 @@ namespace :exchange do
 
 									m.set_sourceable_media({collectiveaccess_link: { original_link: u }})
 									m.update({title: key.to_s + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id, alt_text: value['physical_description'] ? value['physical_description'].slice(0, 1024) : ""})
-
+                                    existing_keys.delete(key.to_s + ":" + i.to_s)
 									i += 1
 								end
 							end
+							# delete old media
+							existing_keys.each do |e| 
+							    MediaFile.where({title: e}).destroy_all
+							end
+							
 						end
 					end
 				end
@@ -299,8 +309,8 @@ namespace :exchange do
 	desc 'Regenerate media previews'
 	task rebuild_media_previews: :environment do
 		media_files = MediaFile.all.each do|mf|
-
-			if (!(defined? mf.thumbnail.url) || !mf.thumbnail.url || mf.thumbnail.url.include?("no_preview.png"))
+            response = HTTParty.get('https://exchange.umma.umich.edu' + mf.thumbnail.url, format: :plain)
+			if ((response.code >= 400) || !(defined? mf.thumbnail.url) || !mf.thumbnail.url || mf.thumbnail.url.include?("no_preview.png"))
 
 				if (sourceable = mf.get_media_class(mf.sourceable_type))
 					puts "No preview for " + mf.id.to_s + " " + mf.sourceable_type + "; reloading"
@@ -443,7 +453,7 @@ namespace :exchange do
                         },
                         "preferred_labels" => [{
                             "locale" => "en_US",
-                            "name" => strip_tags(r['title'])
+                            "name" => r['title']
                         }],
                         "attributes" => {
                             "set_class" => [{
@@ -603,9 +613,14 @@ namespace :exchange do
 	
 	desc 'Lookup UMich groups for users'
 	task lookup_umich_groups_for_users: :environment do
+	    start = Time.now
 	    User.find_each do |user|
-	        print "Getting group for " + user.name + "\n"
+	        print "Getting groups for " + user.name + "\n"
 	        Group.get_umich_groups_for_user(user)
         end
+        
+        elapsedTime = Time.now - start
+        minutes = (elapsedTime / 1.minute).round
+        print "Group lookup took " + minutes.to_s + " minutes\n"
 	end
 end

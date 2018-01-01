@@ -162,7 +162,7 @@ class Resource < ActiveRecord::Base
       case
         when ((action == :view) && (f.access >= 1))
           return true
-        when ((action == :edit) && (f.access >= 2))
+        when ((action == :edit) && (f.access >= 2))     # includes groups admins (access = 3)
           return true
         else
           # noop

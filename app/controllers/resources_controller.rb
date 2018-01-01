@@ -86,7 +86,7 @@ class ResourcesController < ApplicationController
   def show
 
     if(!@resource.can(:view, current_user))
-      redirect_to root_path, notice: "That resource is not accessible"
+      redirect_to root_path, notice: "Your account does not enable you to view this " + @resource.resource_type_for_display.downcase
       return
     end
 
@@ -112,7 +112,7 @@ class ResourcesController < ApplicationController
   # Handle public viewing of resources
   def view
     if(!@resource.can(:view, current_user))
-      redirect_to root_path, notice: "That resource is not accessible"
+      redirect_to root_path, notice: "Your account does not enable you to view this " + @resource.resource_type_for_display.downcase
       return
     end
 
@@ -159,7 +159,7 @@ class ResourcesController < ApplicationController
   # GET /resources/1/edit
   def edit
     if(!@resource.can(:edit, current_user))
-      redirect_to root_path, notice: "That resource is not accessible"
+      redirect_to root_path, notice: "Your account does not enable you to view this " + @resource.resource_type_for_display.downcase
       return
     end
     @media_file = MediaFile.new
@@ -1145,9 +1145,13 @@ class ResourcesController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_resource
-    @resource = Resource.find(params[:id])
-    if (@resource.is_crc_set && !current_user.has_role?(:staff))
-      redirect_to root_path, notice: "That resource is not accessible"
+    begin 
+        @resource = Resource.find(params[:id])
+        if (@resource.is_crc_set && !current_user.has_role?(:staff))
+          redirect_to root_path, notice: "Your account does not enable you to view this " + @resource.resource_type_for_display.downcase
+        end
+    rescue
+        redirect_to root_path, notice: "That resource is not available"
     end
   end
 

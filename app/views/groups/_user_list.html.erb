@@ -23,7 +23,7 @@
           <div class="col-md-3">
             <div class="form-group">
               <label>Access</label><br/>
-              <%= select_tag(:access_type, options_for_select(Rails.application.config.x.user_access_types)) %>
+              <%= select_tag(:access_type, options_for_select(Rails.application.config.x.group_membership_types)) %>
             </div>
           </div>
           <div class="col-md-1">
@@ -38,7 +38,7 @@
           <% @group.user_groups.each do |g| %>
               <div class="setItem">
                 <%= g.user.email %>
-                <%= "[" + Rails.application.config.x.user_access_types.find{|key, val| val == g.access_type }[0]+"]" %>
+                <%= "[" + Rails.application.config.x.group_membership_types.find{|key, val| val == g.access_type }[0]+"]" %>
                 <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, group_remove_user_path(@group) + "?user_id=" + g.user_id.to_s, {remote: true, class: :setItemsRemove}) %>
               </div>
           <% end %>
