@@ -210,6 +210,26 @@ module ApplicationHelper
             values: get_field_values('style')
         },
         {
+            id: "collection_area",
+            field: "collection_area",
+            label: "Collection area",
+            type: "string",
+            input: "select",
+            values: get_field_values('collection_area')
+        },
+        {
+            id: "subject_matter",
+            field: "subject_matter",
+            label: "Subject matter",
+            type: "string"
+        },
+        {
+            id: "label_copy",
+            field: "label_copy",
+            label: "Label copy",
+            type: "string"
+        },
+        {
             id: "rating",
             field: "rating",
             label: "Rating",

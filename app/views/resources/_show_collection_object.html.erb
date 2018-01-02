@@ -108,7 +108,17 @@
       		
       </div><!-- end col -->
       <div class="col-sm-4 collectionObjectDetailText">
-        <%= sanitize(@resource.parsed_body_text, tags: body_tags_allowed, attributes: body_attrs_allowed) %>
+        <%= sanitize(@resource.parsed_body_text.gsub(/<br[ ]*\/><br[ ]*\/><br[ ]*\/>/, "<br /><br />"), tags: body_tags_allowed, attributes: body_attrs_allowed) %>
+        
+        <% if @resource.collection_area.length > 0 %>
+            <strong>Collection area</strong><br/><%= strip_tags(@resource.collection_area) %><br/><br/>
+        <% end %>
+        <% if @resource.subject_matter.length > 0 %>
+            <strong>Subject matter</strong><br/><%= strip_tags(@resource.subject_matter) %><br/><br/>
+        <% end %>
+        <% if @resource.label_copy.length > 0 %>
+            <strong>Label copy</strong><br/><%= strip_tags(@resource.label_copy) %>
+        <% end %>
       </div>
     </div><!-- end row -->
     <div class="row" id="detailTags">

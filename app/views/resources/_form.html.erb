@@ -72,7 +72,7 @@
                     </div>
                 <% end %>
                 <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-                <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
+                <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Access' %>
 
                     </div>
               <div class="col-md-6">
@@ -140,7 +140,7 @@
                         </div>
                     <% end %>
                     <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
-                    <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Publication Status' %>
+                    <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Access' %>
 
               </div>
               <div class="col-md-6">

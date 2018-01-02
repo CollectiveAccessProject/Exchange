@@ -928,7 +928,7 @@ class Resource < ActiveRecord::Base
         # collection - no extra fields
       when Resource::COLLECTION_OBJECT
         # collection object
-        {'collection_identifier' => 'Identifier', 'style' => 'Style, Group, Movement', 'medium' => 'Medium', 'support' => 'Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
+        {'collection_identifier' => 'Identifier', 'style' => 'Style, Group, Movement', 'collection_area' => 'Collection area', 'medium' => 'Medium', 'support' => 'Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
           if (params[f] && (params[f].strip.length > 0))
             v = params[f].gsub(/["']+/, '')
 

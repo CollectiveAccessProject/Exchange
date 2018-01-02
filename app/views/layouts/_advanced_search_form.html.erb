@@ -77,12 +77,22 @@
             <HR/><br/>
             <H3>UMMA Object Specific Fields</H3>
           </div>
+        </div>
+        <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advStyle">Style, Group, Movement</label>
               <%= 
                 select_tag(:style, get_field_values_for_objects('style'), style: "width: 100%") 
                 %>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="control-label" for="advStyle">Collection area</label>
+              <%= 
+                select_tag(:style, get_field_values_for_objects('collection_area'), style: "width: 100%") 
+                %><br/>
             </div>
           </div>
           <div class="col-sm-3">
@@ -97,6 +107,8 @@
               <input class="form-control" type="text" name="support" id="advIdentifier">
             </div>
           </div>
+        </div>
+        <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advClassification">Classification / Object Type</label>
@@ -126,6 +138,8 @@
               <input class="form-control" type="text" name="credit_line" id="advCreditLine">
             </div>
           </div>
+        </div>
+        <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advDateCreated">Object Identifier</label>
@@ -154,6 +168,7 @@
                 %>
             </div>
           </div>
+        </div>
         </div>
         <div class="row additionalFields" id="advancedSearchExhibition">
           <div class="col-sm-12">
