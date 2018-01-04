@@ -22,23 +22,62 @@
   </div>
 </div>
 
-<% if(@collection_objects.total_entries > 0) %>
-    <%= render :partial => "quick_search/collection_object_results" %>
-    <script>
-        jQuery(document).ready(function() {
-            $('#resourceResultsContainer, #collectionsResultsContainer, #crcsetResultsContainer').toggle();
-        });
-    </script>
-<% end %>
-<% if(@resources.total_entries > 0) %>
-    <%= render :partial => "quick_search/resource_results" %>
-<% end %>
-<% if(@collections.total_entries > 0) %>
-    <%= render :partial => "quick_search/collection_results" %>
-<% end %>
-<% if(@is_staff && @crc_sets.total_entries > 0) %>
-    <%= render :partial => "quick_search/crc_set_results" %>
-<% end %>
-<% if(@exhibitions.total_entries > 0) %>
-    <%= render :partial => "quick_search/exhibition_results" %>
-<% end %>
+<div class="row" id="quick_search_tabs">
+  <div class="col-md-12">
+    <ul class="nav nav-tabs">
+        <% if(@collection_objects.total_entries > 0) %>
+            <li class="active">
+                <a data-toggle="tab" href="#tab_collection_object_results">UMMA objects (<%= @collection_objects.total_entries %>)</a>
+            </li>        
+        <% end %>
+        <% if(@resources.total_entries > 0) %>
+            <li>
+                <a data-toggle="tab" href="#tab_resource_results">Resources  (<%= @resources.total_entries %>)</a>
+            </li>        
+        <% end %>
+        <% if(@collections.total_entries > 0) %>
+            <li>
+                <a data-toggle="tab" href="#tab_collection_results">Learning collections  (<%= @collections.total_entries %>)</a>
+            </li>        
+        <% end %>
+        <% if(@is_staff && @crc_sets.total_entries > 0) %>
+            <li>
+                <a data-toggle="tab" href="#tab_crc_set_results">CRC Sets  (<%= @crc_sets.total_entries %>)</a>
+            </li>        
+        <% end %>
+        <% if(@exhibitions.total_entries > 0) %>
+            <li>
+                <a data-toggle="tab" href="#tab_exhibition_results">Exhibitions (<%= @exhibitions.total_entries %>)</a>
+            </li>        
+        <% end %>
+    </ul>
+
+    <div class="tab-content" id="query_search_content">
+        <% if(@collection_objects.total_entries > 0) %>
+            <div id="tab_collection_object_results" class="tab-pane active">
+                <%= render :partial => "quick_search/collection_object_results" %>
+            </div>
+        <% end %>
+        <% if(@resources.total_entries > 0) %>
+            <div id="tab_resource_results" class="tab-pane">
+                <%= render :partial => "quick_search/resource_results" %>
+            </div>
+        <% end %>
+        <% if(@collections.total_entries > 0) %>
+            <div id="tab_collection_results" class="tab-pane">
+                <%= render :partial => "quick_search/collection_results" %>
+            </div>
+        <% end %>
+        <% if(@is_staff && @crc_sets.total_entries > 0) %>
+            <div id="tab_crc_set_results" class="tab-pane">
+                <%= render :partial => "quick_search/crc_set_results" %>
+            </div>
+        <% end %>
+        <% if(@exhibitions.total_entries > 0) %>
+            <div id="tab_exhibition_results" class="tab-pane">
+                <%= render :partial => "quick_search/exhibition_results" %>
+            </div>
+        <% end %>
+    </div>
+  </div><!-- end col -->
+</div><!-- end row -->

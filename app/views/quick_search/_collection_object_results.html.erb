@@ -1,154 +1,155 @@
-<div id="results_collection_object">
-  <div class="row">
-    <div class="col-sm-12">
-      <a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
-      <h4>
-        <a id="collection_object_title_link" href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;">
-          <%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
-          (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
-        </a>
-        <div id="collection_object_right" class="pull-right">
-          <form class="searchPaging">
-            <div class="searchFormElement">Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></div>
-            <div class="searchFormElement">Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></div>
-          </form>
-        </div>
-      </h4>
-    </div>
-  </div>
-  <div class="row" id="colObjectResultsContainer">
-    <div class="col-sm-12">
-      <div id="collectionObjectResults-status">
-        <div class="flash-notice" id="collectionObjectResults-status-message">
-
+<div class="panel panel-primary" id="results_collection_object">
+  <div class="panel-body">
+    <div>
+      <div class="row">
+        <div class="col-sm-12">
+          <h4>
+              <%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
+              (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
+            <div id="collection_object_right" class="pull-right">
+              <form class="searchPaging">
+                <div class="searchFormElement">Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></div>
+                <div class="searchFormElement">Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></div>
+              </form>
+            </div>
+          </h4>
         </div>
       </div>
+      <div class="row" id="colObjectResultsContainer">
+        <div class="col-sm-12">
+          <div id="collectionObjectResults-status">
+            <div class="flash-notice" id="collectionObjectResults-status-message">
 
-      <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
-          <div>
-            <form class="collectionObjectResultsAdd">
-              Add checked results to existing collection/resource <%=
-
-              if(@available_collections_and_resources.length > 25)
-                autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collection_add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:collection_add_to_collection_id)
-              else
-                select_tag(:collection_add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'collection_add_to_collection_id')
-              end
-            %>
-              <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsAddToCollection"  %>
-            </form>
-          </div>
-      <% end %>
-
-      <%
-        col = 0
-        thumb = false
-      %>
-      <%
-        @collection_objects.each do |r|
-          next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
-          col = col+1
-          if(col == 1)
-      %>
-              <div class="row">
-          <%
-            end
-          %>
-          <div class="col-md-2 qsResult">
-            <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
-                <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
-            <% end %>
-            <% r.media_files.each do |f| %>
-                <% if f.sourceable %>
-                    <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
-                    <% thumb = true %>
-  				      <div class="zoomControls searchZoom" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
-				        <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-				      </div>
-                    <% break %>
-                <% end %>
-            <% end %>
-            <% if(thumb == false) %>
-                <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
-            <% end %>
-            <div class="text-left qsResultText">
-              <div class="small"><%= sanitize(r.get_collection_object_field('artist')) %> <%= sanitize(r.get_collection_object_field('artist_nationality', { enclose_in_parens: true})) %></div>
-              <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
-              <div class="qsMoreCaption">
-                <div class="small"><%= r.get_collection_object_field('date_created') %></div>
-                <div class="small"><i><%= sanitize(r.get_collection_object_field('credit_line')) %></i></div>
-                <div class="small text-left"><%= r.subtitle %></div>
-              </div>
             </div>
-            <% thumb = false %>
           </div>
 
-          <%
-            if(col % 6 == 0)
-                col = 0
-          %>
+          <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
+              <div>
+                <form class="collectionObjectResultsAdd">
+                  Add checked results to existing collection/resource <%=
+
+                  if(@available_collections_and_resources.length > 25)
+                    autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collection_add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:collection_add_to_collection_id)
+                  else
+                    select_tag(:collection_add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'collection_add_to_collection_id')
+                  end
+                %>
+                  <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsAddToCollection"  %>
+                </form>
               </div>
+          <% end %>
+
           <%
-            end
-
-            end
+            col = 0
+            thumb = false
           %>
-      <% if (col > 0) %>
-          </div><!-- end row -->
-      <% end %>
-      <div class='row'>
-        <%=
-          if(@collection_objects_needs_previous_paging)
-
-            ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "collection_object", page: @collection_objects_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
-        <div class='col-sm-6 text-center'>
           <%
-            if (@collection_objects_needs_previous_paging || @collection_objects_needs_next_paging)
-              s = 1
-              e = @collection_objects_num_pages
-
-              if (e > 10)
-                s = @collection_objects_page - 5
-                s = 1 if (s < 1)
-                e = s + 9
-              end
-
-              for i in s..e do
+            @collection_objects.each do |r|
+              next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
+              col = col+1
+              if(col == 1)
           %>
-                  <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+                  <div class="row">
               <%
                 end
+              %>
+              <div class="col-md-2 qsResult">
+                <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
+                    <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
+                <% end %>
+                <% r.media_files.each do |f| %>
+                    <% if f.sourceable %>
+                        <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
+                        <% thumb = true %>
+                          <div class="zoomControls searchZoom" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
+                            <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+                          </div>
+                        <% break %>
+                    <% end %>
+                <% end %>
+                <% if(thumb == false) %>
+                    <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
+                <% end %>
+                <div class="text-left qsResultText">
+                  <div class="small"><%= sanitize(r.get_collection_object_field('artist')) %> <%= sanitize(r.get_collection_object_field('artist_nationality', { enclose_in_parens: true})) %></div>
+                  <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
+                  <div class="qsMoreCaption">
+                    <div class="small"><%= r.get_collection_object_field('date_created') %></div>
+                    <div class="small"><i><%= sanitize(r.get_collection_object_field('credit_line')) %></i></div>
+                    <div class="small text-left"><%= r.subtitle %></div>
+                  </div>
+                </div>
+                <% thumb = false %>
+              </div>
+
+              <%
+                if(col % 6 == 0)
+                    col = 0
+              %>
+                  </div>
+              <%
+                end
+
                 end
               %>
-        </div>
-        <%=
-          if(@collection_objects_needs_next_paging)
+          <% if (col > 0) %>
+              </div><!-- end row -->
+          <% end %>
+          <div class='row'>
+            <%=
+              if(@collection_objects_needs_previous_paging)
 
-            ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "collection_object", page: @collection_objects_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
+                ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "collection_object", page: @collection_objects_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+            <div class='col-sm-6 text-center'>
+              <%
+                if (@collection_objects_needs_previous_paging || @collection_objects_needs_next_paging)
+                  s = 1
+                  e = @collection_objects_num_pages
+
+                  if (e > 10)
+                    s = @collection_objects_page - 5
+                    s = 1 if (s < 1)
+                    e = s + 9
+                  end
+
+                  for i in s..e do
+              %>
+                      <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+                  <%
+                    end
+                    end
+                  %>
+            </div>
+            <%=
+              if(@collection_objects_needs_next_paging)
+
+                ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "collection_object", page: @collection_objects_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+          </div>
+        </div>
       </div>
     </div>
+    <%= render(partial: 'resources/media_overlay') %>
   </div>
 </div>
-<%= render(partial: 'resources/media_overlay') %>
+
 <script>
-    jQuery(document).ready(function() {
-        jQuery("#collection_object_num_items_per_page, #collection_object_sort").on('change', function(e) {
+    //jQuery(document).ready(function() {
+        jQuery("#query_search_content").on('change', "#collection_object_num_items_per_page, #collection_object_sort", function(e) {
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?length=" + jQuery("#collection_object_num_items_per_page").val() + "&sort=" + jQuery("#collection_object_sort").val(), function(data) {
                 jQuery("#results_collection_object").html(data.html);
                 return true;
             });
         });
 
-
-        jQuery("#collectionObjectResultsAddToCollection").on('click', function(e) {
+        jQuery("#query_search_content").on('click', "#collectionObjectResultsAddToCollection", function(e) {
             e.preventDefault();
 
             var add_to_collection_id = jQuery("#collection_add_to_collection_id").val();
@@ -183,7 +184,7 @@
         });
         resizeBar("#collection_object_title_link", "#collection_object_right");	
         $(window).on('resize', function(){
-        	resizeBar("#collection_object_title_link", "#collection_object_right");		
+            resizeBar("#collection_object_title_link", "#collection_object_right");		
         });
-    });
+    //});
 </script>

@@ -1309,3 +1309,13 @@ blockquote .linkListCaption, blockquote .relatedResourceListCaption {
 .form-control {
     max-width: 300px;
 }
+
+#find_resource_id {
+    border: 1px solid #cccccc;
+    height: 25px;
+}
+
+.collectionObjectResultsAdd, .resourceResultsAdd {
+    font-size: 14px;
+    padding-bottom: 10px;
+}
