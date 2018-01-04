@@ -25,56 +25,64 @@
 <div class="row" id="quick_search_tabs">
   <div class="col-md-12">
     <ul class="nav nav-tabs">
-        <% if(@collection_objects.total_entries > 0) %>
-            <li class="active">
+        <% 
+            active = nil
+            if(@collection_objects.total_entries > 0) 
+        %>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_collection_object_results">UMMA objects (<%= @collection_objects.total_entries %>)</a>
-            </li>        
+            </li> 
+            <%  active = 'collection_objects' if active.nil? %>    
         <% end %>
         <% if(@resources.total_entries > 0) %>
-            <li>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_resource_results">Resources  (<%= @resources.total_entries %>)</a>
-            </li>        
+            </li>    
+            <% active = 'resources' if active.nil? %>    
         <% end %>
         <% if(@collections.total_entries > 0) %>
-            <li>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_collection_results">Learning collections  (<%= @collections.total_entries %>)</a>
-            </li>        
+            </li>   
+            <% active = 'collections' if active.nil? %>     
         <% end %>
         <% if(@is_staff && @crc_sets.total_entries > 0) %>
-            <li>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_crc_set_results">CRC Sets  (<%= @crc_sets.total_entries %>)</a>
-            </li>        
+            </li> 
+            <% active = 'crc_sets' if active.nil? %>       
         <% end %>
         <% if(@exhibitions.total_entries > 0) %>
-            <li>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_exhibition_results">Exhibitions (<%= @exhibitions.total_entries %>)</a>
-            </li>        
+            </li>  
+            <% active = 'exhibitions' if active.nil? %>      
         <% end %>
     </ul>
 
     <div class="tab-content" id="query_search_content">
         <% if(@collection_objects.total_entries > 0) %>
-            <div id="tab_collection_object_results" class="tab-pane active">
+            <div id="tab_collection_object_results" class="tab-pane <%= ((active == 'collection_objects') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/collection_object_results" %>
             </div>
         <% end %>
         <% if(@resources.total_entries > 0) %>
-            <div id="tab_resource_results" class="tab-pane">
+            <div id="tab_resource_results" class="tab-pane <%= ((active == 'resources') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/resource_results" %>
             </div>
         <% end %>
         <% if(@collections.total_entries > 0) %>
-            <div id="tab_collection_results" class="tab-pane">
+            <div id="tab_collection_results" class="tab-pane <%= ((active == 'collections') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/collection_results" %>
             </div>
         <% end %>
         <% if(@is_staff && @crc_sets.total_entries > 0) %>
-            <div id="tab_crc_set_results" class="tab-pane">
+            <div id="tab_crc_set_results" class="tab-pane <%= ((active == 'crc_sets') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/crc_set_results" %>
             </div>
         <% end %>
         <% if(@exhibitions.total_entries > 0) %>
-            <div id="tab_exhibition_results" class="tab-pane">
+            <div id="tab_exhibition_results" class="tab-pane <%= ((active == 'exhibitions') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/exhibition_results" %>
             </div>
         <% end %>
