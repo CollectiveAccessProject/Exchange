@@ -235,8 +235,10 @@ namespace :exchange do
 						value['collection_area'] = '' if !value['collection_area'] or value['collection_area'] == '-'
 						value['subject_matter'] = '' if value['subject_matter'].nil? or !value['subject_matter']
 						value['label_copy'] = '' if value['label_copy'].nil? or !value['label_copy']
+						value['gallery_url'] = '' if value['gallery_url'].nil? or !value['gallery_url']
+						value['keywords'] = '' if value['keywords'].nil? or !value['keywords']
 						
-						r.update(indexing_data: JSON.generate(value), classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
+						r.update(indexing_data: JSON.generate(value), classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
 					end
 				end
 			end

@@ -117,7 +117,14 @@
             <strong>Subject matter</strong><br/><%= strip_tags(@resource.subject_matter) %><br/><br/>
         <% end %>
         <% if @resource.label_copy.length > 0 %>
-            <strong>Label copy</strong><br/><%= strip_tags(@resource.label_copy) %>
+            <strong>Label copy</strong><br/><%= strip_tags(@resource.label_copy) %><br/><br/>
+        <% end %>
+        
+        <% if @resource.keywords.length > 0 %>
+            <strong>Keywords</strong><br/>
+                <% @resource.keywords.split("|").each do |k| %>
+                <%= link_to(k, quick_search_path + "?q=keywords:" + k) %><br/>
+                <% end %>
         <% end %>
       </div>
     </div><!-- end row -->
@@ -234,6 +241,9 @@
             <div class="unit">
               <h4>On display</h4>
               <%= @resource.location %>
+              <% if @resource.gallery_url %>
+                <%= link_to "(Floor plan)", @resource.gallery_url %>
+              <% end %>
             </div>
         <% end %>
 
