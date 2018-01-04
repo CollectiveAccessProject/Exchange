@@ -31,6 +31,7 @@
     %>
 
         <div class="col-sm-2 qsResult qsResultText">
+            <% if r[:access] < 1 %><i class="fa fa-eye-slash" aria-hidden="true"></i><% end %>
             <%= link_to  sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
 
             <div class="small">April 4 - June 23, 2016</div>

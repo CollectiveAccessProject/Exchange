@@ -210,11 +210,37 @@ class Resource < ActiveRecord::Base
     record['end_date'] = record['end_date'].to_i
 
     # Index ACL values
-    record['read_users'] = ResourcesUser.where({resource_id: self.id, access: 1}).pluck(:user_id)
-    record['edit_users'] = ResourcesUser.where({resource_id: self.id, access: 2}).pluck(:user_id)
-    record['read_groups'] = ResourcesGroup.where({resource_id: self.id, access: 1}).pluck(:group_id)
-    record['edit_groups'] = ResourcesGroup.where({resource_id: self.id, access: 2}).pluck(:group_id)
+    # record['read_users'] = ResourcesUser.where({resource_id: self.id, access: 1}).pluck(:user_id)
+#     record['edit_users'] = ResourcesUser.where({resource_id: self.id, access: 2}).pluck(:user_id)
+#     record['read_groups'] = ResourcesGroup.where({resource_id: self.id, access: 1}).pluck(:group_id)
+#     record['edit_groups'] = ResourcesGroup.where({resource_id: self.id, access: 2}).pluck(:group_id)
 
+    # ActiveRecord is not able to see existing records once a new record is created. Is this due to the query cache?
+    # Tried to disable the query cache in this context but it didn't make a difference. Using raw SQL works so that's
+    # what we do, despite it being ugly
+
+    record['read_users'] = []
+    record['edit_users'] = []
+    record['read_groups'] = []
+    record['edit_groups'] = []
+
+    recs = ActiveRecord::Base.connection.execute("SELECT user_id FROM resources_users WHERE resource_id = " + self.id.to_s + " AND access = 1")
+    recs.each do |rec| 
+        record['read_users'].push(rec[0].to_i)
+    end
+    recs = ActiveRecord::Base.connection.execute("SELECT user_id FROM resources_users WHERE resource_id = " + self.id.to_s + " AND access = 2")
+    recs.each do |rec| 
+        record['edit_users'].push(rec[0].to_i)
+    end
+    recs = ActiveRecord::Base.connection.execute("SELECT group_id FROM resources_groups WHERE resource_id = " + self.id.to_s + " AND access = 1")
+    recs.each do |rec| 
+        record['read_groups'].push(rec[0].to_i)
+    end
+    recs = ActiveRecord::Base.connection.execute("SELECT group_id FROM resources_groups WHERE resource_id = " + self.id.to_s + " AND access = 2")
+    recs.each do |rec| 
+        record['edit_groups'].push(rec[0].to_i)
+    end
+    
     # break out other date types
     other_date_regexp = Regexp.new("\\(([^\\)]+)\\)")
     if (m = other_date_regexp.match(record['other_dates']))
@@ -659,13 +685,17 @@ class Resource < ActiveRecord::Base
 
     acl_str = ["access:1"]
     if(options[:user])
-    	acl_str.push("read_users:" + options[:user].id.to_s)
-    	acl_str.push("edit_users:" + options[:user].id.to_s)
+        if options[:user].has_role?(:admin)
+            acl_str = ["access:[0 TO 1]"]
+        else 
+            acl_str.push("read_users:" + options[:user].id.to_s)
+            acl_str.push("edit_users:" + options[:user].id.to_s)
 
-    	options[:user].groups.each do |g|
-    		acl_str.push("read_groups:" + g.id.to_s)
-    		acl_str.push("edit_groups:" + g.id.to_s)
-    	end
+            options[:user].groups.each do |g|
+                acl_str.push("read_groups:" + g.id.to_s)
+                acl_str.push("edit_groups:" + g.id.to_s)
+            end
+        end
     end
 
     if (!query_proc)

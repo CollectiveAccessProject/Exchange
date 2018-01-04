@@ -32,7 +32,9 @@
               %>
 
               <div class="col-sm-2 qsResult">
-                <div class="text-left"><%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %></div>
+                <div class="text-left">
+                  <% if r[:access] < 1 %><i class="fa fa-eye-slash" aria-hidden="true"></i><% end %>
+                  <%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %></div>
                 <% if(r.resource_hierarchies.count) %>
                     <% r.resource_hierarchies.each do |rel| %>
                         <% if(rel.child_resource.is_resource) %>
