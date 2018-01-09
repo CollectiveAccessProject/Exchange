@@ -25,7 +25,7 @@ class GroupsController < ApplicationController
   end
 
   def index
-    @groups = Group.joins(:user_groups).where("(groups.user_id = ? AND groups.group_type = 1) OR (user_groups.user_id = ? AND user_groups.access_type = 3)", current_user.id, current_user.id)
+    @groups = Group.joins(:user_groups).where("(groups.user_id = ? AND groups.group_type = 1) OR (user_groups.user_id = ? AND user_groups.access_type = 3)", current_user.id, current_user.id).distinct
     @umich_groups = Group.joins([:user_groups]).where({"user_groups.user_id": current_user.id, "groups.group_type": 2}).order("lower(groups.name)");
     respond_to do |format|
       format.html { render :show }
