@@ -243,13 +243,21 @@ end
 # Generate IIIF path for media file. Options are passed as-is to Riiif::Engine.routes.url_helpers.image_path
 #
 def riiif_image_path(media_file, options=nil)
-  return '' if !media_file.thumbnail.path
-  Riiif::Engine.routes.url_helpers.image_path(media_file.thumbnail.path.gsub(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+    begin
+        return '' if !media_file.thumbnail.path
+        Riiif::Engine.routes.url_helpers.image_path(media_file.thumbnail.path.gsub(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+    rescue => e
+        return ''
+    end
 end
 
 def riiif_info_path(media_file, options=nil)
-  return '' if !media_file.thumbnail.path
-  Riiif::Engine.routes.url_helpers.info_path(media_file.thumbnail.path.gsub(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+    begin
+        return '' if !media_file.thumbnail.path
+        Riiif::Engine.routes.url_helpers.info_path(media_file.thumbnail.path.gsub(/#{Rails.root}\/public\/system\/dragonfly\//, "").gsub("/", "|").gsub(".jpg", ""), options)
+    rescue => e
+        return ''
+    end
 end
 
 def is_zoomable(media_file)
