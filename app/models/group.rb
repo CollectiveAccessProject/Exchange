@@ -61,7 +61,7 @@ class Group < ActiveRecord::Base
                     end
 
                     # add user to group
-                    item = UserGroup.where(group_id: g.id, user_id: user.id, access_type: 2).first_or_create
+                    item = UserGroup.where(group_id: g.id, user_id: user.id, access_type: 1).first_or_create
                 rescue Exception => e
                     raise e.message
                 end
@@ -75,7 +75,7 @@ class Group < ActiveRecord::Base
     roles.each do|r|
         g = Group.where(group_code: r[1].to_s).first
         if g
-            item = UserGroup.where(group_id: g.id, user_id: user.id, access_type: 2).first_or_create
+            item = UserGroup.where(group_id: g.id, user_id: user.id, access_type: 1).first_or_create
         end
     end
   end
