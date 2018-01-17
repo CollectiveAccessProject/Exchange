@@ -4,4 +4,10 @@ class ResourcesGroup < ActiveRecord::Base
     belongs_to :resource
     belongs_to :group
     has_many :user_groups, through: :group
+    
+    after_commit do |rel|
+        # force reindex of related resource
+        r = Resource.find(rel.resource_id)
+        r.touch
+    end
 end

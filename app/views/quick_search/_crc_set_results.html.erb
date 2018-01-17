@@ -114,6 +114,7 @@
                 s = @crc_sets_page - 5
                 s = 1 if (s < 1)
                 e = s + 9
+                e = @crc_sets_num_pages if e > @crc_sets_num_pages
               end
 
               for i in s..e do

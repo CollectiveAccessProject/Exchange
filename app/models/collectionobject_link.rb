@@ -35,9 +35,12 @@ class CollectionobjectLink < ActiveRecord::Base
   end
   
   def get_collection_identifier
-    if(original_link.to_i)
-      r = Resource.find(original_link.to_i)
-      return r.collection_identifier
+    begin
+        if(original_link.to_i)
+          r = Resource.find(original_link.to_i)
+          return r.collection_identifier
+        end
+    rescue
     end
     nil
   end
