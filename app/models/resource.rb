@@ -495,12 +495,16 @@ class Resource < ActiveRecord::Base
     mf_references = {}
 
     self.collectionobject_links.each do |co_link|
+     begin
       co_resource = Resource.find(co_link.resource_id)
 
       MediaFile.where('sourceable_id=? AND resource_id=?', co_link.id, self.id).find_each do |media_resource|
         if media_resource.access == 1 and media_resource.display_collectionobject_link == 1
           mf_references[co_resource.id] = [co_resource.title, co_resource.collection_identifier]
         end
+      end
+      rescue => e
+        # noop
       end
     end
     return mf_references
@@ -727,6 +731,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          options[:page] = 1 if resources.length/resources_length < options[:page]
           resources = resources.page(options[:page]).records
         end
       rescue
@@ -761,6 +766,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          options[:page] = 1 if collections.length/collections_length < options[:page]
           collections = collections.page(options[:page]).records
         end
       end
@@ -792,6 +798,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          options[:page] = 1 if collection_objects.length/collection_objects_length < options[:page]
           collection_objects = collection_objects.page(options[:page]).records
         end
       rescue
@@ -825,6 +832,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          options[:page] = 1 if exhibitions.length/exhibitions_length < options[:page]
           exhibitions = exhibitions.page(options[:page]).records
         end
       rescue
@@ -858,6 +866,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          options[:page] = 1 if crc_sets.length/crc_sets_length < options[:page]
           crc_sets = crc_sets.page(options[:page]).records
         end
       rescue

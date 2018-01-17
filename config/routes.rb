@@ -102,6 +102,8 @@ Rails.application.routes.draw do
   get '/advanced_search/autocomplete_collection_title' => 'quick_search#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'advanced_search_autocomplete_resource_title'
   get '/advanced_search/autocomplete_collection_resource_title' => 'quick_search#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'advanced_search_autocomplete_collection_resource_title'
 
+  get '/quick_search/autocomplete_collection_object_artist' => 'quick_search#autocomplete_collection_object_artist', as: 'quick_search_autocomplete_collection_object_artist'
+  
   get '/dashboard' => 'dashboard#index', as: 'dashboard'
 
   get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'

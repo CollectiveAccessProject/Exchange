@@ -16,7 +16,13 @@
         </div>
       </div>
       <div class="row" id="colObjectResultsContainer">
-        <div class="col-sm-12">
+        <div class="col-md-2">
+            <h3>Refine by</h3>
+        
+            Artist/Maker Name<br/>
+            <%= autocomplete_field_tag(:find_artist, '', :autocomplete_collection_object_artist, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 10, :id_element => "#collection_object_artist", :placeholder => "Search for an artist/maker") + hidden_field_tag(:collection_object_artist) %>
+        </div>
+        <div class="col-sm-10" style="border-left: 1px dotted #ccc;">
           <div id="collectionObjectResults-status">
             <div class="flash-notice" id="collectionObjectResults-status-message">
 
@@ -114,6 +120,7 @@
                     s = @collection_objects_page - 5
                     s = 1 if (s < 1)
                     e = s + 9
+                    e = @collection_objects_num_pages if e > @collection_objects_num_pages
                   end
 
                   for i in s..e do

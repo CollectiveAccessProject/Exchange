@@ -25,6 +25,18 @@ class QuickSearchController < ApplicationController
     d = u.map { |r|  {:id => r.id, :label => (l = r.get_autocomplete_label), :value => l, :indexing_data => r.indexing_data} }
     render :json => d
   end
+  
+  def autocomplete_collection_object_artist
+    term = params[:term]
+	
+       u = Resource.where(
+            'resources.resource_type = ? AND resources.artist LIKE ?',
+            Resource::COLLECTION_OBJECT, "%#{term}%"
+        ).order(:artist).uniq.pluck(:artist)
+        
+    d = u.map { |r|  {:id => r, :label => r, :value => r} }
+    render :json => d
+  end
 
   def query
     begin
@@ -205,7 +217,7 @@ class QuickSearchController < ApplicationController
           @resources_num_pages = @resources_needs_paging ? (@resources.total_entries / @resources_length.to_f).ceil : 1
           @resources_needs_previous_paging = false
           @resources_needs_next_paging = @resources_needs_paging
-          @resources_page = @page
+          @resources_page = (@resources_num_pages < @page) ? 1 : @page
           @resources_count = @resources.respond_to?(:total_entries) ? @resources.total_entries : 0
 
           @collections_length = itemsPerPageForType(session, 'collection')
@@ -214,7 +226,7 @@ class QuickSearchController < ApplicationController
           @collections_num_pages = @collections_needs_paging ? (@collections.total_entries / @collections_length.to_f).ceil : 1
           @collections_needs_previous_paging = false
           @collections_needs_next_paging = @collections_needs_paging
-          @collections_page = @page
+          @collections_page = (@collections_num_pages < @page) ? 1 : @page
           @collections_count = @collections.respond_to?(:total_entries)  ? @collections.total_entries : 0
 
           @collection_objects_sort = sortForType(session, 'collection_object')
@@ -224,9 +236,8 @@ class QuickSearchController < ApplicationController
           @collection_objects_num_pages = @collection_objects_needs_paging ? (@collection_objects.total_entries / @collection_objects_length.to_f).ceil : 1
           @collection_objects_needs_previous_paging = false
           @collection_objects_needs_next_paging = @collection_objects_needs_paging
-          @collection_objects_page = @page
+          @collection_objects_page = (@collection_objects_num_pages < @page) ? 1 : @page
           @collection_objects_count = @collection_objects.respond_to?(:total_entries) ? @collection_objects.total_entries : 0
-
 
           @exhibitions_length = itemsPerPageForType(session, 'exhibition')
           @exhibitions = res[:exhibitions]
@@ -234,7 +245,7 @@ class QuickSearchController < ApplicationController
           @exhibitions_num_pages = @exhibitions_needs_paging ? (@exhibitions.total_entries / @exhibitions_length.to_f).ceil : 1
           @exhibitions_needs_previous_paging = false
           @exhibitions_needs_next_paging = @exhibitions_needs_paging
-          @exhibitions_page = @page
+          @exhibitions_page = (@exhibitions_num_pages < @page) ? 1 : @page
           @exhibitions_count = @exhibitions.respond_to?(:total_entries) ? @exhibitions.total_entries : 0
 
           @crc_sets_length = itemsPerPageForType(session, 'crc_set')
@@ -243,7 +254,7 @@ class QuickSearchController < ApplicationController
           @crc_sets_num_pages = @crc_sets_needs_paging ? (@crc_sets.total_entries / @crc_sets_length.to_f).ceil : 1
           @crc_sets_needs_previous_paging = false
           @crc_sets_needs_next_paging = @crc_sets_needs_paging
-          @crc_sets_page = @page
+          @crc_sets_page = (@crc_sets_num_pages < @page) ? 1 : @page
           @crc_sets_count = @crc_sets.respond_to?(:total_entries) ? @crc_sets.total_entries : 0
       end
 
@@ -275,7 +286,7 @@ class QuickSearchController < ApplicationController
 
     rescue Exception => e
       #raise "Search error: " + e.message + @query
-      redirect_to("/", :flash => { :error => "Search could not be completed " + e.message })
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
 
