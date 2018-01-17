@@ -731,7 +731,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
-          options[:page] = 1 if resources.length/resources_length < options[:page]
+          #options[:page] = 1 if resources.length/resources_length < options[:page]
           resources = resources.page(options[:page]).records
         end
       rescue

@@ -17,7 +17,7 @@ class YoutubeLink < ActiveRecord::Base
     if original_link
 
       # link shortener format
-      if /youtu.be/.match(original_link)
+      if /:\/\/youtu.be/.match(original_link)
        # puts "MATCHED youtu.be"
         self.key = original_link.sub! 'https://youtu.be/', ''
       

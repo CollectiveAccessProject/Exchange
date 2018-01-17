@@ -98,7 +98,6 @@
           <div class='row'>
             <%=
               if(@crc_sets_needs_previous_paging)
-
                 ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "crcset", page: @crc_sets_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
               else
                 "<div class='col-sm-3'></div>".html_safe
