@@ -19,8 +19,15 @@
         <div class="col-md-2">
             <h3>Refine by</h3>
         
-            Artist/Maker Name<br/>
-            <%= autocomplete_field_tag(:find_artist, '', :autocomplete_collection_object_artist, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 10, :id_element => "#collection_object_artist", :placeholder => "Search for an artist/maker") + hidden_field_tag(:collection_object_artist) %>
+            Artist/Maker<br/>
+            <%= autocomplete_field_tag(:collection_object_find_artist, '', quick_search_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", :class => 'quickSearchRefineAutocomplete') + hidden_field_tag(:collection_object_artist) %>
+        
+            <% if @refine and @refine["collection_object"] %>
+                <% @refine["collection_object"].each do |refine| %>
+                    <%= refine %>
+                    <a href="#" data-remove_id="<%= refine %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a>
+                <% end%>
+            <% end%>
         </div>
         <div class="col-sm-10" style="border-left: 1px dotted #ccc;">
           <div id="collectionObjectResults-status">
@@ -189,6 +196,26 @@
             }, 'json');
             return false;
         });
+        
+        
+        // refine
+        jQuery(document).on('railsAutocomplete.select', "#results_collection_object", function(event, data){
+            //alert(data.item.id);
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=artist:\"" + data.item.id + "\"", function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                return true;
+            });
+        });
+        
+        jQuery(document).on('click', "#results_collection_object .removeFilter", function(event, data){
+            var remove_id = jQuery(this).data('remove_id');
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                return true;
+            });
+        });
+        
+        
         resizeBar("#collection_object_title_link", "#collection_object_right");	
         $(window).on('resize', function(){
             resizeBar("#collection_object_title_link", "#collection_object_right");		

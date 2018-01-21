@@ -686,6 +686,8 @@ class Resource < ActiveRecord::Base
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
+    
+    refine = options[:refine] ? options[:refine] : {}
 
     acl_str = ["access:1"]
     if(options[:user])
@@ -713,11 +715,13 @@ class Resource < ActiveRecord::Base
 
         sort = search_sort_for_type(options[:sortsByType], 'resource')
 
+        refine_q = (refine['resource'] and (refine['resource'].length > 0)) ?  " AND " + refine['resource'].join(" AND ") : ""
+        
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")" + refine_q
                 }
             }
         }
@@ -747,12 +751,14 @@ class Resource < ActiveRecord::Base
         collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
         sort = search_sort_for_type(options[:sortsByType], 'collection')
+        
+        refine_q = (refine['collection'] and (refine['collection'].length > 0)) ?  " AND " + refine['collection'].join(" AND ") : ""
 
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")" + refine_q
                 }
             }
         }
@@ -778,13 +784,15 @@ class Resource < ActiveRecord::Base
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
         sort = search_sort_for_type(options[:sortsByType], 'collection_object')
+        
+        refine_q = (refine['collection_object'] and (refine['collection_object'].length > 0)) ?  " AND " + refine['collection_object'].join(" AND ") : ""
 
 		# We don't check access on collection objects – they're all public no matter their settings
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s + refine_q
                 }
             }
         }
@@ -813,6 +821,8 @@ class Resource < ActiveRecord::Base
         exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
         sort = search_sort_for_type(options[:sortsByType], 'exhibition')
+        
+        refine_q = (refine['exhibition'] and (refine['exhibition'].length > 0)) ?  " AND " + refine['exhibition'].join(" AND ") : ""
 
         qdef = {
             query: {
@@ -823,6 +833,7 @@ class Resource < ActiveRecord::Base
             }
         }
         qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        
         exhibitions = Resource.search(qdef).per_page(exhibitions_length)
 
         if (!options[:models])
@@ -847,12 +858,14 @@ class Resource < ActiveRecord::Base
         crc_sets_length = options[:lengthsByType]['crc_set'] if (options[:lengthsByType] && options[:lengthsByType]['crc_set'])
 
         sort = search_sort_for_type(options[:sortsByType], 'crc_set')
+        
+        refine_q = (refine['crc_set'] and (refine['crc_set'].length > 0)) ?  " AND " + refine['crc_set'].join(" AND ") : ""
 
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::CRCSET.to_s + " AND access:1"
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::CRCSET.to_s + " AND access:1" + refine_q
                 }
             }
         }
