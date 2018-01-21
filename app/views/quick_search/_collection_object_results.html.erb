@@ -20,7 +20,7 @@
             <h3>Refine by</h3>
         
             Artist/Maker<br/>
-            <%= autocomplete_field_tag(:collection_object_find_artist, '', quick_search_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", :class => 'quickSearchRefineAutocomplete') + hidden_field_tag(:collection_object_artist) %>
+            <%= autocomplete_field_tag(:collection_object_find_artist, '', quick_search_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete') + hidden_field_tag(:collection_object_artist) %>
         
             <% if @refine and @refine["collection_object"] %>
                 <% @refine["collection_object"].each do |refine| %>
@@ -200,7 +200,7 @@
         
         // refine
         jQuery(document).on('railsAutocomplete.select', "#results_collection_object", function(event, data){
-            //alert(data.item.id);
+            event.preventDefault();
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=artist:\"" + data.item.id + "\"", function(data) {
                 jQuery("#results_collection_object").html(data.html);
                 return true;
@@ -208,6 +208,7 @@
         });
         
         jQuery(document).on('click', "#results_collection_object .removeFilter", function(event, data){
+            event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
                 jQuery("#results_collection_object").html(data.html);
