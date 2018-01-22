@@ -704,6 +704,32 @@ class Resource < ActiveRecord::Base
         {field: "_score", direction: "desc" }
     end
   end
+  
+  
+  def self.quicksearch_refine_filter_names
+    return  {
+        "artist" => "Artist/maker",
+        "artist_nationality" => "Artist nationality",
+        "start_date" => "Date created",
+        "end_date" => "Date created",
+        "style" => "Style",
+        "medium" => "Medium",
+        "on_display" => "On display?",
+        "collection_area" => "Collection area",
+        "classification" => "Classification"
+    }
+  end
+  
+  
+  def self.quicksearch_refine_filter_display_value(filter, value)
+    value.gsub!(/"+/, "")
+    case filter
+        when "on_display"
+            return (value.to_i > 0) ? "Yes" : "No"
+        else
+            value
+    end
+  end
 
   # Simple "quicksearch" of resources (broken out by type)
   # STATIC

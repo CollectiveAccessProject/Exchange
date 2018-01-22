@@ -368,3 +368,39 @@ def get_values_for_refine_for_select(field, query, type, refine_filters)
 
     options_for_select(opts)
 end
+
+
+def format_refine_filters(refine_filters, type)
+    return nil if (!refine_filters or !refine_filters[type])
+    
+    filter_display_names = Resource.quicksearch_refine_filter_names
+    
+    filters = []
+    refine_filters[type].each do |r|
+        t = r.split(/:/)
+        v = t[1]
+        case
+            when (t[0] == 'start_date')
+                if (t.length > 2)
+                    e = r.split(/ AND /)
+                    d_start = e[0].split(/:>=/)
+                    d_end = e[1].split(/:<=/) 
+                    v = d_start[1] + " - " + d_end[1]
+                elsif (d = t[1].match(/^([<=]+)/)) 
+                    t[1].gsub!(/^[<=]+/, "")
+                    v = "Before " + t[1]
+                else 
+                    v = t[1]
+                end
+                filters.push({field: filter_display_names[t[0]], value: v, filter: r})
+            when ((t[0] == 'end_date') and (d = t[1].match(/^([>=]+)/)))
+                t[1].gsub!(/^[>=]+/, "")
+                v = "After " + t[1]
+                filters.push({field: filter_display_names[t[0]], value: v, filter: r})
+            else
+                v = Resource.quicksearch_refine_filter_display_value(t[0], t[1])
+                filters.push({field: filter_display_names[t[0]], value: v, filter: r})
+        end
+    end
+    filters
+end

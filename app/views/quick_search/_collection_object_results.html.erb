@@ -17,6 +17,20 @@
       </div>
       <div class="row" id="colObjectResultsContainer">
         <div class="col-md-3">
+         <% if @refine and @refine["collection_object"] and (@refine["collection_object"].length > 0) %>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Filters</h3>
+                    <ul class="quickSearchRefineFilterList">
+                    <% format_refine_filters(@refine, "collection_object").each do |r| %>
+                        <li><%= r[:field] %>: <em> <%= r[:value] %></em>
+                        <a href="#" data-remove_id="<%= r[:filter] %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a></li>
+                    <% end%>
+                    </ul>
+                </div>
+            </div>
+        <% end%>
+        
             <h3>Refine by</h3>
         <% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Array) or !session[:refine]['collection_object'].include?("on_display:\"1\"")) %>  
             <div class="row">
@@ -80,16 +94,6 @@
                     <%= autocomplete_field_tag(:collection_object_find_classification, '', quick_search_autocomplete_refine_url(query: @query, field: "classification.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_classification", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "classification") + hidden_field_tag(:collection_object_classification) %>
                 </div>
             </div>
-        <% if @refine and @refine["collection_object"] %>
-            <div class="row">
-                <div class="col-md-12">
-                    <% @refine["collection_object"].each do |refine| %>
-                        <%= refine %>
-                        <a href="#" data-remove_id="<%= refine %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a>
-                    <% end%>
-                </div>
-            </div>
-        <% end%>
         </div>
         <div class="col-sm-9" style="border-left: 1px dotted #ccc;">
           <div id="collectionObjectResults-status">
