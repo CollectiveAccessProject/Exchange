@@ -113,6 +113,36 @@ class Resource < ActiveRecord::Base
               index: 'not_analyzed'
           }
       }
+      indexes :artist_nationality, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :medium, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :style, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :classification, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :collection_area, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
       indexes :rating, type: 'integer'
       indexes :created_at, type: 'date'
     end

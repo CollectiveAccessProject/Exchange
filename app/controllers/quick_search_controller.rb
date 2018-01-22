@@ -62,7 +62,7 @@ class QuickSearchController < ApplicationController
     )
 	d = agg.response["aggregations"]["values"]["buckets"].reduce([]) do |acc,v|
         if v['key'].downcase.include?(t)
-            acc.push({:id => v['key'], :label => v['key'], :value => v['key']})
+            acc.push({:id => v['key'], :label => v['key'].downcase, :value => v['key']})
         end 
         acc
     end   

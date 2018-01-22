@@ -16,20 +16,82 @@
         </div>
       </div>
       <div class="row" id="colObjectResultsContainer">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <h3>Refine by</h3>
-        
-            Artist/Maker<br/>
-            <%= autocomplete_field_tag(:collection_object_find_artist, '', quick_search_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete') + hidden_field_tag(:collection_object_artist) %>
-        
-            <% if @refine and @refine["collection_object"] %>
-                <% @refine["collection_object"].each do |refine| %>
-                    <%= refine %>
-                    <a href="#" data-remove_id="<%= refine %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a>
-                <% end%>
-            <% end%>
+        <% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Array) or !session[:refine]['collection_object'].include?("on_display:\"1\"")) %>  
+            <div class="row">
+                <div class="col-md-12">
+                    On display?<br/>
+                    <input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="1" data-filter="on_display"/> 
+                </div>
+            </div>
+        <% end %>
+            <div class="row">
+                <div class="col-md-12">
+                    Artist/Maker<br/>
+                    <%= autocomplete_field_tag(:collection_object_find_artist, '', quick_search_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "artist") + hidden_field_tag(:collection_object_artist) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Artist nationality<br/>
+                    <%= select_tag(:collection_object_artist_nationality, get_values_for_refine_for_select('artist_nationality.raw', @query, "collection_object", session[:refine]), "data-filter": "artist_nationality", :class => 'quickSearchRefineSelect')  %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Date created
+                    <br/>
+                    <select name="collection_object_date_created_mode" id="collection_object_date_created_mode" class="quickSearchRefineDateMode">
+                        <option value="in">in</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="collection_object_date_created_year" id="collection_object_date_created_year" class="quickSearchRefineDate"/>
+                    <span id="collection_object_date_created_range"  style="display:none;">
+                        <input type="text" name="collection_object_date_created_min" id="collection_object_date_created_min" class="quickSearchRefineDateRange"/> - 
+                        <input type="text" name="collection_object_date_created_max" id="collection_object_date_created_max" style="display:none;" class="quickSearchRefineDateRange"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Collection area<br/>
+                    <%= select_tag(:collection_object_collection_area, get_values_for_refine_for_select('collection_area', @query, "collection_object", session[:refine]), "data-filter": "collection_area", :class => 'quickSearchRefineSelect')  %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Medium<br/>
+                    <%= autocomplete_field_tag(:collection_object_find_medium, '', quick_search_autocomplete_refine_url(query: @query, field: "medium.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_medium", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "medium") + hidden_field_tag(:collection_object_medium) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Style<br/>
+                    <%= autocomplete_field_tag(:collection_object_find_style, '', quick_search_autocomplete_refine_url(query: @query, field: "style.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_style", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "style") + hidden_field_tag(:collection_object_style) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Classification<br/>
+                    <%= autocomplete_field_tag(:collection_object_find_classification, '', quick_search_autocomplete_refine_url(query: @query, field: "classification.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_classification", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "classification") + hidden_field_tag(:collection_object_classification) %>
+                </div>
+            </div>
+        <% if @refine and @refine["collection_object"] %>
+            <div class="row">
+                <div class="col-md-12">
+                    <% @refine["collection_object"].each do |refine| %>
+                        <%= refine %>
+                        <a href="#" data-remove_id="<%= refine %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    <% end%>
+                </div>
+            </div>
+        <% end%>
         </div>
-        <div class="col-sm-10" style="border-left: 1px dotted #ccc;">
+        <div class="col-sm-9" style="border-left: 1px dotted #ccc;">
           <div id="collectionObjectResults-status">
             <div class="flash-notice" id="collectionObjectResults-status-message">
 
@@ -198,15 +260,88 @@
         });
         
         
-        // refine
+        // Refine UI: autocomplete add filter
         jQuery(document).on('railsAutocomplete.select', "#results_collection_object", function(event, data){
+            var filter = jQuery(event.target).data('filter');
             event.preventDefault();
-            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=artist:\"" + data.item.id + "\"", function(data) {
+            
+            if (!filter) { return false; }
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + data.item.id + "\"", function(data) {
                 jQuery("#results_collection_object").html(data.html);
                 return true;
             });
         });
         
+        // Refine UI: <select> add filter
+        jQuery(document).on('change', "#results_collection_object select.quickSearchRefineSelect", function(event){
+            var filter = jQuery(event.target).data('filter');
+            var val = jQuery(this).val();
+            event.preventDefault();
+            
+            if (!filter) { return false; }
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                return true;
+            });
+        });
+        // Refine UI: date filter
+        jQuery(document).on('change', "#collection_object_date_created_mode", function(event){
+            var mode = jQuery(this).val();  
+            
+            if (mode == 'between') {
+                jQuery("#collection_object_date_created_range, #collection_object_date_created_min, #collection_object_date_created_max").show().attr('disabled', false);
+                jQuery("#collection_object_date_created_year").hide().attr('disabled', true);
+            } else {
+                jQuery("#collection_object_date_created_range, #collection_object_date_created_min, #collection_object_date_created_max").hide().attr('disabled', true);
+                jQuery("#collection_object_date_created_year").show().attr('disabled', false);
+            }
+        });
+        jQuery(document).on('blur', "#collection_object_date_created_year, #collection_object_date_created_min, #collection_object_date_created_max", function(event){
+            var mode = jQuery("#collection_object_date_created_mode").val();  
+            var date_expr = null;
+            
+            if (mode == 'between') {
+                var min = parseInt(jQuery("#collection_object_date_created_min").val()); 
+                var max = parseInt(jQuery("#collection_object_date_created_max").val()); 
+                if ((min > 0) && (max > 0) && (min <= max)) {
+                    date_expr = "start_date:>=" + min + " AND " + "end_date:<=" + max;
+                }
+            } else {
+                var year = parseInt(jQuery("#collection_object_date_created_year").val()); 
+                if (year > 0) {
+                    if (mode == 'in') {
+                        date_expr = "start_date:" + year;
+                    } else if(mode == 'before') {
+                        date_expr = "start_date:<=" + year;
+                    } else if(mode == 'after') {
+                        date_expr = "end_date:>=" + year;
+                    }
+                }
+            }
+            
+            if (date_expr) {
+                jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + date_expr, function(data) {
+                    jQuery("#results_collection_object").html(data.html);
+                    return true;
+                });
+            }
+        });
+        
+         // Refine UI: checkbox add filter
+        jQuery(document).on('change', "#results_collection_object input.quickSearchRefineCheckbox", function(event){
+            var filter = jQuery(event.target).data('filter');
+            var val = jQuery(this).val();
+            event.preventDefault();
+            
+            if (!filter || (val < 1)) { return false; }
+            
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                return true;
+            });
+        });
+        
+        // Refine UI: remove filter
         jQuery(document).on('click', "#results_collection_object .removeFilter", function(event, data){
             event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
@@ -215,7 +350,6 @@
                 return true;
             });
         });
-        
         
         resizeBar("#collection_object_title_link", "#collection_object_right");	
         $(window).on('resize', function(){

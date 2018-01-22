@@ -324,3 +324,47 @@ def get_field_values_for_objects(f)
 
     options_for_select(opts)
 end
+
+
+def get_values_for_refine(field, query, type, refine_filters)
+    query.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
+    query.gsub!(/["]{2}/, '"')
+    
+    refine_q = ''
+    if refine_filters and refine_filters[type] and (refine_filters[type].length > 0)
+        refine_q = " (" + refine_filters[type].join(" AND ") + ")"
+    end
+    agg = Resource.search(
+        query: {
+            query_string:  {
+                default_operator: "AND",
+                query: query + refine_q
+            }
+        },
+        size: 10000,
+        aggs: {
+            values: { terms: { field: field, size: 250 } }
+        }
+    )
+    
+    acc = agg.response["aggregations"]["values"]["buckets"].map do |v|
+        next if !v['key'] or !v['key'].strip
+        v['key']
+    end  
+    
+    sorted_acc = acc.sort.each do |v| 
+        next if !v['key'] or !v['key'].strip
+        {:id => v['key'], :label => v['key'].downcase, :value => v['key']}
+    end 
+end
+
+def get_values_for_refine_for_select(field, query, type, refine_filters)
+    vals = get_values_for_refine(field, query, type, refine_filters)        
+    opts = [[' ', '']]
+    vals.each do |v| 
+        next if v and v.length == 0
+        opts.push([v, v])
+    end
+
+    options_for_select(opts)
+end
