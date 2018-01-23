@@ -119,6 +119,12 @@ class Resource < ActiveRecord::Base
               index: 'not_analyzed'
           }
       }
+      indexes :author, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
       indexes :medium, type: 'string', analyzer: 'english', fields: {
           raw: {
               type: 'string',
@@ -138,6 +144,18 @@ class Resource < ActiveRecord::Base
           }
       }
       indexes :collection_area, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :all_keywords, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :affiliation, type: 'string', analyzer: 'english', fields: {
           raw: {
               type: 'string',
               index: 'not_analyzed'
@@ -233,8 +251,16 @@ class Resource < ActiveRecord::Base
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
     record['role'] = record['affiliation'] = self.roles.pluck("name")
-    record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
+   
+    
     record['tag'] = self.tags.pluck("tag")
+    record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
+    record['all_keywords'] = (record['keywords'] ? record['keywords'].split(/\|/) : []) + record['keyword'] + record['tag']
+    
+    if (record['resource_type'].to_i == Resource::RESOURCE)
+        print "K= "
+        print record['all_keywords']
+    end
     
     record['start_date'] = record['start_date'].to_i
     record['end_date'] = record['end_date'].to_i
@@ -312,7 +338,7 @@ class Resource < ActiveRecord::Base
     label += " [COLLECTION]" if (self.is_collection)
     label += " [RESOURCE]" if (self.is_resource)
     label += " [EXHIBITION]" if (self.is_exhibition)
-    label += " [STUDY SET]" if (self.is_crc_set)
+    label += " [STUDY SET]" if (self.is_crcset)
 
     label
   end
@@ -348,7 +374,7 @@ class Resource < ActiveRecord::Base
     return (self.is_collection || self.is_exhibition)
   end
 
-  def is_crc_set
+  def is_crcset
     return self.resource_type == Resource::CRCSET;
   end
 
@@ -383,6 +409,22 @@ class Resource < ActiveRecord::Base
         return :exhibitions
       when Resource::CRCSET
         return :crcset
+    end
+  end
+  
+  # STATIC
+  def self.resource_text_to_type(t)
+    case t.downcase
+      when 'resource', 'resources'
+        return Resource::RESOURCE
+      when 'collection_object', 'collection_objects'
+        return Resource::COLLECTION_OBJECT
+      when 'collection', 'collections'
+        return Resource::COLLECTION
+      when 'exhibition', 'exhibitions'
+        return Resource::EXHIBITION
+      when 'crcset', 'crcsets', 'crcset', 'crcsets'
+        return Resource::CRCSET
     end
   end
 
@@ -709,6 +751,8 @@ class Resource < ActiveRecord::Base
   def self.quicksearch_refine_filter_names
     return  {
         "artist" => "Artist/maker",
+        "author" => "Author",
+        "title" => "Title",
         "artist_nationality" => "Artist nationality",
         "start_date" => "Date created",
         "end_date" => "Date created",
@@ -716,7 +760,10 @@ class Resource < ActiveRecord::Base
         "medium" => "Medium",
         "on_display" => "On display?",
         "collection_area" => "Collection area",
-        "classification" => "Classification"
+        "classification" => "Classification",
+        "all_keywords" => "Keywords",
+        "affiliation" => "Created for",
+        "access" => "Access type"
     }
   end
   
@@ -726,11 +773,31 @@ class Resource < ActiveRecord::Base
     case filter
         when "on_display"
             return (value.to_i > 0) ? "Yes" : "No"
-        else
-            value
+        when "affiliation"
+            if Rails.application.config.x.user_roles.invert.has_key? value.to_sym
+                return Rails.application.config.x.user_roles.invert[value.to_sym]
+            end
+        when "access"
+            if Rails.application.config.x.access_types.invert.has_key? value.to_i
+                return Rails.application.config.x.access_types.invert[value.to_i]
+            end
     end
+    value
   end
 
+ 
+  # STATIC
+  def self.get_refine_facet_query(refine, type)
+    acc = []
+    if (refine[type] and (refine[type].length > 0)) 
+        acc = []
+        refine[type].each do |f,l|
+            acc.push("(" + l.join(" OR ") + ")") if l.length > 0
+        end
+    end 
+    acc.join(" AND ")
+  end
+ 
   # Simple "quicksearch" of resources (broken out by type)
   # STATIC
   def self.quicksearch(query, options={})
@@ -770,8 +837,8 @@ class Resource < ActiveRecord::Base
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
         sort = search_sort_for_type(options[:sortsByType], 'resource')
-
-        refine_q = (refine['resource'] and (refine['resource'].length > 0)) ?  " AND " + refine['resource'].join(" AND ") : ""
+        
+        refine_q = Resource::get_refine_facet_query(refine, 'resource')
         
         qdef = {
             query: {
@@ -794,9 +861,9 @@ class Resource < ActiveRecord::Base
           #options[:page] = 1 if resources.length/resources_length < options[:page]
           resources = resources.page(options[:page]).records
         end
-      rescue
+      #rescue
         # no search?
-        resources = []
+       # resources = []
       end
     end
 
@@ -808,7 +875,7 @@ class Resource < ActiveRecord::Base
 
         sort = search_sort_for_type(options[:sortsByType], 'collection')
         
-        refine_q = (refine['collection'] and (refine['collection'].length > 0)) ?  " AND " + refine['collection'].join(" AND ") : ""
+        refine_q = Resource::get_refine_facet_query(refine, 'collection')
 
         qdef = {
             query: {
@@ -841,8 +908,8 @@ class Resource < ActiveRecord::Base
 
         sort = search_sort_for_type(options[:sortsByType], 'collection_object')
         
-        refine_q = (refine['collection_object'] and (refine['collection_object'].length > 0)) ?  " AND " + refine['collection_object'].join(" AND ") : ""
-
+        refine_q = Resource::get_refine_facet_query(refine, 'collection_object')
+        
 		# We don't check access on collection objects – they're all public no matter their settings
         qdef = {
             query: {
@@ -878,7 +945,7 @@ class Resource < ActiveRecord::Base
 
         sort = search_sort_for_type(options[:sortsByType], 'exhibition')
         
-        refine_q = (refine['exhibition'] and (refine['exhibition'].length > 0)) ?  " AND " + refine['exhibition'].join(" AND ") : ""
+        refine_q = Resource::get_refine_facet_query(refine, 'exhibition')
 
         qdef = {
             query: {
@@ -908,14 +975,14 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    if (!options[:type] || (options[:type] == 'crc_set'))
+    if (!options[:type] || (options[:type] == 'crcset'))
       begin
-        crc_sets_length = length
-        crc_sets_length = options[:lengthsByType]['crc_set'] if (options[:lengthsByType] && options[:lengthsByType]['crc_set'])
+        crcsets_length = length
+        crcsets_length = options[:lengthsByType]['crcset'] if (options[:lengthsByType] && options[:lengthsByType]['crcset'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'crc_set')
+        sort = search_sort_for_type(options[:sortsByType], 'crcset')
         
-        refine_q = (refine['crc_set'] and (refine['crc_set'].length > 0)) ?  " AND " + refine['crc_set'].join(" AND ") : ""
+        refine_q = Resource::get_refine_facet_query(refine, 'crcset')
 
         qdef = {
             query: {
@@ -926,25 +993,25 @@ class Resource < ActiveRecord::Base
             }
         }
         qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
-        crc_sets = Resource.search(qdef).per_page(exhibitions_length)
+        crcsets = Resource.search(qdef).per_page(crcsets_length)
 
         if (!options[:models])
-          crc_sets = crc_sets.map do |r|
+          crcsets = crcsets.map do |r|
             if r._source
               { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
             end
           end
         else
-          options[:page] = 1 if crc_sets.length/crc_sets_length < options[:page]
-          crc_sets = crc_sets.page(options[:page]).records
+          options[:page] = 1 if crcsets.length/crcsets_length < options[:page]
+          crcsets = crcsets.page(options[:page]).records
         end
       rescue
         # no search?
-        crc_sets = []
+        crcsets = []
       end
     end
 
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, crc_sets: crc_sets}
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, crcsets: crcsets}
   end
 
   # "Advanced" search of resources (broken out by type) and media files

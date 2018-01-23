@@ -45,14 +45,18 @@ class QuickSearchController < ApplicationController
     
     refine_q = ''
     if session[:refine] and session[:refine][type] and (session[:refine][type].length > 0)
-        refine_q = " (" + session[:refine][type].join(" AND ") + ")"
+        #refine_q = " (" + session[:refine][type].join(" AND ") + ")"
+        refine_q = Resource::get_refine_facet_query(session[:refine], type)
     end
+    
+    q_type = " resource_type:" + Resource::resource_text_to_type(type).to_s
+
     
     agg = Resource.search(
         query: {
             query_string:  {
                 default_operator: "AND",
-                query: q + refine_q
+                query: q + q_type + refine_q
             }
         },
         size: 10000,
@@ -62,7 +66,8 @@ class QuickSearchController < ApplicationController
     )
 	d = agg.response["aggregations"]["values"]["buckets"].reduce([]) do |acc,v|
         if v['key'].downcase.include?(t)
-            acc.push({:id => v['key'], :label => v['key'].downcase, :value => v['key']})
+            val = v['key'].gsub(/<\/?[^>]*>/, "")
+            acc.push({:id => val, :label => val, :value => val})
         end 
         acc
     end   
@@ -80,9 +85,9 @@ class QuickSearchController < ApplicationController
   def query_results
     begin
       setup
-    rescue Exception => e
+   # rescue Exception => e
       #raise "Search error: " + e.message
-      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message})
+    #  redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message})
     end
 
     params.permit(:type, :length)
@@ -98,7 +103,7 @@ class QuickSearchController < ApplicationController
         resp = {:status => :ok, :page => @page, :type => type, :length => l, :query => @query, :html => render_to_string("quick_search/_collection_results", layout: false)}
       when (type == "exhibition")
         resp = {:status => :ok, :page => @page, :type => type, :length => l, :query => @query, :html => render_to_string("quick_search/_exhibition_results", layout: false)}
-      when (type == "crc_set")
+      when (type == "crcset")
         resp = {:status => :ok, :page => @page, :type => type, :length => l, :query => @query, :html => render_to_string("quick_search/_crc_set_results", layout: false)}
       else
         #raise "Invalid type"
@@ -127,6 +132,7 @@ class QuickSearchController < ApplicationController
   # Setup results for quicksearch and paging handler
   #
   private def setup(options=nil)
+    @show = true
     @available_collections = get_available_collections
     @available_collections_and_resources = get_available_collections_and_resources
 
@@ -151,9 +157,16 @@ class QuickSearchController < ApplicationController
     
     # Handle removal of filter
     if params[:unrefine] and session[:refine] and session[:refine][@type]
-        session[:refine][@type] = session[:refine][@type].select do |a| 
-            !params[:unrefine].include? a
+        params[:unrefine].each do|u|
+            ubits = u.split(/:/)
+            
+            if session[:refine][@type].has_key? ubits[0]
+                session[:refine][@type][ubits[0]].select! do |a| 
+                    a != u
+                end
+            end    
         end
+        
     end
     
     
@@ -165,10 +178,10 @@ class QuickSearchController < ApplicationController
     @query_proc = @query_proc.gsub(/on_display:["]*([A-Za-z]+)["]*/, 'on_display:1') if @query_proc
 
     session[:items_per_page] = {} if (!session[:items_per_page])
-    ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
+    ['resource', 'collection', 'collection_object', 'exhibition', 'crcset'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
 
     session[:sort] = {} if (!session[:sort])
-    ['resource', 'collection', 'collection_object', 'exhibition', 'crc_set'].map {|n| session[:sort][n] = "" if (!session[:sort].key?(n))}
+    ['resource', 'collection', 'collection_object', 'exhibition', 'crcset'].map {|n| session[:sort][n] = "" if (!session[:sort].key?(n))}
 
 
     @length = items_per_page_for_type(session, @type) if (!@length || (@length <= 0))
@@ -193,20 +206,21 @@ class QuickSearchController < ApplicationController
       @query = res[:query_string]
       @query_for_display = res[:query_for_display]
     else
+        # Handle adding of refine filter
         @refine = {}
         if session[:last_search_query]  != @query
             session[:refine] = {}
         else 
             @refine = session[:refine] if session[:refine]
         end
-        
         if (@type)
             if params[:refine]
-                @refine[@type] = [] if @refine[@type] == nil
+                @refine[@type] = {} if @refine[@type] == nil
                 params[:refine].each { |p|
-                    @refine[@type].push(p) if !@refine[@type].include? p
+                    pbits = p.split(/:/)
+                    @refine[@type][pbits[0]] = [] if !@refine[@type].has_key? pbits[0]
+                    @refine[@type][pbits[0]].push(p) if !@refine[@type][pbits[0]].include? p
                 }
-                
                 session[:refine] = @refine
             end
         end
@@ -262,16 +276,16 @@ class QuickSearchController < ApplicationController
           @exhibitions_needs_next_paging = @exhibitions_needs_paging && (@page < @exhibitions_num_pages)
           @exhibitions_page = @page
           @exhibitions_count = @exhibitions.respond_to?(:total_entries) ? @exhibitions.total_entries : 0
-        when (@type == 'crc_set')
-          @crc_sets_length = @length
-          @crc_sets = res[:crc_sets]
-          @crc_sets_needs_paging = (@crc_sets.total_entries > @length)
-          @crc_sets_num_pages = (@crc_sets.total_entries / @length.to_f).ceil
-          @page = 1 if (@page > @crc_sets_num_pages)
-          @crc_sets_needs_previous_paging = (@page > 1)
-          @crc_sets_needs_next_paging = @crc_sets_needs_paging && (@page < @crc_sets_num_pages)
-          @crc_sets_page = @page
-          @crc_sets_count = @crc_sets.respond_to?(:total_entries) ? @crc_sets.total_entries : 0
+        when (@type == 'crcset')
+          @crcsets_length = @length
+          @crcsets = res[:crcsets]
+          @crcsets_needs_paging = (@crcsets.total_entries > @length)
+          @crcsets_num_pages = (@crcsets.total_entries / @length.to_f).ceil
+          @page = 1 if (@page > @crcsets_num_pages)
+          @crcsets_needs_previous_paging = (@page > 1)
+          @crcsets_needs_next_paging = @crcsets_needs_paging && (@page < @crcsets_num_pages)
+          @crcsets_page = @page
+          @crcsets_count = @crcsets.respond_to?(:total_entries) ? @crcsets.total_entries : 0
         else
           @resources_length = items_per_page_for_type(session, 'resource')
           @resources = res[:resources]
@@ -310,14 +324,14 @@ class QuickSearchController < ApplicationController
           @exhibitions_page = (@exhibitions_num_pages < @page) ? 1 : @page
           @exhibitions_count = @exhibitions.respond_to?(:total_entries) ? @exhibitions.total_entries : 0
 
-          @crc_sets_length = items_per_page_for_type(session, 'crc_set')
-          @crc_sets = res[:crc_sets]
-          @crc_sets_needs_paging = @crc_sets.respond_to?(:total_entries) ?  (@crc_sets.total_entries > @crc_sets_length) : false
-          @crc_sets_num_pages = @crc_sets_needs_paging ? (@crc_sets.total_entries / @crc_sets_length.to_f).ceil : 1
-          @crc_sets_needs_previous_paging = false
-          @crc_sets_needs_next_paging = @crc_sets_needs_paging
-          @crc_sets_page = (@crc_sets_num_pages < @page) ? 1 : @page
-          @crc_sets_count = @crc_sets.respond_to?(:total_entries) ? @crc_sets.total_entries : 0
+          @crcsets_length = items_per_page_for_type(session, 'crcset')
+          @crcsets = res[:crcsets]
+          @crcsets_needs_paging = @crcsets.respond_to?(:total_entries) ?  (@crcsets.total_entries > @crcsets_length) : false
+          @crcsets_num_pages = @crcsets_needs_paging ? (@crcsets.total_entries / @crcsets_length.to_f).ceil : 1
+          @crcsets_needs_previous_paging = false
+          @crcsets_needs_next_paging = @crcsets_needs_paging
+          @crcsets_page = (@crcsets_num_pages < @page) ? 1 : @page
+          @crcsets_count = @crcsets.respond_to?(:total_entries) ? @crcsets.total_entries : 0
       end
 
 
@@ -343,12 +357,12 @@ class QuickSearchController < ApplicationController
           collection_objects: res[:collection_objects].respond_to?(:pluck) ? res[:collection_objects].pluck(:id) : [],
           collections: res[:collections].respond_to?(:pluck) ? res[:collections].pluck(:id) : [],
           exhibitions: res[:exhibitions].respond_to?(:pluck) ? res[:exhibitions].pluck(:id) : [],
-          crc_sets: (@is_staff && res[:crc_sets].respond_to?(:pluck)) ? res[:crc_sets].pluck(:id) : []
+          crcsets: (@is_staff && res[:crcsets].respond_to?(:pluck)) ? res[:crcsets].pluck(:id) : []
       }
 
     rescue Exception => e
-      #raise "Search error: " + e.message + @query
-      redirect_to("/", :flash => { :error => "Search could not be completed : " + e.message })
+      raise "Search error: " + e.message + @query
+      #redirect_to("/", :flash => { :error => "Search could not be completed : " + e.message })
     end
   end
 

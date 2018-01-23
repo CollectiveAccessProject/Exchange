@@ -1350,3 +1350,7 @@ ul.quickSearchRefineFilterList {
     list-style: none; 
     padding-left:2px;
 }
+
+#results_resource, #results_collection, #results_collection_object, #results_crc_set {
+    min-height: 400px;
+}
