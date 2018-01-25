@@ -1351,6 +1351,10 @@ ul.quickSearchRefineFilterList {
     padding-left:2px;
 }
 
+div.quickSearchDatePickerField {
+    width: 220px !important;
+}
+
 #results_resource, #results_collection, #results_collection_object, #results_crc_set {
     min-height: 400px;
 }

@@ -73,6 +73,24 @@
                     <% end %>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Date last updated
+                    <br/>
+                    <select name="resource_date_last_updated" id="resource_date_last_updated" class="quickSearchRefineDateMode">
+                        <option value="in">on</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="resource_date_last_updated_date" id="resource_date_last_updated_date" class="quickSearchRefineDate quickSearchRefineDatePicker"/>
+                    <span id="resource_date_last_updated_range"  style="display:none;">
+                        <input type="text" name="resource_date_last_updated_min" id="resource_date_last_updated_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
+                        <input type="text" name="resource_date_last_updated_max" id="resource_date_last_updated_max" style="display:none;" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
+                </div>
+            </div>
 <% end %>
         </div>
         <div class="col-sm-9">
@@ -289,6 +307,50 @@
                 return true;
             });
         });
+        
+        // Refine UI: date filter
+        jQuery(document).on('change', "#resource_date_created_mode", function(event){
+            var mode = jQuery(this).val();  
+            
+            if (mode == 'between') {
+                jQuery("#resource_date_created_range, #resource_date_created_min, #resource_date_created_max").show().attr('disabled', false);
+                jQuery("#resource_date_created_year").hide().attr('disabled', true);
+            } else {
+                jQuery("#resource_date_created_range, #resource_date_created_min, #resource_date_created_max").hide().attr('disabled', true);
+                jQuery("#resource_date_created_year").show().attr('disabled', false);
+            }
+        });
+        jQuery(document).on('blur', "#resource_date_created_year, #resource_date_created_min, #resource_date_created_max", function(event){
+            var mode = jQuery("#resource_date_created_mode").val();  
+            var date_expr = null;
+            
+            if (mode == 'between') {
+                var min = parseInt(jQuery("#resource_date_created_min").val()); 
+                var max = parseInt(jQuery("#resource_date_created_max").val()); 
+                if ((min > 0) && (max > 0) && (min <= max)) {
+                    date_expr = "updated_at:>=" + min + " AND " + "updated_at:<=" + max;
+                }
+            } else {
+                var year = parseInt(jQuery("#resource_date_created_year").val()); 
+                if (year > 0) {
+                    if (mode == 'in') {
+                        date_expr = "updated_at:" + year;
+                    } else if(mode == 'before') {
+                        date_expr = "updated_at:<=" + year;
+                    } else if(mode == 'after') {
+                        date_expr = "updated_at:>=" + year;
+                    }
+                }
+            }
+            
+            if (date_expr) {
+                jQuery.getJSON("<%= query_results_path(type: "resource", page: @resources_page, query: @query) %>?refine[]=" + date_expr, function(data) {
+                    jQuery("#results_resource").html(data.html);
+                    return true;
+                });
+            }
+        });
+        $('.quickSearchRefineDatePicker').datetimepicker({"format": "YYYY-MM-DD"});
         
         // Refine UI: remove filter
         jQuery(document).on('click', "#results_resource .removeFilter", function(event, data){

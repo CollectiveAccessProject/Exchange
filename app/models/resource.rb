@@ -162,7 +162,8 @@ class Resource < ActiveRecord::Base
           }
       }
       indexes :rating, type: 'integer'
-      indexes :created_at, type: 'date'
+      indexes :created_at, index: "not_analyzed", type: 'date'
+      indexes :updated_at, index: "not_analyzed", type: 'date'
     end
   end
 
@@ -256,12 +257,7 @@ class Resource < ActiveRecord::Base
     record['tag'] = self.tags.pluck("tag")
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
     record['all_keywords'] = (record['keywords'] ? record['keywords'].split(/\|/) : []) + record['keyword'] + record['tag']
-    
-    if (record['resource_type'].to_i == Resource::RESOURCE)
-        print "K= "
-        print record['all_keywords']
-    end
-    
+    print record['updated_at'].to_s + "\n"
     record['start_date'] = record['start_date'].to_i
     record['end_date'] = record['end_date'].to_i
 
@@ -763,7 +759,9 @@ class Resource < ActiveRecord::Base
         "classification" => "Classification",
         "all_keywords" => "Keywords",
         "affiliation" => "Created for",
-        "access" => "Access type"
+        "access" => "Access type",
+        "average_rating" => "Rating",
+        "updated_at" => "Last updated"
     }
   end
   
