@@ -84,10 +84,10 @@
               <li>
                 <a data-toggle="tab" href="#tab_collections"><i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;Collections</a>
               </li>
+              <li>
+                <a data-toggle="tab" href="#tab_tags"><i class="fa fa-tags" aria-hidden="true"></i> &nbsp;Keywords</a>
+              </li>
               <% if (!@resource.is_collection_object) %>
-                  <li>
-                    <a data-toggle="tab" href="#tab_tags"><i class="fa fa-tags" aria-hidden="true"></i> &nbsp;Keywords</a>
-                  </li>
                   <li style="<%= @resource.settings(:user_interaction).allow_comments == 1 ? '' : 'display:none' %>">
                     <a data-toggle="tab" href="#tab_comments"><i class="fa fa-comments-o" aria-hidden="true"></i> &nbsp;Comments</a>
                   </li>
@@ -114,10 +114,10 @@
               <div id="tab_collections" class="tab-pane">
                 <p><%= render 'resources/collections' %></p>
               </div>
+              <div id="tab_tags" class="tab-pane">
+                <p><%= render 'resources/tags' %></p>
+              </div>
               <% if (!@resource.is_collection_object) %>
-                  <div id="tab_tags" class="tab-pane">
-                    <p><%= render 'resources/tags' %></p>
-                  </div>
                   <div id="tab_comments" class="tab-pane">
                     <p><%= render 'resources/comments' %></p>
                   </div>

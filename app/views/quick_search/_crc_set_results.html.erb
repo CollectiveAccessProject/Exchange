@@ -232,6 +232,13 @@
               end
             %>
           </div>
+          <% if current_user %>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center quickSearchAccessMessage"><i class="fa fa-eye-slash" aria-hidden="true"></i> Not available to public </div>
+                    </div>
+                </div>
+            <% end %>
         </div>
       </div>
     </div>

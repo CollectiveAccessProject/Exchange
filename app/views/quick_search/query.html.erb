@@ -6,9 +6,6 @@
     <% if((@collections.total_entries == 0) && (@resources.total_entries == 0) && (@collection_objects.total_entries == 0) && (@exhibitions.total_entries == 0) && (@crcsets.total_entries == 0)) %>
         <h2>No results found for <em><%= sanitize(@query) %></em></h2>
     <% else %>
-        <% if current_user %>
-        <div class="pull-right"><i class="fa fa-eye-slash" aria-hidden="true"></i> Not available to public </div>
-        <% end %>
         <% if sanitize(@query) =~ /role:[a-zA-Z0-9 _-]+/ %>
             <h2>Browsing by <%= sanitize(@query.gsub(/([a-zA-Z]+:)([a-zA-Z0-9 _-]+)/, 'Affiliation: <em>\2</em>'))%></h2>
         <% elsif sanitize(@query) =~ /keyword:[a-zA-Z0-9 _-]+/ %>

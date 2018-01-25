@@ -109,29 +109,30 @@
       </div><!-- end col -->
       <div class="col-sm-4 collectionObjectDetailText">
         <%= sanitize(@resource.parsed_body_text.gsub(/<br[ ]*\/><br[ ]*\/><br[ ]*\/>/, "<br /><br />"), tags: body_tags_allowed, attributes: body_attrs_allowed) %>
-        
-        <% if @resource.collection_area.length > 0 %>
-            <strong>Collection area</strong><br/><%= strip_tags(@resource.collection_area) %><br/><br/>
-        <% end %>
-        <% if @resource.subject_matter.length > 0 %>
-            <strong>Subject matter</strong><br/><%= strip_tags(@resource.subject_matter) %><br/><br/>
-        <% end %>
-        <% if @resource.label_copy.length > 0 %>
-            <strong>Label copy</strong><br/><%= strip_tags(@resource.label_copy) %><br/><br/>
-        <% end %>
-        
-        <% if @resource.keywords.length > 0 %>
+         
+         <% 
+            keywords = [] 
+            keywords = @resource.keywords.split("|") if @resource.keywords.length > 0
+            keywords = keywords + @resource.vocabulary_terms.pluck(:term) if @resource.vocabulary_terms.length > 0
+            keywords = keywords.sort.uniq
+         %>
+        <% if keywords.length > 0 %>
             <strong>Keywords</strong><br/>
-                <% @resource.keywords.split("|").each do |k| %>
-                <%= link_to(k, quick_search_path + "?q=keywords:" + k) %><br/>
+                <% keywords.each do |k| %>
+                <%= link_to(k, quick_search_path + "?q=keyword:" + k) %><br/>
                 <% end %>
         <% end %>
       </div>
     </div><!-- end row -->
     <div class="row" id="detailTags">
+      <%
+        c = 0
+        c = c + 1 if (@resource.settings(:user_interaction).allow_comments > 0)
+        c = c + 1 if (@resource.links.count > 0)
+        span = 12/c
+      %>
 	  <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
-		  <div class="col-sm-12">
-			<% # if @resource.comments.count > 0 %>
+		  <div class="col-sm-<%= span %>">
 			<a id="commentButton" role="button" data-toggle="collapse" href="#commentPanel"><H4><%= @resource.comments.count %> Comment<%= @resource.comments.count == 1 ? '' : 's' %></H4></a>
 			<div id="commentPanel" class="detailComments collapse">
 			  <% @resource.comments.each do |c| %>
@@ -154,9 +155,19 @@
 				  <% end %>
 			<% end %>
 			</div>
-			<% # end %>
 		  </div>
-
+	  <% end %>
+	  <% if(@resource.links.count > 0) %>
+		  <div class="col-sm-<%= span %>">
+			<a id="linkButton" role="button" data-toggle="collapse" href="#linkPanel"><H4><%= @resource.links.count %> Link<%= @resource.links.count == 1 ? '' : 's' %></H4></a>
+			<div id="linkPanel" class="detailComments collapse">
+			  <% @resource.links.each do |c| %>
+				  <div>
+					<a href="<%= c.url %>" target="_ext"><%= c.caption.strip ? c.caption : c.url %></a>
+				  </div>
+			  <% end %>
+			</div>
+		  </div>
 	  <% end %>
 	</div>
   </div><!-- end col -->
@@ -240,9 +251,10 @@
          <% if (@resource.on_display) %>
             <div class="unit">
               <h4>On display</h4>
-              <%= @resource.location %>
               <% if @resource.gallery_url %>
-                <%= link_to "(Floor plan)", @resource.gallery_url %>
+                <%= link_to @resource.location @resource.gallery_url %>
+              <% else %>
+              <%= @resource.location %>
               <% end %>
             </div>
         <% end %>
