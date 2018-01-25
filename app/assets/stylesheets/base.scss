@@ -142,6 +142,11 @@ h4{
 		padding-top:10px;
 	}
 }
+
+h6 {
+	color:$gray;
+}
+
 .rowLessPadding{
 	margin-left:-5px;
 	margin-right:-5px;
@@ -1332,17 +1337,17 @@ blockquote .linkListCaption, blockquote .relatedResourceListCaption {
 
 .quickSearchRefineDateMode {
     font-size: 12px;
-    width: 60px;
+    width: 70px;
 }
 .quickSearchRefineDate {
     font-size: 12px;
-    width: 60px;
+    width: 80px;
     border: 1px solid #cccccc !important;
 }
 
 .quickSearchRefineDateRange {
     font-size: 12px;
-    width: 32px;
+    width: 65px;
     border: 1px solid #cccccc !important;
 }
 

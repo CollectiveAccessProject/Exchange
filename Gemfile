@@ -128,8 +128,11 @@ gem 'roo', '~> 2.5.0'
 gem 'jquery_query_builder-rails'
 gem 'ratyrate'
 
-gem 'riiif'
+gem 'riiif', '0.4.1'
 gem 'bootstrap-editable-rails'
 gem 'leaflet-rails'
 gem 'activerecord-session_store'
 gem 'net-ldap'
+
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'

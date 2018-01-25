@@ -255,7 +255,7 @@
 
             </div>
           </div>
-          <% if !@resource.is_crc_set %>
+          <% if !@resource.is_crcset %>
           <h4>Add to Existing Collection/Resource</h4>
           <form class="collectionObjectAdd"><%=
           select_tag(:add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'detailCollectionList', id:'collectionObjectAddToCollectionID')

@@ -6,7 +6,10 @@
         <div class="col-sm-12">
           <h4>
               <%= @crcsets_count %> Study set<%= (@crcsets_count == 1) ? "" : "s" %>
-              (page <%= @crcsets_page.to_s + "/" + @crcsets_num_pages.to_s %>)
+              
+              <% if @crcsets_num_pages > 0 %>
+                (page <%= @crcsets_page.to_s + "/" + @crcsets_num_pages.to_s %>)
+              <% end %>
             <div id="crc_right" class="pull-right">
               <form class="searchPaging">
                 <div class="searchFormElement">Results Per Page <%= select_tag("crcset_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['crcset']), {id: "crcset_num_items_per_page"}) %></div>
@@ -18,7 +21,7 @@
       </div>
       <div class="row" id="crcsetResultsContainer">
       <div class="col-md-3">
-        <% if @refine and @refine["crcset"] and (@refine["crcset"].length > 0) %>
+        <% if @refine and @refine["crcset"] and (@refine["crcset"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
                     <h3>Filters</h3>
@@ -34,25 +37,25 @@
             <h3>Refine by</h3>
             <div class="row">
                 <div class="col-md-12">
-                    Author name<br/>
+                    <h6>Author name</h6>
                     <%= autocomplete_field_tag(:crcset_find_author, '', quick_search_autocomplete_refine_url(query: @query, field: "author.raw", type: "crcset"), :"data-autocomplete-label" => "Sorry, nothing found.", :"data-update-elements" => nil, :size => 20, :id_element => "#crcset_author", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "author") + hidden_field_tag(:crcset_author) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Title<br/>
+                    <h6>Title</h6>
                     <%= autocomplete_field_tag(:crcset_find_title, '', quick_search_autocomplete_refine_url(query: @query, field: "title.raw", type: "crcset"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#crcset_rtitle", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "title") + hidden_field_tag(:crcset_rtitle) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Keywords/tags<br/>
+                    <h6>Keywords/tags</h6>
                     <%= autocomplete_field_tag(:crcset_find_keywords, '', quick_search_autocomplete_refine_url(query: @query, field: "all_keywords.raw", type: "crcset"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#crcset_keywords", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "all_keywords") + hidden_field_tag(:crcset_keywords) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Created for<br/>
+                    <h6>Created for</h6>
                     <% Rails.application.config.x.user_roles.each do |label, v| %>
                         <% is_selected = (session[:refine] and session[:refine]["crcset"] and session[:refine]["crcset"].has_key?("affiliation") and session[:refine]["crcset"]["affiliation"].include?("affiliation:\"" + v.to_s + "\"")) %>
                         <% if !is_selected %>
@@ -64,13 +67,48 @@
 <% if current_user %>
             <div class="row">
                 <div class="col-md-12">
-                    Access type<br/>
+                    <h6>Access type</h6>
                     <% Rails.application.config.x.access_types.each do |label, v| %>
                         <% is_selected = (session[:refine] and session[:refine]["crcset"] and session[:refine]["crcset"].has_key?("access") and session[:refine]["crcset"]["access"].include?("access:\"" + v.to_s + "\"")) %>
                         <% if !is_selected %>
                             <%= (check_box_tag(:crcset_access, value = v, checked = is_selected, options = {class: "quickSearchRefineCheckbox", "data-filter": "access"}) + " " + label).html_safe %><br/>
                         <% end %>
                     <% end %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Date last updated</h6>
+                    <select name="crcset_date_last_updated_mode" id="crcset_date_last_updated_mode" class="quickSearchRefineDateMode">
+                        <option value="in">on</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="crcset_date_last_updated_date" id="crcset_date_last_updated_date" class="quickSearchRefineDate quickSearchRefineDatePicker"/>
+                    <span id="crcset_date_last_updated_range"  style="display:none;">
+                        <input type="text" name="crcset_date_last_updated_min" id="crcset_date_last_updated_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
+                        <input type="text" name="crcset_date_last_updated_max" id="crcset_date_last_updated_max" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Date of visit</h6>
+                    <select name="crcset_date_of_visit_mode" id="crcset_date_of_visit_mode" class="quickSearchRefineDateMode">
+                        <option value="in">on</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="crcset_date_of_visit_date" id="crcset_date_of_visit_date" class="quickSearchRefineDate quickSearchRefineDatePicker"/>
+                    <span id="crcset_date_of_visit_range"  style="display:none;">
+                        <input type="text" name="crcset_date_of_visit_min" id="crcset_date_of_visit_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
+                        <input type="text" name="crcset_date_of_visit_max" id="crcset_date_of_visit_max" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
                 </div>
             </div>
 <% end %>
@@ -200,7 +238,7 @@
 
     <script>
         jQuery(document).ready(function() {
-            jQuery("#query_search_content").on('change', "#crcset_num_items_per_page, #crcset_sort", function(e) {
+            jQuery("#query_search_content").off().on('change', "#crcset_num_items_per_page, #crcset_sort", function(e) {
                 jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?length=" + jQuery("#crcset_num_items_per_page").val() + "&sort=" + jQuery("#crcset_sort").val(), function(data) {
                     jQuery("#results_crcset").html(data.html);
                     return true;
@@ -208,7 +246,7 @@
             });
             
         // Refine UI: autocomplete add filter
-        jQuery(document).on('railsAutocomplete.select', "#results_crcset", function(event, data){
+        jQuery('#results_crcset').off().on('railsAutocomplete.select', "#results_crcset", function(event, data){
             var filter = jQuery(event.target).data('filter');
             event.preventDefault();
             
@@ -220,7 +258,7 @@
         });
         
         // Refine UI: checkbox add filter
-        jQuery(document).on('change', "#results_crcset input.quickSearchRefineCheckbox", function(event){
+        jQuery('#results_crcset').on('change', "#results_crcset input.quickSearchRefineCheckbox", function(event){
             var filter = jQuery(event.target).data('filter');
             var val = jQuery(this).val();
             event.preventDefault();
@@ -233,8 +271,35 @@
             });
         });
         
+        // Refine UI: date filter
+        jQuery('#results_crcset').on('change', "#crcset_date_last_updated_mode", function(event){
+            updateDateFilterUI('crcset');
+        });
+        jQuery('#results_crcset').on('change', "#crcset_date_of_visit_mode", function(event){
+            updateDateFilterUI('crcset', 'date_of_visit');
+        });
+        jQuery('#results_crcset').on('blur', "#crcset_date_last_updated_date, #crcset_date_last_updated_min, #crcset_date_last_updated_max", function(event){
+            var date_expr = getDateExprFromFilterUI('crcset');
+            if (date_expr) {
+                jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + date_expr, function(data) {
+                    jQuery("#results_crcset").html(data.html);
+                    return true;
+                });
+            }
+        });
+        jQuery('#results_crcset').on('blur', "#crcset_date_of_visit_date, #crcset_date_of_visit_min, #crcset_date_of_visit_max", function(event){
+            var date_expr = getDateExprFromFilterUI('crcset', 'date_of_visit', 'date_of_visit');
+            if (date_expr) {
+                jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + date_expr, function(data) {
+                    jQuery("#results_crcset").html(data.html);
+                    return true;
+                });
+            }
+        });
+        $('.quickSearchRefineDatePicker').datetimepicker({"format": "YYYY-MM-DD"});
+        
         // Refine UI: remove filter
-        jQuery(document).on('click', "#results_crcset .removeFilter", function(event, data){
+        jQuery('#results_crcset').on('click', "#results_crcset .removeFilter", function(event, data){
             event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
             jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {

@@ -6,7 +6,10 @@
         <div class="col-sm-12">
           <h4>
               <%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
-              (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
+              
+              <% if @collection_objects_num_pages > 0 %>
+                (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
+              <% end %>
             <div id="collection_object_right" class="pull-right">
               <form class="searchPaging">
                 <div class="searchFormElement">Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></div>
@@ -18,7 +21,7 @@
       </div>
       <div class="row" id="colObjectResultsContainer">
         <div class="col-md-3">
-         <% if @refine and @refine["collection_object"] and (@refine["collection_object"].length > 0) %>
+         <% if @refine and @refine["collection_object"] and (@refine["collection_object"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
                     <h3>Filters</h3>
@@ -36,27 +39,27 @@
         <% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Array) or !session[:refine]['collection_object'].include?("on_display:\"1\"")) %>  
             <div class="row">
                 <div class="col-md-12">
-                    On display?<br/>
+                    <h6>On display?</h6>
                     <input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="1" data-filter="on_display"/> 
                 </div>
             </div>
         <% end %>
             <div class="row">
                 <div class="col-md-12">
-                    Artist/Maker<br/>
+                    <h6>Artist/Maker</h6>
                     <%= autocomplete_field_tag(:collection_object_find_artist, '', quick_search_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "artist") + hidden_field_tag(:collection_object_artist) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Artist nationality<br/>
+                    <h6>Artist nationality</h6>
                     <%= select_tag(:collection_object_artist_nationality, get_values_for_refine_for_select('artist_nationality.raw', @query, "collection_object", session[:refine]), "data-filter": "artist_nationality", :class => 'quickSearchRefineSelect')  %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Date created
-                    <br/>
+                    <h6>Date created</h6>
+                    
                     <select name="collection_object_date_created_mode" id="collection_object_date_created_mode" class="quickSearchRefineDateMode">
                         <option value="in">in</option>
                         <option value="before">before</option>
@@ -73,25 +76,25 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Collection area<br/>
+                    <h6>Collection area</h6>
                     <%= select_tag(:collection_object_collection_area, get_values_for_refine_for_select('collection_area.raw', @query, "collection_object", session[:refine]), "data-filter": "collection_area", :class => 'quickSearchRefineSelect')  %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Medium<br/>
+                    <h6>Medium</h6>
                     <%= autocomplete_field_tag(:collection_object_find_medium, '', quick_search_autocomplete_refine_url(query: @query, field: "medium.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_medium", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "medium") + hidden_field_tag(:collection_object_medium) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Style<br/>
+                    <h6>Style</h6>
                     <%= autocomplete_field_tag(:collection_object_find_style, '', quick_search_autocomplete_refine_url(query: @query, field: "style.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_style", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "style") + hidden_field_tag(:collection_object_style) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Classification<br/>
+                    <h6>Classification</h6>
                     <%= autocomplete_field_tag(:collection_object_find_classification, '', quick_search_autocomplete_refine_url(query: @query, field: "classification.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_classification", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "classification") + hidden_field_tag(:collection_object_classification) %>
                 </div>
             </div>
@@ -222,14 +225,12 @@
 
 <script>
     //jQuery(document).ready(function() {
-        jQuery("#query_search_content").on('change', "#collection_object_num_items_per_page, #collection_object_sort", function(e) {
+        jQuery("#query_search_content").off().on('change', "#collection_object_num_items_per_page, #collection_object_sort", function(e) {
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?length=" + jQuery("#collection_object_num_items_per_page").val() + "&sort=" + jQuery("#collection_object_sort").val(), function(data) {
                 jQuery("#results_collection_object").html(data.html);
                 return true;
             });
-        });
-
-        jQuery("#query_search_content").on('click', "#collectionObjectResultsAddToCollection", function(e) {
+        }).on('click', "#collectionObjectResultsAddToCollection", function(e) {
             e.preventDefault();
 
             var add_to_collection_id = jQuery("#collection_add_to_collection_id").val();
@@ -265,7 +266,7 @@
         
         
         // Refine UI: autocomplete add filter
-        jQuery(document).on('railsAutocomplete.select', "#results_collection_object", function(event, data){
+        jQuery('#results_collection_object').off().on('railsAutocomplete.select', function(event, data){
             var filter = jQuery(event.target).data('filter');
             event.preventDefault();
             
@@ -277,7 +278,7 @@
         });
         
         // Refine UI: <select> add filter
-        jQuery(document).on('change', "#results_collection_object select.quickSearchRefineSelect", function(event){
+        jQuery('#results_collection_object').on('change', "#results_collection_object select.quickSearchRefineSelect", function(event){
             var filter = jQuery(event.target).data('filter');
             var val = jQuery(this).val();
             event.preventDefault();
@@ -290,7 +291,7 @@
         });
         
         // Refine UI: date filter
-        jQuery(document).on('change', "#collection_object_date_created_mode", function(event){
+        jQuery('#results_collection_object').on('change', "#collection_object_date_created_mode", function(event){
             var mode = jQuery(this).val();  
             
             if (mode == 'between') {
@@ -301,7 +302,7 @@
                 jQuery("#collection_object_date_created_year").show().attr('disabled', false);
             }
         });
-        jQuery(document).on('blur', "#collection_object_date_created_year, #collection_object_date_created_min, #collection_object_date_created_max", function(event){
+        jQuery('#results_collection_object').on('blur', "#collection_object_date_created_year, #collection_object_date_created_min, #collection_object_date_created_max", function(event){
             var mode = jQuery("#collection_object_date_created_mode").val();  
             var date_expr = null;
             
@@ -333,7 +334,7 @@
         });
         
          // Refine UI: checkbox add filter
-        jQuery(document).on('change', "#results_collection_object input.quickSearchRefineCheckbox", function(event){
+        jQuery('#results_collection_object').on('change', "#results_collection_object input.quickSearchRefineCheckbox", function(event){
             var filter = jQuery(event.target).data('filter');
             var val = jQuery(this).val();
             event.preventDefault();
@@ -347,7 +348,7 @@
         });
         
         // Refine UI: remove filter
-        jQuery(document).on('click', "#results_collection_object .removeFilter", function(event, data){
+        jQuery('#results_collection_object').on('click', "#results_collection_object .removeFilter", function(event, data){
             event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
@@ -356,10 +357,10 @@
             });
         });
         
-        resizeBar("#collection_object_title_link", "#collection_object_right");	
-        $(window).on('resize', function(){
-            resizeBar("#collection_object_title_link", "#collection_object_right");		
-        });
+       //  resizeBar("#collection_object_title_link", "#collection_object_right");	
+//         $(window).on('resize', function(){
+//             resizeBar("#collection_object_title_link", "#collection_object_right");		
+//         });
     //});
 </script>
 <% end %>

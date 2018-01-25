@@ -55,7 +55,6 @@ class QuickSearchController < ApplicationController
     
     refine_q = ''
     if session[:refine] and session[:refine][type] and (session[:refine][type].length > 0)
-        #refine_q = " (" + session[:refine][type].join(" AND ") + ")"
         refine_q = Resource::get_refine_facet_query(session[:refine], type)
     end
     
@@ -184,8 +183,25 @@ class QuickSearchController < ApplicationController
     @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i, '(start_date:>=\\1' + ' AND end_date:<=\\3)') if @query_proc
     @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*/, '(start_date:<=\\1' + ' AND end_date:>=\\1)') if @query_proc
 
+    # rewrite for updated_at search
+    if @query_proc
+        begin 
+            m = @query_proc.match(/(updated_at|date_of_visit):["]*([\d\-]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d\-]+)["]*/i)
+            if m and (Date.strptime(m[2], '%Y-%m-%d').to_time.to_i <= Date.strptime(m[4], '%Y-%m-%d').to_time.to_i)
+                @query_proc = @query_proc.gsub(/(updated_at|date_of_visit):["]*([\d\-]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d\-]+)["]*/i, '(updated_at|date_of_visit):[\\2 TO \\4]')
+            elsif !m
+                @query_proc = @query_proc.gsub(/(updated_at|date_of_visit):["]*([\d\-]+)["]*/, '[\\2 TO \\2]')
+            end
+        rescue
+            # noop
+        end
+    end
+
     # rewrite on_display
     @query_proc = @query_proc.gsub(/on_display:["]*([A-Za-z]+)["]*/, 'on_display:1') if @query_proc
+    
+    # rewrite rating
+    #@query_proc = @query_proc.gsub(/rating:(\[[1-9]+ TO 5\])/, '(rating:\\1 OR rating:0)') if @query_proc
 
     session[:items_per_page] = {} if (!session[:items_per_page])
     ['resource', 'collection', 'collection_object', 'exhibition', 'crcset'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
@@ -228,6 +244,26 @@ class QuickSearchController < ApplicationController
                 @refine[@type] = {} if @refine[@type] == nil
                 params[:refine].each { |p|
                     pbits = p.split(/:/)
+                    
+                    case(pbits[0])
+                        when 'updated_at'
+                            begin 
+                                m = p.match(/updated_at:\[([\d\-]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d\-]+)\]/i)
+                                next if !m
+                                next if !((Date.strptime(m[1], '%Y-%m-%d').to_time.to_i <= Date.strptime(m[3], '%Y-%m-%d').to_time.to_i))
+                            rescue
+                                next
+                            end
+                        when 'date_of_visit'
+                            begin 
+                                m = p.match(/date_of_visit:\[([\d\-]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d\-]+)\]/i)
+                                next if !m
+                                next if !((Date.strptime(m[1], '%Y-%m-%d').to_time.to_i <= Date.strptime(m[3], '%Y-%m-%d').to_time.to_i))
+                            rescue
+                                next
+                            end
+                    end
+                    
                     @refine[@type][pbits[0]] = [] if !@refine[@type].has_key? pbits[0]
                     @refine[@type][pbits[0]].push(p) if !@refine[@type][pbits[0]].include? p
                 }

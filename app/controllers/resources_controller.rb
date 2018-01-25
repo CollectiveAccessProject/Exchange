@@ -201,7 +201,7 @@ class ResourcesController < ApplicationController
     parent_id = params[:resource][:parent_id].to_i
     child_id = params[:resource][:child_id].to_i
 
-    if (@resource.is_crc_set)
+    if (@resource.is_crcset)
       if(!current_user.has_role?(:staff))
         redirect_to root_path, notice: "You do not have access to create this type of resource"
       end
@@ -281,7 +281,7 @@ class ResourcesController < ApplicationController
       @resource.send(:"#{f}=", "")
     end
 
-    if (@resource.is_crc_set)
+    if (@resource.is_crcset)
       @resource.date_of_visit = DateTime.new(params[:resource]['date_of_visit(1i)'].to_i,params[:resource]['date_of_visit(2i)'].to_i,params[:resource]['date_of_visit(3i)'].to_i,params[:resource]['date_of_visit(4i)'].to_i,params[:resource]['date_of_visit(5i)'].to_i, 0)
     end
 
@@ -688,7 +688,7 @@ class ResourcesController < ApplicationController
         if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
           raise StandardError, 'Access Denied'
         end
-        if (@resource.is_collection or @resource.is_crc_set)
+        if (@resource.is_collection or @resource.is_crcset)
           if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
             exists = exists + 1
           else
@@ -1147,10 +1147,10 @@ class ResourcesController < ApplicationController
   def set_resource
     begin 
         @resource = Resource.find(params[:id])
-        if (@resource.is_crc_set && !current_user.has_role?(:staff))
+        if (@resource.is_crcset && !current_user.has_role?(:staff))
           redirect_to root_path, notice: "Your account does not enable you to view this " + @resource.resource_type_for_display.downcase
         end
-    rescue
+    rescue 
         redirect_to root_path, notice: "That resource is not available"
     end
   end

@@ -760,8 +760,9 @@ class Resource < ActiveRecord::Base
         "all_keywords" => "Keywords",
         "affiliation" => "Created for",
         "access" => "Access type",
-        "average_rating" => "Rating",
-        "updated_at" => "Last updated"
+        "rating" => "Avg visitor rating",
+        "updated_at" => "Last update",
+        "date_of_visit" => "Date of visit"
     }
   end
   
@@ -779,18 +780,35 @@ class Resource < ActiveRecord::Base
             if Rails.application.config.x.access_types.invert.has_key? value.to_i
                 return Rails.application.config.x.access_types.invert[value.to_i]
             end
+        when "rating"
+            if value.to_i >= 1 and value.to_i <= 5
+                return value + "+"
+            end
+        when "updated_at", "date_of_visit"
+            m = value.match(/([\d]{4}-[\d]+-[\d]+)[ A-Za-z\-]+([\d]{4}-[\d]+-[\d]+)/)
+            if m[1] == m[2]     # single date
+                return m[1]
+            elsif m[1] == '1900-01-01'  # before date
+                return "Before " + m[2]
+            elsif m[2] == '2100-01-01' # after date
+                return "After " + m[1]
+            else 
+                return m[1] + " - " + m[2]
+            end
     end
     value
   end
 
  
   # STATIC
-  def self.get_refine_facet_query(refine, type)
+  def self.get_refine_facet_query(refine, type, rewrite=true)
     acc = []
     if (refine[type] and (refine[type].length > 0)) 
         acc = []
         refine[type].each do |f,l|
-            acc.push("(" + l.join(" OR ") + ")") if l.length > 0
+            
+            lproc = l.map {|r| r.gsub(/rating:([\d]+)/, '(rating:[\\1 TO 5])') } if rewrite
+            acc.push("(" + lproc.join(" OR ") + ")") if lproc.length > 0
         end
     end 
     acc.join(" AND ")
@@ -804,6 +822,7 @@ class Resource < ActiveRecord::Base
     length = options[:length]
     length = WillPaginate.per_page if (!length)
 	query_proc.gsub!(/author_id:([0-9]+)/, '(author_id:\1 OR user_id:\1)')
+    
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')

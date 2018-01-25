@@ -78,7 +78,7 @@
               <div class="col-md-6">
                     <%= r.input :copyright_notes, :input_html => {:rows => 4}, label: 'Copyright/Author Notes' %>
 
-                <% if (@resource.is_crc_set) %>
+                <% if (@resource.is_crcset) %>
                     <%= r.input :date_of_visit, as: :datetime, label: 'Date/time of visit ', class: "date-control", ampm: true %>
                 <% end %>
 
@@ -121,13 +121,13 @@
                       <%=  link_to(@resource.forked_from_resource, resource_preview_url(@resource.forked_from_resource)) %>
                     </em>
                 <% end %>
-                <%= r.input :title, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Brief description of upcoming visit" : nil %>
-                <% if (!@resource.is_crc_set) %>
+                <%= r.input :title, :input_html => {}, :as => :summernote, label: (@resource.is_crcset) ? "Brief description of upcoming visit" : nil %>
+                <% if (!@resource.is_crcset) %>
                     <%= r.input :subtitle, :input_html => {}, :as => :summernote %>
                 <% else %>
                     <input type="hidden" name="resource[subtitle]" value=""/>
                 <% end %>
-                <%= r.input :body_text, :input_html => {}, :as => :summernote, label: (@resource.is_crc_set) ? "Additional information notes regarding your upcoming visit" : nil %>
+                <%= r.input :body_text, :input_html => {}, :as => :summernote, label: (@resource.is_crcset) ? "Additional information notes regarding your upcoming visit" : nil %>
               </div>
             </div>
             <div class="row">
@@ -146,7 +146,7 @@
               <div class="col-md-6">
 
                     <%= r.input :copyright_notes, :input_html => {}, :as => :summernote, label: 'Copyright/Author Notes' %>
-                <% if (@resource.is_crc_set) %>
+                <% if (@resource.is_crcset) %>
                     <%= r.input :date_of_visit, as: :datetime, label: 'Date/time of visit ', class: "date-control", ampm: true %>
                 <% end %>
 
