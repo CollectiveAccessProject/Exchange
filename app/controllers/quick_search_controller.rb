@@ -132,7 +132,7 @@ class QuickSearchController < ApplicationController
       setup(advanced:true)
     rescue Exception => e
       #raise "Search error: " + e.message
-      redirect_to("/", :flash => { :error => "Search could not be completed" })
+      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
     end
   end
 

@@ -292,7 +292,7 @@
 //         });
         
         // Refine UI: autocomplete add filter
-        jQuery('#results_resource').off().on('railsAutocomplete.select', "#results_resource", function(event, data){
+        jQuery('#results_resource').off().on('railsAutocomplete.select', ".quickSearchRefineAutocomplete", function(event, data){
             var filter = jQuery(event.target).data('filter');
             event.preventDefault();
             
@@ -304,7 +304,7 @@
         });
         
         // Refine UI: checkbox add filter
-        jQuery('#results_resource').on('change', "#results_resource input.quickSearchRefineCheckbox", function(event){
+        jQuery('#results_resource').on('change', "input.quickSearchRefineCheckbox", function(event){
             var filter = jQuery(event.target).data('filter');
             var val = jQuery(this).val();
             event.preventDefault();
@@ -344,7 +344,7 @@
         });
         
         // Refine UI: remove filter
-        jQuery('#results_resource').on('click', "#results_resource .removeFilter", function(event, data){
+        jQuery('#results_resource').on('click', ".removeFilter", function(event, data){
             event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
             jQuery.getJSON("<%= query_results_path(type: "resource", page: @resources_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {

@@ -246,7 +246,7 @@
             });
             
         // Refine UI: autocomplete add filter
-        jQuery('#results_crcset').off().on('railsAutocomplete.select', "#results_crcset", function(event, data){
+        jQuery('#results_crcset').off().on('railsAutocomplete.select', ".quickSearchRefineAutocomplete", function(event, data){
             var filter = jQuery(event.target).data('filter');
             event.preventDefault();
             
@@ -299,7 +299,7 @@
         $('.quickSearchRefineDatePicker').datetimepicker({"format": "YYYY-MM-DD"});
         
         // Refine UI: remove filter
-        jQuery('#results_crcset').on('click', "#results_crcset .removeFilter", function(event, data){
+        jQuery('#results_crcset').on('click', ".removeFilter", function(event, data){
             event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
             jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {

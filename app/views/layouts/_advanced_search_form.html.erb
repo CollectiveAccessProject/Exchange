@@ -72,7 +72,8 @@
             </div>
           </div>
         </div>
-        <div class="row additionalFields" id="advancedSearchCollectionObject">
+        <div class="additionalFields" id="advancedSearchCollectionObject">
+            <div class="row">
           <div class="col-sm-12">
             <HR/><br/>
             <H3>UMMA Object Specific Fields</H3>
@@ -91,7 +92,7 @@
             <div class="form-group">
               <label class="control-label" for="advStyle">Collection area</label>
               <%= 
-                select_tag(:style, get_field_values_for_objects('collection_area'), style: "width: 100%") 
+                select_tag(:collection_area, get_field_values_for_objects('collection_area'), style: "width: 100%") 
                 %><br/>
             </div>
           </div>
@@ -170,37 +171,9 @@
           </div>
         </div>
         </div>
-        <div class="row additionalFields" id="advancedSearchExhibition">
-          <div class="col-sm-12">
-            <HR/><br/>
-            <H3>UMMA Exhibition Additional Fields</H3>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advExhibitionArtist">Artist/Maker</label>
-              <input class="form-control" type="text" name="exhibition_artist" id="advExhibitionArtist">
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advExhibitionArtistNationality">Artist Maker Nationality</label>
-              <input class="form-control" type="text" name="exhibition_artist_nationality" id="advExhibitionArtistNationality">
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advExhibitionDates">Exhibition dates</label>
-              <input class="form-control" type="text" name="exhibition_dates" id="advExhibitionDates">
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label class="control-label" for="advLocation">Location</label>
-              <input class="form-control" type="text" name="exhibition_location" id="advLocation">
-            </div>
-          </div>
-        </div>
-        <div class="row additionalFields" id="advancedSearchResource">
+        
+        <div class="additionalFields" id="advancedSearchResource">
+        <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
               <label class="control-label" for="advCurrentLocation">Author</label>
@@ -209,10 +182,12 @@
             </div>
           </div>
         </div>
+        </div>
         <div class="row">
           <div class="col-sm-12 text-center">
             <br/><input class="btn btn-default" value="Search" type="submit"></input>
           </div>
+        </div>
         </div>
       </form></div>
     </div>
@@ -227,11 +202,17 @@
         $('#advType').change(function() {
             $('.additionalFields').hide();
             if ($('#advType').val() == '<%= Resource::COLLECTION_OBJECT %>'){
-                $('#advancedSearchCollectionObject').slideDown();
+                $('#advancedSearchCollectionObject').show();
+                $('#advancedSearchResource').hide();
+                $('#advancedSearchExhibition').hide();
             }else if($('#advType').val() == '<%= Resource::EXHIBITION %>'){
                 $('#advancedSearchExhibition').slideDown();
+                $('#advancedSearchResource').hide();
+                $('#advancedSearchCollectionObject').hide();
             } else {
-                $('#advancedSearchResource').slideDown();
+                $('#advancedSearchResource').show();
+                $('#advancedSearchCollectionObject').hide();
+                $('#advancedSearchExhibition').hide();
             }
         });
         $('#currentLocationField').hide();

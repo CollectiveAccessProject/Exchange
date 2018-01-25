@@ -3,19 +3,56 @@
     <% if((!@collections_num_pages) && (!@resources_num_pages) && (!@collection_objects_num_pages) && (!@exhibitions_num_pages)) %>
         <h2>No results found for <em><%= sanitize(@query_for_display) %></em></h2>
     <% else %>
+        <% if current_user %>
+            <div class="pull-right"><i class="fa fa-eye-slash" aria-hidden="true"></i> Not available to public </div>
+        <% end %>
         <h2>Results for <em><%= sanitize(@query_for_display) %></em></h2>
     <% end %>
   </div>
 </div>
-<% if(@collections && @collections.respond_to?(:total_entries) && (@collections.total_entries > 0)) %>
-        <%= render :partial => "quick_search/collection_results" %>
-<% end %>
-<% if(@resources && @resources.respond_to?(:total_entries) && (@resources.total_entries > 0)) %>
-    <%= render :partial => "quick_search/resource_results" %>
-<% end %>
-<% if(@exhibitions && @exhibitions.respond_to?(:total_entries) && (@exhibitions.total_entries > 0)) %>
-    <%= render :partial => "quick_search/exhibition_results" %>
-<% end %>
-<% if(@collection_objects && @collection_objects.respond_to?(:total_entries) && (@collection_objects.total_entries > 0)) %>
-    <%= render :partial => "quick_search/collection_object_results" %>
-<% end %>
+
+<div class="row" class="row" id="quick_search_tabs">
+  <div class="col-md-12">
+    <ul class="nav nav-tabs">
+        <% 
+            active = nil
+            if(@collection_objects && @collection_objects.respond_to?(:total_entries) && (@collection_objects.total_entries > 0)) 
+        %>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+                <a data-toggle="tab" href="#tab_collection_object_results">UMMA objects (<%= @collection_objects.total_entries %>)</a>
+            </li> 
+            <%  active = 'collection_objects' if active.nil? %>    
+        <% end %>
+        <% if(@resources && @resources.respond_to?(:total_entries) && (@resources.total_entries > 0)) %>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+                <a data-toggle="tab" href="#tab_resource_results">Resources  (<%= @resources.total_entries %>)</a>
+            </li>    
+            <% active = 'resources' if active.nil? %>    
+        <% end %>
+        <% if (@collections && @collections.respond_to?(:total_entries) && (@collections.total_entries > 0)) %>
+            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+                <a data-toggle="tab" href="#tab_collection_results">Learning collections  (<%= @collections.total_entries %>)</a>
+            </li>   
+            <% active = 'collections' if active.nil? %>     
+        <% end %>
+    </ul>
+
+    <div class="tab-content" id="query_search_content">
+        <% @show = true %>
+        <% if(@collections && @collections.respond_to?(:total_entries) && (@collections.total_entries > 0)) %>
+            <div id="tab_collection_results" class="tab-pane <%= ((active == 'collections') ? "active" : "").html_safe %>">
+                <%= render :partial => "quick_search/collection_results" %>
+            </div>
+        <% end %>
+        <% if(@resources && @resources.respond_to?(:total_entries) && (@resources.total_entries > 0)) %>
+            <div id="tab_resource_results" class="tab-pane <%= ((active == 'resources') ? "active" : "").html_safe %>">
+                <%= render :partial => "quick_search/resource_results" %>
+            </div>
+        <% end %>
+        <% if(@collection_objects && @collection_objects.respond_to?(:total_entries) && (@collection_objects.total_entries > 0)) %>
+            <div id="tab_collection_object_results" class="tab-pane <%= ((active == 'collection_objects') ? "active" : "").html_safe %>">
+                <%= render :partial => "quick_search/collection_object_results" %>
+            </div>
+        <% end %>
+    </div>
+</div>
