@@ -325,7 +325,6 @@ def get_field_values_for_objects(f)
     options_for_select(opts)
 end
 
-
 def get_values_for_refine(field, query, type, refine_filters)
     query.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query.gsub!(/["]{2}/, '"')
@@ -405,4 +404,22 @@ def format_refine_filters(refine_filters, type)
         end
     end
     filters
+end
+#
+# Return array of groups owned by the specified user
+# Param is a User instance (typically current_user)
+#
+def groups_for_user(user, options=nil)
+groups = Group.joins(:user_groups).where("user_groups.user_id = ? OR groups.user_id = ?", user.id, user.id).distinct.order("lower(groups.name)")
+
+opts = []
+groups.each do|g|
+    if options and options[:ids]
+        opts.push(g.id)
+    else
+        opts.push([g.name, g.id])
+    end
+end
+
+opts
 end

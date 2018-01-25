@@ -7,8 +7,18 @@ class QuickSearchController < ApplicationController
     params.permit(:term, :mode)
     term = params[:term]
     mode = params[:mode]
-
+    
+    if !current_user or !current_user.id
+        raise "Not logged in"
+    end
     editable_res = ResourcesUser.where('user_id=? AND access >= ?', current_user.id, 1)
+    
+    group_ids = groups_for_user(current_user, { ids: true })
+    
+    if group_ids and group_ids.length > 0
+        editable_res = editable_res + ResourcesGroup.where('group_id IN (?) AND access >= ?', group_ids, 1)
+    end
+    
     rids = editable_res.map {|x| x.resource_id}
 	
 	if rids and rids.length > 0
