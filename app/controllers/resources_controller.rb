@@ -1158,10 +1158,19 @@ class ResourcesController < ApplicationController
   # return collections available to the current user
   def get_available_collections(resource)
     return nil if (!current_user)
+    
+    
+    editable_res = ResourcesUser.where('user_id=? AND access >= ?', current_user.id, 2)
+    group_ids = groups_for_user(current_user, { ids: true })
+    
+    if group_ids and group_ids.length > 0
+        editable_res = editable_res + ResourcesGroup.where('group_id IN (?) AND access >= ?', group_ids, 2)
+    end
+    rids = editable_res.map {|x| x.resource_id}
 
     ids = resource.parents.pluck(:id)
     ids.push(resource.id)
-    return Resource.where("resource_type = ? AND user_id = ? AND id NOT IN (?)", Resource::LEARNING_COLLECTION, current_user.id, ids).order(title: :asc)
+    return Resource.where("resource_type = ? AND ((user_id = ? AND id NOT IN (?)) OR id IN (?))", Resource::LEARNING_COLLECTION, current_user.id, ids, rids).order(title: :asc)
   end
 
   #
@@ -1169,10 +1178,19 @@ class ResourcesController < ApplicationController
   #
   def get_available_collections_and_resources(resource)
     return nil if (!current_user)
+    
+    editable_res = ResourcesUser.where('user_id=? AND access >= ?', current_user.id, 2)
+    group_ids = groups_for_user(current_user, { ids: true })
+    
+    if group_ids and group_ids.length > 0
+        editable_res = editable_res + ResourcesGroup.where('group_id IN (?) AND access >= ?', group_ids, 2)
+    end
+    
+    rids = editable_res.map {|x| x.resource_id}
 
     ids = resource.parents.pluck(:id)
     ids.push(resource.id)
-    return Resource.where("resource_type IN (?) AND user_id = ? AND id NOT IN (?)", [Resource::LEARNING_COLLECTION, Resource::RESOURCE], current_user.id, ids).order(title: :asc)
+    return Resource.where("resource_type IN (?) AND ((user_id = ? AND id NOT IN (?)) OR id IN (?))", [Resource::LEARNING_COLLECTION, Resource::RESOURCE], current_user.id, ids, rids).order(title: :asc)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
