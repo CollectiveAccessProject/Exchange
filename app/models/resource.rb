@@ -912,7 +912,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
-          options[:page] = 1 if collections.length/collections_length < options[:page]
+          #options[:page] = 1 if collections.length/collections_length < options[:page]
           collections = collections.page(options[:page]).records
         end
       end
@@ -946,7 +946,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
-          options[:page] = 1 if collection_objects.length/collection_objects_length < options[:page]
+          #options[:page] = 1 if collection_objects.length/collection_objects_length < options[:page]
           collection_objects = collection_objects.page(options[:page]).records
         end
       rescue
@@ -983,7 +983,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
-          options[:page] = 1 if exhibitions.length/exhibitions_length < options[:page]
+          #options[:page] = 1 if exhibitions.length/exhibitions_length < options[:page]
           exhibitions = exhibitions.page(options[:page]).records
         end
       rescue
@@ -1019,7 +1019,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
-          options[:page] = 1 if crcsets.length/crcsets_length < options[:page]
+          #options[:page] = 1 if crcsets.length/crcsets_length < options[:page]
           crcsets = crcsets.page(options[:page]).records
         end
       rescue
