@@ -112,8 +112,8 @@
          
          <% 
             keywords = [] 
-            keywords = @resource.keywords.split("|") if @resource.keywords.length > 0
-            keywords = keywords + @resource.vocabulary_terms.pluck(:term) if @resource.vocabulary_terms.length > 0
+            keywords = @resource.keywords.split("|") if @resource.keywords and @resource.keywords.length > 0
+            keywords = keywords + @resource.vocabulary_terms.pluck(:term) if @resource.vocabulary_terms and @resource.vocabulary_terms.length > 0
             keywords = keywords.sort.uniq
          %>
         <% if keywords.length > 0 %>
@@ -252,7 +252,7 @@
             <div class="unit">
               <h4>On display</h4>
               <% if @resource.gallery_url %>
-                <%= link_to @resource.location @resource.gallery_url %>
+                <%= link_to @resource.location, @resource.gallery_url %>
               <% else %>
               <%= @resource.location %>
               <% end %>
