@@ -265,7 +265,7 @@
         });
         
         // Refine UI: checkbox add filter
-        jQuery('#results_crcset').on('change', "#results_crcset input.quickSearchRefineCheckbox", function(event){
+        jQuery('#results_crcset').on('change', "input.quickSearchRefineCheckbox", function(event){
             var filter = jQuery(event.target).data('filter');
             var val = jQuery(this).val();
             event.preventDefault();

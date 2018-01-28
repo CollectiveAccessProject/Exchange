@@ -285,7 +285,7 @@
         });
         
         // Refine UI: <select> add filter
-        jQuery('#results_collection_object').on('change', "#results_collection_object select.quickSearchRefineSelect", function(event){
+        jQuery('#results_collection_object').on('change', "select.quickSearchRefineSelect", function(event){
             var filter = jQuery(event.target).data('filter');
             var val = jQuery(this).val();
             event.preventDefault();
