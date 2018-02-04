@@ -24,7 +24,7 @@
          <% if @refine and @refine["resource"] and (@refine["resource"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Filters</h3>
+                    <h3 class="quickSearchRefineHeader">Filters</h3>
                     <ul class="quickSearchRefineFilterList">
                     <% format_refine_filters(@refine, "resource").each do |r| %>
                         <li><%= r[:field] %>: <em> <%= r[:value] %></em>
@@ -34,7 +34,7 @@
                 </div>
             </div>
         <% end%>
-            <h3>Refine by</h3>
+            <h3 class="quickSearchRefineHeader">Refine by</h3>
             <div class="row">
                 <div class="col-md-12">
                     <h6>Author name</h6>

@@ -107,37 +107,7 @@ module ApplicationHelper
             type: "string",
             input: "select",
             values: affiliations
-        }, {
-            id: "author",
-            field: "author",
-            label: "Author",
-            type: "string"
         }, 
-        {
-            id: "keyword",
-            field: "keyword",
-            label: "Keyword",
-            type: "string",
-            input: "text"
-        },
-        {
-            id: "tag",
-            field: "tag",
-            label: "Tag",
-            type: "string"
-        },
-        {
-            id: "idno",
-            field: "collection_identifier",
-            label: "Collection object identifier",
-            type: "string"
-        },
-        {
-            id: "title",
-            field: "title",
-            label: "Title",
-            type: "string"
-        },
         {
             id: "artist",
             field: "artist",
@@ -160,9 +130,29 @@ module ApplicationHelper
             input: "text"
         },
         {
-            id: "places",
-            field: "places",
-            label: "Place names",
+            id: "author",
+            field: "author",
+            label: "Author",
+            type: "string"
+        }, 
+        {
+            id: "collection_area",
+            field: "collection_area",
+            label: "Collection area",
+            type: "string",
+            input: "select",
+            values: get_field_values('collection_area')
+        },
+        {
+            id: "idno",
+            field: "collection_identifier",
+            label: "Collection object identifier",
+            type: "string"
+        },
+        {
+            id: "credit_line",
+            field: "credit_line",
+            label: "Credit line",
             type: "string"
         },
         {
@@ -172,9 +162,16 @@ module ApplicationHelper
             type: "integer"
         },
         {
-            id: "credit_line",
-            field: "credit_line",
-            label: "Credit line",
+            id: "keyword",
+            field: "keyword",
+            label: "Keyword",
+            type: "string",
+            input: "text"
+        },
+        {
+            id: "label_copy",
+            field: "label_copy",
+            label: "Label copy",
             type: "string"
         },
         {
@@ -186,20 +183,24 @@ module ApplicationHelper
             values: get_field_values('medium')
         },
         {
-            id: "support",
-            field: "support",
-            label: "Support",
-            type: "string",
-            input: "select",
-            values: get_field_values('support')
-        },
-        {
             id: "Classification",
             field: "classification",
             label: "Object classification",
             type: "string",
             input: "select",
             values: get_field_values('classification')
+        },
+        {
+            id: "places",
+            field: "places",
+            label: "Place names",
+            type: "string"
+        },
+        {
+            id: "rating",
+            field: "rating",
+            label: "Rating",
+            type: "integer"
         },
         {
             id: "style",
@@ -210,30 +211,30 @@ module ApplicationHelper
             values: get_field_values('style')
         },
         {
-            id: "collection_area",
-            field: "collection_area",
-            label: "Collection area",
-            type: "string",
-            input: "select",
-            values: get_field_values('collection_area')
-        },
-        {
             id: "subject_matter",
             field: "subject_matter",
             label: "Subject matter",
             type: "string"
         },
         {
-            id: "label_copy",
-            field: "label_copy",
-            label: "Label copy",
+            id: "support",
+            field: "support",
+            label: "Support",
+            type: "string",
+            input: "select",
+            values: get_field_values('support')
+        },
+        {
+            id: "tag",
+            field: "tag",
+            label: "Tag",
             type: "string"
         },
         {
-            id: "rating",
-            field: "rating",
-            label: "Rating",
-            type: "integer"
+            id: "title",
+            field: "title",
+            label: "Title",
+            type: "string"
         }
     ]
   end
@@ -264,7 +265,11 @@ def is_zoomable(media_file)
 	case
 		when (['LocalFile', 'FlickrLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
 			if(media_file.thumbnail_uid != nil)
-				return media_file if (media_file.thumbnail && media_file.thumbnail.mime_type.match(/^image\//))
+			    begin
+				    return media_file if (media_file.thumbnail && media_file.thumbnail.mime_type.match(/^image\//))
+				rescue
+				    return false
+				end
 			end
 			return false
 		when (['CollectionobjectLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
@@ -278,14 +283,16 @@ end
 #
 #
 def get_current_locations_for_objects
-    locs = []
-    locs.push(['All galleries', ' '])
+    locations = []
     Resource.select(:location).distinct.order(:location).each do|l|
         next if (!l or !l.location or (l.location.length == 0))
-        locs.push([l.location, l.location])
+        lp = l.location.split(/[ ]*➔[ ]*/)
+        lpe = lp.select { |v| !v.match(/(Cabinet|Shelf)/) }
+        loc = lpe.join(" ➔ ")
+        locations.push(loc) if !locations.include? loc
     end
-
-    options_for_select(locs)
+    
+    options_for_select([['All galleries', ' ']] + locations.map { |v| [v, v] } )
 end
 
 def get_field_values(f)
@@ -320,7 +327,7 @@ def get_field_values_for_objects(f)
     vals.each do |v| 
         opts.push([v, v])
     end
-    opts.unshift(['None', ' '])
+    opts.unshift(['Any', ' '])
 
     options_for_select(opts)
 end

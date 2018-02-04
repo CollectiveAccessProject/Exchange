@@ -149,7 +149,7 @@ class Resource < ActiveRecord::Base
               index: 'not_analyzed'
           }
       }
-      indexes :all_keywords, type: 'string', analyzer: 'english', fields: {
+      indexes :terms, type: 'string', analyzer: 'english', fields: {
           raw: {
               type: 'string',
               index: 'not_analyzed'
@@ -256,8 +256,8 @@ class Resource < ActiveRecord::Base
     
     record['tag'] = self.tags.pluck("tag")
     record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
-    record['all_keywords'] = (record['keywords'] ? record['keywords'].split(/\|/) : []) + record['keyword'] + record['tag']
-    print record['updated_at'].to_s + "\n"
+    record['terms'] = (record['keywords'] ? record['keywords'].split(/\|/) : []) + record['keyword'] + record['tag']
+
     record['start_date'] = record['start_date'].to_i
     record['end_date'] = record['end_date'].to_i
 
@@ -757,7 +757,7 @@ class Resource < ActiveRecord::Base
         "on_display" => "On display?",
         "collection_area" => "Collection area",
         "classification" => "Classification",
-        "all_keywords" => "Keywords",
+        "terms" => "Keywords",
         "affiliation" => "Created for",
         "access" => "Access type",
         "rating" => "Avg visitor rating",

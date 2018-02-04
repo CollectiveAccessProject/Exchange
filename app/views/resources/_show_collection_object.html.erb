@@ -108,7 +108,7 @@
       		
       </div><!-- end col -->
       <div class="col-sm-4 collectionObjectDetailText">
-        <%= sanitize(@resource.parsed_body_text.gsub(/<br[ ]*\/><br[ ]*\/><br[ ]*\/>/, "<br /><br />"), tags: body_tags_allowed, attributes: body_attrs_allowed) %>
+        <%= text = sanitize(@resource.parsed_body_text.gsub(/<br[ ]*\/><br[ ]*\/><br[ ]*\/>/, "<br /><br />"), tags: body_tags_allowed, attributes: body_attrs_allowed) %>
          
          <% 
             keywords = [] 
@@ -117,9 +117,13 @@
             keywords = keywords.sort.uniq
          %>
         <% if keywords.length > 0 %>
+            <% if !text.match(/<br[ ]*[\/]{0,1}>[\r\n\t ]*<br[ ]*[\/]{0,1}>[\r\n\t ]*$/) %>
+            <br/><br/>
+            <% end %>
             <strong>Keywords</strong><br/>
                 <% keywords.each do |k| %>
-                <%= link_to(k, quick_search_path + "?q=keyword:" + k) %><br/>
+                <% next if k == '' %>
+                <%= link_to(k, quick_search_path + "?q=terms:" + k) %><br/>
                 <% end %>
         <% end %>
       </div>
@@ -252,7 +256,7 @@
             <div class="unit">
               <h4>On display</h4>
               <% if @resource.gallery_url %>
-                <%= link_to @resource.location, @resource.gallery_url %>
+                <%= link_to @resource.location, @resource.gallery_url, { target: "_blank" } %>
               <% else %>
               <%= @resource.location %>
               <% end %>

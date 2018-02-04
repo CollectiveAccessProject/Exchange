@@ -24,7 +24,7 @@
          <% if @refine and @refine["collection_object"] and (@refine["collection_object"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Filters</h3>
+                    <h3 class="quickSearchRefineHeader">Filters</h3>
                     <ul class="quickSearchRefineFilterList">
                     <% format_refine_filters(@refine, "collection_object").each do |r| %>
                         <li><%= r[:field] %>: <em> <%= r[:value] %></em>
@@ -35,7 +35,7 @@
             </div>
         <% end%>
         
-            <h3>Refine by</h3>
+            <h3 class="quickSearchRefineHeader">Refine by</h3>
         <% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"1\"")) %>  
             <div class="row">
                 <div class="col-md-12">
@@ -82,14 +82,14 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h6>Medium</h6>
-                    <%= autocomplete_field_tag(:collection_object_find_medium, '', quick_search_autocomplete_refine_url(query: @query, field: "medium.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_medium", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "medium") + hidden_field_tag(:collection_object_medium) %>
+                    <h6>Style</h6>
+                    <%= autocomplete_field_tag(:collection_object_find_style, '', quick_search_autocomplete_refine_url(query: @query, field: "style.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_style", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "style") + hidden_field_tag(:collection_object_style) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h6>Style</h6>
-                    <%= autocomplete_field_tag(:collection_object_find_style, '', quick_search_autocomplete_refine_url(query: @query, field: "style.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_style", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "style") + hidden_field_tag(:collection_object_style) %>
+                    <h6>Medium</h6>
+                    <%= autocomplete_field_tag(:collection_object_find_medium, '', quick_search_autocomplete_refine_url(query: @query, field: "medium.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_medium", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "medium") + hidden_field_tag(:collection_object_medium) %>
                 </div>
             </div>
             <div class="row">

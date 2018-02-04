@@ -24,7 +24,7 @@
         <% if @refine and @refine["crcset"] and (@refine["crcset"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Filters</h3>
+                    <h3 class="quickSearchRefineHeader">Filters</h3>
                     <ul class="quickSearchRefineFilterList">
                     <% format_refine_filters(@refine, "crcset").each do |r| %>
                         <li><%= r[:field] %>: <em> <%= r[:value] %></em>
@@ -34,7 +34,25 @@
                 </div>
             </div>
         <% end%>
-            <h3>Refine by</h3>
+            <h3 class="quickSearchRefineHeader">Refine by</h3>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Date of visit</h6>
+                    <select name="crcset_date_of_visit_mode" id="crcset_date_of_visit_mode" class="quickSearchRefineDateMode">
+                        <option value="in">on</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="crcset_date_of_visit_date" id="crcset_date_of_visit_date" class="quickSearchRefineDate quickSearchRefineDatePicker"/>
+                    <span id="crcset_date_of_visit_range"  style="display:none;">
+                        <input type="text" name="crcset_date_of_visit_min" id="crcset_date_of_visit_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
+                        <input type="text" name="crcset_date_of_visit_max" id="crcset_date_of_visit_max" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <h6>Author name</h6>
@@ -89,24 +107,6 @@
                     <span id="crcset_date_last_updated_range"  style="display:none;">
                         <input type="text" name="crcset_date_last_updated_min" id="crcset_date_last_updated_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
                         <input type="text" name="crcset_date_last_updated_max" id="crcset_date_last_updated_max" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
-                    </span>
-                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-12">
-                    <h6>Date of visit</h6>
-                    <select name="crcset_date_of_visit_mode" id="crcset_date_of_visit_mode" class="quickSearchRefineDateMode">
-                        <option value="in">on</option>
-                        <option value="before">before</option>
-                        <option value="after">after</option>
-                        <option value="between">between</option>
-                    </select>
-                    <input type="text" name="crcset_date_of_visit_date" id="crcset_date_of_visit_date" class="quickSearchRefineDate quickSearchRefineDatePicker"/>
-                    <span id="crcset_date_of_visit_range"  style="display:none;">
-                        <input type="text" name="crcset_date_of_visit_min" id="crcset_date_of_visit_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
-                        <input type="text" name="crcset_date_of_visit_max" id="crcset_date_of_visit_max" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
                     </span>
                     <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
                 </div>
