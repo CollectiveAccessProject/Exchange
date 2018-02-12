@@ -235,7 +235,13 @@ namespace :exchange do
 						value['collection_area'] = '' if !value['collection_area'] or value['collection_area'] == '-'
 						value['subject_matter'] = '' if value['subject_matter'].nil? or !value['subject_matter']
 						value['label_copy'] = '' if value['label_copy'].nil? or !value['label_copy']
-						value['gallery_url'] = '' if value['gallery_url'].nil? or !value['gallery_url']
+						if value['gallery_url'].nil? or !value['gallery_url']
+						    value['gallery_url'] = '' 
+						else
+						    gallery_urls = value['gallery_url'].split(/;/)
+						    value['gallery_url'] = gallery_urls.pop
+						end
+						print value['gallery_url'] + "\n"
 						
 						k = ''
 						k = value['keywords'] if value['keywords']
