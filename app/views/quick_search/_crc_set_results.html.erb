@@ -4,23 +4,28 @@
     <div">
       <div class="row">
         <div class="col-sm-12">
-          <h4>
-              <%= @crcsets_count %> Study set<%= (@crcsets_count == 1) ? "" : "s" %>
+          <h4><div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <%= @crcsets_count %> Study set<%= (@crcsets_count == 1) ? "" : "s" %>
               
-              <% if @crcsets_num_pages > 0 %>
-                (page <%= @crcsets_page.to_s + "/" + @crcsets_num_pages.to_s %>)
-              <% end %>
-            <div id="crc_right" class="pull-right">
+                      <% if @crcsets_num_pages > 0 %>
+                        <nobr>(page <%= @crcsets_page.to_s + "/" + @crcsets_num_pages.to_s %>)</nobr>
+                      <% end %>
+                      <button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_crc_set" href="#">Refine</button>
+                </div>
+            <div id="crc_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
               <form class="searchPaging">
-                <div class="searchFormElement">Results Per Page <%= select_tag("crcset_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['crcset']), {id: "crcset_num_items_per_page"}) %></div>
-                <div class="searchFormElement">Sort by <%= select_tag("crcset_sort", options_for_select(sortOptions('crcset'), @sort_defaults['crcset']), {id: "crcset_sort"}) %></div>
+                <div class="searchFormElement">
+                    <nobr>Results Per Page <%= select_tag("crcset_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['crcset']), {id: "crcset_num_items_per_page"}) %></nobr>
+                    <nobr>Sort by <%= select_tag("crcset_sort", options_for_select(sortOptions('crcset'), @sort_defaults['crcset']), {id: "crcset_sort"}) %></nobr>
+                </div>
               </form>
             </div>
           </h4>
         </div>
       </div>
       <div class="row" id="crcsetResultsContainer">
-      <div class="col-md-3">
+      <div class="hidden-sm hidden-xs col-md-3 col-lg-3" id="crcsetRefineContainer">
         <% if @refine and @refine["crcset"] and (@refine["crcset"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
@@ -115,7 +120,7 @@
         
         
         </div>
-        <div class="col-sm-9">
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
 
           <div id="crcsetResults-status">
             <div class="flash-notice" id="crcsetResults-status-message">
@@ -242,8 +247,10 @@
         </div>
       </div>
     </div>
+  
+    <%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "crc_set", prefix: "crcset" } %>
 
-    <script>
+    <script type="text/javascript">
         jQuery(document).ready(function() {
             jQuery("#query_search_content").off().on('change', "#crcset_num_items_per_page, #crcset_sort", function(e) {
                 jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?length=" + jQuery("#crcset_num_items_per_page").val() + "&sort=" + jQuery("#crcset_sort").val(), function(data) {
@@ -258,8 +265,12 @@
             event.preventDefault();
             
             if (!filter) { return false; }
+            
+            jQuery('#filterModal_crc_set').modal('hide');
+            jQuery(".loading").show();
             jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + filter + ":\"" + data.item.id + "\"", function(data) {
                 jQuery("#results_crcset").html(data.html);
+                jQuery(".loading").hide();
                 return true;
             });
         });
@@ -272,8 +283,11 @@
             
             if (!filter || (val < 0)) { return false; }
             
+            jQuery('#filterModal_crc_set').modal('hide');
+            jQuery(".loading").show();
             jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
                 jQuery("#results_crcset").html(data.html);
+                jQuery(".loading").hide();
                 return true;
             });
         });
@@ -288,8 +302,11 @@
         jQuery('#results_crcset').on('blur', "#crcset_date_last_updated_date, #crcset_date_last_updated_min, #crcset_date_last_updated_max", function(event){
             var date_expr = getDateExprFromFilterUI('crcset');
             if (date_expr) {
+                jQuery('#filterModal_crc_set').modal('hide');
+                jQuery(".loading").show();
                 jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + date_expr, function(data) {
                     jQuery("#results_crcset").html(data.html);
+                    jQuery(".loading").hide();
                     return true;
                 });
             }
@@ -297,8 +314,11 @@
         jQuery('#results_crcset').on('blur', "#crcset_date_of_visit_date, #crcset_date_of_visit_min, #crcset_date_of_visit_max", function(event){
             var date_expr = getDateExprFromFilterUI('crcset', 'date_of_visit', 'date_of_visit');
             if (date_expr) {
+                jQuery('#filterModal_crc_set').modal('hide');
+                jQuery(".loading").show();
                 jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + date_expr, function(data) {
                     jQuery("#results_crcset").html(data.html);
+                    jQuery(".loading").hide();
                     return true;
                 });
             }
@@ -309,8 +329,12 @@
         jQuery('#results_crcset').on('click', ".removeFilter", function(event, data){
             event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
+            
+            jQuery('#filterModal_crc_set').modal('hide');
+            jQuery(".loading").show();
             jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
                 jQuery("#results_crcset").html(data.html);
+                jQuery(".loading").hide();
                 return true;
             });
         });

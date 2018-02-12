@@ -5,22 +5,28 @@
       <div class="row">
         <div class="col-sm-12">
           <h4>
-              <%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
+                    <% if @collection_objects_num_pages > 0 %>
+                        <nobr>(page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)</nobr>
+                    <% end %>
+                    <button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_collection_object" href="#">Refine</button>
+                </div>
+                <div id="collection_object_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
+                    <form class="searchPaging">
+                        <div class="searchFormElement">
+                            <nobr>Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></nobr>
+                            <nobr>Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></nobr>
+                        </div>
+                    </form>
+                </div>
               
-              <% if @collection_objects_num_pages > 0 %>
-                (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
-              <% end %>
-            <div id="collection_object_right" class="pull-right">
-              <form class="searchPaging">
-                <div class="searchFormElement">Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></div>
-                <div class="searchFormElement">Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></div>
-              </form>
             </div>
           </h4>
         </div>
       </div>
       <div class="row" id="colObjectResultsContainer">
-        <div class="col-md-3">
+        <div class="hidden-sm hidden-xs col-md-3 col-lg-3" id="colObjectRefineContainer">
          <% if @refine and @refine["collection_object"] and (@refine["collection_object"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
@@ -35,7 +41,7 @@
             </div>
         <% end%>
         
-            <h3 class="quickSearchRefineHeader">Refine by</h3>
+        <h3 class="quickSearchRefineHeader">Refine by</h3>
         <% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"1\"")) %>  
             <div class="row">
                 <div class="col-md-12">
@@ -82,24 +88,24 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h6>Style</h6>
+                    <h6>Style/Group/Movement</h6>
                     <%= autocomplete_field_tag(:collection_object_find_style, '', quick_search_autocomplete_refine_url(query: @query, field: "style.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_style", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "style") + hidden_field_tag(:collection_object_style) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h6>Medium</h6>
+                    <h6>Medium & Support</h6>
                     <%= autocomplete_field_tag(:collection_object_find_medium, '', quick_search_autocomplete_refine_url(query: @query, field: "medium.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_medium", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "medium") + hidden_field_tag(:collection_object_medium) %>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h6>Classification</h6>
+                    <h6>Classification/Object Type</h6>
                     <%= autocomplete_field_tag(:collection_object_find_classification, '', quick_search_autocomplete_refine_url(query: @query, field: "classification.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_classification", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "classification") + hidden_field_tag(:collection_object_classification) %>
                 </div>
             </div>
         </div>
-        <div class="col-sm-9" style="border-left: 1px dotted #ccc;">
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12" style="border-left: 1px dotted #ccc;">
           <div id="collectionObjectResults-status">
             <div class="flash-notice" id="collectionObjectResults-status-message">
 
@@ -230,7 +236,9 @@
     <%= render(partial: 'resources/media_overlay') %>
   </div>
 
-<script>
+<%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "collection_object", prefix: "colObject" } %>
+
+<script type="text/javascript">
     //jQuery(document).ready(function() {
         jQuery("#query_search_content").off().on('change', "#collection_object_num_items_per_page, #collection_object_sort", function(e) {
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?length=" + jQuery("#collection_object_num_items_per_page").val() + "&sort=" + jQuery("#collection_object_sort").val(), function(data) {
@@ -278,8 +286,12 @@
             event.preventDefault();
             
             if (!filter) { return false; }
+            
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + data.item.id + "\"", function(data) {
                 jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
                 return true;
             });
         });
@@ -291,8 +303,12 @@
             event.preventDefault();
             
             if (!filter) { return false; }
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
                 jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
+                
                 return true;
             });
         });
@@ -333,8 +349,11 @@
             }
             
             if (date_expr) {
+                jQuery('#filterModal_collection_object').modal('hide');
+                jQuery(".loading").show();
                 jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + date_expr, function(data) {
                     jQuery("#results_collection_object").html(data.html);
+                    jQuery(".loading").hide();
                     return true;
                 });
             }
@@ -348,8 +367,11 @@
             
             if (!filter || (val < 1)) { return false; }
             
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
                 jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
                 return true;
             });
         });
@@ -358,8 +380,11 @@
         jQuery('#results_collection_object').on('click', ".removeFilter", function(event, data){
             event.preventDefault();
             var remove_id = jQuery(this).data('remove_id');
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
                 jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
                 return true;
             });
         });

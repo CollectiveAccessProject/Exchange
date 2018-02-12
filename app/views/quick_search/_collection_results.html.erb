@@ -4,23 +4,29 @@
     <div>
       <div class="row">
         <div class="col-sm-12">
-          <h4>
-                <%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
+          <h4><div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
                 
-                <% if @collections_num_pages > 0 %>
-                    (page <%= @collections_page.to_s + "/" + @collections_num_pages.to_s %>)
-                <% end %>
-            <div id="collection_right" class="pull-right">
-              <form class="searchPaging">
-                <div class="searchFormElement">Results Per Page <%= select_tag("collection_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection']), {id: "collection_num_items_per_page"}) %></div>
-                <div class="searchFormElement">Sort by <%= select_tag("collection_sort", options_for_select(sortOptions('collection'), @sort_defaults['collection']), {id: "collection_sort"}) %></div>
-              </form>
+                    <% if @collections_num_pages > 0 %>
+                        <nobr>(page <%= @collections_page.to_s + "/" + @collections_num_pages.to_s %>)</nobr>
+                    <% end %>
+                    <button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_collection" href="#">Refine</button>
+                </div>
+                 <div id="collection_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
+                  <form class="searchPaging">
+                    <div class="searchFormElement">
+                        <nobr>Results Per Page <%= select_tag("collection_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection']), {id: "collection_num_items_per_page"}) %></nobr>
+                        <nobr>Sort by <%= select_tag("collection_sort", options_for_select(sortOptions('collection'), @sort_defaults['collection']), {id: "collection_sort"}) %></nobr>
+                    </div>
+                  </form>
+                </div>
             </div>
           </h4>
         </div>
       </div>
       <div class="row" id="collectionsResultsContainer">
-      <div class="col-md-3">
+      <div class="hidden-sm hidden-xs col-md-3 col-lg-3" id="collectionsRefineContainer">
          <% if @refine and @refine["collection"] and (@refine["collection"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
             <div class="row">
                 <div class="col-md-12">
@@ -104,7 +110,7 @@
 <% end %>
         
         </div>
-        <div class="col-sm-9">
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
           <%
             col = 0
             thumb = false
@@ -231,7 +237,9 @@
       </div>
     </div>
 
-    <script>
+    <%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "collection", prefix: "collections" } %>
+
+    <script type="text/javascript">
         //jQuery(document).ready(function() {
             jQuery("#query_search_content").off().on('change', "#collection_num_items_per_page, #collection_sort", function(e) {
                 jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?length=" + jQuery("#collection_num_items_per_page").val() + "&sort=" + jQuery("#collection_sort").val(), function(data) {
@@ -249,8 +257,12 @@
                 event.preventDefault();
             
                 if (!filter) { return false; }
+                
+                jQuery('#filterModal_collection').modal('hide');
+                jQuery(".loading").show();
                 jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?refine[]=" + filter + ":\"" + data.item.id + "\"", function(data) {
                     jQuery("#results_collection").html(data.html);
+                    jQuery(".loading").hide();
                     return true;
                 });
             });
@@ -263,8 +275,11 @@
             
                 if (!filter || (val < 0)) { return false; }
             
+                jQuery('#filterModal_collection').modal('hide');
+                jQuery(".loading").show();
                 jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
                     jQuery("#results_collection").html(data.html);
+                    jQuery(".loading").hide();
                     return true;
                 });
             });
@@ -277,8 +292,11 @@
                 var date_expr = getDateExprFromFilterUI('collection');
             
                 if (date_expr) {
+                    jQuery('#filterModal_collection').modal('hide');
+                    jQuery(".loading").show();
                     jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?refine[]=" + date_expr, function(data) {
                         jQuery("#results_collection").html(data.html);
+                        jQuery(".loading").hide();
                         return true;
                     });
                 }
@@ -290,8 +308,12 @@
                 event.preventDefault();
             
                 var r = jQuery(this).data('rating');
+                
+                jQuery('#filterModal_collection').modal('hide');
+                jQuery(".loading").show();
                 jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?refine[]=rating:" + r, function(data) {
                     jQuery("#results_collection").html(data.html);
+                    jQuery(".loading").hide();
                     return true;
                 });
             });
@@ -300,8 +322,12 @@
             jQuery('#results_collection').on('click', ".removeFilter", function(event, data){
                 event.preventDefault();
                 var remove_id = jQuery(this).data('remove_id');
+                
+                jQuery('#filterModal_collection').modal('hide');
+                jQuery(".loading").show();
                 jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
                     jQuery("#results_collection").html(data.html);
+                    jQuery(".loading").hide();
                     return true;
                 });
             });
