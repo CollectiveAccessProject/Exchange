@@ -89,16 +89,16 @@ class QuickSearchController < ApplicationController
     begin
       setup
     rescue Exception => e
-      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
 
   def query_results
     begin
       setup
-   # rescue Exception => e
+    rescue Exception => e
       #raise "Search error: " + e.message
-    #  redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message})
+     redirect_to("/", :flash => { :error => "Search could not be completed"})
     end
 
     params.permit(:type, :length)
@@ -134,7 +134,7 @@ class QuickSearchController < ApplicationController
       setup(advanced:true)
     rescue Exception => e
       #raise "Search error: " + e.message
-      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
 
@@ -409,8 +409,8 @@ class QuickSearchController < ApplicationController
       }
 
     rescue Exception => e
-      raise "Search error: " + e.message + @query
-      #redirect_to("/", :flash => { :error => "Search could not be completed : " + e.message })
+      #raise "Search error: " + e.message + @query
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
 
