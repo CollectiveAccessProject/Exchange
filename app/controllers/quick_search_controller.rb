@@ -10,6 +10,7 @@ class QuickSearchController < ApplicationController
     if !current_user or !current_user.id
         raise "Not logged in"
     end
+    editable_resources = Resource.where("user_id = ? OR author_id = ?", current_user.id, current_user.id)
     editable_res = ResourcesUser.where('user_id=? AND access >= ?', current_user.id, 2)
     
     group_ids = groups_for_user(current_user, { ids: true })
@@ -19,6 +20,8 @@ class QuickSearchController < ApplicationController
     end
     
     rids = editable_res.map {|x| x.resource_id}
+    rids = rids + editable_resources.map { |x| x.id }
+    
 	if rids and rids.length > 0
         u = Resource.where(
             '(LOWER(resources.title) LIKE ? OR LOWER(resources.collection_identifier) LIKE ?) AND resources.resource_type IN (?) AND (resources.id IN (?) OR resources.author_id = ? OR resources.user_id = ?)',
