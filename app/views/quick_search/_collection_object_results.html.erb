@@ -1,155 +1,251 @@
-<div id="results_collection_object">
-  <div class="row">
-    <div class="col-sm-12">
-      <a href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
-      <h4>
-        <a id="collection_object_title_link" href="#" onClick="$('#colObjectResultsContainer').toggle(); return false;">
-          <%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
-          (page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)
-        </a>
-        <div id="collection_object_right" class="pull-right">
-          <form class="searchPaging">
-            <div class="searchFormElement">Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></div>
-            <div class="searchFormElement">Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></div>
-          </form>
-        </div>
-      </h4>
-    </div>
-  </div>
-  <div class="row" id="colObjectResultsContainer">
-    <div class="col-sm-12">
-      <div id="collectionObjectResults-status">
-        <div class="flash-notice" id="collectionObjectResults-status-message">
-
+<div class="panel panel-primary" id="results_collection_object">
+<% if @show %>
+  <div class="panel-body">
+    <div>
+      <div class="row">
+        <div class="col-sm-12">
+          <h4>
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
+                    <% if @collection_objects_num_pages > 0 %>
+                        <nobr>(page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)</nobr>
+                    <% end %>
+                    <button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_collection_object" href="#">Refine</button>
+                </div>
+                <div id="collection_object_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
+                    <form class="searchPaging">
+                        <div class="searchFormElement">
+                            <nobr>Results Per Page <%= select_tag("collection_object_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection_object']), {id: "collection_object_num_items_per_page", class: "itemsPerPage"}) %></nobr>
+                            <nobr>Sort by <%= select_tag("collection_object_sort", options_for_select(sortOptions('collection_object'), @sort_defaults['collection_object']), {id: "collection_object_sort"}) %></nobr>
+                        </div>
+                    </form>
+                </div>
+              
+            </div>
+          </h4>
         </div>
       </div>
-
-      <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
-          <div>
-            <form class="collectionObjectResultsAdd">
-              Add checked results to existing collection/resource <%=
-
-              if(@available_collections_and_resources.length > 25)
-                autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collection_add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:collection_add_to_collection_id)
-              else
-                select_tag(:collection_add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'collection_add_to_collection_id')
-              end
-            %>
-              <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsAddToCollection"  %>
-            </form>
-          </div>
-      <% end %>
-
-      <%
-        col = 0
-        thumb = false
-      %>
-      <%
-        @collection_objects.each do |r|
-          next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
-          col = col+1
-          if(col == 1)
-      %>
-              <div class="row">
-          <%
-            end
-          %>
-          <div class="col-md-2 qsResult">
-            <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
-                <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
-            <% end %>
-            <% r.media_files.each do |f| %>
-                <% if f.sourceable %>
-                    <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
-                    <% thumb = true %>
-  				      <div class="zoomControls searchZoom" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
-				        <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-				      </div>
-                    <% break %>
-                <% end %>
-            <% end %>
-            <% if(thumb == false) %>
-                <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
-            <% end %>
-            <div class="text-left qsResultText">
-              <div class="small"><%= sanitize(r.get_collection_object_field('artist')) %> <%= sanitize(r.get_collection_object_field('artist_nationality', { enclose_in_parens: true})) %></div>
-              <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
-              <div class="qsMoreCaption">
-                <div class="small"><%= r.get_collection_object_field('date_created') %></div>
-                <div class="small"><i><%= sanitize(r.get_collection_object_field('credit_line')) %></i></div>
-                <div class="small text-left"><%= r.subtitle %></div>
-              </div>
+      <div class="row" id="colObjectResultsContainer">
+        <div class="hidden-sm hidden-xs col-md-3 col-lg-3" id="colObjectRefineContainer">
+         <% if @refine and @refine["collection_object"] and (@refine["collection_object"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="quickSearchRefineHeader">Filters</h3>
+                    <ul class="quickSearchRefineFilterList">
+                    <% format_refine_filters(@refine, "collection_object").each do |r| %>
+                        <li><%= r[:field] %>: <em> <%= r[:value] %></em>
+                        <a href="#" data-remove_id="<%= r[:filter] %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a></li>
+                    <% end%>
+                    </ul>
+                </div>
             </div>
-            <% thumb = false %>
+        <% end%>
+        
+        <h3 class="quickSearchRefineHeader">Refine by</h3>
+        <% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"1\"")) %>  
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>On display?</h6>
+                    <input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="1" data-filter="on_display"/> 
+                </div>
+            </div>
+        <% end %>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Artist/Maker</h6>
+                    <%= autocomplete_field_tag(:collection_object_find_artist, '', quick_search_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "artist") + hidden_field_tag(:collection_object_artist) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Artist nationality</h6>
+                    <%= select_tag(:collection_object_artist_nationality, get_values_for_refine_for_select('artist_nationality.raw', @query, "collection_object", session[:refine]), "data-filter": "artist_nationality", :class => 'quickSearchRefineSelect')  %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Date created</h6>
+                    
+                    <select name="collection_object_date_created_mode" id="collection_object_date_created_mode" class="quickSearchRefineDateMode">
+                        <option value="in">in</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="collection_object_date_created_year" id="collection_object_date_created_year" class="quickSearchRefineDate"/>
+                    <span id="collection_object_date_created_range"  style="display:none;">
+                        <input type="text" name="collection_object_date_created_min" id="collection_object_date_created_min" class="quickSearchRefineDateRange"/> - 
+                        <input type="text" name="collection_object_date_created_max" id="collection_object_date_created_max" style="display:none;" class="quickSearchRefineDateRange"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Collection area</h6>
+                    <%= select_tag(:collection_object_collection_area, get_values_for_refine_for_select('collection_area.raw', @query, "collection_object", session[:refine]), "data-filter": "collection_area", :class => 'quickSearchRefineSelect')  %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Style/Group/Movement</h6>
+                    <%= autocomplete_field_tag(:collection_object_find_style, '', quick_search_autocomplete_refine_url(query: @query, field: "style.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_style", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "style") + hidden_field_tag(:collection_object_style) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Medium & Support</h6>
+                    <%= autocomplete_field_tag(:collection_object_find_medium, '', quick_search_autocomplete_refine_url(query: @query, field: "medium.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_medium", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "medium") + hidden_field_tag(:collection_object_medium) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Classification/Object Type</h6>
+                    <%= autocomplete_field_tag(:collection_object_find_classification, '', quick_search_autocomplete_refine_url(query: @query, field: "classification.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_classification", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "classification") + hidden_field_tag(:collection_object_classification) %>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12" style="border-left: 1px dotted #ccc;">
+          <div id="collectionObjectResults-status">
+            <div class="flash-notice" id="collectionObjectResults-status-message">
+
+            </div>
           </div>
 
-          <%
-            if(col % 6 == 0)
-                col = 0
-          %>
+          <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
+              <div>
+                <form class="collectionObjectResultsAdd">
+                  Add checked results to existing collection/resource <%=
+
+                  if(@available_collections_and_resources.length > 25)
+                    autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collection_add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:collection_add_to_collection_id)
+                  else
+                    select_tag(:collection_add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'collection_add_to_collection_id')
+                  end
+                %>
+                  <%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsAddToCollection"  %>
+                </form>
               </div>
+          <% end %>
+
           <%
-            end
-
-            end
+            col = 0
+            thumb = false
           %>
-      <% if (col > 0) %>
-          </div><!-- end row -->
-      <% end %>
-      <div class='row'>
-        <%=
-          if(@collection_objects_needs_previous_paging)
-
-            ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "collection_object", page: @collection_objects_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
-        <div class='col-sm-6 text-center'>
           <%
-            if (@collection_objects_needs_previous_paging || @collection_objects_needs_next_paging)
-              s = 1
-              e = @collection_objects_num_pages
-
-              if (e > 10)
-                s = @collection_objects_page - 5
-                s = 1 if (s < 1)
-                e = s + 9
-                e = @collection_objects_num_pages if e > @collection_objects_num_pages
-              end
-
-              for i in s..e do
+            @collection_objects.each do |r|
+              next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
+              col = col+1
+              if(col == 1)
           %>
-                  <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+                  <div class="row">
               <%
                 end
+              %>
+              <div class="col-md-2 qsResult">
+                <% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
+                    <div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= r.id.to_s %>" class="qsResultCheckbox"/></div>
+                <% end %>
+                <% r.media_files.each do |f| %>
+                    <% if f.sourceable %>
+                        <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?) %><br/>
+                        <% thumb = true %>
+                          <div class="zoomControls searchZoom" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
+                            <a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
+                          </div>
+                        <% break %>
+                    <% end %>
+                <% end %>
+                <% if(thumb == false) %>
+                    <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
+                <% end %>
+                <div class="text-left qsResultText">
+                  <div class="small"><%= sanitize(r.get_collection_object_field('artist')) %> <%= sanitize(r.get_collection_object_field('artist_nationality', { enclose_in_parens: true})) %></div>
+                  <%= link_to sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
+                  <div class="qsMoreCaption">
+                    <div class="small"><%= r.get_collection_object_field('date_created') %></div>
+                    <div class="small"><i><%= sanitize(r.get_collection_object_field('credit_line')) %></i></div>
+                    <div class="small text-left"><%= r.subtitle %></div>
+                  </div>
+                </div>
+                <% thumb = false %>
+              </div>
+
+              <%
+                if(col % 6 == 0)
+                    col = 0
+              %>
+                  </div>
+              <%
+                end
+
                 end
               %>
-        </div>
-        <%=
-          if(@collection_objects_needs_next_paging)
+          <% if (col > 0) %>
+              </div><!-- end row -->
+          <% end %>
+          <div class='row'>
+            <%=
+              if(@collection_objects_needs_previous_paging)
 
-            ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "collection_object", page: @collection_objects_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
+                ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "collection_object", page: @collection_objects_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+            <div class='col-sm-6 text-center'>
+              <%
+                if (@collection_objects_needs_previous_paging || @collection_objects_needs_next_paging)
+                  s = 1
+                  e = @collection_objects_num_pages
+
+                  if (e > 10)
+                    s = @collection_objects_page - 5
+                    s = 1 if (s < 1)
+                    e = s + 9
+                    e = @collection_objects_num_pages if e > @collection_objects_num_pages
+                  end
+
+                  for i in s..e do
+              %>
+                      <%=  (link_to(i, query_results_path(type: "collection_object", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collection_objects_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+                  <%
+                    end
+                    end
+                  %>
+            </div>
+            <%=
+              if(@collection_objects_needs_next_paging)
+
+                ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "collection_object", page: @collection_objects_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+          </div>
+            <% if current_user %>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center quickSearchAccessMessage"><i class="fa fa-eye-slash" aria-hidden="true"></i> Not available to public </div>
+                    </div>
+                </div>
+            <% end %>
+        </div>
       </div>
     </div>
+    <%= render(partial: 'resources/media_overlay') %>
   </div>
-</div>
-<%= render(partial: 'resources/media_overlay') %>
-<script>
-    jQuery(document).ready(function() {
-        jQuery("#collection_object_num_items_per_page, #collection_object_sort").on('change', function(e) {
+
+<%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "collection_object", prefix: "colObject" } %>
+
+<script type="text/javascript">
+    //jQuery(document).ready(function() {
+        jQuery("#query_search_content").off().on('change', "#collection_object_num_items_per_page, #collection_object_sort", function(e) {
             jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?length=" + jQuery("#collection_object_num_items_per_page").val() + "&sort=" + jQuery("#collection_object_sort").val(), function(data) {
                 jQuery("#results_collection_object").html(data.html);
                 return true;
             });
-        });
-
-
-        jQuery("#collectionObjectResultsAddToCollection").on('click', function(e) {
+        }).on('click', "#collectionObjectResultsAddToCollection", function(e) {
             e.preventDefault();
 
             var add_to_collection_id = jQuery("#collection_add_to_collection_id").val();
@@ -182,9 +278,122 @@
             }, 'json');
             return false;
         });
-        resizeBar("#collection_object_title_link", "#collection_object_right");	
-        $(window).on('resize', function(){
-        	resizeBar("#collection_object_title_link", "#collection_object_right");		
+        
+        
+        // Refine UI: autocomplete add filter
+        jQuery('#results_collection_object').off().on('railsAutocomplete.select', '.quickSearchRefineAutocomplete', function(event, data){
+            var filter = jQuery(event.target).data('filter');
+            event.preventDefault();
+            
+            if (!filter) { return false; }
+            
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + data.item.id + "\"", function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
+                return true;
+            });
         });
-    });
+        
+        // Refine UI: <select> add filter
+        jQuery('#results_collection_object').on('change', "select.quickSearchRefineSelect", function(event){
+            var filter = jQuery(event.target).data('filter');
+            var val = jQuery(this).val();
+            event.preventDefault();
+            
+            if (!filter) { return false; }
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
+                
+                return true;
+            });
+        });
+        
+        // Refine UI: date filter
+        jQuery('#results_collection_object').on('change', "#collection_object_date_created_mode", function(event){
+            var mode = jQuery(this).val();  
+            
+            if (mode == 'between') {
+                jQuery("#collection_object_date_created_range, #collection_object_date_created_min, #collection_object_date_created_max").show().attr('disabled', false);
+                jQuery("#collection_object_date_created_year").hide().attr('disabled', true);
+            } else {
+                jQuery("#collection_object_date_created_range, #collection_object_date_created_min, #collection_object_date_created_max").hide().attr('disabled', true);
+                jQuery("#collection_object_date_created_year").show().attr('disabled', false);
+            }
+        });
+        jQuery('#results_collection_object').on('blur', "#collection_object_date_created_year, #collection_object_date_created_min, #collection_object_date_created_max", function(event){
+            var mode = jQuery("#collection_object_date_created_mode").val();  
+            var date_expr = null;
+            
+            if (mode == 'between') {
+                var min = parseInt(jQuery("#collection_object_date_created_min").val()); 
+                var max = parseInt(jQuery("#collection_object_date_created_max").val()); 
+                if ((min > 0) && (max > 0) && (min <= max)) {
+                    date_expr = "start_date:>=" + min + " AND " + "end_date:<=" + max;
+                }
+            } else {
+                var year = parseInt(jQuery("#collection_object_date_created_year").val()); 
+                if (year > 0) {
+                    if (mode == 'in') {
+                        date_expr = "start_date:" + year;
+                    } else if(mode == 'before') {
+                        date_expr = "start_date:<=" + year;
+                    } else if(mode == 'after') {
+                        date_expr = "end_date:>=" + year;
+                    }
+                }
+            }
+            
+            if (date_expr) {
+                jQuery('#filterModal_collection_object').modal('hide');
+                jQuery(".loading").show();
+                jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + date_expr, function(data) {
+                    jQuery("#results_collection_object").html(data.html);
+                    jQuery(".loading").hide();
+                    return true;
+                });
+            }
+        });
+        
+         // Refine UI: checkbox add filter
+        jQuery('#results_collection_object').on('change', "input.quickSearchRefineCheckbox", function(event){
+            var filter = jQuery(event.target).data('filter');
+            var val = jQuery(this).val();
+            event.preventDefault();
+            
+            if (!filter || (val < 1)) { return false; }
+            
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
+                return true;
+            });
+        });
+        
+        // Refine UI: remove filter
+        jQuery('#results_collection_object').on('click', ".removeFilter", function(event, data){
+            event.preventDefault();
+            var remove_id = jQuery(this).data('remove_id');
+            jQuery('#filterModal_collection_object').modal('hide');
+            jQuery(".loading").show();
+            jQuery.getJSON("<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
+                jQuery("#results_collection_object").html(data.html);
+                jQuery(".loading").hide();
+                return true;
+            });
+        });
+        
+       //  resizeBar("#collection_object_title_link", "#collection_object_right");	
+//         $(window).on('resize', function(){
+//             resizeBar("#collection_object_title_link", "#collection_object_right");		
+//         });
+    //});
 </script>
+<% end %>
+</div>

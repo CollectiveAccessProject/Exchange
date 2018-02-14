@@ -123,11 +123,15 @@ $white:#FFFFFF;
 	position: relative;
 	top: -2px;
 	font-size: 14px;
-	.searchFormElement{
-		margin: 0 10px;
-		float: left;
-	}
 }
+.searchFormElement{
+	margin: 0 10px;
+}
+
 .itemsPerPage{
 	font-size: 14px;
+}
+
+.modalRefine {
+    margin: 3px 0 0 3px;
 }

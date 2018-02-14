@@ -30,6 +30,8 @@
 //= require bootstrap-editable-rails
 //= require leaflet
 //= require leaflet-iiif
+//= require moment
+//= require bootstrap-datetimepicker
 //= require_tree .
 
 // Add icontains selector to jQuery - case insensitive text search

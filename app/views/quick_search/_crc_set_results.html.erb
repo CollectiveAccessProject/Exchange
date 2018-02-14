@@ -1,154 +1,350 @@
-<div id="results_crcset">
-  <div class="row">
-    <div class="col-sm-12">
-      <a href="#" onClick="$('#crcsetResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
-      <h4>
-        <a id="crc_title_link" href="#" onClick="$('#crcsetResultsContainer').toggle(); return false;">
-          <%= @crc_sets_count %> Study set<%= (@crc_sets_count == 1) ? "" : "s" %>
-          (page <%= @crc_sets_page.to_s + "/" + @crc_sets_num_pages.to_s %>)
-        </a>
-        <div id="crc_right" class="pull-right">
-          <form class="searchPaging">
-            <div class="searchFormElement">Results Per Page <%= select_tag("crcset_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['crcset']), {id: "crcset_num_items_per_page"}) %></div>
-            <div class="searchFormElement">Sort by <%= select_tag("crcset_sort", options_for_select(sortOptions('crcset'), @sort_defaults['crcset']), {id: "crcset_sort"}) %></div>
-          </form>
-        </div>
-      </h4>
-    </div>
-  </div>
-  <div class="row" id="crcsetResultsContainer">
-    <div class="col-sm-12">
-
-      <div id="crcsetResults-status">
-        <div class="flash-notice" id="crcsetResults-status-message">
-
+<div class="panel panel-primary" id="results_crcset">
+<% if @show %>
+  <div class="panel-body">
+    <div">
+      <div class="row">
+        <div class="col-sm-12">
+          <h4><div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <%= @crcsets_count %> Study set<%= (@crcsets_count == 1) ? "" : "s" %>
+              
+                      <% if @crcsets_num_pages > 0 %>
+                        <nobr>(page <%= @crcsets_page.to_s + "/" + @crcsets_num_pages.to_s %>)</nobr>
+                      <% end %>
+                      <button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_crc_set" href="#">Refine</button>
+                </div>
+            <div id="crc_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
+              <form class="searchPaging">
+                <div class="searchFormElement">
+                    <nobr>Results Per Page <%= select_tag("crcset_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['crcset']), {id: "crcset_num_items_per_page"}) %></nobr>
+                    <nobr>Sort by <%= select_tag("crcset_sort", options_for_select(sortOptions('crcset'), @sort_defaults['crcset']), {id: "crcset_sort"}) %></nobr>
+                </div>
+              </form>
+            </div>
+          </h4>
         </div>
       </div>
-
-      <%
-        col = 0
-        thumb = false
-      %>
-      <%
-        @crc_sets.each do |r|
-          next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
-          col = col+1
-          if(col == 1)
-      %>
-              <div class="row">
-          <%
-            end
-          %>
-          <div class="col-md-2 qsResult">
-
-            <div style="margin-right: 10px">
-              <% r.media_files.each do |f| %>
-                  <% if f.sourceable %>
-                      <% if f.access == 1 %>
-                          <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?), class: "qsResultThumb" %><br/>
-                          <% thumb = true %>
-                          <% break %>
-                      <% end %>
-                  <% end %>
-              <% end %>
+      <div class="row" id="crcsetResultsContainer">
+      <div class="hidden-sm hidden-xs col-md-3 col-lg-3" id="crcsetRefineContainer">
+        <% if @refine and @refine["crcset"] and (@refine["crcset"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="quickSearchRefineHeader">Filters</h3>
+                    <ul class="quickSearchRefineFilterList">
+                    <% format_refine_filters(@refine, "crcset").each do |r| %>
+                        <li><%= r[:field] %>: <em> <%= r[:value] %></em>
+                        <a href="#" data-remove_id="<%= r[:filter] %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a></li>
+                    <% end%>
+                    </ul>
+                </div>
             </div>
-            <% if(thumb == false) %>
-                <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r[:id], user_signed_in?) %><br/>
-            <% end %>
-            <div class="text-left qsResultText">
-              <%= link_to sanitize(r[:title].html_safe, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
-              <div class="qsMoreCaption">
-                <%
-                  if r.author_id
-                    user_author = r.get_author_name.gsub(/\([\S]+\)/, '')
-                  else
-                    user_author = r.user.name
-                  end
-                %>
-                <%
-                  if (Time.now.to_i - r.updated_at.to_i) > 86400
-                    display_time = r.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
-                  else
-                    display_time = time_ago_in_words(r.updated_at) + ' ago'
-                  end
-                %>
-                <%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
-                <% if r.total_ratings > 0 %>
-                    <div class='small'><span class="rateTitle"><strong>Rating: </strong></span><%= rating_for r, 'quality', star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png" %></div>
-                <% end %>
-              </div>
+        <% end%>
+            <h3 class="quickSearchRefineHeader">Refine by</h3>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Date of visit</h6>
+                    <select name="crcset_date_of_visit_mode" id="crcset_date_of_visit_mode" class="quickSearchRefineDateMode">
+                        <option value="in">on</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="crcset_date_of_visit_date" id="crcset_date_of_visit_date" class="quickSearchRefineDate quickSearchRefineDatePicker"/>
+                    <span id="crcset_date_of_visit_range"  style="display:none;">
+                        <input type="text" name="crcset_date_of_visit_min" id="crcset_date_of_visit_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
+                        <input type="text" name="crcset_date_of_visit_max" id="crcset_date_of_visit_max" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
+                </div>
             </div>
-            <% thumb = false %>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Author name</h6>
+                    <%= autocomplete_field_tag(:crcset_find_author, '', quick_search_autocomplete_refine_url(query: @query, field: "author.raw", type: "crcset"), :"data-autocomplete-label" => "Sorry, nothing found.", :"data-update-elements" => nil, :size => 20, :id_element => "#crcset_author", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "author") + hidden_field_tag(:crcset_author) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Title</h6>
+                    <%= autocomplete_field_tag(:crcset_find_title, '', quick_search_autocomplete_refine_url(query: @query, field: "title.raw", type: "crcset"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#crcset_rtitle", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "title") + hidden_field_tag(:crcset_rtitle) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Keywords/tags</h6>
+                    <%= autocomplete_field_tag(:crcset_find_keywords, '', quick_search_autocomplete_refine_url(query: @query, field: "all_keywords.raw", type: "crcset"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#crcset_keywords", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "all_keywords") + hidden_field_tag(:crcset_keywords) %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Created for</h6>
+                    <% Rails.application.config.x.user_roles.each do |label, v| %>
+                        <% is_selected = (session[:refine] and session[:refine]["crcset"] and session[:refine]["crcset"].has_key?("affiliation") and session[:refine]["crcset"]["affiliation"].include?("affiliation:\"" + v.to_s + "\"")) %>
+                        <% if !is_selected %>
+                            <%= (check_box_tag(:crcset_created_for, value = v, checked = is_selected, options = {class: "quickSearchRefineCheckbox", "data-filter": "affiliation"}) + " " + label).html_safe %><br/>
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>
+<% if current_user %>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Access type</h6>
+                    <% Rails.application.config.x.access_types.each do |label, v| %>
+                        <% is_selected = (session[:refine] and session[:refine]["crcset"] and session[:refine]["crcset"].has_key?("access") and session[:refine]["crcset"]["access"].include?("access:\"" + v.to_s + "\"")) %>
+                        <% if !is_selected %>
+                            <%= (check_box_tag(:crcset_access, value = v, checked = is_selected, options = {class: "quickSearchRefineCheckbox", "data-filter": "access"}) + " " + label).html_safe %><br/>
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Date last updated</h6>
+                    <select name="crcset_date_last_updated_mode" id="crcset_date_last_updated_mode" class="quickSearchRefineDateMode">
+                        <option value="in">on</option>
+                        <option value="before">before</option>
+                        <option value="after">after</option>
+                        <option value="between">between</option>
+                    </select>
+                    <input type="text" name="crcset_date_last_updated_date" id="crcset_date_last_updated_date" class="quickSearchRefineDate quickSearchRefineDatePicker"/>
+                    <span id="crcset_date_last_updated_range"  style="display:none;">
+                        <input type="text" name="crcset_date_last_updated_min" id="crcset_date_last_updated_min" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/> - 
+                        <input type="text" name="crcset_date_last_updated_max" id="crcset_date_last_updated_max" class="quickSearchRefineDateRange quickSearchRefineDatePicker"/>
+                    </span>
+                    <a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
+                </div>
+            </div>
+<% end %>
+        
+        
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+
+          <div id="crcsetResults-status">
+            <div class="flash-notice" id="crcsetResults-status-message">
+
+            </div>
           </div>
 
           <%
-            if(col == 6)
-                col = 0
+            col = 0
+            thumb = false
           %>
-              </div>
           <%
-            end
-
-            end
+            @crcsets.each do |r|
+              next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
+              col = col+1
+              if(col == 1)
           %>
-      <% if (col > 0) %>
-          </div><!-- end row -->
-      <% end %>
-
-      <div class='row'>
-        <%=
-          if(@crc_sets_needs_previous_paging)
-
-            ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "crcset", page: @crc_sets_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
-        <div class='col-sm-6 text-center'>
-          <%
-            if (@crc_sets_needs_previous_paging || @crc_sets_needs_next_paging)
-              s = 1
-              e = @crc_sets_num_pages
-
-              if (e > 10)
-                s = @crc_sets_page - 5
-                s = 1 if (s < 1)
-                e = s + 9
-                e = @crc_sets_num_pages if e > @crc_sets_num_pages
-              end
-
-              for i in s..e do
-          %>
-                  <%=  (link_to(i, query_results_path(type: "crcset", page: i, query: @query), { class: "btn search-next-btn " + ((i == @crc_sets_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+                  <div class="row">
               <%
                 end
+              %>
+              <div class="col-md-2 qsResult">
+
+                <div style="margin-right: 10px">
+                  <% r.media_files.each do |f| %>
+                      <% if f.sourceable %>
+                          <% if f.access == 1 %>
+                              <%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(r[:id], user_signed_in?), class: "qsResultThumb" %><br/>
+                              <% thumb = true %>
+                              <% break %>
+                          <% end %>
+                      <% end %>
+                  <% end %>
+                </div>
+                <% if(thumb == false) %>
+                    <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r[:id], user_signed_in?) %><br/>
+                <% end %>
+                <div class="text-left qsResultText">
+                  <% if r[:access] < 1 %><i class="fa fa-eye-slash" aria-hidden="true"></i><% end %>
+                  <%= link_to sanitize(r[:title].html_safe, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
+                  <div class="qsMoreCaption">
+                    <%
+                      if r.author_id
+                        user_author = r.get_author_name.gsub(/\([\S]+\)/, '')
+                      else
+                        user_author = r.user.name
+                      end
+                    %>
+                    <%
+                      if (Time.now.to_i - r.updated_at.to_i) > 86400
+                        display_time = r.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
+                      else
+                        display_time = time_ago_in_words(r.updated_at) + ' ago'
+                      end
+                    %>
+                    <%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
+                    <% if r.total_ratings > 0 %>
+                        <div class='small'><span class="rateTitle"><strong>Rating: </strong></span><%= rating_for r, 'quality', star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png" %></div>
+                    <% end %>
+                  </div>
+                </div>
+                <% thumb = false %>
+              </div>
+
+              <%
+                if(col == 6)
+                    col = 0
+              %>
+                  </div>
+              <%
+                end
+
                 end
               %>
-        </div>
-        <%=
-          if(@crc_sets_needs_next_paging)
+          <% if (col > 0) %>
+              </div><!-- end row -->
+          <% end %>
 
-            ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "crcset", page: @crc_sets_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
+          <div class='row'>
+            <%=
+              if(@crcsets_needs_previous_paging)
+                ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "crcset", page: @crcsets_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+            <div class='col-sm-6 text-center'>
+              <%
+                if (@crcsets_needs_previous_paging || @crcsets_needs_next_paging)
+                  s = 1
+                  e = @crcsets_num_pages
+
+                  if (e > 10)
+                    s = @crcsets_page - 5
+                    s = 1 if (s < 1)
+                    e = s + 9
+                    e = @crcsets_num_pages if e > @crcsets_num_pages
+                  end
+
+                  for i in s..e do
+              %>
+                      <%=  (link_to(i, query_results_path(type: "crcset", page: i, query: @query), { class: "btn search-next-btn " + ((i == @crcsets_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+                  <%
+                    end
+                    end
+                  %>
+            </div>
+            <%=
+              if(@crcsets_needs_next_paging)
+
+                ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "crcset", page: @crcsets_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+          </div>
+          <% if current_user %>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center quickSearchAccessMessage"><i class="fa fa-eye-slash" aria-hidden="true"></i> Not available to public </div>
+                    </div>
+                </div>
+            <% end %>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  
+    <%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "crc_set", prefix: "crcset" } %>
 
-<script>
-    jQuery(document).ready(function() {
-        jQuery("#crcset_num_items_per_page, #crcset_sort").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crc_sets_page, query: @query) %>?length=" + jQuery("#crcset_num_items_per_page").val() + "&sort=" + jQuery("#crcset_sort").val(), function(data) {
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery("#query_search_content").off().on('change', "#crcset_num_items_per_page, #crcset_sort", function(e) {
+                jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?length=" + jQuery("#crcset_num_items_per_page").val() + "&sort=" + jQuery("#crcset_sort").val(), function(data) {
+                    jQuery("#results_crcset").html(data.html);
+                    return true;
+                });
+            });
+            
+        // Refine UI: autocomplete add filter
+        jQuery('#results_crcset').off().on('railsAutocomplete.select', ".quickSearchRefineAutocomplete", function(event, data){
+            var filter = jQuery(event.target).data('filter');
+            event.preventDefault();
+            
+            if (!filter) { return false; }
+            
+            jQuery('#filterModal_crc_set').modal('hide');
+            jQuery(".loading").show();
+            jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + filter + ":\"" + data.item.id + "\"", function(data) {
                 jQuery("#results_crcset").html(data.html);
+                jQuery(".loading").hide();
                 return true;
             });
         });
-        resizeBar("#crc_title_link", "#crc_right");	
-		$(window).on('resize', function(){
-			resizeBar("#crc_title_link", "#crc_right");	
-		});
-    });
-</script>
+        
+        // Refine UI: checkbox add filter
+        jQuery('#results_crcset').on('change', "input.quickSearchRefineCheckbox", function(event){
+            var filter = jQuery(event.target).data('filter');
+            var val = jQuery(this).val();
+            event.preventDefault();
+            
+            if (!filter || (val < 0)) { return false; }
+            
+            jQuery('#filterModal_crc_set').modal('hide');
+            jQuery(".loading").show();
+            jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
+                jQuery("#results_crcset").html(data.html);
+                jQuery(".loading").hide();
+                return true;
+            });
+        });
+        
+        // Refine UI: date filter
+        jQuery('#results_crcset').on('change', "#crcset_date_last_updated_mode", function(event){
+            updateDateFilterUI('crcset');
+        });
+        jQuery('#results_crcset').on('change', "#crcset_date_of_visit_mode", function(event){
+            updateDateFilterUI('crcset', 'date_of_visit');
+        });
+        jQuery('#results_crcset').on('blur', "#crcset_date_last_updated_date, #crcset_date_last_updated_min, #crcset_date_last_updated_max", function(event){
+            var date_expr = getDateExprFromFilterUI('crcset');
+            if (date_expr) {
+                jQuery('#filterModal_crc_set').modal('hide');
+                jQuery(".loading").show();
+                jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + date_expr, function(data) {
+                    jQuery("#results_crcset").html(data.html);
+                    jQuery(".loading").hide();
+                    return true;
+                });
+            }
+        });
+        jQuery('#results_crcset').on('blur', "#crcset_date_of_visit_date, #crcset_date_of_visit_min, #crcset_date_of_visit_max", function(event){
+            var date_expr = getDateExprFromFilterUI('crcset', 'date_of_visit', 'date_of_visit');
+            if (date_expr) {
+                jQuery('#filterModal_crc_set').modal('hide');
+                jQuery(".loading").show();
+                jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?refine[]=" + date_expr, function(data) {
+                    jQuery("#results_crcset").html(data.html);
+                    jQuery(".loading").hide();
+                    return true;
+                });
+            }
+        });
+        $('.quickSearchRefineDatePicker').datetimepicker({"format": "YYYY-MM-DD"});
+        
+        // Refine UI: remove filter
+        jQuery('#results_crcset').on('click', ".removeFilter", function(event, data){
+            event.preventDefault();
+            var remove_id = jQuery(this).data('remove_id');
+            
+            jQuery('#filterModal_crc_set').modal('hide');
+            jQuery(".loading").show();
+            jQuery.getJSON("<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>?unrefine[]=" + remove_id, function(data) {
+                jQuery("#results_crcset").html(data.html);
+                jQuery(".loading").hide();
+                return true;
+            });
+        });
+            
+            // resizeBar("#crc_title_link", "#crc_right");	
+//             $(window).on('resize', function(){
+//                 resizeBar("#crc_title_link", "#crc_right");	
+//             });
+        });
+    </script>
+  </div>
+  <% end %>
+</div>

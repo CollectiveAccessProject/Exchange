@@ -10,7 +10,7 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-12">
-            <% if !@resource.is_crc_set %>
+            <% if !@resource.is_crcset %>
            You can add content to this collection by creating a new resource or
             searching for an existing one below.
                 <% else %>
@@ -21,7 +21,7 @@
         </div>
 
         <div class="row" style="margin-top: 30px;">
-          <% if !@resource.is_crc_set %>
+          <% if !@resource.is_crcset %>
           <div class="col-sm-5 col-md-2 col-md-offset-1 text-center">
             <%=
               link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Create new resource'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large"
@@ -40,7 +40,7 @@
               <label>Search</label>
               <%= autocomplete_field_tag(:find_child_resource_id, '', :autocomplete_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#add_child_resource_id", class:'form-control') %>
               <%= hidden_field_tag(:add_child_resource_id) %>
-              <%= submit_tag @resource.is_crc_set ? "Add collection object" : "Add existing resource", class:'btn btn-default btn-sm' %>
+              <%= submit_tag @resource.is_crcset ? "Add collection object" : "Add existing resource", class:'btn btn-default btn-sm' %>
             </div>
             <% end %>
           </div>
