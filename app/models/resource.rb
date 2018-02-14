@@ -113,8 +113,57 @@ class Resource < ActiveRecord::Base
               index: 'not_analyzed'
           }
       }
+      indexes :artist_nationality, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :author, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :medium, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :style, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :classification, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :collection_area, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :terms, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
+      indexes :affiliation, type: 'string', analyzer: 'english', fields: {
+          raw: {
+              type: 'string',
+              index: 'not_analyzed'
+          }
+      }
       indexes :rating, type: 'integer'
-      indexes :created_at, type: 'date'
+      indexes :created_at, index: "not_analyzed", type: 'date'
+      indexes :updated_at, index: "not_analyzed", type: 'date'
     end
   end
 
@@ -203,9 +252,12 @@ class Resource < ActiveRecord::Base
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
     record['role'] = record['affiliation'] = self.roles.pluck("name")
-    record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
-    record['tag'] = self.tags.pluck("tag")
+   
     
+    record['tag'] = self.tags.pluck("tag")
+    record['keyword'] = self.vocabulary_terms.pluck("term") + self.vocabulary_term_synonyms.pluck("synonym")
+    record['terms'] = (record['keywords'] ? record['keywords'].split(/\|/) : []) + record['keyword'] + record['tag']
+
     record['start_date'] = record['start_date'].to_i
     record['end_date'] = record['end_date'].to_i
 
@@ -282,7 +334,7 @@ class Resource < ActiveRecord::Base
     label += " [COLLECTION]" if (self.is_collection)
     label += " [RESOURCE]" if (self.is_resource)
     label += " [EXHIBITION]" if (self.is_exhibition)
-    label += " [STUDY SET]" if (self.is_crc_set)
+    label += " [STUDY SET]" if (self.is_crcset)
 
     label
   end
@@ -318,7 +370,7 @@ class Resource < ActiveRecord::Base
     return (self.is_collection || self.is_exhibition)
   end
 
-  def is_crc_set
+  def is_crcset
     return self.resource_type == Resource::CRCSET;
   end
 
@@ -353,6 +405,22 @@ class Resource < ActiveRecord::Base
         return :exhibitions
       when Resource::CRCSET
         return :crcset
+    end
+  end
+  
+  # STATIC
+  def self.resource_text_to_type(t)
+    case t.downcase
+      when 'resource', 'resources'
+        return Resource::RESOURCE
+      when 'collection_object', 'collection_objects'
+        return Resource::COLLECTION_OBJECT
+      when 'collection', 'collections'
+        return Resource::COLLECTION
+      when 'exhibition', 'exhibitions'
+        return Resource::EXHIBITION
+      when 'crcset', 'crcsets', 'crcset', 'crcsets'
+        return Resource::CRCSET
     end
   end
 
@@ -674,7 +742,78 @@ class Resource < ActiveRecord::Base
         {field: "_score", direction: "desc" }
     end
   end
+  
+  
+  def self.quicksearch_refine_filter_names
+    return  {
+        "artist" => "Artist/maker",
+        "author" => "Author",
+        "title" => "Title",
+        "artist_nationality" => "Artist nationality",
+        "start_date" => "Date created",
+        "end_date" => "Date created",
+        "style" => "Style",
+        "medium" => "Medium",
+        "on_display" => "On display?",
+        "collection_area" => "Collection area",
+        "classification" => "Classification",
+        "terms" => "Keywords",
+        "affiliation" => "Created for",
+        "access" => "Access type",
+        "rating" => "Avg visitor rating",
+        "updated_at" => "Last update",
+        "date_of_visit" => "Date of visit"
+    }
+  end
+  
+  
+  def self.quicksearch_refine_filter_display_value(filter, value)
+    value.gsub!(/"+/, "")
+    case filter
+        when "on_display"
+            return (value.to_i > 0) ? "Yes" : "No"
+        when "affiliation"
+            if Rails.application.config.x.user_roles.invert.has_key? value.to_sym
+                return Rails.application.config.x.user_roles.invert[value.to_sym]
+            end
+        when "access"
+            if Rails.application.config.x.access_types.invert.has_key? value.to_i
+                return Rails.application.config.x.access_types.invert[value.to_i]
+            end
+        when "rating"
+            if value.to_i >= 1 and value.to_i <= 5
+                return value + "+"
+            end
+        when "updated_at", "date_of_visit"
+            m = value.match(/([\d]{4}-[\d]+-[\d]+)[ A-Za-z\-]+([\d]{4}-[\d]+-[\d]+)/)
+            if m[1] == m[2]     # single date
+                return m[1]
+            elsif m[1] == '1900-01-01'  # before date
+                return "Before " + m[2]
+            elsif m[2] == '2100-01-01' # after date
+                return "After " + m[1]
+            else 
+                return m[1] + " - " + m[2]
+            end
+    end
+    value
+  end
 
+ 
+  # STATIC
+  def self.get_refine_facet_query(refine, type, rewrite=true)
+    acc = []
+    if (refine[type] and (refine[type].length > 0)) 
+        acc = []
+        refine[type].each do |f,l|
+            
+            lproc = l.map {|r| r.gsub(/rating:([\d]+)/, '(rating:[\\1 TO 5])') } if rewrite
+            acc.push("(" + lproc.join(" OR ") + ")") if lproc.length > 0
+        end
+    end 
+    acc.join(" AND ")
+  end
+ 
   # Simple "quicksearch" of resources (broken out by type)
   # STATIC
   def self.quicksearch(query, options={})
@@ -683,9 +822,12 @@ class Resource < ActiveRecord::Base
     length = options[:length]
     length = WillPaginate.per_page if (!length)
 	query_proc.gsub!(/author_id:([0-9]+)/, '(author_id:\1 OR user_id:\1)')
+    
     # Quote parts of query that appear to be identifiers
     query_proc.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
     query_proc.gsub!(/["]{2}/, '"')
+    
+    refine = options[:refine] ? options[:refine] : {}
 
     acl_str = ["access:1"]
     if(options[:user])
@@ -712,12 +854,14 @@ class Resource < ActiveRecord::Base
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
         sort = search_sort_for_type(options[:sortsByType], 'resource')
-
+        
+        refine_q = Resource::get_refine_facet_query(refine, 'resource')
+        
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::RESOURCE.to_s + " AND (" + acl_str.join(" OR ") + ")" + refine_q
                 }
             }
         }
@@ -734,9 +878,9 @@ class Resource < ActiveRecord::Base
           #options[:page] = 1 if resources.length/resources_length < options[:page]
           resources = resources.page(options[:page]).records
         end
-      rescue
+      #rescue
         # no search?
-        resources = []
+       # resources = []
       end
     end
 
@@ -747,12 +891,14 @@ class Resource < ActiveRecord::Base
         collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
         sort = search_sort_for_type(options[:sortsByType], 'collection')
+        
+        refine_q = Resource::get_refine_facet_query(refine, 'collection')
 
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")"
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION.to_s + " AND (" + acl_str.join(" OR ") + ")" + refine_q
                 }
             }
         }
@@ -766,6 +912,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          #options[:page] = 1 if collections.length/collections_length < options[:page]
           collections = collections.page(options[:page]).records
         end
       end
@@ -777,13 +924,15 @@ class Resource < ActiveRecord::Base
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
         sort = search_sort_for_type(options[:sortsByType], 'collection_object')
-
+        
+        refine_q = Resource::get_refine_facet_query(refine, 'collection_object')
+        
 		# We don't check access on collection objects – they're all public no matter their settings
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s + refine_q
                 }
             }
         }
@@ -797,6 +946,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          #options[:page] = 1 if collection_objects.length/collection_objects_length < options[:page]
           collection_objects = collection_objects.page(options[:page]).records
         end
       rescue
@@ -811,6 +961,8 @@ class Resource < ActiveRecord::Base
         exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
         sort = search_sort_for_type(options[:sortsByType], 'exhibition')
+        
+        refine_q = Resource::get_refine_facet_query(refine, 'exhibition')
 
         qdef = {
             query: {
@@ -821,6 +973,7 @@ class Resource < ActiveRecord::Base
             }
         }
         qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        
         exhibitions = Resource.search(qdef).per_page(exhibitions_length)
 
         if (!options[:models])
@@ -830,6 +983,7 @@ class Resource < ActiveRecord::Base
             end
           end
         else
+          #options[:page] = 1 if exhibitions.length/exhibitions_length < options[:page]
           exhibitions = exhibitions.page(options[:page]).records
         end
       rescue
@@ -838,40 +992,43 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    if (!options[:type] || (options[:type] == 'crc_set'))
+    if (!options[:type] || (options[:type] == 'crcset'))
       begin
-        crc_sets_length = length
-        crc_sets_length = options[:lengthsByType]['crc_set'] if (options[:lengthsByType] && options[:lengthsByType]['crc_set'])
+        crcsets_length = length
+        crcsets_length = options[:lengthsByType]['crcset'] if (options[:lengthsByType] && options[:lengthsByType]['crcset'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'crc_set')
+        sort = search_sort_for_type(options[:sortsByType], 'crcset')
+        
+        refine_q = Resource::get_refine_facet_query(refine, 'crcset')
 
         qdef = {
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::CRCSET.to_s + " AND access:1"
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::CRCSET.to_s + " AND access:1" + refine_q
                 }
             }
         }
         qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
-        crc_sets = Resource.search(qdef).per_page(exhibitions_length)
+        crcsets = Resource.search(qdef).per_page(crcsets_length)
 
         if (!options[:models])
-          crc_sets = crc_sets.map do |r|
+          crcsets = crcsets.map do |r|
             if r._source
               { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
             end
           end
         else
-          crc_sets = crc_sets.page(options[:page]).records
+          #options[:page] = 1 if crcsets.length/crcsets_length < options[:page]
+          crcsets = crcsets.page(options[:page]).records
         end
       rescue
         # no search?
-        crc_sets = []
+        crcsets = []
       end
     end
 
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, crc_sets: crc_sets}
+    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, crcsets: crcsets}
   end
 
   # "Advanced" search of resources (broken out by type) and media files
@@ -963,7 +1120,7 @@ class Resource < ActiveRecord::Base
         # collection - no extra fields
       when Resource::COLLECTION_OBJECT
         # collection object
-        {'collection_identifier' => 'Identifier', 'style' => 'Style, Group, Movement', 'medium' => 'Medium', 'support' => 'Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
+        {'collection_identifier' => 'Identifier', 'style' => 'Style, Group, Movement', 'collection_area' => 'Collection area', 'medium' => 'Medium', 'support' => 'Support', 'classification' => 'Classification/Object Type', 'additional_classification' => 'Additional classification/Object type', 'artist' => 'Artist/maker', 'artist_nationality' => 'Artist/Maker Nationality', 'credit_line' => 'Credit line',  'places' => 'Related places', 'on_display' => 'On display?', 'date_created' => 'Date created', 'other_dates' => 'Other dates', 'location' => 'Current location'}.each do |f, l|
           if (params[f] && (params[f].strip.length > 0))
             v = params[f].gsub(/["']+/, '')
 

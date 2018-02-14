@@ -107,37 +107,7 @@ module ApplicationHelper
             type: "string",
             input: "select",
             values: affiliations
-        }, {
-            id: "author",
-            field: "author",
-            label: "Author",
-            type: "string"
         }, 
-        {
-            id: "keyword",
-            field: "keyword",
-            label: "Keyword",
-            type: "string",
-            input: "text"
-        },
-        {
-            id: "tag",
-            field: "tag",
-            label: "Tag",
-            type: "string"
-        },
-        {
-            id: "idno",
-            field: "collection_identifier",
-            label: "Collection object identifier",
-            type: "string"
-        },
-        {
-            id: "title",
-            field: "title",
-            label: "Title",
-            type: "string"
-        },
         {
             id: "artist",
             field: "artist",
@@ -160,9 +130,29 @@ module ApplicationHelper
             input: "text"
         },
         {
-            id: "places",
-            field: "places",
-            label: "Place names",
+            id: "author",
+            field: "author",
+            label: "Author",
+            type: "string"
+        }, 
+        {
+            id: "collection_area",
+            field: "collection_area",
+            label: "Collection area",
+            type: "string",
+            input: "select",
+            values: get_field_values('collection_area')
+        },
+        {
+            id: "idno",
+            field: "collection_identifier",
+            label: "Collection object identifier",
+            type: "string"
+        },
+        {
+            id: "credit_line",
+            field: "credit_line",
+            label: "Credit line",
             type: "string"
         },
         {
@@ -172,9 +162,16 @@ module ApplicationHelper
             type: "integer"
         },
         {
-            id: "credit_line",
-            field: "credit_line",
-            label: "Credit line",
+            id: "keyword",
+            field: "terms",
+            label: "Keyword",
+            type: "string",
+            input: "text"
+        },
+        {
+            id: "label_copy",
+            field: "label_copy",
+            label: "Label copy",
             type: "string"
         },
         {
@@ -186,20 +183,24 @@ module ApplicationHelper
             values: get_field_values('medium')
         },
         {
-            id: "support",
-            field: "support",
-            label: "Support",
-            type: "string",
-            input: "select",
-            values: get_field_values('support')
-        },
-        {
             id: "Classification",
             field: "classification",
             label: "Object classification",
             type: "string",
             input: "select",
             values: get_field_values('classification')
+        },
+        {
+            id: "places",
+            field: "places",
+            label: "Place names",
+            type: "string"
+        },
+        {
+            id: "rating",
+            field: "rating",
+            label: "Rating",
+            type: "integer"
         },
         {
             id: "style",
@@ -210,10 +211,30 @@ module ApplicationHelper
             values: get_field_values('style')
         },
         {
-            id: "rating",
-            field: "rating",
-            label: "Rating",
-            type: "integer"
+            id: "subject_matter",
+            field: "subject_matter",
+            label: "Subject matter",
+            type: "string"
+        },
+        {
+            id: "support",
+            field: "support",
+            label: "Support",
+            type: "string",
+            input: "select",
+            values: get_field_values('support')
+        },
+        {
+            id: "tag",
+            field: "tag",
+            label: "Tag",
+            type: "string"
+        },
+        {
+            id: "title",
+            field: "title",
+            label: "Title",
+            type: "string"
         }
     ]
   end
@@ -244,7 +265,11 @@ def is_zoomable(media_file)
 	case
 		when (['LocalFile', 'FlickrLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
 			if(media_file.thumbnail_uid != nil)
-				return media_file if (media_file.thumbnail && media_file.thumbnail.mime_type.match(/^image\//))
+			    begin
+				    return media_file if (media_file.thumbnail && media_file.thumbnail.mime_type.match(/^image\//))
+				rescue
+				    return false
+				end
 			end
 			return false
 		when (['CollectionobjectLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
@@ -258,14 +283,16 @@ end
 #
 #
 def get_current_locations_for_objects
-    locs = []
-    locs.push(['All galleries', ' '])
+    locations = []
     Resource.select(:location).distinct.order(:location).each do|l|
         next if (!l or !l.location or (l.location.length == 0))
-        locs.push([l.location, l.location])
+        lp = l.location.split(/[ ]*➔[ ]*/)
+        lpe = lp.select { |v| !v.match(/(Cabinet [\dA-Z]{1,3}|Shelf [\dA-Z]{1,3})/) }
+        loc = lpe.join(" ➔ ")
+        locations.push(loc) if !locations.include? loc
     end
-
-    options_for_select(locs)
+    
+    options_for_select([['All galleries', ' ']] + locations.map { |v| [v, v] } )
 end
 
 def get_field_values(f)
@@ -300,11 +327,91 @@ def get_field_values_for_objects(f)
     vals.each do |v| 
         opts.push([v, v])
     end
-    opts.unshift(['None', ' '])
+    opts.unshift(['Any', ' '])
 
     options_for_select(opts)
 end
 
+def get_values_for_refine(field, query, type, refine_filters)
+    query.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
+    query.gsub!(/["]{2}/, '"')
+    
+    refine_q = ''
+    if refine_filters and refine_filters[type] and (refine_filters[type].length > 0)
+        refine_q = Resource::get_refine_facet_query(refine_filters, type)
+    end
+    agg = Resource.search(
+        query: {
+            query_string:  {
+                default_operator: "AND",
+                query: query + refine_q
+            }
+        },
+        size: 10000,
+        aggs: {
+            values: { terms: { field: field, size: 250 } }
+        }
+    )
+    
+    acc = agg.response["aggregations"]["values"]["buckets"].map do |v|
+        next if !v['key'] or !v['key'].strip
+        v['key']
+    end  
+    
+    sorted_acc = acc.sort.each do |v| 
+        next if !v['key'] or !v['key'].strip
+        {:id => v['key'], :label => v['key'].downcase, :value => v['key']}
+    end 
+end
+
+def get_values_for_refine_for_select(field, query, type, refine_filters)
+    vals = get_values_for_refine(field, query, type, refine_filters)        
+    opts = [[' ', '']]
+    vals.each do |v| 
+        next if v and v.length == 0
+        opts.push([v, v])
+    end
+
+    options_for_select(opts)
+end
+
+
+def format_refine_filters(refine_filters, type)
+    return nil if (!refine_filters or !refine_filters[type])
+    
+    filter_display_names = Resource.quicksearch_refine_filter_names
+    
+    filters = []
+    refine_filters[type].each do |k,l|
+        l.each do |r|
+            t = r.split(/:/)
+            v = t[1]
+            case
+                when (t[0] == 'start_date')
+                    if (t.length > 2)
+                        e = r.split(/ AND /)
+                        d_start = e[0].split(/:>=/)
+                        d_end = e[1].split(/:<=/) 
+                        v = d_start[1] + " - " + d_end[1]
+                    elsif (d = t[1].match(/^([<=]+)/)) 
+                        t[1].gsub!(/^[<=]+/, "")
+                        v = "Before " + t[1]
+                    else 
+                        v = t[1]
+                    end
+                    filters.push({field: filter_display_names[t[0]], value: v, filter: r})
+                when ((t[0] == 'end_date') and (d = t[1].match(/^([>=]+)/)))
+                    t[1].gsub!(/^[>=]+/, "")
+                    v = "After " + t[1]
+                    filters.push({field: filter_display_names[t[0]], value: v, filter: r})
+                else
+                    v = Resource.quicksearch_refine_filter_display_value(t[0], t[1])
+                    filters.push({field: filter_display_names[t[0]], value: v, filter: r})
+            end
+        end
+    end
+    filters
+end
 #
 # Return array of groups owned by the specified user
 # Param is a User instance (typically current_user)

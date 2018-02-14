@@ -96,12 +96,12 @@ Rails.application.routes.draw do
   
   get '/quick_search/query' => 'quick_search#query', as: 'quick_search'
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
-  get '/quick_search/query_results/:type/:page/*query' => 'quick_search#query_results', as: 'query_results', constraints: { :query => /.+/ }
+  get '/quick_search/query_results/:type/:page/*query' => 'quick_search#query_results', as: 'query_results', constraints: { :type => /[A-Za-z0-9_\-]+/, :page => /[\d]+/, :query => /.+/ }
   get '/quick_search/autocomplete_collection_title' => 'quick_search#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'quick_search_autocomplete_resource_title'
   get '/quick_search/autocomplete_collection_resource_title' => 'quick_search#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'quick_search_autocomplete_collection_resource_title'
   get '/advanced_search/autocomplete_collection_title' => 'quick_search#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'advanced_search_autocomplete_resource_title'
   get '/advanced_search/autocomplete_collection_resource_title' => 'quick_search#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'advanced_search_autocomplete_collection_resource_title'
-
+  
   get '/dashboard' => 'dashboard#index', as: 'dashboard'
 
   get '/resources/:id/autocomplete_resource_title' => 'resources#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'autocomplete_resource_title'
@@ -179,6 +179,11 @@ Rails.application.routes.draw do
 
   # Report Mailer
   post '/resources/:id/send_report' => 'resources#send_report'
+  
+  
+# refine
+  get '/quick_search/autocomplete_refine/:field/*query' => 'quick_search#autocomplete_refine', as: 'quick_search_autocomplete_refine', constraints: { :query => /.+/ }, :field => /[A-Za-z0-9_\.]+?/, :format => /json|csv|xml|yaml/
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

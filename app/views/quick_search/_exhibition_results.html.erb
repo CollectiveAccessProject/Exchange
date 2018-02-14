@@ -1,105 +1,111 @@
-<div id="results_exhibition">
-  <div class="row">
-    <div class="col-sm-12">
-      <a href="#" onClick="$('#exhibitionResultsContainer').toggle(); return false;" class="btn btn-noBg btn-lg pull-right" style="margin-top:-6px;"><i class="fa fa-arrows-v" aria-hidden="true"></i></a>
-      <h4>
-      	<a href="#" onClick="$('#exhibitionResultsContainer').toggle(); return false;">
-        	<%= @exhibitions_count %> UMMA Exhibition<%= (@exhibitions_count == 1) ? "" : "s" %>
-        	(page <%= @exhibitions_page.to_s + "/" + @exhibitions_num_pages.to_s %>)
-		</a>
-      <div class="pull-right">
-        <form class="searchPaging">
-          	<div class="searchFormElement">Results Per Page <%= select_tag("exhibition_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['exhibition']), {id: "exhibition_num_items_per_page"}) %></div>
-          <div class="searchFormElement">Sort by <%= select_tag("exhibition_sort", options_for_select(sortOptions('exhibition'), @sort_defaults['exhibition']), {id: "exhibition_sort"}) %></div>
-        </form>
-      </div>
-      </h4>
-    </div>
-  </div>
-  <div class="row" id="exhibitionResultsContainer">
-    <div class="col-sm-12">
-<%
-	col = 0
-%>
-<% @exhibitions.each do |r|
-  	next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
-	col = col+1
-	if(col == 1)
-%>
-		<div class="row">
-<%
-	end
-%>
-
-    <div class="col-sm-2 qsResult qsResultText">
-    	<%= link_to  sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
-
-		<div class="small">April 4 - June 23, 2016</div>
-		
-    </div>
-<% 
-		if(col == 6)
-%>
-			</div>
-			<div class="row">
-<%
-		end 
-	end	
-%>
-      <% if (col > 0) %>
-	</div><!-- end row -->
-          <% end %>
-      <div class='row'><div class='col-sm-3'></div>
-        <%=
-          if(@exhibitions_needs_previous_paging)
-
-            ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "exhibition", page: @exhibitions_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
-        <div class='col-sm-6 text-center'>
-          <%
-            if (@exhibitions_needs_previous_paging || @exhibitions_needs_next_paging)
-            s = 1
-            e = @exhibitions_num_pages
-
-            if (e > 10)
-              s = @exhibitions_page - 5
-              s = 1 if (s < 1)
-              e = s + 9
-              e = @exhibitions_num_pages if e > @exhibitions_num_pages
-            end
-
-            for i in s..e do
-          %>
-              <%=  (link_to(i, query_results_path(type: "exhibition", page: i, query: @query), { class: "btn search-next-btn " + ((i == @exhibitions_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
-          <%
-            end
-            end
-          %>
+<div class="panel panel-primary" id="results_exhibition">
+<% if @show %>
+  <div class="panel-body">
+    <div>
+      <div class="row">
+        <div class="col-sm-12">
+          <h4>
+                <%= @exhibitions_count %> UMMA Exhibition<%= (@exhibitions_count == 1) ? "" : "s" %>
+                (page <%= @exhibitions_page.to_s + "/" + @exhibitions_num_pages.to_s %>)
+          <div class="pull-right">
+            <form class="searchPaging">
+                <div class="searchFormElement">Results Per Page <%= select_tag("exhibition_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['exhibition']), {id: "exhibition_num_items_per_page"}) %></div>
+              <div class="searchFormElement">Sort by <%= select_tag("exhibition_sort", options_for_select(sortOptions('exhibition'), @sort_defaults['exhibition']), {id: "exhibition_sort"}) %></div>
+            </form>
+          </div>
+          </h4>
         </div>
-        <%=
-          if(@exhibitions_needs_next_paging)
-
-            ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "exhibition", page: @exhibitions_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-          else
-            "<div class='col-sm-3'></div>".html_safe
-          end
-        %>
-        <div class='col-sm-3'></div>
       </div>
-      </div>
-    </div>
-  </div>
+      <div class="row" id="exhibitionResultsContainer">
+        <div class="col-sm-12">
+    <%
+        col = 0
+    %>
+    <% @exhibitions.each do |r|
+        next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
+        col = col+1
+        if(col == 1)
+    %>
+            <div class="row">
+    <%
+        end
+    %>
 
-<script>
-    jQuery(document).ready(function() {
-        jQuery("#exhibition_num_items_per_page, #exhibition_sort").on('change', function(e) {
-            jQuery.getJSON("<%= query_results_path(type: "exhibition", page: @exhibitions_page, query: @query) %>?length=" + jQuery("#exhibition_num_items_per_page").val() + "&sort=" + jQuery("#exhibition_sort").val(), function(data) {
-                jQuery("#results_exhibition").html(data.html);
-                return true;
+        <div class="col-sm-2 qsResult qsResultText">
+            <% if r[:access] < 1 %><i class="fa fa-eye-slash" aria-hidden="true"></i><% end %>
+            <%= link_to  sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %>
+
+            <div class="small">April 4 - June 23, 2016</div>
+        
+        </div>
+    <% 
+            if(col == 6)
+    %>
+                </div>
+                <div class="row">
+    <%
+            end 
+        end	
+    %>
+          <% if (col > 0) %>
+        </div><!-- end row -->
+              <% end %>
+          <div class='row'><div class='col-sm-3'></div>
+            <%=
+              if(@exhibitions_needs_previous_paging)
+
+                ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "exhibition", page: @exhibitions_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+            <div class='col-sm-6 text-center'>
+              <%
+                if (@exhibitions_needs_previous_paging || @exhibitions_needs_next_paging)
+                s = 1
+                e = @exhibitions_num_pages
+
+                if (e > 10)
+                  s = @exhibitions_page - 5
+                  s = 1 if (s < 1)
+                  e = s + 9
+                  e = @exhibitions_num_pages if e > @exhibitions_num_pages
+                end
+
+                for i in s..e do
+              %>
+                  <%=  (link_to(i, query_results_path(type: "exhibition", page: i, query: @query), { class: "btn search-next-btn " + ((i == @exhibitions_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
+              <%
+                end
+                end
+              %>
+            </div>
+            <%=
+              if(@exhibitions_needs_next_paging)
+
+                ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "exhibition", page: @exhibitions_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
+              else
+                "<div class='col-sm-3'></div>".html_safe
+              end
+            %>
+            <div class='col-sm-3'></div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+    <script>
+        //jQuery(document).ready(function() {
+            jQuery("#query_search_content").on('change', "#exhibition_num_items_per_page, #exhibition_sort", function(e) {
+                jQuery.getJSON("<%= query_results_path(type: "exhibition", page: @exhibitions_page, query: @query) %>?length=" + jQuery("#exhibition_num_items_per_page").val() + "&sort=" + jQuery("#exhibition_sort").val(), function(data) {
+                    jQuery("#results_exhibition").html(data.html);
+                    return true;
+                });
             });
-        });
-    });
-</script>
+        //});
+    </script>
+  </div>
+  <% end %>
+</div>
+</div>
+</div>

@@ -2,6 +2,7 @@
   <div class="panel-body">
 
     <div class="row">
+<% if !@resource.is_collection_object %>
       <div id="edit_tag_column" class="col-md-6">
         <%= form_tag '/resources/add_tag', remote: true, "data-type": :json, id: :addTagsForm do %>
             <div id="tags-status">
@@ -31,6 +32,7 @@
             </div>
         <% end %>
       </div>
+<% end %>
       <div class="col-md-6">
         <%= form_tag '/resources/add_term', remote: true, "data-type": :json, id: :addTermForm do %>
             <div id="terms-status">

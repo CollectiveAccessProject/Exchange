@@ -30,7 +30,7 @@
           end
         %>
       </span>
-      <% if (!@resource.is_crc_set) %>
+      <% if (!@resource.is_crcset) %>
           <%=
             button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add to collection".html_safe, "href": "#", "class": "btn btn-noBg btn-xs", "id": "addToCollection", data: {"toggle": "modal", "target": "#selectResourceCollectionForm"}
           %>
@@ -84,10 +84,10 @@
               <li>
                 <a data-toggle="tab" href="#tab_collections"><i class="fa fa-folder-o" aria-hidden="true"></i> &nbsp;Collections</a>
               </li>
+              <li>
+                <a data-toggle="tab" href="#tab_tags"><i class="fa fa-tags" aria-hidden="true"></i> &nbsp;Keywords</a>
+              </li>
               <% if (!@resource.is_collection_object) %>
-                  <li>
-                    <a data-toggle="tab" href="#tab_tags"><i class="fa fa-tags" aria-hidden="true"></i> &nbsp;Keywords</a>
-                  </li>
                   <li style="<%= @resource.settings(:user_interaction).allow_comments == 1 ? '' : 'display:none' %>">
                     <a data-toggle="tab" href="#tab_comments"><i class="fa fa-comments-o" aria-hidden="true"></i> &nbsp;Comments</a>
                   </li>
@@ -114,10 +114,10 @@
               <div id="tab_collections" class="tab-pane">
                 <p><%= render 'resources/collections' %></p>
               </div>
+              <div id="tab_tags" class="tab-pane">
+                <p><%= render 'resources/tags' %></p>
+              </div>
               <% if (!@resource.is_collection_object) %>
-                  <div id="tab_tags" class="tab-pane">
-                    <p><%= render 'resources/tags' %></p>
-                  </div>
                   <div id="tab_comments" class="tab-pane">
                     <p><%= render 'resources/comments' %></p>
                   </div>
@@ -157,7 +157,7 @@
         <div id="collection_contents_list_heading">
           <%=
             #link_to raw('<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Content'), new_resource_for_collection_with_id_path(@resource.id ), class:"btn btn-default btn-large"
-            button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + (@resource.is_crc_set ? "Add object" : "Add Resource"), "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
+            button_tag "&nbsp;&nbsp;<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> ".html_safe + (@resource.is_crcset ? "Add object" : "Add Resource"), "href": "#", "class": "btn btn-default btn-large", "id": "addContentToCollection", data: {"toggle": "modal", "target": "#addChildResourceFormModal"}
           %>
         </div>
         <div class="panel panel-default">
@@ -189,9 +189,7 @@
     # Trigger modal on save if no parent is set for resources (not collections)
 %>
     <script type="text/javascript">
-        console.log("cookie", Cookies.get('rcoll_optout_perm'));
-        console.log("rcoll_optout_perm_<%= @resource.id.to_s %>", window.sessionStorage.getItem("rcoll_optout_perm_<%= @resource.id.to_s %>"));
-    	// if(!window.sessionStorage.getItem("rcoll_optout_perm_<%= @resource.id.to_s %>") && !Cookies.get('rcoll_optout_perm')) {
+        // if(!window.sessionStorage.getItem("rcoll_optout_perm_<%= @resource.id.to_s %>") && !Cookies.get('rcoll_optout_perm')) {
     	if(!Cookies.get("rcoll_optout_perm_<%= @resource.id.to_s %>") && !Cookies.get('rcoll_optout_perm')) {
             jQuery("#selectResourceCollectionForm").modal();
         }
