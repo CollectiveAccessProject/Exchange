@@ -244,7 +244,11 @@ def is_zoomable(media_file)
 	case
 		when (['LocalFile', 'FlickrLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
 			if(media_file.thumbnail_uid != nil)
-				return media_file if (media_file.thumbnail && media_file.thumbnail.mime_type.match(/^image\//))
+			    begin
+				    return media_file if (media_file.thumbnail && media_file.thumbnail.mime_type.match(/^image\//))
+				rescue
+				    return false
+				end
 			end
 			return false
 		when (['CollectionobjectLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
@@ -258,14 +262,16 @@ end
 #
 #
 def get_current_locations_for_objects
-    locs = []
-    locs.push(['All galleries', ' '])
+    locations = []
     Resource.select(:location).distinct.order(:location).each do|l|
         next if (!l or !l.location or (l.location.length == 0))
-        locs.push([l.location, l.location])
+        lp = l.location.split(/[ ]*➔[ ]*/)
+        lpe = lp.select { |v| !v.match(/(Cabinet|Shelf)/) }
+        loc = lpe.join(" ➔ ")
+        locations.push(loc) if !locations.include? loc
     end
-
-    options_for_select(locs)
+    
+    options_for_select([['All galleries', ' ']] + locations.map { |v| [v, v] } )
 end
 
 def get_field_values(f)
