@@ -133,7 +133,8 @@
         c = 0
         c = c + 1 if (@resource.settings(:user_interaction).allow_comments > 0)
         c = c + 1 if (@resource.links.count > 0)
-        span = 12/c
+	span = 12
+        span = 12/c if (c > 0)
       %>
 	  <% if(@resource.settings(:user_interaction).allow_comments > 0) %>
 		  <div class="col-sm-<%= span %>">
