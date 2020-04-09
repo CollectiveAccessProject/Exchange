@@ -54,7 +54,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin]
 gem 'collectiveaccess'
 
 # authentication
-gem 'devise', '~> 4.2'
+gem 'devise', '~> 4.7'
 
 # user roles
 gem "rolify"
