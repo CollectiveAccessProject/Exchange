@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410145114) do
+ActiveRecord::Schema.define(version: 20180103031240) do
 
   create_table "average_caches", force: :cascade do |t|
     t.integer  "rater_id",      limit: 4
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20170410145114) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.integer  "user_id",     limit: 4
+    t.string   "group_code",  limit: 255
   end
 
   add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
@@ -173,6 +174,7 @@ ActiveRecord::Schema.define(version: 20170410145114) do
     t.string   "title",                         limit: 255
     t.integer  "caption_type",                  limit: 4
     t.integer  "display_collectionobject_link", limit: 2
+    t.string   "alt_text",                      limit: 4096,     default: "", null: false
   end
 
   add_index "media_files", ["resource_id"], name: "fk_rails_0b5d71f8d5", using: :btree
@@ -243,34 +245,52 @@ ActiveRecord::Schema.define(version: 20170410145114) do
   end
 
   create_table "resources", force: :cascade do |t|
-    t.string   "slug",                       limit: 255,                     null: false
-    t.integer  "user_id",                    limit: 4,                       null: false
-    t.integer  "resource_type",              limit: 1,                       null: false
-    t.text     "title",                      limit: 16777215,                null: false
-    t.text     "subtitle",                   limit: 16777215,                null: false
+    t.string   "slug",                       limit: 255,                                                  null: false
+    t.integer  "user_id",                    limit: 4,                                                    null: false
+    t.integer  "resource_type",              limit: 1,                                                    null: false
+    t.text     "title",                      limit: 16777215,                                             null: false
+    t.text     "subtitle",                   limit: 16777215,                                             null: false
     t.string   "source_type",                limit: 10
     t.string   "source",                     limit: 255
-    t.integer  "copyright_license",          limit: 1,          default: 0,  null: false
-    t.text     "copyright_notes",            limit: 4294967295,              null: false
-    t.integer  "access",                     limit: 1,          default: 0,  null: false
+    t.integer  "copyright_license",          limit: 1,                                    default: 0,     null: false
+    t.text     "copyright_notes",            limit: 4294967295,                                           null: false
+    t.integer  "access",                     limit: 1,                                    default: 0,     null: false
     t.integer  "forked_from_resource_id",    limit: 4
-    t.integer  "transition",                 limit: 1,          default: 0,  null: false
-    t.integer  "lock_version",               limit: 4,          default: 0,  null: false
-    t.datetime "created_at",                                                 null: false
-    t.datetime "updated_at",                                                 null: false
+    t.integer  "transition",                 limit: 1,                                    default: 0,     null: false
+    t.integer  "lock_version",               limit: 4,                                    default: 0,     null: false
+    t.datetime "created_at",                                                                              null: false
+    t.datetime "updated_at",                                                                              null: false
     t.text     "body_text",                  limit: 4294967295
-    t.string   "collectiveaccess_id",        limit: 255,        default: ""
+    t.string   "collectiveaccess_id",        limit: 255,                                  default: ""
     t.text     "indexing_data",              limit: 16777215
     t.string   "author_name",                limit: 255
     t.string   "collection_identifier",      limit: 255
     t.string   "role",                       limit: 1024
     t.integer  "author_id",                  limit: 4
     t.integer  "in_response_to_resource_id", limit: 4
-    t.integer  "average_rating",             limit: 4,          default: 0
+    t.integer  "average_rating",             limit: 4,                                    default: 0
     t.integer  "response_banned_on",         limit: 4
     t.text     "response_ban_reason",        limit: 65535
-    t.text     "title_sort",                 limit: 65535,                   null: false
+    t.text     "title_sort",                 limit: 65535,                                                null: false
     t.datetime "date_of_visit"
+    t.boolean  "on_display",                                                              default: false
+    t.string   "location",                   limit: 255,                                  default: ""
+    t.string   "artist",                     limit: 1024,                                 default: "",    null: false
+    t.decimal  "start_date",                                    precision: 40, scale: 20
+    t.decimal  "end_date",                                      precision: 40, scale: 20
+    t.string   "classification",             limit: 255,                                  default: "",    null: false
+    t.string   "additional_classification",  limit: 255,                                  default: "",    null: false
+    t.string   "medium",                     limit: 255,                                  default: "",    null: false
+    t.string   "support",                    limit: 255,                                  default: "",    null: false
+    t.string   "style",                      limit: 255,                                  default: "",    null: false
+    t.string   "artist_nationality",         limit: 255,                                  default: "",    null: false
+    t.integer  "crc_sync_date",              limit: 4
+    t.integer  "crc_set_id",                 limit: 4
+    t.string   "collection_area",            limit: 1024,                                 default: "",    null: false
+    t.text     "subject_matter",             limit: 65535
+    t.text     "label_copy",                 limit: 65535
+    t.text     "keywords",                   limit: 65535
+    t.string   "gallery_url",                limit: 1024,                                 default: "",    null: false
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "fk_rails_8c3d1e0d9a", using: :btree
@@ -321,6 +341,16 @@ ActiveRecord::Schema.define(version: 20170410145114) do
   add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
   add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
 
+  create_table "sessions", force: :cascade do |t|
+    t.string   "session_id", limit: 255,   null: false
+    t.text     "data",       limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
   create_table "settings", force: :cascade do |t|
     t.string   "var",         limit: 255,      null: false
     t.text     "value",       limit: 16777215
@@ -339,6 +369,13 @@ ActiveRecord::Schema.define(version: 20170410145114) do
   end
 
   add_index "soundcloud_links", ["original_link"], name: "index_soundcloud_links_on_original_link", using: :btree
+
+  create_table "sync_logs", force: :cascade do |t|
+    t.integer  "num_deleted", limit: 4, default: 0, null: false
+    t.integer  "num_updated", limit: 4, default: 0, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
 
   create_table "tags", force: :cascade do |t|
     t.integer  "taggable_id",   limit: 4,                 null: false
@@ -392,6 +429,7 @@ ActiveRecord::Schema.define(version: 20170410145114) do
     t.string   "uid",                    limit: 255
     t.string   "name",                   limit: 255,              null: false
     t.boolean  "is_admin"
+    t.integer  "is_disabled",            limit: 1,   default: 0,  null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

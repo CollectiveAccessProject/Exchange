@@ -36,11 +36,13 @@
         <H4><%= @group.user_groups.count %> Users(s) in this group</H4>
         <div id="set_contents_list">
           <% @group.user_groups.each do |g| %>
+            <% if g.user %>
               <div class="setItem">
                 <%= g.user.email %>
                 <%= "[" + Rails.application.config.x.group_membership_types.find{|key, val| val == g.access_type }[0]+"]" %>
                 <%= link_to('<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, group_remove_user_path(@group) + "?user_id=" + g.user_id.to_s, {remote: true, class: :setItemsRemove}) %>
               </div>
+          <% end %>
           <% end %>
         </div>
     <% end %>

@@ -57,5 +57,8 @@ module Exchange
     config.x.max_media_per_media_list_page = 12
     
     config.cache_store = :memory_store, { size: 128.megabytes }
+
+	 config.time_zone = 'Eastern Time (US & Canada)'
+
   end
 end

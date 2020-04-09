@@ -23,6 +23,7 @@ namespace :exchange do
 		#
 	    # Enable deletion of collection objects removed from CA set
 	    #
+	    
 		remove_deleted_objects = true
 
 		CollectiveAccess.set_credentials ENV['COLLECTIVEACCESS_USER'], ENV['COLLECTIVEACCESS_KEY']
@@ -33,12 +34,13 @@ namespace :exchange do
 		
 		# get last pull timestamp
 		ts = ''
+		d = nil
 		if l = SyncLog.order("created_at").last
-		    query_limit =  query +  (query ? " AND " : "") + "modified:\"after " + l.updated_at.strftime("%Y-%m-%d") + "\""
+		    d = (l.updated_at.to_time - (8 * 3600)).to_datetime
+		    query_limit =  query +  (query ? " AND " : "") + "modified:\"after " + d.strftime("%Y-%m-%d %T") + "\""
 		else 
 		    query_limit = query
 		end
-		
 		
 		delete_count = 0
 		update_count = 0
@@ -75,7 +77,7 @@ namespace :exchange do
 		synclog.save
 		
         if l 
-            print "Pulling updates made to collection objects after " + l.updated_at.strftime("%Y-%m-%d") + "\n"
+            print "Pulling updates made to collection objects after " + d.strftime("%Y-%m-%d %T") + "\n"
         else
             print "Pulling all collection objects\n"
         end
