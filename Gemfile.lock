@@ -76,9 +76,7 @@ GEM
     collectiveaccess (0.2.3)
       httparty (~> 0.13)
     concurrent-ruby (1.0.5)
-    crass (1.0.3)
-    deprecation (1.0.0)
-      activesupport
+    crass (1.0.6)
     devise (4.4.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -142,7 +140,7 @@ GEM
       rails (>= 4.2.0)
     ledermann-rails-settings (2.4.2)
       activerecord (>= 3.1)
-    loofah (2.1.1)
+    loofah (2.5.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.0)
@@ -152,7 +150,7 @@ GEM
     mime-types-data (3.2016.0521)
     mimemagic (0.3.0)
     mini_mime (1.0.0)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.4.0)
     minitest (5.11.1)
     momentjs-rails (2.17.1)
       railties (>= 3.1)
@@ -161,8 +159,8 @@ GEM
     multipart-post (2.0.0)
     mysql2 (0.3.21)
     net-ldap (0.16.1)
-    nokogiri (1.8.1)
-      mini_portile2 (~> 2.3.0)
+    nokogiri (1.10.9)
+      mini_portile2 (~> 2.4.0)
     oauth2 (1.4.0)
       faraday (>= 0.8, < 0.13)
       jwt (~> 1.0)
@@ -247,9 +245,8 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
-    riiif (1.7.0)
-      deprecation (>= 1.0.0)
-      railties (>= 4.2, < 6)
+    riiif (0.4.1)
+      rails (> 3.2.0)
     rolify (5.2.0)
     roo (2.5.1)
       nokogiri (~> 1)
@@ -345,7 +342,7 @@ DEPENDENCIES
   rails4-autocomplete
   ratyrate
   recaptcha
-  riiif
+  riiif (= 0.4.1)
   rolify
   roo (~> 2.5.0)
   sass-rails
