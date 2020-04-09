@@ -88,82 +88,74 @@ class Resource < ActiveRecord::Base
   # ElasticSearch mappings
   settings do
     mappings _all: {
-        type: "string", analyzer: "english", search_analyzer: "english"
+        type: "text", analyzer: "english", search_analyzer: "english"
       }
+      
+    # Changed to "text" for "string" in ES 2.x => 6.x migration
+    # Changed to "keyword" for raw (not_analyzed) "string" in ES 2.x => 6.x migration
     mappings dynamic: true do
-      indexes :subtitle, type: 'string',analyzer: 'english'
-      indexes :source, type: 'string',analyzer: 'english'
-      indexes :copyright_notes, type: 'string',analyzer: 'english'
-      indexes :location, type: 'string',analyzer: 'english'
-      indexes :title, type: 'string', analyzer: 'english', fields: {
+      indexes :subtitle, type: 'text',analyzer: 'english'
+      indexes :source, type: 'text',analyzer: 'english'
+      indexes :copyright_notes, type: 'text',analyzer: 'english'
+      indexes :location, type: 'text',analyzer: 'english'
+      indexes :title, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :idno, type: 'string', analyzer: 'english', fields: {
+      indexes :idno, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :artist, type: 'string', analyzer: 'english', fields: {
+      indexes :artist, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :artist_nationality, type: 'string', analyzer: 'english', fields: {
+      indexes :artist_nationality, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :author, type: 'string', analyzer: 'english', fields: {
+      indexes :author, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :medium, type: 'string', analyzer: 'english', fields: {
+      indexes :medium, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :style, type: 'string', analyzer: 'english', fields: {
+      indexes :style, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :classification, type: 'string', analyzer: 'english', fields: {
+      indexes :classification, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :collection_area, type: 'string', analyzer: 'english', fields: {
+      indexes :collection_area, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :terms, type: 'string', analyzer: 'english', fields: {
+      indexes :terms, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
-      indexes :affiliation, type: 'string', analyzer: 'english', fields: {
+      indexes :affiliation, type: 'text', analyzer: 'english', fields: {
           raw: {
-              type: 'string',
-              index: 'not_analyzed'
+              type: 'keyword'
           }
       }
       indexes :rating, type: 'integer'
-      indexes :created_at, index: "not_analyzed", type: 'date'
-      indexes :updated_at, index: "not_analyzed", type: 'date'
+      indexes :created_at,  type: 'date'		# was not_analyzed for ES 2.x?
+      indexes :updated_at,  type: 'date'		# was not_analyzed for ES 2.x?
     end
   end
 
