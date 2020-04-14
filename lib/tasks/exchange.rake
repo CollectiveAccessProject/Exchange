@@ -47,6 +47,7 @@ namespace :exchange do
 		if remove_deleted_objects
 		    print "Fetching current list of CollectiveAccess object_ids\n"
 		    valid_collectiveaccess_ids = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
+		    	protocol: ENV['COLLECTIVEACCESS_URL_PROTOCOL'],
                 url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
                 port: ENV['COLLECTIVEACCESS_PORT'].to_i,
                 endpoint: 'object_ids',
@@ -243,7 +244,9 @@ namespace :exchange do
 						    gallery_urls = value['gallery_url'].split(/;/)
 						    value['gallery_url'] = gallery_urls.pop
 						end
-						print value['gallery_url'] + "\n"
+						if value['gallery_url'].nil? 
+							value['gallery_url'] = ''
+						end
 						
 						k = ''
 						k = value['keywords'] if value['keywords']
