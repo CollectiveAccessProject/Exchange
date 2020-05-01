@@ -321,6 +321,7 @@ def get_field_values(f)
     vals
 end
 
+
 def get_field_values_for_objects(f)
     vals = get_field_values(f)        
     opts = []
@@ -417,16 +418,19 @@ end
 # Param is a User instance (typically current_user)
 #
 def groups_for_user(user, options=nil)
-groups = Group.joins(:user_groups).where("user_groups.user_id = ? OR groups.user_id = ?", user.id, user.id).distinct.order("lower(groups.name)")
+	groups = Group.joins(:user_groups).where("user_groups.user_id = ? OR groups.user_id = ?", user.id, user.id).distinct.order("lower(groups.name)")
 
-opts = []
-groups.each do|g|
-    if options and options[:ids]
-        opts.push(g.id)
-    else
-        opts.push([g.name, g.id])
-    end
+	opts = []
+	groups.each do|g|
+		if options and options[:ids]
+			opts.push(g.id)
+		else
+			opts.push([g.name, g.id])
+		end
+	end
+
+	opts
 end
 
-opts
-end
+
+

@@ -371,7 +371,13 @@ class Resource < ActiveRecord::Base
   end
 
   def resource_type_for_display(plural=false)
-    case self.resource_type
+  	return Resource.resource_type_as_text(self.resource_type, plural)
+  end
+  
+  
+  # STATIC
+  def self.resource_type_as_text(type, plural=false)
+    case type
       when Resource::RESOURCE
         return plural ? "Resources" : "Resource"
       when Resource::COLLECTION_OBJECT
@@ -449,7 +455,12 @@ class Resource < ActiveRecord::Base
 
   # returns license type as text
   def get_license_type
-    return Rails.application.config.x.license_types.key(self.copyright_license)
+  	return Resource.get_license_type_as_text(self.copyright_license)
+  end
+  
+  # STATIC - returns license type as text
+  def self.get_license_type_as_text(code)
+    return Rails.application.config.x.license_types.key(code)
   end
 
   def get_collection_object_field(f, options=nil)
@@ -714,7 +725,7 @@ class Resource < ActiveRecord::Base
   #
   # Translate sort options to ElasticSearch sortable fields
   #
-  def self.search_sort_for_type(sortsByType, type=nil)
+  def self.search_sort_for_type(sortsByType, type=nil, default=nil)
     sort = sortsByType[type] if (type && sortsByType && sortsByType[type])
 
     case sort
@@ -731,7 +742,11 @@ class Resource < ActiveRecord::Base
       when "rating"
         {field: "rating", direction: "desc" }
       else
-        {field: "_score", direction: "desc" }
+      	if(!default.nil?)
+      		{field: default, direction: "asc" }	
+      	else 
+        	{field: "_score", direction: "desc" }
+        end
     end
   end
   
@@ -839,13 +854,13 @@ class Resource < ActiveRecord::Base
     if (!query_proc)
         query_proc = ''
     end
-
-    if (!options[:type] || (options[:type] == 'resource'))
+    
+    if (!options[:type] || ((options[:type] == 'resource') || (options[:type] == 'resources')))
       begin
         resources_length = length
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'resource')
+        sort = search_sort_for_type(options[:sortsByType], 'resource', options[:sort])
         
         refine_q = Resource::get_refine_facet_query(refine, 'resource')
         
@@ -857,6 +872,7 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
+        
         qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
         resources = Resource.search(qdef).per_page(resources_length)
 
@@ -877,12 +893,12 @@ class Resource < ActiveRecord::Base
     end
 
 
-    if (!options[:type] || (options[:type] == 'collection'))
+    if (!options[:type] || ((options[:type] == 'collection') || (options[:type] == 'collections')))
       begin
         collections_length = length
         collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'collection')
+        sort = search_sort_for_type(options[:sortsByType], 'collection', options[:sort])
         
         refine_q = Resource::get_refine_facet_query(refine, 'collection')
 
@@ -910,12 +926,12 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    if (!options[:type] || (options[:type] == 'collection_object'))
+    if (!options[:type] || ((options[:type] == 'collection_object') || (options[:type] == 'collection_objects')))
       begin
         collection_objects_length = length
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'collection_object')
+        sort = search_sort_for_type(options[:sortsByType], 'collection_object', options[:sort])
         
         refine_q = Resource::get_refine_facet_query(refine, 'collection_object')
         
@@ -947,12 +963,12 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    if (!options[:type] || (options[:type] == 'exhibition'))
+    if (!options[:type] || ((options[:type] == 'exhibition') || (options[:type] == 'exhibitions')))
       begin
         exhibitions_length = length
         exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'exhibition')
+        sort = search_sort_for_type(options[:sortsByType], 'exhibition', options[:sort])
         
         refine_q = Resource::get_refine_facet_query(refine, 'exhibition')
 
@@ -984,12 +1000,12 @@ class Resource < ActiveRecord::Base
       end
     end
 
-    if (!options[:type] || (options[:type] == 'crcset'))
+    if (!options[:type] || ((options[:type] == 'crcset') || (options[:type] == 'crcsets')))
       begin
         crcsets_length = length
         crcsets_length = options[:lengthsByType]['crcset'] if (options[:lengthsByType] && options[:lengthsByType]['crcset'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'crcset')
+        sort = search_sort_for_type(options[:sortsByType], 'crcset', options[:sort])
         
         refine_q = Resource::get_refine_facet_query(refine, 'crcset')
 
@@ -1019,8 +1035,19 @@ class Resource < ActiveRecord::Base
         crcsets = []
       end
     end
-
-    return {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, crcsets: crcsets}
+	
+	ret = {resources: resources, collections: collections, collection_objects: collection_objects, exhibitions: exhibitions, crcsets: crcsets}
+	
+	#
+	# Roll type-restricted result into single result set (for API)
+	#
+	if !options[:singleResultSet].nil? and !options[:type].nil?
+		return ret[(options[:type]).to_sym] if ret.key? options[:type].to_sym
+		return ret[(options[:type] + "s").to_sym] if ret.key? (options[:type] + "s").to_sym
+		return nil
+	end
+	
+    return ret
   end
 
   # "Advanced" search of resources (broken out by type) and media files
@@ -1166,7 +1193,7 @@ class Resource < ActiveRecord::Base
         resources_length = length
         resources_length = options[:lengthsByType]['resource'] if (options[:lengthsByType] && options[:lengthsByType]['resource'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'resource')
+        sort = search_sort_for_type(options[:sortsByType], 'resource', options[:sort])
 
         qdef = {
             query: {
@@ -1199,7 +1226,7 @@ class Resource < ActiveRecord::Base
       collections_length = options[:lengthsByType]['collection'] if (options[:lengthsByType] && options[:lengthsByType]['collection'])
 
       begin
-        sort = search_sort_for_type(options[:sortsByType], 'collection')
+        sort = search_sort_for_type(options[:sortsByType], 'collection', options[:sort])
 
         qdef = {
             query: {
@@ -1231,7 +1258,7 @@ class Resource < ActiveRecord::Base
         collection_objects_length = length
         collection_objects_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
 
-        sort = search_sort_for_type(options[:sortsByType], 'collection_object')
+        sort = search_sort_for_type(options[:sortsByType], 'collection_object', options[:sort])
 
         qdef = {
             query: {
@@ -1263,7 +1290,7 @@ class Resource < ActiveRecord::Base
       exhibitions_length = options[:lengthsByType]['exhibition'] if (options[:lengthsByType] && options[:lengthsByType]['exhibition'])
 
       begin
-        sort = search_sort_for_type(options[:sortsByType], 'exhibition')
+        sort = search_sort_for_type(options[:sortsByType], 'exhibition', options[:sort])
 
         qdef = {
             query: {

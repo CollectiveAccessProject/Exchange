@@ -181,9 +181,21 @@ Rails.application.routes.draw do
   post '/resources/:id/send_report' => 'resources#send_report'
   
   
-# refine
+  # refine
   get '/quick_search/autocomplete_refine/:field/*query' => 'quick_search#autocomplete_refine', as: 'quick_search_autocomplete_refine', constraints: { :query => /.+/ }, :field => /[A-Za-z0-9_\.]+?/, :format => /json|csv|xml|yaml/
 
+
+  # API
+  
+  # search
+  get '/api/search/:type/:q' => 'api#search', as: 'api_search_with_type'
+  get '/api/search/:type/:q/length/:length' => 'api#search', as: 'api_search_with_type_length'
+  get '/api/search/:type/:q/sort/:sort' => 'api#search', as: 'api_search_with_type_sort'
+  get '/api/search/:type/:q/sort/:sort/length/:length' => 'api#search', as: 'api_search_with_type_sort_length'
+
+  # resource detail
+  get '/api/detail/:id' => 'api#detail'
+  get '/api/:type/:id' => 'api#detail'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
