@@ -873,7 +873,7 @@ class Resource < ActiveRecord::Base
             }
         }
         
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
         resources = Resource.search(qdef).per_page(resources_length)
 
         if (!options[:models])
@@ -910,7 +910,8 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+       
         collections = Resource.search(qdef).per_page(collections_length)
 
         if(!options[:models])
@@ -944,7 +945,8 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        
         collection_objects = Resource.search(qdef).per_page(collection_objects_length)
 
         if (!options[:models])
@@ -980,7 +982,7 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
         
         exhibitions = Resource.search(qdef).per_page(exhibitions_length)
 
@@ -1017,7 +1019,7 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
         crcsets = Resource.search(qdef).per_page(crcsets_length)
 
         if (!options[:models])
@@ -1202,7 +1204,7 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
         resources = Resource.search(qdef).per_page(resources_length)
 
         if (!options[:models])
@@ -1235,7 +1237,7 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
         collections = Resource.search(qdef).per_page(collections_length)
 
         if (!options[:models])
@@ -1267,7 +1269,7 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
         collection_objects = Resource.search(qdef).per_page(collection_objects_length)
 
         if (!options[:models])
@@ -1299,7 +1301,7 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort)
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
         exhibitions = Resource.search(qdef).per_page(exhibitions_length)
 
         if (!options[:models])
