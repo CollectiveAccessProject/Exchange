@@ -41,9 +41,9 @@ module Exchange
     config.x.access_types = { Public: 1, Restricted: 0 }
 
    config.x.user_roles = {
-          "Administrator" => :admin, "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,
-          "Museum Visitor" => :visitor, "UMMA Docent" => :docent, "UMMA Staff" => :staff,
-	  "University Faculty" => :faculty, "University Student" => :student
+		"Administrator" => :admin, "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,
+		"Museum Visitor" => :visitor, "UMMA Docent" => :docent, "UMMA Staff" => :staff,
+		"University Faculty" => :faculty, "University Student" => :student
     } 
 
     config.x.user_access_types = {"Can View" => 1, "Can Edit" => 2}
@@ -59,6 +59,8 @@ module Exchange
     config.cache_store = :memory_store, { size: 128.megabytes }
 
 	 config.time_zone = 'Eastern Time (US & Canada)'
+	 
+	 config.x.absolute_url_options = { host: 'exchange.whirl-i-gig.com:8084', protocol: 'http'}
 
   end
 end
