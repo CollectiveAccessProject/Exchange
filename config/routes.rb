@@ -194,7 +194,7 @@ Rails.application.routes.draw do
   get '/api/search/:type/:q/sort/:sort/length/:length' => 'api#search', as: 'api_search_with_type_sort_length'
 
   # resource detail
-  get '/api/detail/:id' => 'api#detail'
+  get '/api/detail/:id' => 'api#detail', as: 'resource_detail'
   get '/api/:type/:id' => 'api#detail'
 
   # The priority is based upon order of creation: first created -> highest priority.
