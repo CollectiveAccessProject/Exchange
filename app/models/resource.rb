@@ -40,6 +40,10 @@ class Resource < ActiveRecord::Base
   after_commit :update_search_index
 
   before_save :set_rating
+  
+  # cover image
+  include Dragonfly::Model
+  dragonfly_accessor :cover
 
   # resource type constants
   RESOURCE = 1

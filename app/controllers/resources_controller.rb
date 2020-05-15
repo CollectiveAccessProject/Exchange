@@ -197,7 +197,7 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(resource_params)
     @resource.user = current_user
 
-    params.require(:resource).permit(:parent_id, :child_id)
+    params.require(:resource).permit(:parent_id, :child_id, :cover)
     parent_id = params[:resource][:parent_id].to_i
     child_id = params[:resource][:child_id].to_i
 
@@ -1197,12 +1197,12 @@ class ResourcesController < ApplicationController
   def resource_params
     if ((current_user.has_role? :admin) || (current_user.has_role? :staff))
       params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source,
+          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover,
           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id, :author_id
       )
     else
       params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source,
+          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover,
           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id
       )
     end
