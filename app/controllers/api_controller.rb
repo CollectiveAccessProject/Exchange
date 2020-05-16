@@ -3,15 +3,15 @@ class ApiController < ApplicationController
 		@@api_version = 1.0
 		@@types = ["collection_objects", "resources", "collections"]
 		@@search_fields = [
-			"id", "resource_type", "slug", "title", "subtitle", "copyright_license", "access", 
+			"id", "resource_type", "slug", "title", "subtitle", "physical_description", "copyright_license", "access", 
 			"created_at", "updated_at", "body_text", "author_name", "collection_identifier"
 		]
 		@@detail_fields = [
-			"id", "resource_type", "slug", "title", "collection_identifier", "subtitle", "copyright_license", "copyright_notes", "access", 
-			"created_at", "updated_at", "body_text", "author_name", "collecton_identifier", 
-			"in_response_to_resource_id", "forked_from_resource_id", "on_display", "artist", 
+			"id", "resource_type", "slug", "title", "collection_identifier", "subtitle", "physical_description", "copyright_license", "copyright_notes", "access", 
+			"created_at", "updated_at", "body_text", "author_name", "credit_line", 
+			"in_response_to_resource_id", "forked_from_resource_id", "on_display", "artist", "artist_gender", "artist_nationality",
 			"location", "start_date", "end_date", "classification", "additional_classification", 
-			"medium", "support", "style", "artist_nationality", "subject_matter", "keywords"
+			"medium", "support", "medium_and_support_display", "style", "subject_matter", "keywords"
 		]
 	end
 
@@ -133,6 +133,16 @@ class ApiController < ApplicationController
 			})
 		end
 		
+		if r.cover and r.cover.url
+			result_data['cover'] = absolute_url_for_media(r, 'cover')
+		elsif result_data['media'].length > 0 and result_data['media'][0]
+			result_data['cover'] = result_data['media'][0][:url]
+		else
+			result_data['cover'] = nil
+		end
+		
+		
+		
 		# Add role (aka audience) names for roles directly linked to resource
 		result_data['audiences'] = r.roles.map { |x|  x['name'] }
 	
@@ -170,10 +180,10 @@ class ApiController < ApplicationController
 		return hostinfo[:protocol] + '://' + hostinfo[:host] + '/resources/' + resource_id.to_s
 	end
 	
-	def self.absolute_url_for_media(m)
+	def self.absolute_url_for_media(m, f='thumbnail')
 		return '' if m.nil?
 		
 		hostinfo = Rails.application.config.x.absolute_url_options
-		return hostinfo[:protocol] + '://' + hostinfo[:host] + m.thumbnail.url
+		return hostinfo[:protocol] + '://' + hostinfo[:host] + m.send(f).url
 	end
 end
