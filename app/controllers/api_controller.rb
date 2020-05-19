@@ -4,14 +4,14 @@ class ApiController < ApplicationController
 		@@types = ["collection_objects", "resources", "collections"]
 		@@search_fields = [
 			"id", "resource_type", "slug", "title", "subtitle", "physical_description", "copyright_license", "access", 
-			"created_at", "updated_at", "body_text", "author_name", "collection_identifier"
+			"created_at", "updated_at", "body_text", "author_name", "collection_identifier", "date_display"
 		]
 		@@detail_fields = [
 			"id", "resource_type", "slug", "title", "collection_identifier", "subtitle", "physical_description", "copyright_license", "copyright_notes", "access", 
 			"created_at", "updated_at", "body_text", "author_name", "credit_line", 
 			"in_response_to_resource_id", "forked_from_resource_id", "on_display", "artist", "artist_gender", "artist_nationality",
-			"location", "start_date", "end_date", "classification", "additional_classification", 
-			"medium", "support", "medium_and_support_display", "style", "subject_matter", "keywords"
+			"location", "start_date", "end_date", "date_display", "classification", "additional_classification", 
+			"medium", "support", "medium_and_support_display", "style", "subject_matter", "keywords", "cover_caption", "cover_alt_text"
 		]
 	end
 

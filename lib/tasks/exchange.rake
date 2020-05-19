@@ -258,8 +258,8 @@ namespace :exchange do
 						k = value['keywords'] if value['keywords']
 						k = k + "|" + value['keywords_aat'] if value['keywords_aat']
 						value['keywords'] = k
-						
-						r.update(indexing_data: JSON.generate(value),  artist_gender: value['artist_gender'], physical_description: value['physical_description'], medium_and_support_display: value['medium_and_support_display'], credit_line: value['credit_line'], classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
+						print value
+						r.update(indexing_data: JSON.generate(value),  artist_gender: value['artist_gender'], physical_description: value['physical_description'], medium_and_support_display: value['medium_and_support_display'], credit_line: value['credit_line'], date_display: value['date_created'], classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
 					end
 				end
 			end

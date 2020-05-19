@@ -1197,12 +1197,12 @@ class ResourcesController < ApplicationController
   def resource_params
     if ((current_user.has_role? :admin) || (current_user.has_role? :staff))
       params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover,
+          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text,
           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id, :author_id
       )
     else
       params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover,
+          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text,
           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id
       )
     end
