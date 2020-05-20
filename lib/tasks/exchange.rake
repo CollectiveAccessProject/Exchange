@@ -248,6 +248,10 @@ namespace :exchange do
 							value['gallery_url'] = ''
 						end
 						
+						if value['date_created'].nil?
+							value['date_created'] = ''
+						end
+						
 						
 						value['artist_gender'] = '' if value['artist_gender'].nil? or !value['artist_gender']
 						value['physical_description'] = '' if value['physical_description'].nil? or !value['physical_description']
