@@ -137,8 +137,12 @@ class ApiController < ApplicationController
 			result_data['cover'] = absolute_url_for_media(r, 'cover')
 		elsif result_data['media'].length > 0 and result_data['media'][0]
 			result_data['cover'] = result_data['media'][0][:url]
+			result_data['cover_caption'] = result_data['media'][0][:caption]
+			result_data['cover_alt_text'] = result_data['media'][0][:alt_text]
 		else
 			result_data['cover'] = nil
+			result_data['cover_caption'] = nil
+			result_data['cover_alt_text'] = nil
 		end
 		
 		
@@ -147,7 +151,20 @@ class ApiController < ApplicationController
 		result_data['audiences'] = r.roles.map { |x|  x['name'] }
 	
 		# Add role names related to resource author
-		result_data['author_roles'] = User.find(r.author_id).roles.map { |x|  x['name'] } if !r.author_id.nil?
+		
+		# Add author name is not populated
+		if !r.author_name.nil?
+			result_data['author_name'] = r.author_name
+			result_data['author_roles'] = User.find(r.author_id).roles.map { |x|  x['name'] } if !r.author_id.nil?
+		elsif !r.author_id.nil?
+			u = User.find(r.author_id).roles.map { |x|  x['name'] } 
+			result_data['author_name'] = u.name
+			result_data['author_roles'] = u.roles.map { |x|  x['name'] }
+		elsif !r.user_id.nil?
+			u = User.find(r.user_id)
+			result_data['author_name'] = u.name
+			result_data['author_roles'] = u.roles.map { |x|  x['name'] }
+		end 
 	
 		# Related resources
 		result_data['related'] = r.related_resources.map { |x|  
