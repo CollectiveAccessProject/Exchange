@@ -276,7 +276,6 @@ class ResourcesController < ApplicationController
   # PATCH/PUT /resources/1.json
   def update
 
-
     [:subtitle, :copyright_notes].each do|f|
       @resource.send(:"#{f}=", "")
     end
@@ -304,7 +303,16 @@ class ResourcesController < ApplicationController
           format.json { render json: @resource.errors, status: :unprocessable_entity }
         end
       else
-        if @resource.update(resource_params)
+      	
+
+		d = resource_params
+		if params[:cover_remove] and (params[:cover_remove][0] == '1')
+			@resource.cover = nil
+			d[:cover_caption] = nil
+			d[:cover_alt_text] = nil
+		end
+	
+        if @resource.update(d)
           set_roles
           session[:mode] = :update;
 
@@ -1197,12 +1205,12 @@ class ResourcesController < ApplicationController
   def resource_params
     if ((current_user.has_role? :admin) || (current_user.has_role? :staff))
       params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text,
+          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text, :cover_remove,
           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id, :author_id
       )
     else
       params.require(:resource).permit(
-          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text,
+          :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text, :cover_remove,
           :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id
       )
     end

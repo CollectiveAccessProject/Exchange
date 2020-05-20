@@ -144,7 +144,7 @@
 
 					<div class="form-group select optional cover">
 						<label class="control-label select optional" for="cover">Cover image</label>
-						<%= r.file_field :cover %> <%= (@resource.cover) ? image_tag(@resource.cover.thumb("200x200").url) : '' %>
+						<%= r.file_field :cover %> <%= (@resource.cover) ? image_tag(@resource.cover.thumb("200x200").url) + "<br/>".html_safe + check_box("cover_remove", "", {}, "1", nil)+ " Remove media" : '' %>
 						<%= r.input :cover_caption, :input_html => {}, :as => :summernote, label: 'Cover image caption' %>
 						<%= r.input :cover_alt_text, :input_html => {}, label: 'Cover image alternate text' %>
 					</div>
