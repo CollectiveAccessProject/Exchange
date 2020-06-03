@@ -13,6 +13,10 @@ class ApiController < ApplicationController
 			"location", "start_date", "end_date", "date_display", "classification", "additional_classification", 
 			"medium", "support", "medium_and_support_display", "style", "subject_matter", "keywords", "cover_caption", "cover_alt_text"
 		]
+		
+		@@media_fields = [
+			"id", "slug", "alt_text", "caption", "resource_id", "copyright_license", "copyright_notes", "access"
+		]
 	end
 
 	def search
@@ -52,7 +56,7 @@ class ApiController < ApplicationController
 				results = res.response
 		
 				for r in results 
-					result_data = ApiController.rewrite_field_values(r, r._source.to_hash.select {|key, value| @@search_fields.include?(key) }, :search)
+					result_data = ApiController.rewrite_resource_field_values(r, r._source.to_hash.select {|key, value| @@search_fields.include?(key) }, :search)
 					filtered_results.append(result_data)
 			
 					c = c + 1
@@ -83,7 +87,31 @@ class ApiController < ApplicationController
 			end
 		
 			# Filter fields
-			filtered_data = ApiController.rewrite_field_values(r, r.attributes.select {|key, value| @@detail_fields.include?(key) }, :detail)
+			filtered_data = ApiController.rewrite_resource_field_values(r, r.attributes.select {|key, value| @@detail_fields.include?(key) }, :detail)
+			
+		rescue => e
+			render json: ApiController.render_error(e)
+			return
+		end
+		
+		render json: ApiController.render_response({"data": filtered_data})
+	end
+	
+	def media
+		params.permit(:type, :id)
+		
+		begin
+			# Is ID key or accession #?
+			m = MediaFile.find(params[:id].to_i)
+			r = m.resource
+		
+			# Check access to record	
+			if !r.can(:view, current_user)
+				raise "Cannot load media file"
+			end
+		
+			# Filter fields
+			filtered_data = ApiController.rewrite_media_file_field_values(m, r, m.attributes.select {|key, value| @@media_fields.include?(key) }, :detail)
 			
 		rescue => e
 			render json: ApiController.render_error(e)
@@ -105,7 +133,7 @@ class ApiController < ApplicationController
 		self.render_response({ "error": e.message })
 	end
 	
-	def self.rewrite_field_values(r, result_data, type=nil)
+	def self.rewrite_resource_field_values(r, result_data, type=nil)
 		# Rewrite type as text
 		result_data['type'] = Resource.resource_type_as_text(result_data['resource_type'])
 		result_data.delete('resource_type')
@@ -132,19 +160,6 @@ class ApiController < ApplicationController
 				alt_text: m.alt_text
 			})
 		end
-		
-		if r.cover and r.cover.url
-			result_data['cover'] = absolute_url_for_media(r, 'cover')
-		elsif result_data['media'].length > 0 and result_data['media'][0]
-			result_data['cover'] = result_data['media'][0][:url]
-			result_data['cover_caption'] = result_data['media'][0][:caption]
-			result_data['cover_alt_text'] = result_data['media'][0][:alt_text]
-		else
-			result_data['cover'] = nil
-			result_data['cover_caption'] = nil
-			result_data['cover_alt_text'] = nil
-		end
-		
 		
 		
 		# Add role (aka audience) names for roles directly linked to resource
@@ -187,6 +202,64 @@ class ApiController < ApplicationController
 			end
 			{id: x.id, title: x.title, link: absolute_url_for_resource(x.id), media: m } 
 		} if !r.parents.nil? and (type == :detail)
+		
+		# Related resources
+		result_data['resources'] = r.children.map { |x|  
+			m = []
+				x.media_files.each do |mf|
+					m.append({
+						id: mf.id,
+						url: absolute_url_for_media(mf),
+						caption: mf.caption,
+						alt_text: mf.alt_text
+					})
+				end
+			{id: x.id, title: x.title, link: absolute_url_for_resource(x.id), media: m } 
+		} if !r.parents.nil? and (type == :detail)
+		
+		
+		if r.cover and r.cover.url
+			result_data['cover'] = absolute_url_for_media(r, 'cover')
+		elsif result_data['media'].length > 0 and result_data['media'][0]
+			result_data['cover'] = result_data['media'][0][:url]
+			result_data['cover_caption'] = result_data['media'][0][:caption]
+			result_data['cover_alt_text'] = result_data['media'][0][:alt_text]
+		elsif result_data['resources'].length > 0 and result_data['resources'][0] and result_data['resources'][0][:media]
+			result_data['cover'] = result_data['resources'][0][:media][0][:url]
+			result_data['cover_caption'] = result_data['resources'][0][:media][0][:caption]
+			result_data['cover_alt_text'] = result_data['resources'][0][:media][0][:alt_text]
+		else
+			result_data['cover'] = nil
+			result_data['cover_caption'] = nil
+			result_data['cover_alt_text'] = nil
+		end
+		
+		
+		result_data
+	end
+	
+	
+	def self.rewrite_media_file_field_values(m, r, result_data, type=nil)
+		result_data['media_type'] = m.sourceable_type
+	
+		# Rewrite copyright_license as text
+		result_data['copyright_license'] = Resource.get_license_type_as_text(result_data['copyright_license'])
+		
+		if (r.is_collection_object)
+			result_data['collection_identifier'] = r.collection_identifier
+		end
+		
+		result_data['resource_link'] = absolute_url_for_resource(r.id)
+		
+		Rails.application.config.x.media_sizes.each do |k,v|
+			next if (m.copyright_license === 0) and (v[:width] > 1000)	# don't include media > 1000 pixels if copyright is "all rights reserved"
+			result_data[k] = absolute_url_for_media(m, 'thumbnail', v[:size])
+		end
+		
+		if (m.copyright_license != 0)	# don't include original media if copyright is "all rights reserved"
+			result_data['original'] = m.sourceable.url
+		end
+		
 		result_data
 	end
 	
@@ -197,10 +270,14 @@ class ApiController < ApplicationController
 		return hostinfo[:protocol] + '://' + hostinfo[:host] + '/resources/' + resource_id.to_s
 	end
 	
-	def self.absolute_url_for_media(m, f='thumbnail')
+	def self.absolute_url_for_media(m, f='thumbnail', size=nil)
 		return '' if m.nil?
 		
 		hostinfo = Rails.application.config.x.absolute_url_options
-		return hostinfo[:protocol] + '://' + hostinfo[:host] + m.send(f).url
+		if size.nil?
+			return hostinfo[:protocol] + '://' + hostinfo[:host] + m.send(f).url
+		else 
+			return hostinfo[:protocol] + '://' + hostinfo[:host] + m.send(f).thumb(size).url 
+		end
 	end
 end

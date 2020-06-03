@@ -195,6 +195,7 @@ Rails.application.routes.draw do
 
   # resource detail
   get '/api/detail/:id' => 'api#detail', as: 'resource_detail'
+  get '/api/media/:id' => 'api#media', as: 'media_detail'
   get '/api/:type/:id' => 'api#detail'
 
   # The priority is based upon order of creation: first created -> highest priority.

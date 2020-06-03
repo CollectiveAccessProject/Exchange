@@ -1,23 +1,10 @@
 module ApplicationHelper
   def media_size_for_version(version)
-    case version
-      when :icon
-        return {width: 72, height: 72, area: "72x72" }
-      when :largeicon
-        return {width: 120, height: 120, area: "120x120" }
-      when :thumbnail
-        return {width: 240, height: 200, area: "240x200" }
-      when :medium
-        return {width: 400, height: 400, area: "400x400" }
-      when :large
-        return {width: 1000, height: 1000, area: "1000x1000" }
-      when :huge
-        return {width: 2000, height: 2000, area: "2000x2000" }
-      when :quarter
-        return {width: '235', height: '235', area: '235x235'}
-      else
-        raise ArgumentError, "Version #{version} is not valid"
-    end
+  	if Rails.application.config.x.media_sizes[version].nil?
+  		raise ArgumentError, "Version #{version} is not valid"
+  	else
+  		return Rails.application.config.x.media_sizes[version]
+  	end
   end
 
   def last_search_button(session, options=nil)
