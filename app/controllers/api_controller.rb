@@ -15,7 +15,7 @@ class ApiController < ApplicationController
 		]
 		
 		@@media_fields = [
-			"id", "slug", "alt_text", "caption", "resource_id", "copyright_license", "copyright_notes", "access"
+			"id", "slug", "alt_text", "caption", "resource_id", "copyright_license", "copyright_notes", "access", "display_collectionobject_link"
 		]
 	end
 
@@ -153,11 +153,17 @@ class ApiController < ApplicationController
 		# Everything from here on in requires an instance
 		r = Resource.find(r.id) if !r.respond_to? "media_files"
 		r.media_files.each do |m|
+			versions = {}
+			Rails.application.config.x.media_sizes.each do |k,v|
+				next if (m.copyright_license === 0) and (v[:width] > 1000)	# don't include media > 1000 pixels if copyright is "all rights reserved"
+				versions[k] = absolute_url_for_media(m, 'thumbnail', v[:area])
+			end
 			result_data['media'].append({
 				id: m.id,
 				url: absolute_url_for_media(m),
 				caption: m.caption,
-				alt_text: m.alt_text
+				alt_text: m.alt_text,
+				versions: versions
 			})
 		end
 		
@@ -173,12 +179,12 @@ class ApiController < ApplicationController
 			result_data['author_roles'] = User.find(r.author_id).roles.map { |x|  x['name'] } if !r.author_id.nil?
 		elsif !r.author_id.nil?
 			u = User.find(r.author_id).roles.map { |x|  x['name'] } 
-			result_data['author_name'] = u.name
-			result_data['author_roles'] = u.roles.map { |x|  x['name'] }
+			result_data['author_name'] = u.name if u.respond_to? :name
+			result_data['author_roles'] = u.roles.map { |x|  x['name'] } if u.respond_to? :roles
 		elsif !r.user_id.nil?
 			u = User.find(r.user_id)
-			result_data['author_name'] = u.name
-			result_data['author_roles'] = u.roles.map { |x|  x['name'] }
+			result_data['author_name'] = u.name if u.respond_to? :name
+			result_data['author_roles'] = u.roles.map { |x|  x['name'] } if u.respond_to? :roles
 		end 
 	
 		# Related resources
@@ -219,7 +225,7 @@ class ApiController < ApplicationController
 		
 		
 		if r.cover and r.cover.url
-			result_data['cover'] = absolute_url_for_media(r, 'cover')
+			result_data['cover'] = absolute_url_for_media(r, 'cover', '800x800')
 		elsif result_data['media'].length > 0 and result_data['media'][0]
 			result_data['cover'] = result_data['media'][0][:url]
 			result_data['cover_caption'] = result_data['media'][0][:caption]
@@ -241,7 +247,16 @@ class ApiController < ApplicationController
 	
 	def self.rewrite_media_file_field_values(m, r, result_data, type=nil)
 		result_data['media_type'] = m.sourceable_type
-	
+		
+		case result_data['media_type']
+			when 'CollectionobjectLink'
+				result_data['media_url'] = absolute_url_for_resource(m.sourceable.original_link)
+			when 'LocalFile'
+				result_data['media_url'] = absolute_url(m.sourceable.file.url)
+			else
+			result_data['media_url'] = m.sourceable.original_link
+		end
+		
 		# Rewrite copyright_license as text
 		result_data['copyright_license'] = Resource.get_license_type_as_text(result_data['copyright_license'])
 		
@@ -253,12 +268,15 @@ class ApiController < ApplicationController
 		
 		Rails.application.config.x.media_sizes.each do |k,v|
 			next if (m.copyright_license === 0) and (v[:width] > 1000)	# don't include media > 1000 pixels if copyright is "all rights reserved"
-			result_data[k] = absolute_url_for_media(m, 'thumbnail', v[:size])
+			result_data[k] = absolute_url_for_media(m, 'thumbnail', v[:area])
 		end
 		
 		if (m.copyright_license != 0)	# don't include original media if copyright is "all rights reserved"
 			result_data['original'] = m.sourceable.url
 		end
+		
+		ranks = m.resource.media_files.pluck(:rank)
+		result_data['rank'] = ranks.find_index(m.rank)
 		
 		result_data
 	end
@@ -279,5 +297,10 @@ class ApiController < ApplicationController
 		else 
 			return hostinfo[:protocol] + '://' + hostinfo[:host] + m.send(f).thumb(size).url 
 		end
+	end
+	
+	def self.absolute_url(url)
+		hostinfo = Rails.application.config.x.absolute_url_options
+		return hostinfo[:protocol] + '://' + hostinfo[:host] + url
 	end
 end
