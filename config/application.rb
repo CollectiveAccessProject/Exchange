@@ -68,7 +68,7 @@ module Exchange
 	 	quarter: {width: 235, height: 235, area: "235x235" },
 	 	thumbnail: {width: 240, height: 200, area: "240x200" },
 	 	medium: {width: 400, height: 400, area: "400x400" },
-	 	mediumlarge: {width: 800, height: 000, area: "800x800" },
+	 	mediumlarge: {width: 800, height: 800, area: "800x800" },
 	 	large: {width: 1000, height: 1000, area: "1000x1000" },
 	 	huge: {width: 2000, height: 2000, area: "2000x2000" },
 	 	reallhuge: {width: 4000, height: 4000, area: "4000x4000" }
