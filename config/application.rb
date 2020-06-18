@@ -41,9 +41,9 @@ module Exchange
     config.x.access_types = { Public: 1, Restricted: 0 }
 
    config.x.user_roles = {
-          "Administrator" => :admin, "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,
-          "Museum Visitor" => :visitor, "UMMA Docent" => :docent, "UMMA Staff" => :staff,
-	  "University Faculty" => :faculty, "University Student" => :student
+		"Administrator" => :admin, "K-12 Educator" => :k12_teacher, "K-12 Student" => :k12_student,
+		"Museum Visitor" => :visitor, "UMMA Docent" => :docent, "UMMA Staff" => :staff,
+		"University Faculty" => :faculty, "University Student" => :student
     } 
 
     config.x.user_access_types = {"Can View" => 1, "Can Edit" => 2}
@@ -59,6 +59,19 @@ module Exchange
     config.cache_store = :memory_store, { size: 128.megabytes }
 
 	 config.time_zone = 'Eastern Time (US & Canada)'
-
+	 
+	 config.x.absolute_url_options = { host: 'exchange.whirl-i-gig.com:8084', protocol: 'http'}
+	 
+	 config.x.media_sizes = {
+	 	icon: {width: 72, height: 72, area: "72x72" },
+	 	largeicon: {width: 120, height: 120, area: "120x120" },
+	 	quarter: {width: 235, height: 235, area: "235x235" },
+	 	thumbnail: {width: 240, height: 200, area: "240x200" },
+	 	medium: {width: 400, height: 400, area: "400x400" },
+	 	mediumlarge: {width: 800, height: 800, area: "800x800" },
+	 	large: {width: 1000, height: 1000, area: "1000x1000" },
+	 	huge: {width: 2000, height: 2000, area: "2000x2000" },
+	 	reallhuge: {width: 4000, height: 4000, area: "4000x4000" }
+	 }
   end
 end

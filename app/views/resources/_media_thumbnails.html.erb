@@ -1,7 +1,7 @@
   <div class="row">
   <%
   	total_count = 0
-	@resource.media_files.slice(start, Rails.application.config.x.max_media_per_media_list_page).each do |f|
+	@resource.media_files.offset(start).limit(Rails.application.config.x.max_media_per_media_list_page).each do |f|
 	  if f.sourceable
 		if f.access == 1
 		  if total_count % 4 == 0

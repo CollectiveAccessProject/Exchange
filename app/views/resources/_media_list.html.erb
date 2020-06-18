@@ -1,5 +1,5 @@
 <%
-	@resource.media_files.slice(start, Rails.application.config.x.max_media_per_media_list_page).each do |f| 
+	@resource.media_files.offset(start).limit(Rails.application.config.x.max_media_per_media_list_page).each do |f| 
     	if f.sourceable
     		target_div = '#media_editor_modal' 
 		  	anchor_tag = f.sourceable.class.to_s + f.sourceable.id.to_s + 'Link'
