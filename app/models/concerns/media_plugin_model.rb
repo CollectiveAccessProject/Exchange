@@ -36,6 +36,13 @@ module MediaPluginModel
       locals: { plugin_model: self }
     )
   end
+  
+  def url(options=nil)
+    action_view.render(
+        partial: 'media_plugins/' + self.class.to_s.underscore + '_url',
+        locals: { plugin_model: self, options: options }
+    )
+  end
 
   # get a new ActionView::Base object with everything
   # set so that we can render views from models
