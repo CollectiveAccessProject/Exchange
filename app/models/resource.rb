@@ -256,6 +256,11 @@ class Resource < ActiveRecord::Base
 
     record['start_date'] = record['start_date'].to_i
     record['end_date'] = record['end_date'].to_i
+    
+    
+    # Force created/updated dates to ISO8601 for indexing
+    record['created_at'] = self.created_at.iso8601
+    record['updated_at'] = self.updated_at.iso8601
 
     # Index ACL values
     # record['read_users'] = ResourcesUser.where({resource_id: self.id, access: 1}).pluck(:user_id)
@@ -308,7 +313,6 @@ class Resource < ActiveRecord::Base
 
     # index average rating for this resource
     record['rating'] = avg_rating.to_i
-
     record
   end
   serialize :indexing_data

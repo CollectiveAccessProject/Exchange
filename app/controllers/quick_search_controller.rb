@@ -159,6 +159,8 @@ class QuickSearchController < ApplicationController
     @query_proc = @query.dup if @query
     
     @query_proc = @query.gsub(/[^[:word:]\s\/\-\.\:\_\*\"]/, '') if @query_proc
+    @query_proc = self.dates_to_lucene(@query_proc) if @query_proc
+    
     @page = params[:page].to_i
     @page = 1 if (@page < 1)
     @type = params[:type]   # restrict search to a specific result type (resources, collections, collection_objects, exhibitions)
@@ -166,6 +168,7 @@ class QuickSearchController < ApplicationController
     @length = params[:length].to_i
     @sort = params[:sort]
     
+    #Rails.logger.info("QQQ " + @query_proc);
     # Handle removal of filter
     if params[:unrefine] and session[:refine] and session[:refine][@type]
         params[:unrefine].each do|u|
@@ -428,6 +431,36 @@ class QuickSearchController < ApplicationController
     return sort
   end
 
+  #
+  #
+  #
+  def dates_to_lucene(expr)
+  	
+    # Full range
+    expr = expr.gsub(/created:([\d+]{4})-([\d]{1,2})-([\d]{1,2})-([\d+]{4})-([\d]{1,2})-([\d]{1,2})/, "created_at:[\\1-\\2-\\3 TO \\4-\\5-\\6]")
+    expr = expr.gsub(/updated:([\d+]{4})-([\d]{1,2})-([\d]{1,2})-([\d+]{4})-([\d]{1,2})-([\d]{1,2})/, "updated_at:[\\1-\\2-\\3 TO \41-\\5-\\6]")
+    
+    # Single day
+    expr = expr.gsub(/created:([\d+]{4})-([\d]{1,2})-([\d]{1,2})/, "created_at:[\\1-\\2-\\3 TO \\1-\\2-\\3]")
+    expr = expr.gsub(/updated:([\d+]{4})-([\d]{1,2})-([\d]{1,2})/, "updated_at:[\\1-\\2-\\3 TO \\1-\\2-\\3]")
+    
+    # year range
+    expr = expr.gsub(/created:([\d+]{4})-([\d+]{4})/, "created_at:[\\1-01-01 TO \\2-12-31]")
+    expr = expr.gsub(/updated:([\d+]{4})-([\d+]{4})/, "updated_at:[\\1-01-01 TO \\2-12-31]")
+    
+  	# Single month
+    expr = expr.gsub(/created:([\d+]{4})-([\d]{1,2})/, "created_at:[\\1-\\2-01 TO \\1-\\2-31]")
+    expr = expr.gsub(/updated:([\d+]{4})-([\d]{1,2})/, "updated_at:[\\1-\\2-01 TO \\1-\\2-31]")
+    
+  	# Single year
+    expr = expr.gsub(/created:([\d+]{4})/, "created_at:[\\1-01-01 TO \\1-12-31]")
+    expr = expr.gsub(/updated:([\d+]{4})/, "updated_at:[\\1-01-01 TO \\1-12-31]")
+    
+    
+    
+    expr
+  end
+  
   #
   #
   #
