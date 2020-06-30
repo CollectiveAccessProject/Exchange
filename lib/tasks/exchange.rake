@@ -175,6 +175,7 @@ namespace :exchange do
 
 									m.set_sourceable_media({collectiveaccess_link: { original_link: u }})
 									m.update({title: key.to_s + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id, alt_text: value['physical_description'] ? value['physical_description'].slice(0, 1024) : ""})
+                                    
                                     existing_keys.delete(key.to_s + ":" + i.to_s)
 									i += 1
 								end
@@ -184,6 +185,16 @@ namespace :exchange do
 							    MediaFile.where({title: e}).destroy_all
 							end
 							
+							# Get existing collection object links for resource
+							existing_mfs = CollectionobjectLink.where("(resource_id = ?)", r.id)
+							
+							existing_mfs.each do |e| 
+								m = MediaFile.where(sourceable_id: e.id, sourceable_type: 'CollectionobjectLink').first
+								if m
+									m.update({caption: value['caption_text'], alt_text: value['physical_description'] ? value['physical_description'].slice(0, 1024) : ""})
+								end
+							end
+
 						end
 					end
 				end
@@ -262,7 +273,7 @@ namespace :exchange do
 						k = value['keywords'] if value['keywords']
 						k = k + "|" + value['keywords_aat'] if value['keywords_aat']
 						value['keywords'] = k
-						print value
+						
 						r.update(indexing_data: JSON.generate(value),  artist_gender: value['artist_gender'], physical_description: value['physical_description'], medium_and_support_display: value['medium_and_support_display'], credit_line: value['credit_line'], date_display: value['date_created'], classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
 					end
 				end
