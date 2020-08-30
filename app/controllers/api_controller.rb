@@ -26,6 +26,7 @@ class ApiController < ApplicationController
 		t = "resources" if !@@types.include? t
 		
 		l = params[:length]
+		l = params[:limit]
 		l = 10 if l.nil?		
 		begin
 			l = l.to_i
@@ -104,6 +105,9 @@ class ApiController < ApplicationController
 			# Is ID key or accession #?
 			m = MediaFile.find(params[:id].to_i)
 			r = m.resource
+			if !r
+				raise "Invalid media"
+			end
 		
 			# Check access to record	
 			if !r.can(:view, current_user)
@@ -226,11 +230,11 @@ class ApiController < ApplicationController
 		
 		if r.cover and r.cover.url
 			result_data['cover'] = absolute_url_for_media(r, 'cover', '800x800')
-		elsif result_data['media'].length > 0 and result_data['media'][0]
+		elsif result_data['media'] and result_data['media'].length > 0 and result_data['media'][0]
 			result_data['cover'] = result_data['media'][0][:url]
 			result_data['cover_caption'] = result_data['media'][0][:caption]
 			result_data['cover_alt_text'] = result_data['media'][0][:alt_text]
-		elsif result_data['resources'].length > 0 and result_data['resources'][0] and result_data['resources'][0][:media]
+		elsif result_data['resources'] and result_data['resources'].length > 0 and result_data['resources'][0] and result_data['resources'][0][:media]
 			result_data['cover'] = result_data['resources'][0][:media][0][:url]
 			result_data['cover_caption'] = result_data['resources'][0][:media][0][:caption]
 			result_data['cover_alt_text'] = result_data['resources'][0][:media][0][:alt_text]
