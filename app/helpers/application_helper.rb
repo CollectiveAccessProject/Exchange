@@ -260,7 +260,11 @@ def is_zoomable(media_file)
 			end
 			return false
 		when (['CollectionobjectLink'].include?(media_file.get_media_class(media_file.sourceable_type).to_s))
-			return media_file.sourceable.get_media
+			begin
+				return media_file.sourceable.get_media
+			rescue
+				return false
+			end
 		else
 			return false
 	end
