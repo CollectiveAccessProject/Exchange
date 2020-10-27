@@ -1,3 +1,4 @@
+require 'QuickSearchLinkRenderer'
 class QuickSearchController < ApplicationController
 
   # UI autocomplete on resource title (used by related resources lookup)
@@ -91,6 +92,11 @@ class QuickSearchController < ApplicationController
     rescue Exception => e
       redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
+    
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def query_results
@@ -168,7 +174,6 @@ class QuickSearchController < ApplicationController
     @length = params[:length].to_i
     @sort = params[:sort]
     
-    #Rails.logger.info("QQQ " + @query_proc);
     # Handle removal of filter
     if params[:unrefine] and session[:refine] and session[:refine][@type]
         params[:unrefine].each do|u|
@@ -234,7 +239,7 @@ class QuickSearchController < ApplicationController
       )
       res = Resource::advancedsearch(params, models: true, page: @page, type: @type, length: @length, lengthsByType: session[:items_per_page], sort: @sort, sortsByType: session[:sort], user: current_user)
 
-      @query = res[:query_string]
+      @query = @query_proc = res[:query_string]
       @query_for_display = res[:query_for_display]
     else
         # Handle adding of refine filter

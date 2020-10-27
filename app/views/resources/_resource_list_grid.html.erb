@@ -1,4 +1,8 @@
 <%
+	if !defined?(from_collection_id) 
+		from_collection_id = nil
+	end
+	
 	if defined?(parent)
 		resource = parent
 	else
@@ -35,7 +39,7 @@
 
 							<% if f.sourceable %>
 								<% if f.access == 1 %>
-									<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
+									<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?, from_collection_id) %><br/>
 									<% break %>
 								<% end %>
 							<% end %>
@@ -50,7 +54,7 @@
 								<% g.media_files.each do |f| %>
 									<% if f.sourceable %>
 										<% if f.access == 1 %>
-											<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?) %><br/>
+											<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?, from_collection_id) %><br/>
 											<% thumb = true %>
 											<% break %>
 										<% end %>

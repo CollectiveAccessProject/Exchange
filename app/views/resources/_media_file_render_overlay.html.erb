@@ -1,9 +1,43 @@
+
 <div class="modal-dialog">
 <div class="modal-content">
   <div class="modal-header green-header">
 	<button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i><span class="sr-only">Close</span></button>
-	<% media_file = MediaFile.find(media_id) %>
-	<h2 class="modal-title" id="addMediaFormLabel"><%= editable ?  "Edit media" : truncate(sanitize(r_title), length: 60, omission: '...', separator: '<br>', escape: false)  %></h2>
+	<% 
+		media_file = MediaFile.find(media_id) 
+		resource = media_file.resource	
+		media_files_for_resource  = resource.media_files if !resource.nil?
+		
+		next_mf = prev_mf = nil
+		if !media_files_for_resource.nil?
+			media_files_for_resource.each_cons(3) do |mf| 
+				if (mf[0].id == media_id)
+					next_mf = mf[1]
+				end
+				if (mf[1].id == media_id)
+					prev_mf = mf[0]
+					next_mf = mf[2]
+				end
+				if (mf[2].id == media_id)
+					prev_mf = mf[1]
+				end
+				if !next_mf.nil? and !prev_mf.nil?
+					break
+				end
+			end
+		end
+	%>
+	<h2 class="modal-title" id="addMediaFormLabel"><%= editable ?  "Edit media" : truncate(sanitize(r_title), length: 60, omission: '...', separator: '<br>', escape: false)  %>
+		<div class="pull-right mediaNextPrev">
+			<%= 
+				link_to '<i class="fa fa-arrow-left" aria-hidden="true"></i>'.html_safe, load_media_modal_path(media_file, :editable => true, :media_id => prev_mf.id.to_i, :resource_id => resource.id), :remote => true, :class => 'mediaLoad' if !prev_mf.nil? 
+			%>
+			<%=  " | " if !next_mf.nil? and !prev_mf.nil? %>
+			<%= 
+				link_to '<i class="fa fa-arrow-right" aria-hidden="true"></i>'.html_safe, load_media_modal_path(media_file, :editable => true, :media_id => next_mf.id.to_i, :resource_id => resource.id), :remote => true, :class => 'mediaLoad' if !next_mf.nil? 
+			%>
+		</div>
+	</h2>
   </div>
   <div class="modal-body">
 	<div class="row">

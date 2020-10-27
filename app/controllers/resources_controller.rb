@@ -96,6 +96,10 @@ class ResourcesController < ApplicationController
     if(@resource.is_collection)
       # session for last collection so can attribute parent when resource has multiple parent collections
       session[:last_collection] = @resource.id
+    else 
+    	if(params[:collection_id].nil?)
+    		session[:last_collection] = params[:collection_id].to_i
+    	end
     end
 
     @search_next_resource_id = @search_previous_resource_id = nil
@@ -114,6 +118,15 @@ class ResourcesController < ApplicationController
     if(!@resource.can(:view, current_user))
       redirect_to root_path, notice: "Your account does not enable you to view this " + @resource.resource_type_for_display.downcase
       return
+    end
+    
+    if(@resource.is_collection)
+      # session for last collection so can attribute parent when resource has multiple parent collections
+      session[:last_collection] = @resource.id
+    else 
+    	if(!params[:collection_id].nil?)
+    		session[:last_collection] = params[:collection_id].to_i
+    	end
     end
 
     render :show
@@ -1206,12 +1219,12 @@ class ResourcesController < ApplicationController
     if ((current_user.has_role? :admin) || (current_user.has_role? :staff))
       params.require(:resource).permit(
           :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text, :cover_remove,
-          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id, :author_id
+          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id, :author_id, :collection_id
       )
     else
       params.require(:resource).permit(
           :slug, :title, :resource_type, :subtitle, :source_type, :source, :cover, :cover_caption, :cover_alt_text, :cover_remove,
-          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id
+          :copyright_license, :rank, :user_id, :copyright_notes, :access, :body_text, :in_response_to_resource_id, :collection_id
       )
     end
   end

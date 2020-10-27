@@ -33,6 +33,8 @@
 //= require moment
 //= require bootstrap-datetimepicker
 //= require_tree .
+//= require will_paginate_infinite
+//= require jquery.slidereveal
 
 // Add icontains selector to jQuery - case insensitive text search
 $.extend($.expr[":"], {

@@ -238,6 +238,11 @@ h6 {
 		padding:20px 40px 0px 40px;
 	}
 }
+
+.navbar {
+	margin-bottom: 0px;
+}
+
 .navbar-toggle {
 	margin-top: 12px;
 }
@@ -606,6 +611,12 @@ h6 {
 	.additionalFields{
 		display:none;
 	}
+	background-color: $white;
+	padding-top: 20px;
+	margin-top: -2px;
+	  
+    border: 1px solid $gray;
+    border-radius:  0px 0px 8px 8px;
 }
 @media(min-width:992px){
 	.affiliationItem{
@@ -623,6 +634,12 @@ h6 {
   .additionalFields{
     display:none;
   }
+  background-color: $white;
+  padding-top: 20px;
+  margin-top: -2px;
+  
+  border: 1px solid $gray;
+  border-radius:  0px 0px 8px 8px;
 }
 
 .shadowed{

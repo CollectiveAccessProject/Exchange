@@ -136,3 +136,4 @@ gem 'net-ldap'
 
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
+gem 'will_paginate_infinite'

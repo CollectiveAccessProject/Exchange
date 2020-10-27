@@ -12,13 +12,24 @@
 	<!--<a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;" class="btn btn-noBg btn-lg-icon pull-right" title="Show Learning Collection Information"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>-->
 		Part of:
 <%
+	parent_collection_resources = []
+	parent_collection = Resource.find(session[:last_collection]) if !session[:last_collection].nil? and parent_ids.include?(session[:last_collection])
+ 	parent_collection = @resource.parents.first if parent_collection.nil?
+
  	@resource.parents.each do |parent|
+ 		if(!parent_collection.nil?) and (parent.id == parent_collection.id) 
+ 			parent_collection.children.each do |r| 
+				next if ((!r.can(:view, current_user) and !r.can(:edit, current_user)) or r.is_response(@resource.id))
+				parent_collection_resources.push(r)
+			end 		
+ 		end
  		if(!session[:last_collection] || !parent_ids.include?(session[:last_collection]) || parent.id == session[:last_collection])
 %>
-			<a href="#" onClick="$('.hiddenParentPanel').hide(); $('#detailParentInfoPanel<%= i.to_s %>').toggle(); return false;"><%= sanitize(parent.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></a>
+			<a href="#" onClick="$('.hiddenParentPanel').hide(); $('#detailParentInfoPanel<%= parent.id.to_s %>').toggle(); return false;"><%= sanitize(parent.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></a>
 <%=
 			if(parent.resource_hierarchies) 
-				" <small>(#{parent.resource_hierarchies.count} resource".html_safe + (parent.resource_hierarchies.count == 1 ? ' ' : 's ') + ")</small>".html_safe
+				c = parent_collection_resources.count
+				" <small>(#{c} resource".html_safe + (c == 1 ? ' ' : 's ') + ")</small>".html_safe
 			end
 %><%=
 			if(!session[:last_collection] || !parent_ids.include?(session[:last_collection]))
@@ -30,18 +41,57 @@
 <%
 			i += 1
 		end
+		
+		if(parent.id == session[:last_collection]) 
+			parent_collection = parent
+		end
 	end
 %>
+ <% 
+ 	if(!parent_collection.nil?) 
+ 		next_res = nil
+ 		prev_res = nil
+ 		parent_collection_resources.each_cons(3) do |r| 
+ 			if (r[0].id == @resource.id)
+ 				next_res = r[1]
+ 			end
+ 			if (r[1].id == @resource.id)
+ 				prev_res = r[0]
+ 				next_res = r[2]
+ 			end
+ 			if (r[2].id == @resource.id)
+ 				prev_res = r[1]
+ 			end
+ 			if !next_res.nil? and !prev_res.nil?
+ 				break
+ 			end
+ 		end 	
+%>
+<div class="pull-right">
+<%=
+	if (prev_res) 
+ 		link_to '<i class="fa fa-arrow-left" aria-hidden="true"></i>'.html_safe, get_resource_view_path(prev_res, user_signed_in?)
+ 	end
+%>
+<%=  " | " if !next_res.nil? and !prev_res.nil? %>
+<%= 
+ 	if (next_res) 
+ 		link_to '<i class="fa fa-arrow-right" aria-hidden="true"></i>'.html_safe, get_resource_view_path(next_res, user_signed_in?)
+ 	end
+%>
+</div>
+ 
+		<% end %>
 	</H4>
 <%
  	i = 1
  	@resource.parents.each do |parent|
 %>
-  	<div class="panel panel-primary hiddenParentPanel" id="detailParentInfoPanel<%= i.to_s %>">
+  	<div class="panel panel-primary hiddenParentPanel" id="detailParentInfoPanel<%= parent.id.to_s %>">
       <div class="panel-body collection_summary_panel">
       	<div class="row">
 		  <div class="col-sm-12">
-      		<a href="#" onClick="$('#detailParentInfoPanel<%= i.to_s %>').hide(); return false;" class="btn btn-noBg btn-lg-icon pull-right"><i class="fa fa-close" aria-hidden="true"></i></a>
+      		<a href="#" onClick="$('#detailParentInfoPanel<%= parent.id.to_s %>').hide(); return false;" class="btn btn-noBg btn-lg-icon pull-right"><i class="fa fa-close" aria-hidden="true"></i></a>
 		  	<H5><%= link_to sanitize(parent.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) + " <i class='fa fa-external-link'></i>".html_safe, get_resource_view_path(parent, user_signed_in?), "class": "" %></H5>
 		  </div>
 		</div>
@@ -74,14 +124,13 @@
 		  <div class="col-sm-7 collection_summary_resources">
 		   <% if(parent.child_count > 0) %>
 			  <h5><%= (parent.child_count == 1) ? parent.child_count.to_s + " Item" : parent.child_count.to_s + " Items"  %> in this Learning Collection</h5>
-				<%= render :partial => 'resource_list_grid', :locals => {:parent => parent} %>
+				<%= render :partial => 'resource_list_grid', :locals => {:parent => parent, from_collection_id: parent.id} %>
 			<% end %>
 
 		  </div>
 		</div><!-- end row -->
     </div><!-- end panel body --></div><!-- end panel -->
 <%
-	i += 1
 		end
 %>
   </div><!-- end col -->

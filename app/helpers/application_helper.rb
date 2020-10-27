@@ -22,8 +22,12 @@ module ApplicationHelper
 
   end
 
-  def get_resource_view_path(resource, is_logged_in)
-    return is_logged_in ? resource_preview_path(resource) : resource_view_path(resource)
+  def get_resource_view_path(resource, is_logged_in, collection_id=nil)
+  	if(collection_id.nil?)
+    	return is_logged_in ? resource_preview_path(resource) : resource_view_path(resource)
+    else
+    	return resource_view_from_collection_path(resource, collection_id)
+    end
   end
 
   def get_file_icon(mimetype:, size:nil, image: nil, version:nil)
