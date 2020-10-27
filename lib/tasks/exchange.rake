@@ -13,18 +13,17 @@ namespace :exchange do
 		log = ActiveSupport::Logger.new('log/refresh_umma_collections_data.log')
 		log.info "Task started at #{Time.now}"
 		
-		
 		#
 		# Size of fetch
 		#
 		start = 0
-		limit = 100
+		limit = 10
 		
 		#
 	    # Enable deletion of collection objects removed from CA set
 	    #
 	    
-		remove_deleted_objects = true
+		remove_deleted_objects = false
 
 		CollectiveAccess.set_credentials ENV['COLLECTIVEACCESS_USER'], ENV['COLLECTIVEACCESS_KEY']
 
@@ -32,81 +31,108 @@ namespace :exchange do
 
 		query = 'ca_objects.access_specific:exchange'		# CA query to use to pull relevant objects
 		
-		# get last pull timestamp
-		ts = ''
+		# Get log_id from date (if no previous log_id set
+		#		https://collections.umma.umich.edu/service.php/Replication/getLogIDForTimestamp?timestamp=1503932530
+		# Pass log_id to simple service
+		#		???
+		
+		#https://collections.umma.umich.edu/service.php/simple/exchangeObjectListForSearch?timestamp=2020-06-01&mode=D&noCache=1
+		
+		# get last pull log_id
 		d = nil
-		if l = SyncLog.order("created_at").last
-		    d = (l.updated_at.to_time - (8 * 3600)).to_datetime
-		    query_limit =  query +  (query ? " AND " : "") + "modified:\"after " + d.strftime("%Y-%m-%d %T") + "\""
-		else 
-		    query_limit = query
-		end
+		
+		from_log_id = 0
+		 if l = SyncLog.order("created_at").last
+		 	from_log_id = l.log_id
+		 	print "Starting from log_id " + from_log_id.to_s + "\n"
+ 		end
 		
 		delete_count = 0
 		update_count = 0
-		if remove_deleted_objects
-		    print "Fetching current list of CollectiveAccess object_ids\n"
-		    valid_collectiveaccess_ids = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
-		    	protocol: ENV['COLLECTIVEACCESS_URL_PROTOCOL'],
-                url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
-                port: ENV['COLLECTIVEACCESS_PORT'].to_i,
-                endpoint: 'object_ids',
-                get_params: {
-                        q: query,
-                        noCache: 0
-                } 
-		    Resource.where(resource_type: Resource::COLLECTION_OBJECT).each do |r|
-		    
-		        cid = r.collectiveaccess_id.to_i
-		        if ((cid > 0) and (!valid_collectiveaccess_ids.key?(cid.to_s)))
-		            begin
+		
+		if remove_deleted_objects and (from_log_id > 0)
+			deleted_objects = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
+												url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
+												port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+												endpoint: 'exchangeObjectListForDisplay',
+												get_params: {
+														q: query,
+														start: 0,
+														log_id: from_log_id.to_s,
+														mode: 'D', # A = deleted records
+														noCache: Rails.env.development? ? 1 : 0
+												}
+			deleted_objects.each do |d|
+				Resource.where(resource_type: Resource::COLLECTION_OBJECT, collectiveaccess_id: d.collectiveaccess_id.to_i).each do |r|
+					begin
 		                r.destroy
 		                delete_count = delete_count + 1
 		            rescue => e
-		            
+		            	print "Could not delete object: " + e.message
 		            end
-		        end
-		    end
+				end
+			end
+		
 		end
+		
 		
 		# query UMMA collections to get list of all records in chunks of 100 and
 		# create or update exchange resources based on collectiveaccess_id
 		
 		valid_collectiveaccess_ids = []
 		
-		synclog = SyncLog.new(num_deleted: delete_count, num_updated: update_count)
+		synclog = SyncLog.new(num_deleted: delete_count, num_updated: update_count, log_id: from_log_id)
 		synclog.save
 		
-        if l 
-            print "Pulling updates made to collection objects after " + d.strftime("%Y-%m-%d %T") + "\n"
+        if from_log_id > 0
+            print "Pulling updates made to collection objects from log_id " + from_log_id.to_s + "\n"
+            ts = nil
         else
             print "Pulling all collection objects\n"
+            ts = "2020-10-20"	# default start date
         end
 		begin
 			log.info "Query CollectiveAccess simple services with start=#{start}"
 			log.debug "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
 
 			#puts "Params are: hostname: #{ENV['COLLECTIVEACCESS_HOST']} url_root: #{ENV['COLLECTIVEACCESS_URL_ROOT']} port: #{ENV['COLLECTIVEACCESS_PORT']}"
-
+			#print "START=#{start}; LIMIT=#{limit}\n"
 			# query exchangeObjectListForDisplay service
-			#puts "q=" + query_limit
 			object_list_for_display = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
-																												url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
-																												port: ENV['COLLECTIVEACCESS_PORT'].to_i,
-																												endpoint: 'exchangeObjectListForDisplay',
-																												get_params: {
-																														q: query_limit,
-																														start: start,
-																														limit: limit,
-																														noCache: Rails.env.development? ? 1 : 0
-																												}
+																	url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
+																	port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+																	endpoint: 'exchangeObjectListForDisplay',
+																	get_params: {
+																			q: query,
+																			start: start,
+																			limit: limit,
+																			timestamp: ts,
+																			log_id: from_log_id.to_s,
+																			mode: 'A', # A = all inserts and updates
+																			noCache: Rails.env.development? ? 1 : 0
+																	}
 
 			log.info "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
-			#print "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}"
+			#print "Got response from 'exchangeObjectListForDisplay' with size #{object_list_for_display.size}\n"
 
 			# add 'main' record data with hardcoded mapping
-			object_list_for_display.each do |_, value|
-				if value.is_a?(Hash) && value['collectiveaccess_id'].present?
+			#print "TS=" + ts + "\n"
+			#print "Log bounds are " + object_list_for_display['log']['start'].to_s + " TO " + object_list_for_display['log']['end'].to_s + "\n"
+		
+			if !object_list_for_display.nil? && !object_list_for_display['log'].nil? && (object_list_for_display['log']['start'] == object_list_for_display['log']['end'])
+				break
+			end
+		
+			new_log_id = nil
+			object_list_for_display.each do |k, value|
+				if k == 'log'	
+					if value['end'].to_i > 0		
+						new_log_id = value['end'].to_i + 1	
+					end	
+					
+				
+				elsif value.is_a?(Hash) && value['collectiveaccess_id'].present?
+					
 					log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']}"
 					puts  "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} :: #{value['subtitle']}"
                     update_count = update_count + 1
@@ -151,7 +177,6 @@ namespace :exchange do
 
 						if (value['media'])
 							sourceable_ids = r.media_files.select { |m| m.sourceable_type == 'CollectiveaccessLink' }.map { |a| a.sourceable_id}
-							#puts "MEDIA = " + value['media']
 							
 							# Get existing keys for resource
 							existing_mfs = MediaFile.where("(resource_id = ?) AND (sourceable_type = 'CollectiveaccessLink')", r.id)
@@ -205,15 +230,18 @@ namespace :exchange do
 
 			# query indexing data service
 			object_list_for_search = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
-																											 url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
-																											 port: ENV['COLLECTIVEACCESS_PORT'].to_i,
-																											 endpoint: 'exchangeObjectListForSearch',
-																											 get_params: {
-																													 q: query_limit,
-																													 start: start,
-																													 limit: limit,
-																													 noCache: Rails.env.development? ? 1 : 0
-																											 }
+																			 url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
+																			 port: ENV['COLLECTIVEACCESS_PORT'].to_i,
+																			 endpoint: 'exchangeObjectListForSearch',
+																			 get_params: {
+																					q: query,
+																					start: start,
+																					limit: limit,
+																					timestamp: ts,
+																					log_id: from_log_id.to_s,
+																					mode: 'A', # A = all inserts and updates
+																					noCache: Rails.env.development? ? 1 : 0
+																			 }
 
 			log.info "Got response with size #{object_list_for_search.size}"
 
@@ -280,6 +308,12 @@ namespace :exchange do
 			end
 
 			start += limit
+			
+			if !new_log_id.nil? and (new_log_id > 0)
+				print "Setting log_id to " + new_log_id.to_s + "\n"
+				synclog.log_id = new_log_id
+				synclog.save	
+			end
 
 			# only do one loop run in development. 100 test records.
 			# if Rails.env.development?
