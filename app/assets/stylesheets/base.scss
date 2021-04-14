@@ -286,6 +286,12 @@ h6 {
 		}*/
 	}
 }
+
+form.collectionObjectResultsCreate input.form-control{
+	display:inline;
+	border-radius:0px;
+}
+
 .navbar-form{
 	.quickSearch{
 		position:relative;
@@ -1337,7 +1343,7 @@ blockquote .linkListCaption, blockquote .relatedResourceListCaption {
     height: 25px;
 }
 
-.collectionObjectResultsAdd, .resourceResultsAdd {
+.collectionObjectResultsAdd, .collectionObjectResultsCreate, .resourceResultsAdd {
     font-size: 14px;
     padding-bottom: 10px;
 }

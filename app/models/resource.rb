@@ -284,6 +284,7 @@ class Resource < ActiveRecord::Base
     recs.each do |rec| 
         record['edit_users'].push(rec[0].to_i)
     end
+    record['edit_users'].push(self.user_id)
     recs = ActiveRecord::Base.connection.execute("SELECT group_id FROM resources_groups WHERE resource_id = " + self.id.to_s + " AND access = 1")
     recs.each do |rec| 
         record['read_groups'].push(rec[0].to_i)
@@ -609,6 +610,79 @@ class Resource < ActiveRecord::Base
   def parents
     return Resource.joins(:resource_hierarchies).where("child_resource_id = ?", self.id)
   end
+  
+  # Add children to resource
+  def add_child_resources(add_child_resource_ids, current_user)
+    created = 0
+    exists = 0
+    for add_child_resource_id in add_child_resource_ids
+      begin
+        child_resource = Resource.find(add_child_resource_id)
+        if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
+          raise StandardError, 'Access Denied'
+        end
+        if (self.is_collection or self.is_crcset)
+          if (ResourceHierarchy.where(resource_id: self.id, child_resource_id: add_child_resource_id).length > 0)
+            exists = exists + 1
+          else
+            prel = ResourceHierarchy.where(resource_id: self.id, child_resource_id: add_child_resource_id).create
+            created = created + 1
+          end
+        elsif(self.is_resource)
+        	if (ActiveRecord::Base.connection.execute("SELECT * FROM media_files mf INNER JOIN collectionobject_links AS l ON mf.sourceable_id = l.id WHERE mf.sourceable_type = 'CollectionobjectLink' AND mf.resource_id = " + self.id.to_s + " AND l.resource_id = " + add_child_resource_id.to_i.to_s).count > 0)
+            exists = exists + 1
+          else
+            media_file = MediaFile.new({
+                                            caption: "",
+                                            copyright_notes: "",
+                                            access: true
+                                        })
+            media_file.set_sourceable_media({collectionobject_link: {original_link: add_child_resource_id}});
+			if (child_resource.is_collection_object)
+			  media_file.display_collectionobject_link = 1
+			  media_file.caption_type = 4
+			  cap_fields = JSON.parse(child_resource.indexing_data)
+			  long_caption = ''
+			  if cap_fields['artist']
+				long_caption += cap_fields['artist'].to_s + '<br/>'
+			  end
+			  if cap_fields['title']
+			    long_caption += '<em>' + cap_fields['title'].to_s + '</em><br/>'
+			  end
+			  material_fields = ''
+			  if cap_fields['support']
+				material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
+			  else
+				material_fields = cap_fields['medium'].to_s
+			  end
+			  if cap_fields['date_created']
+			    long_caption += cap_fields['date_created'].to_s + '<br/>'
+			  end
+			  if material_fields != ''
+				long_caption += material_fields.to_s + '<br/>'
+			  end
+			  if cap_fields['credit_line']
+				long_caption += cap_fields['credit_line'].to_s + '<br/>'
+			  end
+			  if cap_fields['idno']
+				long_caption += cap_fields['idno'].to_s
+			  end
+			  media_file.caption = long_caption
+			end
+			
+            media_file.resource_id = self.id
+            media_file.save
+            created = created + 1
+          end
+        end
+        self.touch
+      rescue StandardError => ex
+        return {:status => :err, :error => ex.message}
+        break
+      end
+    end
+	return {:status => :ok, :numAdded => created, :numExisting => exists, :ids => add_child_resource_ids, :resource_id => self.id}
+  end
 
   # Return current author name
   #
@@ -677,8 +751,9 @@ class Resource < ActiveRecord::Base
   def parsed_body_text
     body_text_proc = self[:body_text]
 
-    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(caption=\"[A-Za-z]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match }
-
+    matches = body_text_proc.to_enum(:scan, /&lt;media[ ]+([A-Za-z0-9_\-]+)[ ]*(version=\"[A-Za-z]*\")?[ ]*(width=\"[\d]+\")?[ ]*(height=\"[\d]+\")?[ ]*(caption=\"[A-Za-z]+\")?[ ]*(float=\"[A-Za-z]+\")?&gt;/).map { Regexp.last_match } if !body_text_proc.nil?
+	matches = [] if !matches
+	
     matches.each do |m|
       if (mf = MediaFile.where(:resource_id => self.id, :slug => m[1]).first)
 	if mf.access == 0

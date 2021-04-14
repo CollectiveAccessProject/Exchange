@@ -691,87 +691,44 @@ class ResourcesController < ApplicationController
   end
 
   #
-  # Add one or more resources, return data
+  # Create new collection or resource and add one or more sub-resources
+  #
+  def create_new_resource_with_children
+    params.permit(:title, :type)
+    
+    if params[:title].nil? || params[:title].length == 0
+    	resp = { :status => :err, :error => 'Must set title' }
+    else 
+		type = Resource::RESOURCE
+		type = Resource::LEARNING_COLLECTION if params[:type] === 'collection' 
+	
+		@resource = Resource.new({title: params[:title], subtitle: '', copyright_notes: '', resource_type: type})
+    	@resource.user = current_user
+		@resource.save
+		set_roles
+		
+		@resource.touch
+		add_child_resource_ids = params[:add_child_resource_ids]
+		resp = @resource.add_child_resources(add_child_resource_ids, current_user)
+	end
+    respond_to do |format|
+      format.json { render :json => resp, status: :ok }
+    end
+  
+  end
+  
+  #
+  # Add one or more sub-resources, return data
   #
   def add_child_resources
     # response
-
-    # TODO: Check if user can relate to target
-    add_child_resource_ids = params[:add_child_resource_ids]
-
-    created = 0
-    exists = 0
-
-    resp = nil
-    for add_child_resource_id in add_child_resource_ids
-      begin
-        child_resource = Resource.find(add_child_resource_id)
-        if(!child_resource.can(:view, current_user) and !child_resource.can(:edit, current_user))
-          raise StandardError, 'Access Denied'
-        end
-        if (@resource.is_collection or @resource.is_crcset)
-          if (ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).length > 0)
-            exists = exists + 1
-          else
-            prel = ResourceHierarchy.where(resource_id: @resource.id, child_resource_id: add_child_resource_id).create
-            created = created + 1
-          end
-        elsif(@resource.is_resource)
-          # if (MediaFile.joins(:sourceable).where(media_files: {resource_id: @resource.id}, sourceable: {resource_id: add_child_resource_id}).length > 0)
-          if (ActiveRecord::Base.connection.execute("SELECT * FROM media_files mf INNER JOIN collectionobject_links AS l ON mf.sourceable_id = l.id WHERE mf.sourceable_type = 'CollectionobjectLink' AND mf.resource_id = " + @resource.id.to_s + " AND l.resource_id = " + add_child_resource_id.to_i.to_s).count > 0)
-            exists = exists + 1
-          else
-            @media_file = MediaFile.new({
-                                            caption: "",
-                                            copyright_notes: "",
-                                            access: true
-                                        })
-            @media_file.set_sourceable_media({collectionobject_link: {original_link: add_child_resource_id}});
-			if (child_resource.is_collection_object)
-			  @media_file.display_collectionobject_link = 1
-			  @media_file.caption_type = 4
-			  cap_fields = JSON.parse(child_resource.indexing_data)
-			  long_caption = ''
-			  if cap_fields['artist']
-				long_caption += cap_fields['artist'].to_s + '<br/>'
-			  end
-			  if cap_fields['title']
-			    long_caption += '<em>' + cap_fields['title'].to_s + '</em><br/>'
-			  end
-			  material_fields = ''
-			  if cap_fields['support']
-				material_fields = cap_fields['medium'].to_s + ' | ' + cap_fields['support'].to_s
-			  else
-				material_fields = cap_fields['medium'].to_s
-			  end
-			  if cap_fields['date_created']
-			    long_caption += cap_fields['date_created'].to_s + '<br/>'
-			  end
-			  if material_fields != ''
-				long_caption += material_fields.to_s + '<br/>'
-			  end
-			  if cap_fields['credit_line']
-				long_caption += cap_fields['credit_line'].to_s + '<br/>'
-			  end
-			  if cap_fields['idno']
-				long_caption += cap_fields['idno'].to_s
-			  end
-			  @media_file.caption = long_caption
-			end
-            # TODO: does user have access to this resource?
-            @media_file.resource_id = @resource.id
-            @media_file.save
-            created = created + 1
-          end
-        end
-        @resource.touch
-      rescue StandardError => ex
-        resp = {:status => :err, :error => ex.message}
-        break
-      end
+	if(!@resource.can(:edit, current_user))
+        raise StandardError, 'Access Denied'
     end
 
-    resp = {:status => :ok, :numAdded => created, :numExisting => exists, :ids => add_child_resource_ids} if(!resp)
+    add_child_resource_ids = params[:add_child_resource_ids]
+
+	resp = @resource.add_child_resources(add_child_resource_ids, current_user)
     respond_to do |format|
       format.json { render :json => resp, status: :ok }
     end
