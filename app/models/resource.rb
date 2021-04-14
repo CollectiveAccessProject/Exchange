@@ -234,18 +234,16 @@ class Resource < ActiveRecord::Base
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
-
     if (indexing_data)
-      index_data_hash = JSON.parse(indexing_data)
-      if index_data_hash.is_a? Hash
-        record = record.merge(index_data_hash)
-      end
+      # index_data_hash = JSON.parse(indexing_data)
+#       if index_data_hash.is_a? Hash
+#         record = record.merge(index_data_hash)
+#       end
     end
 
     if (record['resource_type'].to_i == Resource::COLLECTION_OBJECT)
-        record['on_display'] = record['on_display'] == 1 ? "1" : "0"
+        record['on_display'] = record['on_display'] ? "YES" : "NO"
     end
-
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
     record['role'] = record['affiliation'] = self.roles.pluck("name")
@@ -1155,7 +1153,7 @@ class Resource < ActiveRecord::Base
             v = params[f].gsub(/["']+/, '')
 
             if (f == 'on_display')
-                query_elements.push(f + ':' + (v ? "1" : "0"))
+                query_elements.push(f + ':' + (v ? "YES" : "NO"))
             elsif (f == 'date_created')
             
                 m = /["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i.match(v)

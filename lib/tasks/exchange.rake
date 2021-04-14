@@ -254,8 +254,7 @@ namespace :exchange do
 					log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
 					if (r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first)
 						puts "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
-						value['on_display'] = value['current_location'] ? 1 : 0
-						
+						value['on_display'] = (value['current_location'].length > 0) ? 1 : 0
 						
 						value['start_date'] = nil
 						value['end_date'] = nil
@@ -302,7 +301,7 @@ namespace :exchange do
 						k = k + "|" + value['keywords_aat'] if value['keywords_aat']
 						value['keywords'] = k
 						
-						r.update(indexing_data: JSON.generate(value),  artist_gender: value['artist_gender'], physical_description: value['physical_description'], medium_and_support_display: value['medium_and_support_display'], credit_line: value['credit_line'], date_display: value['date_created'], classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
+						r.update(indexing_data: JSON.generate(value),  artist_gender: value['artist_gender'], physical_description: value['physical_description'], medium_and_support_display: value['medium_and_support_display'], credit_line: value['credit_line'], date_display: value['date_created'], classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'].length > 0 ? 1 : 0, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
 					end
 				end
 			end

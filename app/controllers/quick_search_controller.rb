@@ -174,6 +174,7 @@ class QuickSearchController < ApplicationController
     @length = params[:length].to_i
     @sort = params[:sort]
     
+    #Rails.logger.info("QQQ " + @query_proc);
     # Handle removal of filter
     if params[:unrefine] and session[:refine] and session[:refine][@type]
         params[:unrefine].each do|u|
@@ -208,7 +209,7 @@ class QuickSearchController < ApplicationController
     end
 
     # rewrite on_display
-    @query_proc = @query_proc.gsub(/on_display:["]*([A-Za-z]+)["]*/, 'on_display:1') if @query_proc
+    @query_proc = @query_proc.gsub(/on_display:["]*([A-Za-z]+)["]*/, 'on_display:YES') if @query_proc
     
     # rewrite rating
     #@query_proc = @query_proc.gsub(/rating:(\[[1-9]+ TO 5\])/, '(rating:\\1 OR rating:0)') if @query_proc
