@@ -860,7 +860,7 @@ class Resource < ActiveRecord::Base
     value.gsub!(/"+/, "")
     case filter
         when "on_display"
-            return (value.to_i > 0) ? "Yes" : "No"
+            return value
         when "affiliation"
             if Rails.application.config.x.user_roles.invert.has_key? value.to_sym
                 return Rails.application.config.x.user_roles.invert[value.to_sym]
@@ -1228,7 +1228,7 @@ class Resource < ActiveRecord::Base
             v = params[f].gsub(/["']+/, '')
 
             if (f == 'on_display')
-                query_elements.push(f + ':' + (v ? "YES" : "NO"))
+                query_elements.push(f + ':' + "YES")
             elsif (f == 'date_created')
             
                 m = /["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i.match(v)
