@@ -100,11 +100,11 @@
 
 		<div class="hidden-sm hidden-xs col-md-3 col-lg-3 refineContainer" id="colObjectRefineContainer">
 						<h3 class="quickSearchRefineHeader">Refine by</h3>
-						<% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"1\"")) %>  
+						<% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"YES\"")) %>  
 							<div class="row">
 								<div class="col-md-12">
 									<h6>On display?</h6>
-									<input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="1" data-filter="on_display"/> 
+									<input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="YES" data-filter="on_display"/> 
 								</div>
 							</div>
 						<% end %>
