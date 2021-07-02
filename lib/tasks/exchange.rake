@@ -13,6 +13,7 @@ namespace :exchange do
 		log = ActiveSupport::Logger.new('log/refresh_umma_collections_data.log')
 		log.info "Task started at #{Time.now}"
 		
+		
 		#
 		# Size of fetch
 		#
@@ -52,6 +53,7 @@ namespace :exchange do
 		
 		if remove_deleted_objects and (from_log_id > 0)
 			deleted_objects = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
+												protocol: ENV['COLLECTIVEACCESS_URL_PROTOCOL'],
 												url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
 												port: ENV['COLLECTIVEACCESS_PORT'].to_i,
 												endpoint: 'exchangeObjectListForDisplay',
