@@ -1,17 +1,16 @@
-
 <div class="row">
-	<div class="col-sm-4 col-sm-offset-4">
+	<div class="col-sm-6 col-sm-offset-3">
 		<%= devise_error_messages! %>
 		<% flash.each do |key, value| %>
        		<div class="flash-error <%= key %>"><%= value %></div>
     	<% end %>
-		<H2>
-			Log in
-		</H2>
+		
 <div class="form-group">
 	<%= render "devise/shared/omniauth_links" %>
 	<%= link_to "<div class='icon'><i class='fa fa-sign-in'></i></div> Log in as Exchange User".html_safe, '#', :class => "btn btn-default btn-small oauth-button", :id => "exchange_sign_in" %>
+ 	<%= link_to "<div class='icon'>".html_safe + image_tag('shibboleth.png') + "</div>Register as new user".html_safe, new_user_registration_path, :class => "btn btn-default btn-small oauth-button" %><br/>	
 </div>
+
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), :html => {:class => 'login_new_user'}) do |f| %>
  		  <div class="panel panel-default">
     		<div class="panel-body">   			
@@ -55,6 +54,8 @@
 		
 	</div><!-- end col -->
 </div><!-- end row -->
+
+
 <script>
 	$(document).ready(function(){
 		$('#exchange_sign_in').on('click', function(){

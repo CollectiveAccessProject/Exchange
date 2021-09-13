@@ -368,6 +368,7 @@ form.collectionObjectResultsCreate input.form-control{
 				text-transform:none;
 				padding:0px;
 			}
+			margin-right: 26px;
 		}
 		#advSearchLink {
 			text-align:right;
@@ -811,8 +812,13 @@ select.input-sm{
 	position: relative;
 	top: 3px;
 }
+.popover {
+    opacity: 0.9 !important;
+    text-align: center;
+}
 .popover-content{
 	color: $gray;
+    text-align: center;
 }
 .previewThumbnail{
 	min-height:250px;

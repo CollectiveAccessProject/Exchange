@@ -8,8 +8,6 @@
 							<div class="row">
 								<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
 									<% if @collection_objects_num_pages > 0 %>
-										<nobr>(page <%= @collection_objects_page.to_s + "/" + @collection_objects_num_pages.to_s %>)</nobr>
-										
 										<button id='colObjectResultsRefineTrigger' class='btn btn-default'>Refine</button>
 									<% end %>
 									<button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_collection_object" href="#">Refine</button>
@@ -72,7 +70,7 @@
 							</div>
 						<% end %>
 					</div>
-					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="border-left: 1px dotted #ccc; overflow: auto; height: 600px">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="border-left: 1px dotted #ccc;">
 <%
 	col = 0
 	thumb = false

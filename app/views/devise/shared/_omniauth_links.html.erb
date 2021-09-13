@@ -5,7 +5,7 @@
 
   <div class="text-center oauth-buttons">
   	<%= link_to "<div class='icon'>".html_safe + image_tag('shibboleth.png') + "</div>Log in with UMICH".html_safe, omniauth_authorize_path(resource_name, :shibboleth), :class => "btn btn-default btn-small oauth-button" %><br/>
-  	<%= link_to "<div class='icon'><i class='fa fa-facebook'></i></div> Log in with Facebook".html_safe, omniauth_authorize_path(resource_name, :facebook), :class => "btn btn-default btn-small oauth-button" %><br/>
-  	<%= link_to "<div class='icon'><i class='fa fa-google'></i></div> Log in with Google".html_safe, omniauth_authorize_path(resource_name, :google_oauth2), :class => "btn btn-default btn-small oauth-button" %>
+<!--  	<%= link_to "<div class='icon'><i class='fa fa-facebook'></i></div> Log in with Facebook".html_safe, omniauth_authorize_path(resource_name, :facebook), :class => "btn btn-default btn-small oauth-button" %><br/>
+  	<%= link_to "<div class='icon'><i class='fa fa-google'></i></div> Log in with Google".html_safe, omniauth_authorize_path(resource_name, :google_oauth2), :class => "btn btn-default btn-small oauth-button" %>-->
   </div>
 <% end -%>

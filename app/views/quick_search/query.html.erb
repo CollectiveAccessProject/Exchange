@@ -16,7 +16,7 @@
             <% author = User.find(@query.split(':')[1]) %>
             <h2><%= sanitize(@query.gsub(/([a-zA-Z _-]+:)([a-zA-Z0-9 _-]+)/, 'Resources &amp; Learning Collections Created by: ')) + '<em>'.html_safe + author.name  + '</em>'.html_safe%></h2>
         <% else %>
-            <h2>Results for <%= sanitize(@query) %></h2>
+           <!-- <h2>Results for <%= sanitize(@query) %></h2>-->
         <% end %>
     <% end %>
   </div>

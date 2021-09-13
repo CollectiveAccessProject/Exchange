@@ -32,8 +32,8 @@ $red:#BA0017;
 		font-size:35px;
 	}
 	.close:hover{
-		opacity:.9;
-		color:white;
+		opacity:1;
+		color:black;
 	}
 }
 .green-header{
@@ -145,7 +145,8 @@ $red:#BA0017;
 	cursor: not-allowed;
 }
 .popoverNarrow{
-	width: 160px;
+	width: 160px !important;
+    text-align: center;
 }
 .mediaListIcon, .collectionContentsItem{
 	position:relative;

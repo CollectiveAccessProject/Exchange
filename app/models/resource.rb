@@ -234,12 +234,17 @@ class Resource < ActiveRecord::Base
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
-    if (indexing_data)
+   # if (indexing_data)
       # index_data_hash = JSON.parse(indexing_data)
 #       if index_data_hash.is_a? Hash
 #         record = record.merge(index_data_hash)
 #       end
-    end
+   # end
+   
+   
+   record.each do |key, value| 
+   	record[key] = I18n.transliterate(value) if value.is_a? String # strip diacritics
+   end
 
     if (record['resource_type'].to_i == Resource::COLLECTION_OBJECT)
         record['on_display'] = record['on_display'] ? "YES" : "NO"
@@ -910,6 +915,8 @@ class Resource < ActiveRecord::Base
     options[:page] = 1 if (!options[:page] || (options[:page] < 1))
     length = options[:length]
     length = WillPaginate.per_page if (!length)
+    
+    query_proc = I18n.transliterate(query_proc)	# strip diacritics
 	query_proc.gsub!(/author_id:([0-9]+)/, '(author_id:\1 OR user_id:\1)')
     
     # Quote parts of query that appear to be identifiers
@@ -1212,6 +1219,10 @@ class Resource < ActiveRecord::Base
         # noop
       end
 
+    end
+    
+    query_values.each do |key, value|
+    	query_values[k] = I18n.transliterate(v)	if value.is_a? String # strip diacritics
     end
     
     query_elements_string = query_elements.dup
