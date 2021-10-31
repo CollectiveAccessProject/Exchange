@@ -281,9 +281,9 @@ def get_current_locations_for_objects
     locations = []
     Resource.select(:location).distinct.order(:location).each do|l|
         next if (!l or !l.location or (l.location.length == 0))
-        lp = l.location.split(/[ ]*➔[ ]*/)
+        lp = l.location.split(/[ ]*➜[ ]*/)
         lpe = lp.select { |v| !v.match(/(Cabinet [\dA-Z]{1,3}|Shelf [\dA-Z]{1,3})/) }
-        loc = lpe.join(" ➔ ")
+        loc = lpe.join(" ➜ ")
         locations.push(loc) if !locations.include? loc
     end
     

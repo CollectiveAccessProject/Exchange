@@ -1,0 +1,53 @@
+<% thumb = false %>
+
+<div class="col-md-2 qsResult">
+	<% if (current_user && @available_collections && (@available_collections.length > 0)) %>
+	<div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= resource.id.to_s %>" class="qsResultCheckbox"/></div>
+	<% end %>
+
+	<div style="margin-right: 10px">
+	<% if resource.cover %>
+		<% thumb = true %>
+		<%= link_to(image_tag(resource.cover.thumb("200x200").url, alt: strip_tags(resource[:title])), get_resource_view_path(resource[:id], user_signed_in?)) %>
+	<% else %>
+		<% resource.media_files.each do |f| %>
+			<% if f.sourceable %>
+				<% if f.access == 1 %>
+					<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(resource[:id], user_signed_in?), class: "qsResultThumb" %><br/>
+					<% thumb = true %>
+					<% break %>
+				<% end %>
+			<% end %>
+		<% end %>
+	<% end %>
+	</div>
+	<% if(thumb == false) %>
+		<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(resource[:id], user_signed_in?) %><br/>
+	<% end %>
+	<div class="text-left qsResultText">
+	  <% if resource[:access] < 1 %><i class="fa fa-eye-slash" aria-hidden="true"></i><% end %>
+	  <%= link_to sanitize(resource[:title].html_safe, tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(resource[:id], user_signed_in?) %>
+
+	  <div class="qsMoreCaption">
+		<%
+		  if resource.author_id
+			user_author = resource.get_author_name.gsub(/\([\S]+\)/, '')
+		  else
+			user_author = resource.user.name
+		  end
+		%>
+		<%
+		  if (Time.now.to_i - resource.updated_at.to_i) > 86400
+			display_time = resource.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
+		  else
+			display_time = time_ago_in_words(resource.updated_at) + ' ago'
+		  end
+		%>
+		<%= "<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>".html_safe %>
+		<% if resource.total_ratings > 0 %>
+			<div class='small'><span class="rateTitle"><strong>Rating: </strong></span><%= rating_for r, 'quality', star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png" %></div>
+		<% end %>
+	  </div>
+	</div>
+	<% thumb = false %>
+</div>

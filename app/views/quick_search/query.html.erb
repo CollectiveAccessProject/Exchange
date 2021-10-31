@@ -98,10 +98,20 @@
 
 <script>
     jQuery(document).on('shown.bs.tab', '#quick_search_tabs', function(event) {
-        var target = $(event.target).attr("href");
+       var target = $(event.target).attr("href");
+       
+       if(jQuery('.refineContainer').length > 0) {
+       	jQuery('.refineContainer').slideReveal('hide'); // hide any open refine panel
+       }
        
        var type, url, items_per_page, fsort;
        switch(target) {
+       		case '#tab_collection_object_results':
+                type = 'resource';
+                url = "<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>";
+                items_per_page = <%= @items_per_page_defaults['collection_object'] %>;
+                fsort = "<%= @sort_defaults['collection_object'] %>";
+                break;
             case '#tab_resource_results':
                 type = 'resource';
                 url = "<%= query_results_path(type: "resource", page: @resources_page, query: @query) %>";
@@ -127,7 +137,7 @@
              jQuery("#results_" + type).html(data.html);
              return true;
          });
-        }
+       }
     });
 </script>
 

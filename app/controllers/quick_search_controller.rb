@@ -1,4 +1,6 @@
 require 'QuickSearchLinkRenderer'
+require 'ResourceLinkRenderer'
+
 class QuickSearchController < ApplicationController
 
   # UI autocomplete on resource title (used by related resources lookup)
@@ -174,7 +176,6 @@ class QuickSearchController < ApplicationController
     @length = params[:length].to_i
     @sort = params[:sort]
     
-    #Rails.logger.info("QQQ " + @query_proc);
     # Handle removal of filter
     if params[:unrefine] and session[:refine] and session[:refine][@type]
         params[:unrefine].each do|u|

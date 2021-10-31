@@ -1,0 +1,56 @@
+<% thumb = false %>
+<div class="col-sm-2 qsResult">
+	<div class="text-left">
+	  <% if collection[:access] < 1 %><i class="fa fa-eye-slash" aria-hidden="true"></i><% end %>
+	  <%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + sanitize(collection[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(collection[:id], user_signed_in?) %></div>
+	<% if collection.cover %>
+		<% thumb = true %>
+		<%= link_to(image_tag(collection.cover.thumb("200x200").url), get_resource_view_path(collection[:id], user_signed_in?)) %>
+	<% else %>
+		<% if(collection.resource_hierarchies.count) %>
+			<% collection.resource_hierarchies.each do |rel| %>
+				<% if(rel.child_resource.is_resource) %>
+					<% rel.child_resource.media_files.each do |f| %>
+						<% if f.sourceable %>
+							<% if f.access == 1 %>
+								<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.resource_id, user_signed_in?) %><br/>
+								<% thumb = true %>
+								<% break %>
+							<% end %>
+						<% end %>
+					<% end %>
+					<% if(thumb == true) %>
+						<% break %>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+	<% end %>
+	<% if(thumb == false) %>
+		<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(collection, user_signed_in?) %><br/>
+	<% end %>
+	<div class="qsResultText">
+	  <%=	"<div class='small'><i>Contains #{collection.resource_hierarchies.count}".html_safe + ((collection.resource_hierarchies.count == 1) ? " item" : " items") + "</i></div>".html_safe %>
+	  <%
+		if collection.author_id
+		  user_author = collection.get_author_name.gsub(/\([\S]+\)/, '')
+		else
+		  user_author = collection.user.name
+		end
+	  %>
+	  <%
+		if (Time.now.to_i - collection.updated_at.to_i) > 86400
+		  display_time = collection.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
+		else
+		  display_time = time_ago_in_words(collection.updated_at) + ' ago'
+		end
+	  %>
+	  <div class="qsMoreCaption">
+		<%= sanitize("<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>") %>
+		<% if collection.total_ratings > 0 %>
+		  <div class='small'><span class="rateTitle"><strong>Rating: </strong></span><%= rating_for collection, 'quality', star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png" %></div>
+		<% end %>
+	  </div>
+	</div>
+	<% thumb = false %>
+</div>

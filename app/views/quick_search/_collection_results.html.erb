@@ -3,43 +3,73 @@
   <div class="panel-body">
     <div>
       <div class="row">
-        <div class="col-sm-12">
-          <h4><div class="row">
-                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                    <%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
-                
-                    <% if @collections_num_pages > 0 %>
-                        <nobr>(page <%= @collections_page.to_s + "/" + @collections_num_pages.to_s %>)</nobr>
-                    <% end %>
-                    <button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_collection" href="#">Refine</button>
-                </div>
-                 <div id="collection_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
-                  <form class="searchPaging">
-                    <div class="searchFormElement">
-                        <nobr>Results Per Page <%= select_tag("collection_num_items_per_page", options_for_select(itemsPerPageOptionList, @items_per_page_defaults['collection']), {id: "collection_num_items_per_page"}) %></nobr>
-                        <nobr>Sort by <%= select_tag("collection_sort", options_for_select(sortOptions('collection'), @sort_defaults['collection']), {id: "collection_sort"}) %></nobr>
-                    </div>
-                  </form>
-                </div>
-            </div>
-          </h4>
-        </div>
-      </div>
+			<div class="col-sm-12">
+				<h4>
+					<div class="row">
+						<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><%= @collections_count %> Learning Collection<%= (@collections_count == 1) ? "" : "s" %>
+							<% if @collections_num_pages > 0 %>
+								<button id='collectionResultsRefineTrigger' class='btn btn-default'>Refine</button>
+							<% end %>
+							<button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_collection" href="#">Refine</button>
+						</div>
+						<div id="collection_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
+							<form class="searchPaging">
+								<div class="searchFormElement">
+									<nobr>Sort by <%= select_tag("collection_sort", options_for_select(sortOptions('collection'), @sort_defaults['collection']), {id: "collection_sort"}) %></nobr>
+								</div>
+							</form>
+						</div>
+					</div>
+				</h4>
+			</div>
+		</div>
       <div class="row" id="collectionsResultsContainer">
-      <div class="hidden-sm hidden-xs col-md-3 col-lg-3" id="collectionsRefineContainer">
-         <% if @refine and @refine["collection"] and (@refine["collection"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
-            <div class="row">
-                <div class="col-md-12">
-                    <h3 class="quickSearchRefineHeader">Filters</h3>
-                    <ul class="quickSearchRefineFilterList">
-                    <% format_refine_filters(@refine, "collection").each do |r| %>
-                        <li><%= r[:field] %>: <em> <%= r[:value] %></em>
-                        <a href="#" data-remove_id="<%= r[:filter] %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a></li>
-                    <% end%>
-                    </ul>
-                </div>
-            </div>
-        <% end %>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						
+			<% if @refine and @refine["collection"] and (@refine["collection"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
+				<div id="collectionResults-filters">
+					<strong>Filters: </strong>
+					<% format_refine_filters(@refine, "collection").each do |r| %>
+						<%= r[:field] %>: <em> <%= r[:value] %></em>
+						<a href="#" data-remove_id="<%= r[:filter] %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a>
+					<% end%>
+				</div>
+			<% end%>
+		
+			<div id="collectionResults-status">
+				<div class="flash-notice" id="collectionResults-status-message">
+
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="border-left: 1px dotted #ccc;">
+		
+<%
+	col = 0
+	thumb = false
+%>
+			<div id="collection_results" class="row results-pane" data-type="collection">
+				<% @collections.each do |r| %>
+					<%= render 'collection', collection: r %>
+				<% end  %>
+			</div>
+			<div class="infinite-pagination-message"></div>
+			<%= will_paginate @collections, renderer: Exchange::QuickSearchLinkRenderer, class: 'infinite-pagination-collections', type: 'collection', query: @query_proc %>
+			<% if current_user %>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="text-center quickSearchAccessMessage"><i class="fa fa-eye-slash" aria-hidden="true"></i> Not available to public </div>
+					</div>
+				</div>
+			<% end %>
+		</div>
+    </div>
+    </div>
+  </div>
+
+    <%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "collection", prefix: "collection" } %>
+
+	<div class="hidden-sm hidden-xs col-md-3 col-lg-3 refineContainer" id="collectionRefineContainer">	
         <h3 class="quickSearchRefineHeader">Refine by</h3>
         <div class="row">
             <div class="col-md-12">
@@ -109,153 +139,18 @@
         </div>
 <% end %>
         
-        </div>
-        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-          <%
-            col = 0
-            thumb = false
-          %>
-          <% @collections.each do |r|
-            next if(!r.can(:view, current_user) and !r.can(:edit, current_user))
-            col = col+1
-            if(col == 1)
-          %>
-                  <div class="row">
-              <%
-                end
-              %>
-
-              <div class="col-sm-2 qsResult">
-                <div class="text-left">
-                  <% if r[:access] < 1 %><i class="fa fa-eye-slash" aria-hidden="true"></i><% end %>
-                  <%= link_to  "<i class='fa fa-folder-o'></i> ".html_safe + sanitize(r[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(r[:id], user_signed_in?) %></div>
-                <% if r.cover %>
-                	<% thumb = true %>
-                	<%= link_to(image_tag(r.cover.thumb("200x200").url), get_resource_view_path(r[:id], user_signed_in?)) %>
-                <% else %>
-					<% if(r.resource_hierarchies.count) %>
-						<% r.resource_hierarchies.each do |rel| %>
-							<% if(rel.child_resource.is_resource) %>
-								<% rel.child_resource.media_files.each do |f| %>
-									<% if f.sourceable %>
-										<% if f.access == 1 %>
-											<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.resource_id, user_signed_in?) %><br/>
-											<% thumb = true %>
-											<% break %>
-										<% end %>
-									<% end %>
-								<% end %>
-								<% if(thumb == true) %>
-									<% break %>
-								<% end %>
-							<% end %>
-						<% end %>
-					<% end %>
-				<% end %>
-                <% if(thumb == false) %>
-                    <%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(r, user_signed_in?) %><br/>
-                <% end %>
-                <div class="qsResultText">
-                  <%=	"<div class='small'><i>Contains #{r.resource_hierarchies.count}".html_safe + ((r.resource_hierarchies.count == 1) ? " item" : " items") + "</i></div>".html_safe %>
-                  <%
-                    if r.author_id
-                      user_author = r.get_author_name.gsub(/\([\S]+\)/, '')
-                    else
-                      user_author = r.user.name
-                    end
-                  %>
-                  <%
-                    if (Time.now.to_i - r.updated_at.to_i) > 86400
-                      display_time = r.updated_at.in_time_zone('Eastern Time (US & Canada)').strftime("%B %-d, %Y %l:%M %P").gsub(/(a|p)(m)/, '\1.\2.')
-                    else
-                      display_time = time_ago_in_words(r.updated_at) + ' ago'
-                    end
-                  %>
-                  <div class="qsMoreCaption">
-                    <%= sanitize("<div class='small'><b>Author</b> #{user_author}</div><div class='small'><b>Last Updated</b> #{display_time}</div>") %>
-                    <% if r.total_ratings > 0 %>
-                      <div class='small'><span class="rateTitle"><strong>Rating: </strong></span><%= rating_for r, 'quality', star_on: "mortarboard_on_sm.png", star_off: "mortarboard_off_sm.png", star_half: "mortarboard_half_sm.png" %></div>
-                    <% end %>
-                  </div>
-                </div>
-                <% thumb = false %>
-              </div>
-              <%
-                if(col == 6)
-                    col = 0
-              %>
-                  </div>
-              <%
-                end
-              %>
-          <% end %>
-    <% if (col > 0) %>
-          </div><!-- end row -->
-              <% end %>
-          <div class='row'>
-            <%=
-              if(@collections_needs_previous_paging)
-
-                ("<div class='col-sm-3 text-center'>" + link_to("Previous", query_results_path(type: "collection", page: @collections_page - 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-              else
-                "<div class='col-sm-3'></div>".html_safe
-              end
-            %>
-            <div class='col-sm-6 text-center'>
-              <%
-                if (@collections_needs_previous_paging || @collections_needs_next_paging)
-                s = 1
-                e = @collections_num_pages
-
-                if (e > 10)
-                  s = @collections_page - 5
-                  s = 1 if (s < 1)
-                  e = s + 9
-                  e = @collections_num_pages if e > @collections_num_pages
-                end
-
-                for i in s..e do
-              %>
-                  <%=  (link_to(i, query_results_path(type: "collection", page: i, query: @query), { class: "btn search-next-btn " + ((i == @collections_page) ? "btn-exch-green" : "btn-default"), remote: true})).html_safe %>
-              <%
-                end
-                end
-              %>
-            </div>
-            <%=
-              if(@collections_needs_next_paging)
-
-                ("<div class='col-sm-3 text-center'>" + link_to("Next", query_results_path(type: "collection", page: @collections_page + 1, query: @query), { class: "btn btn-default search-next-btn", remote: true}) + "</div>").html_safe
-              else
-                "<div class='col-sm-3'></div>".html_safe
-              end
-            %>
-          </div>
-          <% if current_user %>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="text-center quickSearchAccessMessage"><i class="fa fa-eye-slash" aria-hidden="true"></i> Not available to public </div>
-                    </div>
-                </div>
-            <% end %>
-        </div>
-      </div>
-    </div>
-
-    <%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "collection", prefix: "collections" } %>
+        
+	</div>
 
     <script type="text/javascript">
         //jQuery(document).ready(function() {
-            jQuery("#query_search_content").off().on('change', "#collection_num_items_per_page, #collection_sort", function(e) {
+            jQuery("#quick_search_tabs").on('change', "#collection_num_items_per_page, #collection_sort", function(e) {
                 jQuery.getJSON("<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>?length=" + jQuery("#collection_num_items_per_page").val() + "&sort=" + jQuery("#collection_sort").val(), function(data) {
                     jQuery("#results_collection").html(data.html);
                     return true;
                 });
             });
-           //  resizeBar("#collection_title_link", "#collection_right");	
-//             $(window).on('resize', function(){
-//                 resizeBar("#collection_title_link", "#collection_right");		
-//             });
+
             // Refine UI: autocomplete add filter
             jQuery('#results_collection').off().on('railsAutocomplete.select', ".quickSearchRefineAutocomplete", function(event, data){
                 var filter = jQuery(event.target).data('filter');
@@ -336,8 +231,16 @@
                     return true;
                 });
             });
+            
+            jQuery('#collectionRefineContainer').slideReveal({
+			  trigger: jQuery("#collectionResultsRefineTrigger"),
+			  width: '200px',
+			  top: '105px'
+			});
+			
+			
+			init_continuous_pagination('collection_results');
         //});
     </script>
-  </div>
 <% end %>
 </div>

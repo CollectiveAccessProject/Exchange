@@ -1,1 +1,12 @@
-<%= infinite_append "#collection_object_results", { partial: "quick_search/collection_object", collection: @collection_objects }  %>
+<%= 
+	case
+		when @type == 'collection_object'
+			infinite_append "#collection_object_results", { partial: "quick_search/collection_object", collection: @collection_objects } 
+		when @type == 'resource'
+			infinite_append "#resource_results", { partial: "quick_search/resource", collection: @resources }
+		when @type == 'collection'
+			infinite_append "#collection_results", { partial: "quick_search/collection", collection: @collections }
+		else
+			raise("Invalid type") 
+	end 
+%>
