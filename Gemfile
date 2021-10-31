@@ -31,7 +31,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bootstrap-sass'
 
 # summernote alternative to boostrap-wysihtml5
-gem 'summernote-rails'
+gem 'summernote-rails', '~> 0.8.12.0'
 
 gem 'autoprefixer-rails', '~> 6.5.1'
 

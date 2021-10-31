@@ -20,6 +20,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap-tour
 //= require cookie
+//= require summernote/summernote-bs4.min
 //= require summernote
 //= require plugins/media-item/summernote-ext-media-item
 //= require summernote-cleaner
