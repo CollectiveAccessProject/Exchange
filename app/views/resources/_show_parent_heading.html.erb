@@ -70,13 +70,13 @@
 <div class="pull-right">
 <%=
 	if (prev_res) 
- 		link_to '<i class="fa fa-arrow-left collection-navigation" aria-hidden="true" data-toggle="popover" data-trigger="hover" data-content="Previous item"></i>'.html_safe, get_resource_view_path(prev_res, user_signed_in?)
+ 		link_to '<i class="fa fa-arrow-left collection-navigation" aria-hidden="true" data-toggle="popover" data-trigger="hover" data-content="Previous item"></i>'.html_safe, get_resource_view_path(prev_res, user_signed_in?, params[:collection_id])
  	end
 %>
 <%=  " | " if !next_res.nil? and !prev_res.nil? %>
 <%= 
  	if (next_res) 
- 		link_to '<i class="fa fa-arrow-right collection-navigation" aria-hidden="true" data-toggle="popover" data-trigger="hover" data-content="Next item"></i>'.html_safe, get_resource_view_path(next_res, user_signed_in?)
+ 		link_to '<i class="fa fa-arrow-right collection-navigation" aria-hidden="true" data-toggle="popover" data-trigger="hover" data-content="Next item"></i>'.html_safe, get_resource_view_path(next_res, user_signed_in?, params[:collection_id])
  	end
 %>
 </div>

@@ -44,7 +44,7 @@
 							 else
 							   col = 4
 							 end %>
-						  <%= render :partial => "resource_list_grid", locals: { width: col} %>
+						  <%= render :partial => "resource_list_grid", locals: { width: col, collection: @resource} %>
 					  <% else %>
 					  	<h5>No Items in this Learning Collection</h5>
 					  <% end %>

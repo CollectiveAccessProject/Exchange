@@ -39,7 +39,7 @@
 
 							<% if f.sourceable %>
 								<% if f.access == 1 %>
-									<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?, from_collection_id) %><br/>
+									<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.child_resource, user_signed_in?, resource.is_collection ? resource.id : from_collection_id) %><br/>
 									<% break %>
 								<% end %>
 							<% end %>
