@@ -69,7 +69,7 @@ gem 'groupify'
 gem 'simple_form'
 
 # media upload/processing
-gem 'paperclip', '~> 4.2'
+gem 'paperclip', '~> 6.0'
 gem 'paperclip-av-transcoder'
 
 # thumbnail generation
