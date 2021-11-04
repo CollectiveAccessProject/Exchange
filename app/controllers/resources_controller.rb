@@ -1048,7 +1048,11 @@ class ResourcesController < ApplicationController
     begin
 		@media_display = f.sourceable.render :large
 	rescue
-		@media_display = f.sourceable.preview :large, caption: f.caption
+		begin
+			@media_display = f.sourceable.preview :large, caption: f.caption
+		rescue
+			@media_display = nil
+		end
 	end
     
     respond_to do |format|
