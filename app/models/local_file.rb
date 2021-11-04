@@ -2,7 +2,7 @@ class LocalFile < ActiveRecord::Base
   include MediaPluginModel
   has_one :media_file, as: :sourceable
   after_commit :set_thumbnail
-  before_save :fetch_file_by_url
+  #before_save :fetch_file_by_url
 
   has_attached_file :file, :styles => {
                              # :medium => { :geometry => '300x300>', :format => 'jpg', :time => 10 },
