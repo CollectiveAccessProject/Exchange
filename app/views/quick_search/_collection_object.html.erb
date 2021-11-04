@@ -6,7 +6,7 @@
 
 	<% if collection_object.cover %>
 		<% thumb = true %>
-		<%= link_to(image_tag(collection_object.covecollection_object.thumb("200x200").url), get_resource_view_path(collection_object[:id], user_signed_in?)) %>
+		<%= link_to(image_tag(collection_object.cover.thumb("200x200").url), get_resource_view_path(collection_object[:id], user_signed_in?)) %>
 	<% else %>
 		<% collection_object.media_files.each do |f| %>
 			<% if f.sourceable %>
