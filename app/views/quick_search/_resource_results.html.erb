@@ -71,8 +71,13 @@
 						<%= render 'resource', resource: r %>
 					<% end  %>
 				</div>
+				
+				
+				<div class="infinite-pagination"></div>
 				<div class="infinite-pagination-message"></div>
-				<%= will_paginate @resources, renderer: Exchange::QuickSearchLinkRenderer, class: 'infinite-pagination-resources', type: 'resource', query: @query_proc %>
+				
+				<% Exchange::QuickSearchLinkRenderer.set_data(type: 'resource', query: @query_proc) %>
+				<%= will_paginate @resources, renderer: Exchange::QuickSearchLinkRenderer %>
 				<% if current_user %>
 					<div class="row">
 						<div class="col-md-12">
@@ -300,8 +305,6 @@
 				}
 				jQuery(this).data('toggle', toggle)
 			});
-			
-			init_continuous_pagination('resource_results');
 	   // });
 	</script>
 	<% end %>

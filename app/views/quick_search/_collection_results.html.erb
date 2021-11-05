@@ -53,8 +53,12 @@
 					<%= render 'collection', collection: r %>
 				<% end  %>
 			</div>
+			
+			<div class="infinite-pagination"></div>
 			<div class="infinite-pagination-message"></div>
-			<%= will_paginate @collections, renderer: Exchange::QuickSearchLinkRenderer, class: 'infinite-pagination-collections', type: 'collection', query: @query_proc %>
+			<% Exchange::QuickSearchLinkRenderer.set_data(type: 'collection', query: @query_proc) %>
+			<%= will_paginate @collections, renderer: Exchange::QuickSearchLinkRenderer %>
+
 			<% if current_user %>
 				<div class="row">
 					<div class="col-md-12">
@@ -237,9 +241,6 @@
 			  width: '200px',
 			  top: '105px'
 			});
-			
-			
-			init_continuous_pagination('collection_results');
         //});
     </script>
 <% end %>

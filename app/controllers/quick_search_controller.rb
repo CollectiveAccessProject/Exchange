@@ -1,5 +1,4 @@
 require 'QuickSearchLinkRenderer'
-require 'ResourceLinkRenderer'
 
 class QuickSearchController < ApplicationController
 
@@ -173,6 +172,8 @@ class QuickSearchController < ApplicationController
     @page = 1 if (@page < 1)
     @type = params[:type]   # restrict search to a specific result type (resources, collections, collection_objects, exhibitions)
 
+    @dtype = params[:dtype]	# which search to show
+    
     @length = params[:length].to_i
     @sort = params[:sort]
     

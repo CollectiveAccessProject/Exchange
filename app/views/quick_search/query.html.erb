@@ -26,67 +26,63 @@
   <div class="col-md-12">
     <ul class="nav nav-tabs">
         <% 
-            active = nil
+        	active = 'collection_objects'
+            active = @dtype + 's' if !@dtype.nil?
             if(@collection_objects.total_entries > 0) 
         %>
-            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+            <li <%= ((active === 'collection_objects') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_collection_object_results">UMMA objects (<%= @collection_objects.total_entries %>)</a>
-            </li> 
-            <%  active = 'collection_objects' if active.nil? %>    
+            </li>  
         <% end %>
         <% if(@resources.total_entries > 0) %>
-            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+            <li <%= ((active === 'resources') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_resource_results">Resources  (<%= @resources.total_entries %>)</a>
             </li>    
-            <% active = 'resources' if active.nil? %>    
         <% end %>
         <% if(@collections.total_entries > 0) %>
-            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+            <li <%= ((active === 'collections') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_collection_results">Learning collections  (<%= @collections.total_entries %>)</a>
             </li>   
-            <% active = 'collections' if active.nil? %>     
         <% end %>
         <% if(@is_staff && @crcsets.total_entries > 0) %>
-            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+            <li <%= ((active === 'crcsets') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_crcset_results">CRC Sets  (<%= @crcsets.total_entries %>)</a>
             </li> 
-            <% active = 'crcsets' if active.nil? %>       
         <% end %>
         <% if(@exhibitions.total_entries > 0) %>
-            <li <%= (active.nil? ? "class='active'" : "").html_safe %>>
+            <li <%= ((active === 'exhibitions') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_exhibition_results">Exhibitions (<%= @exhibitions.total_entries %>)</a>
             </li>  
-            <% active = 'exhibitions' if active.nil? %>      
         <% end %>
     </ul>
 
     <div class="tab-content" id="query_search_content">
         <% @show = true %>
-        <% if(@collection_objects.total_entries > 0) %>
+        <% if((@collection_objects.total_entries > 0) && (active === 'collection_objects')) %>
             <div id="tab_collection_object_results" class="tab-pane <%= ((active == 'collection_objects') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/collection_object_results" %>
                 <% @show = false %>
             </div>
         <% end %>
-        <% if(@resources.total_entries > 0) %>
+        <% if((@resources.total_entries > 0) && (active === 'resources')) %>
             <div id="tab_resource_results" class="tab-pane <%= ((active == 'resources') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/resource_results" %>
                 <% @show = false %>
             </div>
         <% end %>
-        <% if(@collections.total_entries > 0) %>
+        <% if((@collections.total_entries > 0) && (active === 'collections')) %>
             <div id="tab_collection_results" class="tab-pane <%= ((active == 'collections') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/collection_results" %>
                 <% @show = false %>
             </div>
         <% end %>
-        <% if(@is_staff && @crcsets.total_entries > 0) %>
+        <% if((@is_staff && @crcsets.total_entries > 0)  && (active === 'crcsets'))%>
             <div id="tab_crcset_results" class="tab-pane <%= ((active == 'crcsets') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/crc_set_results" %>
                 <% @show = false %>
             </div>
         <% end %>
-        <% if(@exhibitions.total_entries > 0) %>
+        <% if((@exhibitions.total_entries > 0) && (active === 'exhibitions')) %>
             <div id="tab_exhibition_results" class="tab-pane <%= ((active == 'exhibitions') ? "active" : "").html_safe %>">
                 <%= render :partial => "quick_search/exhibition_results" %>
                 <% @show = false %>
@@ -101,43 +97,38 @@
        var target = $(event.target).attr("href");
        
        if(jQuery('.refineContainer').length > 0) {
-       	jQuery('.refineContainer').slideReveal('hide'); // hide any open refine panel
+       	jQuery('.refineContainer').slideReveal('hide'); // hide any open refine panels
        }
        
        var type, url, items_per_page, fsort;
        switch(target) {
        		case '#tab_collection_object_results':
                 type = 'resource';
-                url = "<%= query_results_path(type: "collection_object", page: @collection_objects_page, query: @query) %>";
+                url = "<%= quick_search_with_dtype_path(dtype: "collection_object", page: @collection_objects_page, query: @query) %>";
                 items_per_page = <%= @items_per_page_defaults['collection_object'] %>;
                 fsort = "<%= @sort_defaults['collection_object'] %>";
                 break;
             case '#tab_resource_results':
                 type = 'resource';
-                url = "<%= query_results_path(type: "resource", page: @resources_page, query: @query) %>";
+                url = "<%= quick_search_with_dtype_path(dtype: "resource", page: @resources_page, query: @query) %>";
                 items_per_page = <%= @items_per_page_defaults['resource'] %>;
                 fsort = "<%= @sort_defaults['resource'] %>";
                 break;
             case '#tab_collection_results':
                 type = 'collection';
-                url = "<%= query_results_path(type: "collection", page: @collections_page, query: @query) %>";
+                url = "<%= quick_search_with_dtype_path(dtype: "collection", page: @collections_page, query: @query) %>";
                 items_per_page = <%= @items_per_page_defaults['collection'] %>;
                 fsort = "<%= @sort_defaults['collection'] %>";
                 break;
             case '#tab_crcset_results':
                 type = 'crcset';
-                url = "<%= query_results_path(type: "crcset", page: @crcsets_page, query: @query) %>";
+                url = "<%= quick_search_with_dtype_path(dtype: "crcset", page: @crc_sets_page, query: @query) %>";
                 items_per_page = <%= @items_per_page_defaults['crcset'] %>;
                 fsort = "<%= @sort_defaults['crcset'] %>";
                 break;
        }
        
-        if (jQuery("#results_" + type + " .panel-body").length == 0) {
-         jQuery.getJSON(url + "?length=" + items_per_page + "&sort=" + fsort, function(data) {
-             jQuery("#results_" + type).html(data.html);
-             return true;
-         });
-       }
+       	window.location = url;
     });
 </script>
 

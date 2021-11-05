@@ -44,9 +44,6 @@ gem 'autoprefixer-rails', '~> 6.5.1'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-group :development, :test do
-end
-
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
@@ -136,6 +133,7 @@ gem 'net-ldap'
 
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
+
 #gem 'will_paginate_infinite'
 gem 'will_paginate_infinite', :git => 'https://github.com/collectiveaccess/will_paginate_infinite'
 

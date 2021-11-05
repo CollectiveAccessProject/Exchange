@@ -98,6 +98,7 @@ Rails.application.routes.draw do
   
   
   get '/quick_search/query' => 'quick_search#query', as: 'quick_search'
+  get '/quick_search/query/:dtype' => 'quick_search#query', as: 'quick_search_with_dtype'
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
   get '/quick_search/query_results/:type' => 'quick_search#query_results', as: 'query_result_infinite', constraints: { :type => /[A-Za-z0-9_\-]+/ }
   get '/quick_search/query_results/:type/:page/*query' => 'quick_search#query_results', as: 'query_results', constraints: { :type => /[A-Za-z0-9_\-]+/, :page => /[\d]+/, :query => /.+/ }

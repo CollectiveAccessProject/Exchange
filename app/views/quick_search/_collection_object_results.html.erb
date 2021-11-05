@@ -75,13 +75,14 @@
 	col = 0
 	thumb = false
 %>
-						<div id="collection_object_results" class="row results-pane" data-type="collection_object">
+						<div id="collection_object_results" class="row" data-type="collection_object">
 							<% @collection_objects.each do |r| %>
 								<%= render 'collection_object', collection_object: r %>
 							<% end  %>
 						</div>
-						<div class="infinite-pagination-message"></div>
-						<%= will_paginate @collection_objects, renderer: Exchange::QuickSearchLinkRenderer, class: 'infinite-pagination-collection-objects', type: 'collection_object', query: @query_proc %>
+						<div class="infinite-pagination-message">xxxx</div>
+						<% Exchange::QuickSearchLinkRenderer.set_data(type: 'collection_object', query: @query_proc) %>
+						<%= will_paginate @collection_objects, renderer: Exchange::QuickSearchLinkRenderer %>
 						<% if current_user %>
 							<div class="row">
 								<div class="col-md-12">
@@ -380,8 +381,6 @@
 				}
 				jQuery(this).data('toggle', toggle)
 			});
-			
-			init_continuous_pagination('collection_object_results');
 	</script>
 <% end %>
 </div>
