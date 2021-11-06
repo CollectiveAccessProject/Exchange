@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180103031240) do
+ActiveRecord::Schema.define(version: 20200519044911) do
 
   create_table "average_caches", force: :cascade do |t|
     t.integer  "rater_id",      limit: 4
@@ -291,6 +291,15 @@ ActiveRecord::Schema.define(version: 20180103031240) do
     t.text     "label_copy",                 limit: 65535
     t.text     "keywords",                   limit: 65535
     t.string   "gallery_url",                limit: 1024,                                 default: "",    null: false
+    t.string   "cover_uid",                  limit: 255
+    t.string   "cover_name",                 limit: 255
+    t.string   "artist_gender",              limit: 255,                                  default: "",    null: false
+    t.string   "medium_and_support_display", limit: 1024,                                 default: "",    null: false
+    t.text     "physical_description",       limit: 65535
+    t.string   "credit_line",                limit: 1024,                                 default: "",    null: false
+    t.text     "cover_caption",              limit: 65535
+    t.text     "cover_alt_text",             limit: 65535
+    t.string   "date_display",               limit: 255,                                  default: "",    null: false
   end
 
   add_index "resources", ["forked_from_resource_id"], name: "fk_rails_8c3d1e0d9a", using: :btree

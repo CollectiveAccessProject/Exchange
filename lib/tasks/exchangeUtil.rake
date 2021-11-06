@@ -2,6 +2,38 @@ require 'find'
 require 'roo'
 
 namespace :exchangeUtil do
+  desc 'Remap invalid collectionobject refs'
+  task remap_collection_object_refs: :environment do
+  	
+	CollectionobjectLink.find_each do |l|
+		resource_id = l.resource_id
+		begin 
+			Resource.find(resource_id)
+		rescue
+			print "Do lookup for " + resource_id.to_s + "\n"
+			
+			results = ActiveRecord::Base.connection.exec_query("SELECT * FROM idmap WHERE id = " + resource_id.to_s)
+	
+			results.each do |row|
+			  puts "got " + row['idno'] + "\n"
+			  
+			  begin
+			  	nr = Resource.find_by(collection_identifier: row['idno'])
+			  	print "\tSET TO " + nr.id.to_s + "\n"
+			  	
+			  	l.resource_id = nr.id
+			  	l.original_link = nr.id.to_s
+			  	l.save
+			  	
+			  rescue
+			  	print "Could not find record for " + row['idno'] + "\n"
+			  end
+			end
+		end
+	end
+  
+  end
+  
   desc 'Import UMMA portfolios'
   task import_umma_portfolios: :environment do
     import_path = Rails.root.join("import", "portfolios")

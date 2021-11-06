@@ -1,4 +1,4 @@
-class AddCollectionObjectFields < ActiveRecord::Migration[5.0]
+class AddCollectionObjectFields < ActiveRecord::Migration
   def change
   	add_column :resources, :artist_gender, :string, null: false, default:'', limit: 255
   	add_column :resources, :medium_and_support_display, :string, null: false, default:'', limit: 1024

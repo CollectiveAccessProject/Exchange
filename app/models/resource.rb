@@ -98,63 +98,63 @@ class Resource < ActiveRecord::Base
     # Changed to "text" for "string" in ES 2.x => 6.x migration
     # Changed to "keyword" for raw (not_analyzed) "string" in ES 2.x => 6.x migration
     mappings dynamic: true do
-      indexes :subtitle, type: 'text',analyzer: 'english'
-      indexes :source, type: 'text',analyzer: 'english'
-      indexes :copyright_notes, type: 'text',analyzer: 'english'
-      indexes :location, type: 'text',analyzer: 'english'
-      indexes :title, type: 'text', analyzer: 'english', fields: {
+      indexes :subtitle, type: 'string',analyzer: 'english'
+      indexes :source, type: 'string',analyzer: 'english'
+      indexes :copyright_notes, type: 'string',analyzer: 'english'
+      indexes :location, type: 'string',analyzer: 'english'
+      indexes :title, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :idno, type: 'text', analyzer: 'english', fields: {
+      indexes :idno, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :artist, type: 'text', analyzer: 'english', fields: {
+      indexes :artist, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :artist_nationality, type: 'text', analyzer: 'english', fields: {
+      indexes :artist_nationality, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :author, type: 'text', analyzer: 'english', fields: {
+      indexes :author, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :medium, type: 'text', analyzer: 'english', fields: {
+      indexes :medium, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :style, type: 'text', analyzer: 'english', fields: {
+      indexes :style, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :classification, type: 'text', analyzer: 'english', fields: {
+      indexes :classification, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :collection_area, type: 'text', analyzer: 'english', fields: {
+      indexes :collection_area, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :terms, type: 'text', analyzer: 'english', fields: {
+      indexes :terms, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
-      indexes :affiliation, type: 'text', analyzer: 'english', fields: {
+      indexes :affiliation, type: 'string', analyzer: 'english', fields: {
           raw: {
-              type: 'keyword'
+              type: 'string'
           }
       }
       indexes :rating, type: 'integer'
@@ -233,18 +233,16 @@ class Resource < ActiveRecord::Base
     # we want the indexing data at the "top level" of the document,
     # and not as sub-hash under the 'indexing-data' field
     record = as_json(except: [:indexing_data])
-
     if (indexing_data)
-      index_data_hash = JSON.parse(indexing_data)
-      if index_data_hash.is_a? Hash
-        record = record.merge(index_data_hash)
-      end
+      # index_data_hash = JSON.parse(indexing_data)
+#       if index_data_hash.is_a? Hash
+#         record = record.merge(index_data_hash)
+#       end
     end
 
     if (record['resource_type'].to_i == Resource::COLLECTION_OBJECT)
-        record['on_display'] = record['on_display'] == 1 ? "1" : "0"
+        record['on_display'] = record['on_display'] ? "YES" : "NO"
     end
-
     # pseudo fields
     record['author'] = [self.get_author_name(omit_email: true), self.get_author_name(omit_email: true, force_cataloguer: true), self.author_name]
     record['role'] = record['affiliation'] = self.roles.pluck("name")
@@ -256,6 +254,11 @@ class Resource < ActiveRecord::Base
 
     record['start_date'] = record['start_date'].to_i
     record['end_date'] = record['end_date'].to_i
+    
+    
+    # Force created/updated dates to ISO8601 for indexing
+    record['created_at'] = self.created_at.iso8601
+    record['updated_at'] = self.updated_at.iso8601
 
     # Index ACL values
     # record['read_users'] = ResourcesUser.where({resource_id: self.id, access: 1}).pluck(:user_id)
@@ -308,7 +311,6 @@ class Resource < ActiveRecord::Base
 
     # index average rating for this resource
     record['rating'] = avg_rating.to_i
-
     record
   end
   serialize :indexing_data
@@ -782,7 +784,7 @@ class Resource < ActiveRecord::Base
     value.gsub!(/"+/, "")
     case filter
         when "on_display"
-            return (value.to_i > 0) ? "Yes" : "No"
+            return value
         when "affiliation"
             if Rails.application.config.x.user_roles.invert.has_key? value.to_sym
                 return Rails.application.config.x.user_roles.invert[value.to_sym]
@@ -1150,7 +1152,7 @@ class Resource < ActiveRecord::Base
             v = params[f].gsub(/["']+/, '')
 
             if (f == 'on_display')
-                query_elements.push(f + ':' + (v ? "1" : "0"))
+                query_elements.push(f + ':' + "YES")
             elsif (f == 'date_created')
             
                 m = /["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i.match(v)

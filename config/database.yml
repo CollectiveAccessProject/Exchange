@@ -10,9 +10,9 @@ default: &default
 development:
   <<: *default
   encoding: utf8
-  database: exchange
-  username: exchange
-  password: exchange
+  database: exchange_exchange
+  username: exchange_user
+  password: "!exchange!"
   host: 127.0.0.1
   port: 3306
 

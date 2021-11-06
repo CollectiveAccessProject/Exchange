@@ -256,7 +256,7 @@
          <% if (@resource.on_display) %>
             <div class="unit">
               <h4>On display</h4>
-              <% if @resource.gallery_url %>
+              <% if @resource.gallery_url.strip.length > 0 %>
                 <%= link_to @resource.location, @resource.gallery_url, { target: "_blank" } %>
               <% else %>
               <%= @resource.location %>

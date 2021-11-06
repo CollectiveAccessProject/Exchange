@@ -60,7 +60,7 @@ module Exchange
 
 	 config.time_zone = 'Eastern Time (US & Canada)'
 	 
-	 config.x.absolute_url_options = { host: 'exchange.whirl-i-gig.com:8084', protocol: 'http'}
+	 config.x.absolute_url_options = { host: 'exchange.umma.umich.edu', protocol: 'https'}
 	 
 	 config.x.media_sizes = {
 	 	icon: {width: 72, height: 72, area: "72x72" },
