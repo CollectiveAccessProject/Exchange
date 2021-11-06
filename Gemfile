@@ -6,9 +6,13 @@ gem 'rails', '4.2.6'
 # Use jdbcsqlite3 as the database for Active Record
 #gem 'activerecord-jdbcsqlite3-adapter'
 gem 'mysql2', '~> 0.3.18'
+gem 'ffi', '1.9.25'
+gem 'addressable', '2.5.2'
+gem 'rails-dom-testing', '1.0.7'
+gem 'faraday', '0.15.4'
 
 # Use SCSS for stylesheets
-gem 'sass-rails'
+gem 'sass-rails', '5.0.5'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
@@ -19,7 +23,7 @@ gem 'therubyrhino'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'jquery-ui-rails', '~> 4.2.0'
-gem 'rails4-autocomplete'
+gem 'rails4-autocomplete', '1.1.1'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
@@ -57,7 +61,7 @@ gem 'collectiveaccess'
 gem 'devise', '~> 4.2'
 
 # user roles
-gem "rolify"
+gem "rolify", '5.2'
 
 # user authorization
 gem 'pundit'
@@ -69,11 +73,11 @@ gem 'groupify'
 gem 'simple_form'
 
 # media upload/processing
-gem 'paperclip', '~> 4.2'
+gem 'paperclip', '4.3.0'
 gem 'paperclip-av-transcoder'
 
 # thumbnail generation
-gem 'dragonfly', '~> 1.0.12'
+gem 'dragonfly', '1.0.12'
 
 # comments
 gem 'acts_as_commentable'
@@ -82,11 +86,12 @@ gem 'acts_as_commentable'
 gem 'will_paginate', '~> 3.1.0'
 
 # elasticsearch
-gem 'elasticsearch-model'
-gem 'elasticsearch-rails'
+gem 'elasticsearch-model', '5.0.2'
+gem 'elasticsearch-rails', '5.0.2'
+gem 'elasticsearch-transport', '5.0.2'
 
 # settings
-gem 'ledermann-rails-settings'
+gem 'ledermann-rails-settings', '2.4.3'
 
 # change logging
 gem 'paper_trail', '~> 4.0'
@@ -105,7 +110,7 @@ gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-shibboleth'
 gem 'dotenv-rails'
-gem 'recaptcha', require: "recaptcha/rails"
+gem 'recaptcha', '4.8.0', require: "recaptcha/rails"
 
 # Intro Tour
 gem 'bootstrap-tour-rails'

@@ -24,7 +24,7 @@ namespace :exchange do
 	    # Enable deletion of collection objects removed from CA set
 	    #
 	    
-		remove_deleted_objects = true
+		remove_deleted_objects = false
 
 		CollectiveAccess.set_credentials ENV['COLLECTIVEACCESS_USER'], ENV['COLLECTIVEACCESS_KEY']
 
@@ -47,6 +47,7 @@ namespace :exchange do
 		if remove_deleted_objects
 		    print "Fetching current list of CollectiveAccess object_ids\n"
 		    valid_collectiveaccess_ids = CollectiveAccess.simple hostname: ENV['COLLECTIVEACCESS_HOST'],
+		    	protocol: ENV['COLLECTIVEACCESS_URL_PROTOCOL'],
                 url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
                 port: ENV['COLLECTIVEACCESS_PORT'].to_i,
                 endpoint: 'object_ids',
@@ -93,6 +94,7 @@ namespace :exchange do
 																												url_root: ENV['COLLECTIVEACCESS_URL_ROOT'],
 																												port: ENV['COLLECTIVEACCESS_PORT'].to_i,
 																												endpoint: 'exchangeObjectListForDisplay',
+																												protocol: ENV['COLLECTIVEACCESS_URL_PROTOCOL'],
 																												get_params: {
 																														q: query_limit,
 																														start: start,
@@ -174,6 +176,7 @@ namespace :exchange do
 
 									m.set_sourceable_media({collectiveaccess_link: { original_link: u }})
 									m.update({title: key.to_s + ":" + i.to_s, caption: value['caption_text'], access: 1, copyright_notes:i.to_s, resource_id: r.id, alt_text: value['physical_description'] ? value['physical_description'].slice(0, 1024) : ""})
+                                    
                                     existing_keys.delete(key.to_s + ":" + i.to_s)
 									i += 1
 								end
@@ -183,6 +186,16 @@ namespace :exchange do
 							    MediaFile.where({title: e}).destroy_all
 							end
 							
+							# Get existing collection object links for resource
+							existing_mfs = CollectionobjectLink.where("(resource_id = ?)", r.id)
+							
+							existing_mfs.each do |e| 
+								m = MediaFile.where(sourceable_id: e.id, sourceable_type: 'CollectionobjectLink').first
+								if m
+									m.update({caption: value['caption_text'], alt_text: value['physical_description'] ? value['physical_description'].slice(0, 1024) : ""})
+								end
+							end
+
 						end
 					end
 				end
@@ -214,8 +227,7 @@ namespace :exchange do
 					log.debug "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
 					if (r = Resource.where(collectiveaccess_id: value['collectiveaccess_id']).first)
 						puts "Creating/Updating collectiveaccess_id #{value['collectiveaccess_id']} for search"
-						value['on_display'] = value['current_location'] ? 1 : 0
-						
+						value['on_display'] = (value['current_location'].length > 0) ? 1 : 0
 						
 						value['start_date'] = nil
 						value['end_date'] = nil
@@ -243,14 +255,26 @@ namespace :exchange do
 						    gallery_urls = value['gallery_url'].split(/;/)
 						    value['gallery_url'] = gallery_urls.pop
 						end
-						print value['gallery_url'] + "\n"
+						if value['gallery_url'].nil? 
+							value['gallery_url'] = ''
+						end
+						
+						if value['date_created'].nil?
+							value['date_created'] = ''
+						end
+						
+						
+						value['artist_gender'] = '' if value['artist_gender'].nil? or !value['artist_gender']
+						value['physical_description'] = '' if value['physical_description'].nil? or !value['physical_description']
+						value['medium_and_support_display'] = '' if value['medium_and_support_display'].nil? or !value['medium_and_support_display']
+						value['credit_line'] = '' if value['credit_line'].nil? or !value['credit_line']
 						
 						k = ''
 						k = value['keywords'] if value['keywords']
 						k = k + "|" + value['keywords_aat'] if value['keywords_aat']
 						value['keywords'] = k
 						
-						r.update(indexing_data: JSON.generate(value), classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'] ? true : false, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
+						r.update(indexing_data: JSON.generate(value),  artist_gender: value['artist_gender'], physical_description: value['physical_description'], medium_and_support_display: value['medium_and_support_display'], credit_line: value['credit_line'], date_display: value['date_created'], classification: value['classification'], additional_classification: value['additional_classification'], style: value['style'], medium: value['medium'], support: value['support'], collection_area: value['collection_area'], subject_matter: value['subject_matter'], keywords: value['keywords'], gallery_url: value['gallery_url'], label_copy: value['label_copy'], location: value['current_location'], on_display: value['current_location'].length > 0 ? 1 : 0, start_date: value['start_date'], end_date: value['end_date'], artist_nationality: value['artist_nationality'])
 					end
 				end
 			end
