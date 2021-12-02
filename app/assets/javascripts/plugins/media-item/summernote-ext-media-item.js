@@ -22,7 +22,8 @@ exchangeLoadMediaForSummernote = function() {
             media_img = $(this).find('img').attr('src');
             media_iframe = $(this).find('iframe').attr('src');
             media_title = $(this).find('small[class^="slug_"]').html();
-	    media_access = $(this).attr('data-access');
+	    	media_access = $(this).attr('data-access');
+	    	slug = $(this).find('.slug').html();
             thumb = "";
             if ('undefined' !== typeof(media_img)) {
                 thumb = '<img src="' + media_img + '"/>';
@@ -39,6 +40,7 @@ exchangeLoadMediaForSummernote = function() {
             $('#dropdown-media').append(media_item_attrs +
                 '<div class="media-item-thumb">' + thumb + '</div>' +
                 '<span class="media-item-title">' + media_title + '</span>' +
+                '<span class="slug" style="display: none;">' + slug + '</span>' +
                 '</div>'
             );
         });
@@ -52,9 +54,8 @@ jQuery(document).ready(function($) {
     // Create embed on click
     $('.container').on('click', '.dropdown-media-item', function() {
 	//Create modal for setting embed options
-	var re = /\(([^)]+)\)$/;
-	slug = re.exec( $(this).find('.media-item-title').html());
-	slug[1].replace('<em>', '').replace('</em>', '')
+	slug = $(this).find('span.slug').html();
+	slug = [slug, slug];
 	function embedModal(slug){
 		html = '<div id="embedModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"';
 		html += '<div class="modal-dialog">';
@@ -67,16 +68,16 @@ jQuery(document).ready(function($) {
 		html += '<div class="row">';
 		html += '<div class="col-sm-12">';
 		html += '<form id="embedForm" data-async data-target="#mediaItem" method="GET"><div class="form-group"><h4>Embed Size</h4><div class="radio">';
-		html += '<label><input type="radio" name="sizeSetting" id="quarterSetting" value="quarter">Quarter Width</label></div>';
+		html += '<label><input type="radio" name="sizeSetting" id="quarterSetting" value="quarter" checked="1">Quarter Width</label></div>';
 		html += '<div class="radio"><label><input type="radio" name="sizeSetting" id="halfSetting" value="half">Half Width</label></div>';
 		html += '<div class="radio"><label><input type="radio" name="sizeSetting" id="fullSetting" value="full">Full Width</label></div>';
 		html += '</div>';	
 		html += '<div class="form-group"><h4>Display Caption?</h4><div class="radio">';
-		html += '<label><input type="radio" name="captionSetting" id="captionYes" value="yes">Yes</label></div>';
+		html += '<label><input type="radio" name="captionSetting" id="captionYes" value="yes" checked="1">Yes</label></div>';
 		html += '<div class="radio"><label><input type="radio"  name="captionSetting" id="captionNo" value="no">No</label></div>';
 		html += '</div>';
 		html += '<div class="form-group"><h4>Embed Float</h4>';
-		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatLeft" value="left">Left</label></div>';
+		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatLeft" value="left" checked="1">Left</label></div>';
 		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatRight" value="right">Right</label></div>';
 		html += '<div class="radio"><label><input type="radio" name="floatSetting" id="floatNone" value="none">None</label></div>';
 		html += '</div>';

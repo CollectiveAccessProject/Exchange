@@ -8,6 +8,7 @@
           <%= link_to '<i class="fa fa-times" aria-hidden="true"></i>'.html_safe, f, method: :delete, remote: true, data: {confirm: 'Are you sure you want to delete this media?'}, class: 'cornerButton' %>
           <%= link_to (f.sourceable.preview :thumbnail), load_media_modal_path(f, :editable => true, :media_id => f.id.to_i, :resource_id => @resource.id.to_i), :remote => true, :class => 'mediaLoad', :id => anchor_tag, :'data-modal-target' => target_div %>
     	  <small class="slug_<%= f.sourceable.id.to_s %>"><%= sanitize(f.caption) %></small>
+    	  <%= ("<span style='display:none' class='slug'>" + f.slug + "</span>").html_safe %>
         </div>
         <%=
           # this renders a bootstrap model that is triggered if you click on the preview above

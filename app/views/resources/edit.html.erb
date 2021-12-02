@@ -3,9 +3,12 @@
     // See media-item js plugin for that code
     function embedMedia(slug) {
         embed_array = $('#embedForm').serializeArray();
+        if(embed_array.length < 3) { return; }
 
         embed = '<media ' + slug[1].replace("<em>", "").replace("</em>", "") + ' version="' + embed_array[0]['value'] + '" caption="' + embed_array[1]['value'] + '" float="' + embed_array[2]['value'] + '">';
-        $('#resource_body_text').summernote('insertText', embed);
+        $('#resource_body_text').summernote('editor.restoreRange');
+		$('#resource_body_text').summernote('editor.focus');
+        $('#resource_body_text').summernote('editor.insertText', embed);
         $('#embedModal').modal('toggle');
     }
 </script>
