@@ -13,9 +13,15 @@
   		<!-- This renders the Media type/source thumbnail along with a popover guide to the icons -->
 		<div class="previewMediaCaption row">
 			<div class="col-xs-12 previewMediaCol text-left idle-fade">
+<%
+	if(links)
+%>
 				<div class="mediaTips">
 					<span class="popoverWrapper infoIcon" title="Flickr Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-flickr" aria-hidden="true"></i></div></span>
 				</div>
+<%
+	end
+%>
 				<%= sanitize(local_assigns[:caption]) %>
 			</div>
 	  	</div>

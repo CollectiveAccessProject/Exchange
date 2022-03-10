@@ -11,14 +11,14 @@ module MediaPluginModel
     end
   end
 
-  def preview(version, width=nil, height=nil, caption=nil)
+  def preview(version, width=nil, height=nil, caption=nil, links=true)
     unless self.id
       raise ArgumentError.new('Cannot render preview for empty model. You must load an existing record first.')
     end
 
     action_view.render(
       partial: 'media_plugins/' + self.class.to_s.underscore + '_preview',
-      locals: { plugin_model: self, version: version, width: width, height: height, caption: caption}
+      locals: { plugin_model: self, version: version, width: width, height: height, caption: caption, links: links}
     )
   end
 

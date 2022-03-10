@@ -20,9 +20,15 @@
 %>
 		<div class="previewMediaCaption row">
 			<div class="col-xs-12 text-left previewMediaCol idle-fade">
+<%
+	if(links)
+%>
 				<div class="mediaTips">
 					<span class="popoverWrapper mediaTipsTrigger" title="UMMA Object Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div></span>
 				</div>
+<%
+	end
+%>
 				<%= sanitize(local_assigns[:caption]) %>
 			</div>
 		</div>
