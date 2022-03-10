@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
-gem 'passenger', '6.0.4'
+gem 'passenger', '6.0.12'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0'
 # Use jdbcsqlite3 as the database for Active Record
 #gem 'activerecord-jdbcsqlite3-adapter'
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails'
@@ -79,8 +79,9 @@ gem 'acts_as_commentable'
 gem 'will_paginate', '~> 3.1.0'
 
 # elasticsearch
-gem 'elasticsearch-model', git: "https://github.com/elastic/elasticsearch-rails.git", branch: "5.x"
-gem 'elasticsearch-rails'
+#gem 'elasticsearch-model', git: "https://github.com/elastic/elasticsearch-rails.git", branch: "5.x"
+gem 'elasticsearch-model', "~> 5.1.0"
+gem 'elasticsearch-rails', "~> 5.1.0"
 
 # settings
 gem 'ledermann-rails-settings'
