@@ -197,7 +197,7 @@ h6 {
 	margin-right:0px;
 	margin-left:0px;
 	background-color:$yellow;
-	.col-md-6{
+	.col-md-12{
 		padding:0px;
 		.featureBoxText{
 			padding:15px;
@@ -1305,9 +1305,39 @@ blockquote .linkListCaption, blockquote .relatedResourceListCaption {
   height: 600px;
 }
 
+.zoomablePanel {
+  width: 100%;
+  height: 600px;
+  border: 1px solid gray;
+}
+
 #mediaViewerModal {
   width: 100%;
   height: 100%;
+}
+
+.zoomIcon {
+	display: none;
+}
+
+.previewThumbnail:hover .zoomIcon {
+	display: block;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	border: 1px solid #aaa;
+	padding: 5px 5px 2px 5px;
+	background-color: #fff;
+	border-radius: 5px;
+}
+
+.previewThumbnail:hover .zoomIcon i {
+	opacity: 0.5;
+}
+
+.mediaThumbnail {
+	position: relative;
+	height: 100%;
 }
 
 /* REGISTRATION PAGE */

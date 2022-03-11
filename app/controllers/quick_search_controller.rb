@@ -1,4 +1,5 @@
 require 'QuickSearchLinkRenderer'
+require 'WelcomeSearchLinkRenderer'
 
 class QuickSearchController < ApplicationController
 
@@ -142,6 +143,24 @@ class QuickSearchController < ApplicationController
     rescue Exception => e
       #raise "Search error: " + e.message
       redirect_to("/", :flash => { :error => "Search could not be completed" })
+    end
+  end
+  
+  def welcome
+  	params.permit(:page)
+  	
+    begin
+      setup
+    rescue Exception => e
+      redirect_to("/", :flash => { :error => "Search could not be completed" })
+    end
+    
+    @show_header = true
+    @show_header = false if params[:page] and params[:page].to_i > 1
+    
+    respond_to do |format|
+      format.html {render layout: false}
+      format.js {}
     end
   end
 

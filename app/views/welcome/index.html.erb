@@ -2,154 +2,36 @@
     <title>Welcome to the Exchange</title>
 <% end %>
 <div class="row featureBox">
-  <div class="col-md-6">
-    <%= image_tag('home_small.jpg') %>
-  </div>
-  <div class="col-md-6">
+  <div class="col-md-12">
     <div class="featureBoxText">
       <H2>Welcome to the Exchange</H2>
-      <p>Here you can explore UMMA's Collections and discover Learning Resources created by scholars, educators, and other visitors.  Create your own virtual exhibitions, presentations, class assignments, image portfolios and personal collections of your favorites, using UMMA objects along with web resources. Use the Collections and Learning Resources created and housed in the Exchange for research, teaching, learning and fun.  Keep your creations private or share them with others to enjoy.</p>
-      <p class="text-center">
-        <% if user_signed_in? %>
-          <div class="btn-toolbar" role="toolbar">
-            <div class="btn-group" role="group">
-              <%= link_to('Your Dashboard', '/dashboard', class:'btn btn-default btn-lg btn-green')  %> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-            </div>
-            <div class="btn-group" role="group">
-              <a class="btn btn-default btn-lg btn-green dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">New &nbsp;<i class="fa fa-plus-circle fa-3" aria-hidden="true"></i></a>
-              <ul class="dropdown-menu">
-                <li><%= link_to('New Resource <i class="fa fa-info-circle dbResourceTip pull-right"></i>'.html_safe, new_resource_path, class:'btn btn-xs btn-noBg')  %></li>
-                <li><%= link_to('New Collection<i class="fa fa-info-circle dbCollectionTip pull-right"></i>'.html_safe, new_collection_path, class:'btn btn-xs btn-noBg')  %></li>
-                <% if @is_staff %>
-                <li><%= link_to('New Study Set<i class="fa fa-info-circle dbCRCSetTip pull-right"></i>'.html_safe, new_crcset_path, class:'btn btn-xs btn-noBg')  %></li>
-              <% end %>
-
-                    </ul>
-              <script>
-                  $(document).ready(function(){
-                      $('.dbResourceTip').popover({
-                          title: "What is a Resource?",
-                          content: 'An individual item in the Exchange covering one topic, item or idea.',
-                          placement: "left",
-                          trigger: "hover",
-                      });
-                      $('.dbCollectionTip').popover({
-                          title: "What is a Collection?",
-                          content: 'A group of Resources that illustrates a common theme or concept (i.e. for a course).',
-                          placement: "left",
-                          trigger: "hover"
-                      });
-                      $('.dbCRCSetTip').popover({
-                          title: "What is a Study Set?",
-                          content: 'A group of Collection Objects to be requested for viewing on a museum visit.',
-                          placement: "left",
-                          trigger: "hover"
-                      });
-                  });
-              </script>
-            </div>
-          </div>
-
-          <p><strong><a href="/user_guide#what_is_Exchange" target="_blank"><span class="glyphicon glyphicon-info-sign"></span> What is the Exchange?</a></strong></p>
-      <% else %>
-
-          <%= link_to('Login', new_user_session_path, class:'btn btn-default btn-block btn-lg btn-green')  %>
-          &nbsp;&nbsp;&nbsp;
-          <%# link_to('Register', new_user_registration_path, class:'btn btn-default btn-lg btn-green')  %>
-      <% end %>
-      </p>
+      <p>Here you can explore UMMA's Collections and discover Learning Resources created by scholars, educators, and other visitors.  
+      Create your own virtual exhibitions, presentations, class assignments, image portfolios and personal collections of your favorites, 
+      using UMMA objects along with web resources. Use the Collections and Learning Resources created and housed in the Exchange for research, 
+      teaching, learning and fun.  Keep your creations private or share them with others to enjoy.</p>
     </div>
   </div>
 </div>
-<%
-  if (@featured_content_set && @featured_content_set.featured_content_set_items)
-%>
-    <div class="fullDivideWrapper"><div class="fullDivide"></div></div>
-    <div class="row hpFeatures">
+<div class="row">
+  <div class="col-md-12">
+	<form action="#" id="welcomeSearchForm">
+		<div class="welcomeSearchGroup">
+			<input type="text" class="welcomeSearch" name="q" id="welcomeSearch" autocomplete="new-password" placeholder="Search for artworks, learning resources and more"/>
+			<a href="#" class="welcomeSearchIcon"><i class="glyphicon glyphicon-search"  aria-hidden="true"></i></a>
+			<a href="#" class="welcomeSearchClear"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i></a>
+		</div>
+		<div class="welcomeSuggestions">Not sure what to search for? Try <%=
+			terms = @suggested_search_terms.map { |t|
+				'<a href="#" data-term="'+ t +'" class="welcomeSuggestionTerm">' + t + '</a>' 
+			}
+			terms.join(', ').html_safe
+		%>
+	</form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12" id="results">
+  
+  </div>
+</div>
 
-<%
-        i = 0
-        style = ""
-        @featured_content_set.featured_content_set_items.each do |item|
-            next if !item.resource or !item.resource.media_files 
-            
-            mf = nil
-            
-            if item.resource.is_collection
-                item.resource.children.each do|r| 
-                    r.media_files.each do|m| 
-                        next if !m.sourceable
-                        mf = m
-                        break
-                    end
-                    break if mf
-                end
-            else 
-                item.resource.media_files.each do|m| 
-                    next if !m.sourceable
-                    mf = m
-                    break
-                end
-            end
-            next if !mf
-            
-            i = i + 1
-            if i == 5
-                break
-            end
-        if(i == 1)
-%>
-            <div class='col-sm-6'>
-                <H1><%= sanitize(@featured_content_set.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %>
-<%
-                if (@featured_content_set.subtitle.chop.length > 0)
-%>
-                    <p><%= sanitize(@featured_content_set.subtitle, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></p>
-<%
-                end
-%>
-                </H1>
-<%
-        end
-
-        if((i == 1) || (i == 3))
-            style = "col-sm-10 col-sm-offset-2"
-        else
-            style= "col-sm-9 col-sm-offset-1"
-        end
-%>
-        <div class="row">
-            <div class="<%= style.html_safe %>">
-                <%= link_to(mf.sourceable.preview(:medium), resource_path(item.resource_id)) %>
-                <h3><%= (item.title.chop.length > 0) ? sanitize(item.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) : sanitize(item.resource.title, tags: %w(strong em a font b sup sub u), attributes: %w(href style)) %></H3>
-            </div>
-        </div>
-<%
-        if(i == 2)
-%>
-            </div>
-            <div class='col-sm-6'>
-<%
-        end
-    end 
-%>
-        </div>
-    </div><!-- end row -->
-    <div class="row">
-      <div class="col-sm-12 text-center">
-        <br/><br/>
-        <%
-          if @featured_content_set
-        %>
-            <%= link_to("More", featured_load_feature_path(@featured_content_set.id), class:'btn btn-default btn-lg btn-green') %>
-        <%
-          else
-        %>
-            <%= link_to("Explore Featured Content", featured_path, class:'btn btn-default btn-lg btn-green') %>
-        <%
-          end
-        %>
-      </div>
-    </div>
-
-<% end %>

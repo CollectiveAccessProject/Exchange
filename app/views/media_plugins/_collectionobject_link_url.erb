@@ -2,5 +2,5 @@
     r = Resource.find(plugin_model.resource_id)
     f = r.media_files.first
 %><%=
-  render partial: 'media_plugins/collectiveaccess_link_url', locals: {plugin_model: f.sourceable}
+  render partial: 'media_plugins/collectiveaccess_link_url', locals: {plugin_model: f.sourceable, links: links, zoom: zoom}
 %>

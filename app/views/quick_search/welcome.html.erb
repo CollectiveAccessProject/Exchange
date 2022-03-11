@@ -1,0 +1,26 @@
+<%
+	if @show_header
+%>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <% if((@collections.total_entries == 0) && (@resources.total_entries == 0) && (@collection_objects.total_entries == 0) && (@exhibitions.total_entries == 0) && (@crcsets.total_entries == 0)) %>
+        <h2 class="welcomeHeading">No results found for <em><%= sanitize(@query) %></em></h2>
+   	 <% elsif (@query_proc == '*') %>
+   	 	<h2 class="welcomeHeading">Showing <%= @collection_objects.total_entries.to_s %> works in the Exchange</h2>
+   	 <% else %>
+   	 	<h2 class="welcomeHeading">Showing <%= @collection_objects.total_entries.to_s %> works for <em><%= @query_proc %></em></h2>
+    <% end %>
+  </div>
+</div>
+<%
+	end
+%>
+<div class="row" class="row">
+  <div class="col-md-12">
+    <div id="query_search_content">
+    	<%= render :partial => "quick_search/welcome_search_results" %>
+    </div>
+  </div><!-- end col -->
+</div><!-- end row -->
+
+<div class="loading">Loading&#8230;</div>

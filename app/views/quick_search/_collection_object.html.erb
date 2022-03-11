@@ -1,5 +1,5 @@
 <% thumb = false %>
-<div class="col-md-2 qsResult">
+<div class="col-md-3 qsResult">
 	<% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
 		<div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= collection_object.id.to_s %>" class="qsResultCheckbox"/></div>
 	<% end %>
@@ -12,9 +12,6 @@
 			<% if f.sourceable %>
 				<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(collection_object[:id], user_signed_in?) %><br/>
 				<% thumb = true %>
-				<div class="zoomControls searchZoom" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
-					<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-				</div>
 				<% break %>
 			<% end %>
 		<% end %>

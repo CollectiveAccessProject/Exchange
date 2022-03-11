@@ -80,7 +80,7 @@
 								<%= render 'collection_object', collection_object: r %>
 							<% end  %>
 						</div>
-						<div class="infinite-pagination-message">xxxx</div>
+						<div class="infinite-pagination-message"></div>
 						<% Exchange::QuickSearchLinkRenderer.set_data(type: 'collection_object', query: @query_proc) %>
 						<%= will_paginate @collection_objects, renderer: Exchange::QuickSearchLinkRenderer %>
 						<% if current_user %>

@@ -1045,6 +1045,7 @@ class ResourcesController < ApplicationController
   	params.permit(:target_div, :media_id, :resource_title, :media_files, :editable, :resource_id)
   	target_div = '#media_editor_modal'
     @modal_data = {"target" => target_div, "id" => f.id, "title" => r.title, "editable" => params[:editable], "resource_id" => r.id}
+    @media = f.sourceable
     begin
 		@media_display = f.sourceable.render :large
 	rescue

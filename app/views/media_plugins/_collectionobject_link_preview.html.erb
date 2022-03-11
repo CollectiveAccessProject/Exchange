@@ -13,7 +13,7 @@
 
 <span class='previewMedia'>
 <%=
-      render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil}
+      render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil, links: links, zoom: zoom}
 %>
 <%
 	if !(version.to_s == "icon" || version.to_s == "thumbnail" || caption == 'no')
