@@ -4,12 +4,43 @@
 		<% thumb = true %>
 		<%= link_to(image_tag(result.cover.thumb("200x200").url), get_resource_view_path(result[:id], user_signed_in?)) %>
 	<% else %>
-		<% result.media_files.each do |f| %>
-			<% if f.sourceable %>
-				<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(result[:id], user_signed_in?) %><br/>
-				<% thumb = true %>
-				<% break %>
+		<% if result.resource_type_as_sym == :collection_objects %>
+			<% result.media_files.each do |f| %>
+				<% if f.sourceable %>
+					<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(result[:id], user_signed_in?) %><br/>
+					<% thumb = true %>
+					<% break %>
+				<% end %>
 			<% end %>
+		<% elsif result.resource_type_as_sym == :collections %>
+			<% if(result.resource_hierarchies.count) %>
+				<% result.resource_hierarchies.each do |rel| %>
+					<% if(rel.child_resource.is_resource) %>
+						<% rel.child_resource.media_files.each do |f| %>
+							<% if f.sourceable %>
+								<% if f.access == 1 %>
+									<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(rel.resource_id, user_signed_in?) %><br/>
+									<% thumb = true %>
+									<% break %>
+								<% end %>
+							<% end %>
+						<% end %>
+						<% if(thumb == true) %>
+							<% break %>
+						<% end %>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% elsif result.resource_type_as_sym == :resources %>
+			<% result.media_files.each do |f| %>
+			<% if f.sourceable %>
+				<% if f.access == 1 %>
+					<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(result[:id], user_signed_in?), class: "qsResultThumb" %><br/>
+					<% thumb = true %>
+					<% break %>
+				<% end %>
+			<% end %>
+		<% end %>
 		<% end %>
 	<% end %>
 	<% if(thumb == false) %>
