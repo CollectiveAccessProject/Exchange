@@ -10,7 +10,8 @@ class WelcomeController < ApplicationController
     	"fashion photography",
     	"abstract expressionism",
     	"hudson school",
-    	"puppies"
+    	"puppies",
+    	"ceremonial jewelry"
     ].sample(3)
   end
 end

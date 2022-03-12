@@ -2,19 +2,19 @@
 	col = 0
 	thumb = false
 %>
-<div class="panel-welcome" id="results_collection_object">
+<div class="panel-welcome" id="welcome_results">
 	<div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div id="collection_object_results" class="row" data-type="collection_object">
-				<% @collection_objects.each do |r| %>
-					<%= render 'collection_object', collection_object: r %>
+				<% @result.each do |r| %>
+					<%= render 'welcome_result_item', result: r %>
 				<% end  %>
 			</div>
 			
 			<div class="infinite-pagination"></div>
 			<div class="infinite-pagination-message"></div>
 			<% Exchange::WelcomeSearchLinkRenderer.set_data(type: 'collection_object', query: @query_proc) %>
-			<%= will_paginate @collection_objects, renderer: Exchange::WelcomeSearchLinkRenderer %>
+			<%= will_paginate @result, renderer: Exchange::WelcomeSearchLinkRenderer %>
 		</div>
 	</div>
 </div>
@@ -22,22 +22,22 @@
 <script>
 	jQuery(document).ready(function() {
 		jQuery(function() {
-	  if ($('.infinite-pagination').size() > 0) {
-		$(window).on('scroll', function() {
-		  var more_posts_url = $('.infinite-pagination a.next_page').attr('href');
-		  var bottom_distance = 20;
+			if ($('.infinite-pagination').size() > 0) {
+				$(window).on('scroll', function() {
+					var more_posts_url = $('.infinite-pagination a.next_page').attr('href');
+					var bottom_distance = 20;
 
-		  if (more_posts_url && $(window).scrollTop() > $(document).height() - $(window).height() - bottom_distance) {
-			$('.infinite-pagination-message').html('<i class="fa fa-cog fa-spin fa-2x fa-fw"></i> Loading...');
-			$.get(more_posts_url, function(data) {
-				$('.infinite-pagination-message').html('');
-				$('#results_collection_object').append(data);
-			});
-			$('.infinite-pagination a.next_page').remove();
-		  }
+					if (more_posts_url && $(window).scrollTop() > $(document).height() - $(window).height() - bottom_distance) {
+							$('.infinite-pagination-message').html('<i class="fa fa-cog fa-spin fa-2x fa-fw"></i> Loading...');
+							$.get(more_posts_url, function(data) {
+							$('.infinite-pagination-message').html('');
+							$('#welcome_results').append(data);
+						});
+						$('.infinite-pagination a.next_page').remove();
+					}
+				});
+			}
 		});
-	  }
-	});
 	});
 </script>
 

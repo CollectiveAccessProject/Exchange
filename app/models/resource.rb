@@ -383,18 +383,22 @@ class Resource < ActiveRecord::Base
     return self.in_response_to_resource_id == parent_id
   end
 
-  def resource_type_for_display(plural=false)
-  	return Resource.resource_type_as_text(self.resource_type, plural)
+  def resource_type_for_display(plural=false, short=false)
+  	return Resource.resource_type_as_text(self.resource_type, plural, short)
   end
   
   
   # STATIC
-  def self.resource_type_as_text(type, plural=false)
+  def self.resource_type_as_text(type, plural=false, short=false)
     case type
       when Resource::RESOURCE
         return plural ? "Resources" : "Resource"
       when Resource::COLLECTION_OBJECT
-        return plural ? "Collection objects" : "Collection object"
+      	if(short) 
+      		return plural ? "Objects" : "Object"
+      	else
+        	return plural ? "Collection objects" : "Collection object"
+        end
       when Resource::COLLECTION
         return plural ? "Collections" : "Collection"
       when Resource::EXHIBITION
@@ -942,6 +946,41 @@ class Resource < ActiveRecord::Base
 
     if (!query_proc)
         query_proc = ''
+    end
+    
+    if (options[:type] == '_all')
+      begin
+        resources_length = length
+        resources_length = options[:lengthsByType]['collection_object'] if (options[:lengthsByType] && options[:lengthsByType]['collection_object'])
+
+        sort = search_sort_for_type(options[:sortsByType], 'collection_object', options[:sort])
+        
+        refine_q = Resource::get_refine_facet_query(refine, 'collection_object')
+        
+        qdef = {
+            query: {
+                query_string:  {
+                    default_operator: "AND",
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + " (" + acl_str.join(" OR ") + ")" + refine_q
+                }
+            }
+        }
+        
+        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        resources = Resource.search(qdef).per_page(resources_length)
+
+        if (!options[:models])
+          resources = resources.map do |r|
+            if r._source
+              { id: r._source.id, title: r._source.title, subtitle: r._source.subtitle, resource_type: r._source.resource_type, access: r._source.access }
+            end
+          end
+        else
+          resources = resources.page(options[:page]).records
+        end
+        
+        return resources
+      end
     end
     
     if (!options[:type] || ((options[:type] == 'resource') || (options[:type] == 'resources')))

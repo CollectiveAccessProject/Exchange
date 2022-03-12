@@ -3,12 +3,12 @@
 %>
 <div class="row">
   <div class="col-md-12 text-center">
-    <% if((@collections.total_entries == 0) && (@resources.total_entries == 0) && (@collection_objects.total_entries == 0) && (@exhibitions.total_entries == 0) && (@crcsets.total_entries == 0)) %>
+    <% if(@result.total_entries == 0) %>
         <h2 class="welcomeHeading">No results found for <em><%= sanitize(@query) %></em></h2>
    	 <% elsif (@query_proc == '*') %>
-   	 	<h2 class="welcomeHeading">Showing <%= @collection_objects.total_entries.to_s %> works in the Exchange</h2>
+   	 	<h2 class="welcomeHeading">Showing <%= @result.total_entries.to_s %> objects and resources in the Exchange</h2>
    	 <% else %>
-   	 	<h2 class="welcomeHeading">Showing <%= @collection_objects.total_entries.to_s %> works for <em><%= @query_proc %></em></h2>
+   	 	<h2 class="welcomeHeading">Showing <%= @result.total_entries.to_s %> objects and resources for <em><%= @query_proc %></em></h2>
     <% end %>
   </div>
 </div>

@@ -146,8 +146,13 @@ class QuickSearchController < ApplicationController
     end
   end
   
+  #
+  # Front page search
+  #
   def welcome
   	params.permit(:page)
+  	
+  	params[:type] = '_all'
   	
     begin
       setup
@@ -313,6 +318,9 @@ class QuickSearchController < ApplicationController
 
     begin
       case
+        when (@type == '_all')
+          @result = res
+          return
         when (@type == 'resource')
           @resources_length = @length
           @resources = res[:resources]
