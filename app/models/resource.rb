@@ -102,6 +102,7 @@ class Resource < ActiveRecord::Base
       indexes :source, type: 'text',analyzer: 'english'
       indexes :copyright_notes, type: 'text',analyzer: 'english'
       indexes :location, type: 'text',analyzer: 'english'
+      indexes :sort_weight, type: 'integer'
       indexes :title, type: 'text', analyzer: 'english', fields: {
           raw: {
               type: 'keyword'
@@ -966,7 +967,10 @@ class Resource < ActiveRecord::Base
             }
         }
         
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
+        
         resources = Resource.search(qdef).per_page(resources_length)
 
         if (!options[:models])
@@ -1001,7 +1005,10 @@ class Resource < ActiveRecord::Base
             }
         }
         
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
+        
         resources = Resource.search(qdef).per_page(resources_length)
 
         if (!options[:models])
@@ -1038,7 +1045,10 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
        
         collections = Resource.search(qdef).per_page(collections_length)
 
@@ -1073,7 +1083,10 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
         
         collection_objects = Resource.search(qdef).per_page(collection_objects_length)
 
@@ -1110,7 +1123,9 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
         
         exhibitions = Resource.search(qdef).per_page(exhibitions_length)
 
@@ -1147,7 +1162,11 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
+        
         crcsets = Resource.search(qdef).per_page(crcsets_length)
 
         if (!options[:models])
@@ -1336,7 +1355,10 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
+        
         resources = Resource.search(qdef).per_page(resources_length)
 
         if (!options[:models])
@@ -1369,7 +1391,11 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
+        
         collections = Resource.search(qdef).per_page(collections_length)
 
         if (!options[:models])
@@ -1401,7 +1427,11 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
+        
         collection_objects = Resource.search(qdef).per_page(collection_objects_length)
 
         if (!options[:models])
@@ -1433,7 +1463,10 @@ class Resource < ActiveRecord::Base
                 }
             }
         }
-        qdef[:sort] = [{ sort[:field] => { order: sort[:direction]}}] if (sort and !sort[:field].empty?)
+        qdef[:sort] = []
+        qdef[:sort].append({ sort[:field] => { order: sort[:direction]}}) if (sort and !sort[:field].empty?)
+        qdef[:sort].append({ 'sort_weight' => 'desc'})
+        
         exhibitions = Resource.search(qdef).per_page(exhibitions_length)
 
         if (!options[:models])

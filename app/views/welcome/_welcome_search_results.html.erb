@@ -2,6 +2,35 @@
 	col = 0
 	thumb = false
 %>
+<%
+	if @show_header
+%>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <% if(@result.total_entries == 0) %>
+        <h2 class="welcomeHeading">No results found for <em><%= sanitize(@query) %></em></h2>
+   	 <% elsif (@query_proc == '*') %>
+   	 	<h2 class="welcomeHeading">Showing <%= @result.total_entries.to_s %> objects and resources in the Exchange</h2>
+   	 <% else %>
+   	 	<h2 class="welcomeHeading">Showing <%= @result.total_entries.to_s %> objects and resources for <em><%= @query_proc %></em></h2>
+    <% end %>
+  </div>
+</div>
+<%
+	end
+%>
+
+<% if @refine and @refine["_all"] and (@refine["_all"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
+	<div id="results-filters">
+		<strong>Filters: </strong>
+		<% format_refine_filters(@refine, "_all").each do |r| %>
+			<%= r[:field] %>: <em> <%= r[:value] %></em>
+			<a href="#" data-remove_id="<%= r[:filter] %>" class="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></a>
+		<% end%>
+	</div>
+<% end%>
+
+
 <div class="panel-welcome" id="welcome_results">
 	<div>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -40,4 +69,3 @@
 		});
 	});
 </script>
-

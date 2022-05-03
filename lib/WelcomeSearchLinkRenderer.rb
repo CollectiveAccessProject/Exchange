@@ -7,7 +7,7 @@ module Exchange
 			@@query  = query if !query.nil?
 		end
 		def url(page)
-			return "/quick_search/welcome/?page=" + page.to_s  + "&query=" + @@query
+			return "/welcome/search/?page=" + page.to_s  + "&query=" + @@query
 		end
 	end
 end

@@ -4,11 +4,7 @@
 <div class="row featureBox">
   <div class="col-md-12">
     <div class="featureBoxText">
-      <H2>Welcome to the Exchange</H2>
-      <p>Here you can explore UMMA's Collections and discover Learning Resources created by scholars, educators, and other visitors.  
-      Create your own virtual exhibitions, presentations, class assignments, image portfolios and personal collections of your favorites, 
-      using UMMA objects along with web resources. Use the Collections and Learning Resources created and housed in the Exchange for research, 
-      teaching, learning and fun.  Keep your creations private or share them with others to enjoy.</p>
+      <H1>Welcome to the Exchange - Explore our Collection</H1>
     </div>
   </div>
 </div>
@@ -27,11 +23,37 @@
 			terms.join(', ').html_safe
 		%>
 	</form>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12" id="results">
-  
+	 <a id='refineTriggerOpen' class='refineTrigger btn btn-default'>Refine</a>
   </div>
 </div>
 
+<div class="row">
+	<div class="refineContainer" id="refineContainer">
+		Loading refine options...
+	</div>
+	<div class="col-md-12" id="results">
+
+	</div>
+</div>
+
+<script>
+	jQuery(document).ready(function() {
+		jQuery('#refineContainer').slideReveal({
+		  trigger: jQuery(".refineTrigger"),
+		  width: '200px',
+		  top: '105px'
+		});
+		
+		// Refine UI: remove filter
+		jQuery('#results').on('click', ".removeFilter", function(event, data){
+			event.preventDefault();
+			var remove_id = jQuery(this).data('remove_id');
+			jQuery(".loading").show();
+			jQuery.getJSON("<%= welcome_refine_no_query_path() %>?unrefine[]=" + remove_id, function(data) {
+				jQuery("#results").html(data.html);
+				jQuery(".loading").hide();
+				return true;
+			});
+		});
+	});
+</script>

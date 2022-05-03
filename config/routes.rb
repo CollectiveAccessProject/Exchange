@@ -100,7 +100,14 @@ Rails.application.routes.draw do
   get '/quick_search/query' => 'quick_search#query', as: 'quick_search'
   get '/quick_search/query/:dtype' => 'quick_search#query', as: 'quick_search_with_dtype'
   get '/advanced_search/query' => 'quick_search#advanced', as: 'advanced_search'
-  get '/quick_search/welcome' => 'quick_search#welcome', as: 'welecome_search'
+  get '/welcome/search' => 'welcome#search', as: 'welcome_search'
+  get '/welcome/refine/query/:query' => 'welcome#refine', as: 'welcome_refine'
+  get '/welcome/refine' => 'welcome#refine', as: 'welcome_refine_no_query'
+  
+  get '/welcome/refinepanel' => 'welcome#refinepanel', as: 'welcome_refine_panel'
+  get '/welcome/autocomplete_collection_title' => 'welcome#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'welcome_autocomplete_resource_title'
+  get '/welcome/autocomplete_collection_resource_title' => 'welcome#autocomplete_resource_title', mode: Resource::RESOURCE, as: 'welcome_autocomplete_collection_resource_title'
+  
   get '/quick_search/query_results/:type' => 'quick_search#query_results', as: 'query_result_infinite', constraints: { :type => /[A-Za-z0-9_\-]+/ }
   get '/quick_search/query_results/:type/:page/*query' => 'quick_search#query_results', as: 'query_results', constraints: { :type => /[A-Za-z0-9_\-]+/, :page => /[\d]+/, :query => /.+/ }
   get '/quick_search/autocomplete_collection_title' => 'quick_search#autocomplete_resource_title', mode: Resource::COLLECTION, as: 'quick_search_autocomplete_resource_title'
@@ -189,8 +196,8 @@ Rails.application.routes.draw do
   
   # refine
   get '/quick_search/autocomplete_refine/:field/*query' => 'quick_search#autocomplete_refine', as: 'quick_search_autocomplete_refine', constraints: { :query => /.+/ }, :field => /[A-Za-z0-9_\.]+?/, :format => /json|csv|xml|yaml/
-
-
+  get '/welcome/autocomplete_refine/:field/*query' => 'welcome#autocomplete_refine', as: 'welcome_autocomplete_refine', constraints: { :query => /.+/ }, :field => /[A-Za-z0-9_\.]+?/, :format => /json|csv|xml|yaml/
+  
   # API
   
   # search

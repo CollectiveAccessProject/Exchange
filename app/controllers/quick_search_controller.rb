@@ -147,30 +147,6 @@ class QuickSearchController < ApplicationController
   end
   
   #
-  # Front page search
-  #
-  def welcome
-  	params.permit(:page)
-  	
-  	params[:type] = '_all'
-  	
-    begin
-      setup
-    rescue Exception => e
-      redirect_to("/", :flash => { :error => "Search could not be completed" })
-    end
-    
-    @show_header = true
-    @show_header = false if params[:page] and params[:page].to_i > 1
-    
-    respond_to do |format|
-      format.html {render layout: false}
-      format.js {}
-    end
-  end
-
-
-  #
   # Setup results for quicksearch and paging handler
   #
   private def setup(options=nil)
