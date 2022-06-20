@@ -343,13 +343,13 @@ def get_values_for_refine(field, query, type, refine_filters)
                 query: query + refine_q
             }
         },
-        size: 10000,
         aggs: {
-            values: { terms: { field: field, size: 250 } }
+            values: { terms: { field: field, size: 50 } }
         }
     )
     
     acc = agg.response["aggregations"]["values"]["buckets"].map do |v|
+    	v['key'] = v['key'].to_s
         next if !v['key'] or !v['key'].strip
         v['key']
     end  
@@ -370,6 +370,21 @@ def get_values_for_refine_for_select(field, query, type, refine_filters)
     vals.each do |v| 
         next if v and v.length == 0
         opts.push([v, v])
+    end
+
+    options_for_select(opts)
+end
+
+def get_values_for_refine_for_resource_type(field, query, refine_filters)
+    vals = get_values_for_refine(field, query, nil, refine_filters)        
+    opts = [[' ', '']]
+    
+    resource_types = Resource.resource_types
+    vals.each do |v| 
+        next if v and v.length == 0
+        t = resource_types.key(v.to_i)
+        next if t.nil?
+        opts.push([t, v])
     end
 
     options_for_select(opts)
@@ -404,6 +419,11 @@ def format_refine_filters(refine_filters, type)
                     t[1].gsub!(/^[>=]+/, "")
                     v = "After " + t[1]
                     filters.push({field: filter_display_names[t[0]], value: v, filter: r})
+                when (t[0] == 'resource_type')
+                	resource_types = Resource.resource_types
+                	dv = resource_types.key(v.sub('"', '').to_i).to_s 
+                
+                	filters.push({field: filter_display_names[t[0]], value: dv, filter: r})
                 else
                     v = Resource.quicksearch_refine_filter_display_value(t[0], t[1])
                     filters.push({field: filter_display_names[t[0]], value: v, filter: r})

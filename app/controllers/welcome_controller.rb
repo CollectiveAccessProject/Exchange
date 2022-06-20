@@ -69,9 +69,8 @@ class WelcomeController < ApplicationController
                 query: q + q_type + refine_q
             }
         },
-        size: 10000,
         aggs: {
-            values: { terms: { field: f, size: s } }
+            values: { terms: { field: f, size: 50 } }
         }
     )
 	d = agg.response["aggregations"]["values"]["buckets"].reduce([]) do |acc,v|
@@ -166,7 +165,7 @@ class WelcomeController < ApplicationController
   end
 
   
-    #
+  #
   # Setup results for quicksearch and paging handler
   #
   private def setup(options=nil)

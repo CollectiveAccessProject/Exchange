@@ -1,6 +1,12 @@
 <div class="row">
 	<div class="hidden-sm hidden-xs col-md-12 col-lg-12">
 		<h3 class="quickSearchRefineHeader"><a id='refineTriggerClose' onclick='jQuery("#refineContainer").slideReveal("hide"); return false;' class='refineTrigger'><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a> Refine by</h3>
+		<div class="row">
+			<div class="col-md-12">
+				<h6>Resource Type</h6>
+				<%= select_tag(:_all_resource_type, get_values_for_refine_for_resource_type('resource_type', @query, session[:refine]), "data-filter": "resource_type", :class => 'quickSearchRefineSelect')  %>
+			</div>
+		</div>
 		<% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"YES\"")) %>  
 			<div class="row">
 				<div class="col-md-12">

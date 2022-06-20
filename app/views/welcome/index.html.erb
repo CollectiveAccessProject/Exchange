@@ -44,6 +44,10 @@
 		  top: '105px'
 		});
 		
+		jQuery(".refineTrigger").on('click', function() {
+			$("#refineContainer").load("/welcome/refinepanel");
+		});
+		
 		// Refine UI: remove filter
 		jQuery('#results').on('click', ".removeFilter", function(event, data){
 			event.preventDefault();
