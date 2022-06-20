@@ -12,19 +12,24 @@ jQuery(document).ready(function() {
 		return false;
 	});
 	
-	$("#welcomeSearch").on("keyup change click", function(e) {
-		$('.welcomeSuggestions').show(250);
-		
+	$('body').on("keyup change click", "#welcomeSearch, #welcomeSort", function(e) {
+		$('.welcomeSuggestions').slideDown(250); 
 		var q = $('#welcomeSearch').val();
+		var sort = $('#welcomeSort').val();
+		
 		if(!q.trim().length) { 
 			$(".welcomeSearchClear").hide();
+		} else {
+		$(".welcomeSearchClear").show();
+		}
+		if(!q.trim().length && (jQuery(e.target).attr('id') !== 'welcomeSort')) { 
 			return; 
 		}
-		$(".welcomeSearchClear").show();
 		
 		clearTimeout(timer);
     	timer = setTimeout(function () {
-      		$.get('/welcome/search', {'q': q}, function(data) {
+    		console.log("sort", sort);
+      		$.get('/welcome/search', {'q': q, 'sort': sort}, function(data) {
 				$("#results").html(data);
 				$("#refineContainer").load("/welcome/refinepanel");
 			});

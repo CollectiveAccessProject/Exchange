@@ -1,29 +1,26 @@
-<div class="row">
+<div class="row refineContainerContent">
 	<div class="hidden-sm hidden-xs col-md-12 col-lg-12">
-		<h3 class="quickSearchRefineHeader"><a id='refineTriggerClose' onclick='jQuery("#refineContainer").slideReveal("hide"); return false;' class='refineTrigger'><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a> Refine by</h3>
+		<div class="pull-right"><a id='refineTriggerClose' class='refineTrigger'><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a></div>
+		<h3 class="quickSearchRefineHeader" style="width: 200px;">Refine by</h3>
+		
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<h6>Resource Type</h6>
 				<%= select_tag(:_all_resource_type, get_values_for_refine_for_resource_type('resource_type', @query, session[:refine]), "data-filter": "resource_type", :class => 'quickSearchRefineSelect')  %>
 			</div>
-		</div>
 		<% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"YES\"")) %>  
-			<div class="row">
-				<div class="col-md-12">
-					<h6>On display?</h6>
-					<input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="YES" data-filter="on_display"/> 
-				</div>
+
+			<div class="col-md-3">
+				<h6>On display?</h6>
+				<input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="YES" data-filter="on_display"/> 
 			</div>
 		<% end %>
-		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<h6>Artist/Maker</h6>
 				<%= autocomplete_field_tag(:_all_find_artist, '', welcome_autocomplete_refine_url(query: @query, field: "artist.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_artist", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "artist") + hidden_field_tag(:_all_artist) %>
 			</div>
-		</div>
 		
-		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<h6>Date created</h6>
 
 				<select name="collection_object_date_created_mode" id="collection_object_date_created_mode" class="quickSearchRefineDateMode">
@@ -39,27 +36,19 @@
 				</span>
 				<a href="#" onclick="return false;"><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></a>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<h6>Collection area</h6>
 				<%= select_tag(:_all_collection_area, get_values_for_refine_for_select('collection_area.raw', @query, "collection_object", session[:refine]), "data-filter": "collection_area", :class => 'quickSearchRefineSelect')  %>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<h6>Style/Group/Movement</h6>
 				<%= autocomplete_field_tag(:_all_find_style, '', welcome_autocomplete_refine_url(query: @query, field: "style.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_style", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "style") + hidden_field_tag(:_all_style) %>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<h6>Medium & Support</h6>
 				<%= autocomplete_field_tag(:_all_find_medium, '', welcome_autocomplete_refine_url(query: @query, field: "medium.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_medium", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "medium") + hidden_field_tag(:_all_medium) %>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<h6>Classification/Object Type</h6>
 				<%= autocomplete_field_tag(:_all_find_classification, '', welcome_autocomplete_refine_url(query: @query, field: "classification.raw", type: "collection_object"), :"data-autocomplete-label" => "Sorry, nothing found.", :size => 20, :id_element => "#collection_object_classification", :placeholder => "Search", autocomplete: "off", autocorrect: "off", autocapitalize: "off", spellcheck: "false", :class => 'quickSearchRefineAutocomplete', "data-filter": "classification") + hidden_field_tag(:_all_classification) %>
 			</div>
@@ -163,7 +152,13 @@
 				return true;
 			});
 		});
-	
+		
+		jQuery('#refineTriggerClose').on('click', function() {
+			jQuery("#refineContainer").slideUp(250, function() {
+				jQuery("#refineTriggerOpen").show(); 
+			});
+			return false;
+		});
 		
 	});
 </script>

@@ -85,8 +85,16 @@ input.welcomeSearch {
 }
 
 .refineContainer {
-	width: 250px;
-	margin-left: 10px;
+	width: 100%;
+	margin: 0px;
+	display: none;
+}
+
+.refineContainerContent {
+	margin-left: 12px !important;
+	margin-right: 12px !important;
+	border-bottom: 1px dotted #555;
+	padding-bottom: 15px;
 }
 
 .quickSearchRefineSelect {

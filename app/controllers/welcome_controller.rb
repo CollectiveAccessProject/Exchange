@@ -83,7 +83,6 @@ class WelcomeController < ApplicationController
     render :json => d
   end
   def index
-
     @is_staff = current_user && current_user.has_role?(:staff)
     @featured_content_set = FeaturedContentSet.where(slug: "front-page", access: 1).first
     
@@ -171,6 +170,8 @@ class WelcomeController < ApplicationController
   private def setup(options=nil)
     @show = true
     params.permit(:query, :q, :page, :type, :length, :sort, refine: [], unrefine:[])
+    
+    @sort_default = params[:sort]
 
     @query = params[:q] if (!(@query = params[:query]))
     @query = "*" if (@query and @query.length == 0)
@@ -257,7 +258,7 @@ class WelcomeController < ApplicationController
 	end
 
 	@refine['collection_object'] = @refine['_all']
-    res = Resource::quicksearch(@query_proc, models: true, refine: @refine, page: @page, type: '_all', length: @length, lengthsByType: {'collection_object' => 20 }, sort: @sort, sortsByType: session[:sort], user: current_user)
+    res = Resource::quicksearch(@query_proc, models: true, refine: @refine, page: @page, type: '_all', length: @length, lengthsByType: {'collection_object' => 20 }, sort: @sort_default, sortsByType: nil, user: current_user)
 
 	@result = res
 	session[:last_search_query] = @query

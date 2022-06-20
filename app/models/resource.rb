@@ -819,7 +819,8 @@ class Resource < ActiveRecord::Base
   #
   def self.search_sort_for_type(sortsByType, type=nil, default=nil)
     sort = sortsByType[type] if (type && sortsByType && sortsByType[type])
-
+	sort = default if sort.nil? and !default.nil?
+	
     case sort
       when "title"
         {field: "title.raw", direction: "asc" }

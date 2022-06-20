@@ -23,29 +23,26 @@
 			terms.join(', ').html_safe
 		%>
 	</form>
-	 <a id='refineTriggerOpen' class='refineTrigger btn btn-default'>Refine</a>
+	<div class="pull-right"><a id='refineTriggerOpen' class='refineTrigger btn btn-default'>Refine</a></div>
   </div>
 </div>
 
 <div class="row">
-	<div class="refineContainer" id="refineContainer">
-		Loading refine options...
-	</div>
-	<div class="col-md-12" id="results">
+  <div class="col-md-12">
+	<div class="refineContainer" id="refineContainer"> </div>
+  </div>
+</div>
 
-	</div>
+<div class="row">
+	<div class="col-md-12" id="results"> </div>
 </div>
 
 <script>
 	jQuery(document).ready(function() {
-		jQuery('#refineContainer').slideReveal({
-		  trigger: jQuery(".refineTrigger"),
-		  width: '200px',
-		  top: '105px'
-		});
-		
 		jQuery(".refineTrigger").on('click', function() {
-			$("#refineContainer").load("/welcome/refinepanel");
+			jQuery(".refineContainer").slideDown(250);
+			jQuery("#refineTriggerOpen").hide();
+			jQuery("#refineContainer").load("/welcome/refinepanel");
 		});
 		
 		// Refine UI: remove filter
@@ -55,6 +52,7 @@
 			jQuery(".loading").show();
 			jQuery.getJSON("<%= welcome_refine_no_query_path() %>?unrefine[]=" + remove_id, function(data) {
 				jQuery("#results").html(data.html);
+				jQuery("#refineContainer").load("/welcome/refinepanel");
 				jQuery(".loading").hide();
 				return true;
 			});
