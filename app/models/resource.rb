@@ -846,6 +846,7 @@ class Resource < ActiveRecord::Base
   
   def self.quicksearch_refine_filter_names
     return  {
+        "resource_type" => "Resource type",
         "artist" => "Artist/maker",
         "author" => "Author",
         "title" => "Title",

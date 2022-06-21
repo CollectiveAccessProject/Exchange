@@ -21,7 +21,7 @@
 %>
 
 <form class="searchPaging">
-	<div class="searchFormElement">
+	<div class="searchFormElement pull-right">
 		<nobr>Sort by <%= select_tag("sort", options_for_select(sortOptions(), @sort_default), {id: "welcomeSort"}) %></nobr>
 	</div>
 </form>
