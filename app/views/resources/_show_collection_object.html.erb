@@ -104,7 +104,12 @@
       		
       </div><!-- end col -->
       <div class="col-sm-4 collectionObjectDetailText">
-        <%= text = sanitize(@resource.parsed_body_text.gsub(/<br[ ]*\/><br[ ]*\/><br[ ]*\/>/, "<br /><br />"), tags: body_tags_allowed, attributes: body_attrs_allowed) %>
+        <%
+        	 text = @resource.parsed_body_text.gsub(/<br[ ]*\/><br[ ]*\/><br[ ]*\/>/, "<br /><br />") 
+        	 
+        	 text.gsub!(/\.\.\/\.\./, '')
+        %>
+        <%= sanitize(text,tags: body_tags_allowed, attributes: body_attrs_allowed) %>
          
          <% 
             keywords = [] 
