@@ -61,7 +61,7 @@ class WelcomeController < ApplicationController
     
     q_type = " resource_type:" + Resource::resource_text_to_type(type).to_s
 
-    
+    Rails.logger.info  "F=" + f  +";Q=" + q + "; TYPE=" + q_type + ";REFINE=" + refine_q
     agg = Resource.search(
         query: {
             query_string:  {
@@ -70,7 +70,7 @@ class WelcomeController < ApplicationController
             }
         },
         aggs: {
-            values: { terms: { field: f, size: 50 } }
+            values: { terms: { field: f, size: 25000 } }
         }
     )
 	d = agg.response["aggregations"]["values"]["buckets"].reduce([]) do |acc,v|

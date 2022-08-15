@@ -377,15 +377,20 @@ end
 
 def get_values_for_refine_for_resource_type(field, query, refine_filters)
     vals = get_values_for_refine(field, query, nil, refine_filters)        
-    opts = [[' ', '']]
-    
-    resource_types = Resource.resource_types
-    vals.each do |v| 
-        next if v and v.length == 0
-        t = resource_types.key(v.to_i)
-        next if t.nil?
-        opts.push([t, v])
-    end
+   # opts = [[' ', '']]
+   #  resource_types = Resource.resource_types
+#     vals.each do |v| 
+#         next if v and v.length == 0
+#         t = resource_types.key(v.to_i)
+#         next if t.nil?
+#         opts.push([t, v])
+#     end
+	opts = [
+		[' ', ''],
+		["Collection object", 3],
+		["Resource", 1],
+		["Learning collection", 2]
+	]
 
     options_for_select(opts)
 end
