@@ -85,6 +85,10 @@ class WelcomeController < ApplicationController
   def index
     @is_staff = current_user && current_user.has_role?(:staff)
     @featured_content_set = FeaturedContentSet.where(slug: "front-page", access: 1).first
+   
+    @available_collections = get_available_collections
+    @available_collections_and_resources = get_available_collections_and_resources
+
     
     params[:q] = session[:last_search_query] if params[:q].nil?
     params[:q] = '*' if params[:q].nil?
@@ -112,6 +116,9 @@ class WelcomeController < ApplicationController
   	@page = params[:page].to_i
     @page = 1 if (@page < 1)
   	params[:type] = '_all'
+  	
+    @available_collections = get_available_collections
+    @available_collections_and_resources = get_available_collections_and_resources
   	
     @show_header = true
     @show_header = false if params[:page] and params[:page].to_i > 1
@@ -142,6 +149,10 @@ class WelcomeController < ApplicationController
   	params[:type] = '_all'
   	@page = params[:page].to_i
     @page = 1 if (@page < 1)
+    
+  	
+    @available_collections = get_available_collections
+    @available_collections_and_resources = get_available_collections_and_resources
     
     @query = params[:q] = session[:last_search_query]
   	
@@ -263,5 +274,44 @@ class WelcomeController < ApplicationController
 	@result = res
 	session[:last_search_query] = @query
 	return
+  end
+  
+   #
+  #
+  #
+  def get_available_collections
+    return nil if (!current_user)
+    # Get Resources for users from Resources and ResourcesUser
+  	collections = []
+  	editable_res = ResourcesUser.where('user_id=? AND access=?', current_user.id, 2)
+    editable_res.each do |ed|
+    	editable_colls = Resource.where('id = ? AND resource_type = ?', ed.resource_id, Resource::COLLECTION)
+    	editable_colls.each do |coll|
+    		collections.push(Resource.find(coll.id))
+    	end
+    end
+    user_res = Resource.where('(user_id=? OR author_id=?) AND resource_type = ? ', current_user.id, current_user.id, Resource::COLLECTION)
+	user_res.each do |us|
+		collections.push(Resource.find(us.id))
+	end
+    return collections
+  end
+
+  #
+  #
+  #
+  def get_available_collections_and_resources
+    return nil if (!current_user)
+     # Get Resources for users from Resources and ResourcesUser
+  	resources = []
+  	editable_res = ResourcesUser.where('user_id=? AND access=?', current_user.id, 2)
+    editable_res.each do |ed|
+    	resources.push(Resource.find(ed.resource_id))
+    end
+    user_res = Resource.where('(user_id=? OR author_id=?) AND resource_type IN (?) ', current_user.id, current_user.id, [Resource::COLLECTION, Resource::RESOURCE]).order(title_sort: :asc)
+	user_res.each do |us|
+		resources.push(Resource.find(us.id))
+	end
+    return resources
   end
 end

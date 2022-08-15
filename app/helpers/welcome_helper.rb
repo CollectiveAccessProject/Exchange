@@ -1,5 +1,5 @@
 module WelcomeHelper
- def sortOptions()
+ def sortOptions(dummy=nil)
 	return [
 		["Relevance", "_score"],
 		["Title", "title"],

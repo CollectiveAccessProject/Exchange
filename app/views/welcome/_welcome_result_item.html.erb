@@ -1,5 +1,8 @@
 <% thumb = false %>
-<div class="col-md-3 qsResult">
+<div class="col-md-3 qsResult welcomeResult">
+	<% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
+		<div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= result[:id] %>" class="qsResultCheckbox"/></div>
+	<% end %>
 	<% if result.cover %>
 		<% thumb = true %>
 		<%= link_to(image_tag(result.cover.thumb("200x200").url), get_resource_view_path(result[:id], user_signed_in?)) %>

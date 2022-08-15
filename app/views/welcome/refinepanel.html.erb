@@ -14,6 +14,11 @@
 				<h6>On display?</h6>
 				<input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="YES" data-filter="on_display"/> 
 			</div>
+		<% else %>
+			<div class="col-md-3">
+				<h6>On display?</h6>
+				<input type="checkbox" name="collection_object_on_display" class="quickSearchRefineCheckbox" value="YES" data-filter="on_display" checked="1" /> 
+			</div>
 		<% end %>
 			<div class="col-md-3">
 				<h6>Artist/Maker</h6>
@@ -146,10 +151,11 @@
 			var val = jQuery(this).val();
 			event.preventDefault();
 		
-			if (!filter || (val < 1)) { return false; }
-		
+			var action = 'refine';
+			if (!filter || (val < 1) || !jQuery(this).prop('checked')) {  action = 'unrefine'; }
+
 			jQuery(".loading").show();
-			jQuery.getJSON("<%= welcome_refine_path(query: @query) %>?refine[]=" + filter + ":\"" + val + "\"", function(data) {
+			jQuery.getJSON("<%= welcome_refine_path(query: @query) %>?" + action + "[]=" + filter + ":\"" + val + "\"", function(data) {
 				jQuery("#results").html(data.html);
 				$("#refineContainer").load("/welcome/refinepanel");
 				jQuery(".loading").hide();

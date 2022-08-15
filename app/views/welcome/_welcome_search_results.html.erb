@@ -20,6 +20,41 @@
 	end
 %>
 
+<div id="collectionObjectResults-status">
+	<div class="flash-notice" id="collectionObjectResults-status-message">
+
+	</div>
+</div>
+<% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
+	<div class='pull-right' style='margin-right: 15px'>
+		<button id='colObjectResultsSelectAllTrigger' class='btn btn-default' data-toggle='0'>Select all</button>
+	</div>
+	
+	<div id="welcome-add">
+		<form class="collectionObjectResultsAdd">
+			Add selected to <%=
+
+			if(@available_collections_and_resources.length > 25)
+				autocomplete_field_tag(:find_resource_id, '', :autocomplete_collection_resource_title, :"data-autocomplete-label" => "Sorry, nothing found.", :size => 40, :id_element => "#collection_add_to_collection_id", :placeholder => "Search for a collection or resource") + hidden_field_tag(:collection_add_to_collection_id)
+			else
+				select_tag(:collection_add_to_collection_id, options_from_collection_for_select(@available_collections_and_resources, :id, lambda {|t| strip_tags(t.title)}), class:'', id:'collection_add_to_collection_id')
+			end %>
+			<%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Add".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsAddToCollection"  %>
+		</form>
+		<form class="collectionObjectResultsCreate">
+			Add selected to new  
+			<%= select_tag(:collection_new_collection_type, options_for_select(['resource', 'collection']), class:'', id:'collection_new_collection_type') %>
+			
+			 with title <%=
+
+			text_field_tag(:collection_new_collection_title, '', :size => 30, :class => 'form-control', :placeholder => "My new collection or resource")
+			 %>
+			<%= button_tag "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Create".html_safe, href: "#", class: "btn btn-noBg btn-xs", id: "collectionObjectResultsCreateNewCollection"  %>
+		</form>
+	</div>
+<% end %>
+</div>
+
 <form class="searchPaging">
 	<div class="searchFormElement pull-right">
 		<nobr>Sort by <%= select_tag("sort", options_for_select(sortOptions(), @sort_default), {id: "welcomeSort"}) %></nobr>
@@ -71,6 +106,102 @@
 					}
 				});
 			}
+		});
+		
+		jQuery('#colObjectResultsSelectAllTrigger').off().on('click', function(e) {
+			var toggle = jQuery(this).data('toggle');
+			toggle = !toggle;
+			jQuery('.qsResultCheckbox').prop('checked', toggle ? 1 : 0);
+			if (toggle) {
+				jQuery(this).html('Deselect all');
+			} else {
+				jQuery(this).html('Select all');
+			}
+			jQuery(this).data('toggle', toggle)
+		});
+		
+		jQuery('#welcome-add').off().on('click', "#collectionObjectResultsAddToCollection", function(e) {
+			e.preventDefault();
+
+			var add_to_collection_id = jQuery("#collection_add_to_collection_id").val();
+
+			var ids = jQuery("input.qsResultCheckbox").map(function() {
+				return jQuery(this).prop('checked') ? jQuery(this).val(): undefined;
+			}).get()
+
+			if (!ids || (ids.length == 0)) {
+				jQuery("#collectionObjectResults-status").slideDown(250);
+				jQuery("#collectionObjectResults-status-message").html("No items are checked");
+				window.setTimeout(function() {
+					jQuery("#collectionObjectResults-status").slideUp(250);
+				}, 3000);
+				return false;
+			}
+
+			jQuery.post("/resources/" + add_to_collection_id + "/add_child_resources", {"add_child_resource_ids[]": ids}, function(data) {
+				if (data.status == 'err') {
+					jQuery("#collectionObjectResults-status").slideDown(250);
+					jQuery("#collectionObjectResults-status-message").html(data.error);
+					window.setTimeout(function() {
+						jQuery("#collectionObjectResults-status").slideUp(250);
+					}, 3000);
+				} else {
+					var n = data.numAdded;
+					existed_msg = (data.numExisting > 0) ? ((data.numExisting == 1) ? " (1 already exists)" :  " (" + data.numExisting + " already exist)") : "";
+
+					jQuery("#collectionObjectResults-status").slideDown(250);
+					jQuery("#collectionObjectResults-status-message").html(((n == 1) ? "Added 1 collection object to collection" : "Added " + n + " collection objects to collection") + existed_msg);
+					window.setTimeout(function() {
+						jQuery("#collectionObjectResults-status").slideUp(250);
+					}, 3000);
+
+					jQuery("input.qsResultCheckbox").prop('checked', false);
+				}
+				return true;
+			}, 'json');
+			return false;
+		}).on('click', "#collectionObjectResultsCreateNewCollection", function(e) {
+			e.preventDefault();
+
+			var collection_type = jQuery("#collection_new_collection_type").val();
+			var collection_title = jQuery("#collection_new_collection_title").val();
+
+			var ids = jQuery("input.qsResultCheckbox").map(function() {
+				return jQuery(this).prop('checked') ? jQuery(this).val(): undefined;
+			}).get()
+
+			if (!ids || (ids.length == 0)) {
+				jQuery("#collectionObjectResults-status").slideDown(250);
+				jQuery("#collectionObjectResults-status-message").html("No items are checked");
+				window.setTimeout(function() {
+					jQuery("#collectionObjectResults-status").slideUp(250);
+				}, 3000);
+				return false;
+			}
+
+			jQuery.post("/resources/create_new_resource_with_children", {"type": collection_type, "title": collection_title, "add_child_resource_ids[]": ids}, function(data) {
+				if (data.status == 'err') {
+					jQuery("#collectionObjectResults-status").slideDown(250);
+					jQuery("#collectionObjectResults-status-message").html(data.error);
+					window.setTimeout(function() {
+						jQuery("#collectionObjectResults-status").slideUp(250);
+					}, 3000);
+				} else {
+					var n = data.numAdded;
+					existed_msg = (data.numExisting > 0) ? ((data.numExisting == 1) ? " (1 already exists)" :  " (" + data.numExisting + " already exist)") : "";
+
+					jQuery("#collectionObjectResults-status").slideDown(250);
+					jQuery("#collectionObjectResults-status-message").html(((n == 1) ? "Created new " + collection_type + " with  1 collection object" : "Created new " + collection_type + " with " + n + " collection objects") + existed_msg);
+					window.setTimeout(function() {
+						jQuery("#collectionObjectResults-status").slideUp(250);
+					}, 3000);
+
+					jQuery("input.qsResultCheckbox").prop('checked', false);
+					jQuery("#collection_new_collection_title").val('');
+				}
+				return true;
+			}, 'json');
+			return false;
 		});
 	});
 </script>

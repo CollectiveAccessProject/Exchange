@@ -21,14 +21,13 @@
 				'<a href="#" data-term="'+ t +'" class="welcomeSuggestionTerm">' + t + '</a>' 
 			}
 			terms.join(', ').html_safe
-		%>
+		%></div>
 	</form>
 	<div class="pull-right"><a id='refineTriggerOpen' class='refineTrigger btn btn-default'>Refine</a></div>
-  </div>
 </div>
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12 welcomeRefine" style="margin-top: 10px;">
 	<div class="refineContainer" id="refineContainer"> </div>
   </div>
 </div>
@@ -57,5 +56,6 @@
 				return true;
 			});
 		});
+		
 	});
 </script>

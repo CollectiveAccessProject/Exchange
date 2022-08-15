@@ -95,8 +95,10 @@
 			</div>
 			<%= render(partial: 'resources/media_overlay') %>
 		</div>
+		
+		zzz
 		<%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "collection_object", prefix: "colObject" } %>
-
+xx
 		<div class="hidden-sm hidden-xs col-md-3 col-lg-3 refineContainer" id="colObjectRefineContainer">
 			<h3 class="quickSearchRefineHeader">Refine by</h3>
 			<% if (!session[:refine].is_a?(Hash) or !session[:refine]['collection_object'].is_a?(Hash) or !session[:refine]['collection_object']['on_display'] or !session[:refine]['collection_object']['on_display'].include?("on_display:\"YES\"")) %>  

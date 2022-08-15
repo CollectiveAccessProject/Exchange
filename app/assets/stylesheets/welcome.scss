@@ -84,7 +84,7 @@ input.welcomeSearch {
     margin: 3px 0 0 3px;
 }
 
-.refineContainer {
+.welcomeRefine .refineContainer {
 	width: 100%;
 	margin: 0px;
 	display: none;
@@ -97,6 +97,13 @@ input.welcomeSearch {
 	padding-bottom: 15px;
 }
 
-.quickSearchRefineSelect {
+.welcomeResult .quickSearchRefineSelect {
 	width: 150px !important;
+}
+
+.welcomeResult .qsResultCheckbox {
+  position: absolute;
+  top: 0px;
+  right: 3px;
+  z-index: 30000;
 }
