@@ -4,7 +4,7 @@
 <div class="row featureBox">
   <div class="col-md-12">
     <div class="featureBoxText">
-      <H1>Welcome to the Exchange - Explore our Collection</H1>
+      <H1>Explore UMMA's Collection</H1>
     </div>
   </div>
 </div>
@@ -16,14 +16,17 @@
 			<a href="#" class="welcomeSearchIcon"><i class="glyphicon glyphicon-search"  aria-hidden="true"></i></a>
 			<a href="#" class="welcomeSearchClear"><i class="glyphicon glyphicon-remove-sign" aria-hidden="true"></i></a>
 		</div>
-		<div class="welcomeSuggestions">Not sure what to search for? Try <%=
+		<div class="welcomeSuggestions">
+			<div class="pull-right"><a id='refineTriggerOpen' class='refineTrigger btn btn-default'>Refine Result</a></div>
+			
+			Not sure what to search for? Try <%=
 			terms = @suggested_search_terms.map { |t|
 				'<a href="#" data-term="'+ t +'" class="welcomeSuggestionTerm">' + t + '</a>' 
 			}
 			terms.join(', ').html_safe
-		%></div>
+		%>
+		</div>
 	</form>
-	<div class="pull-right"><a id='refineTriggerOpen' class='refineTrigger btn btn-default'>Refine</a></div>
 	</div>
 </div>
 
@@ -36,27 +39,3 @@
 <div class="row">
 	<div class="col-md-12" id="results"> </div>
 </div>
-
-<script>
-	jQuery(document).ready(function() {
-		jQuery(".refineTrigger").on('click', function() {
-			jQuery(".refineContainer").slideDown(250);
-			jQuery("#refineTriggerOpen").hide();
-			jQuery("#refineContainer").load("/welcome/refinepanel");
-		});
-		
-		// Refine UI: remove filter
-		jQuery('#results').on('click', ".removeFilter", function(event, data){
-			event.preventDefault();
-			var remove_id = jQuery(this).data('remove_id');
-			jQuery(".loading").show();
-			jQuery.getJSON("<%= welcome_refine_no_query_path() %>?unrefine[]=" + remove_id, function(data) {
-				jQuery("#results").html(data.html);
-				jQuery("#refineContainer").load("/welcome/refinepanel");
-				jQuery(".loading").hide();
-				return true;
-			});
-		});
-		
-	});
-</script>

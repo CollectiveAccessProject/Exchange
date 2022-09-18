@@ -1,4 +1,22 @@
 jQuery(document).ready(function() {
+	jQuery(".refineTrigger").on('click', function() {
+		jQuery(".refineContainer").slideDown(250);
+		jQuery("#refineTriggerOpen").hide();
+		jQuery("#refineContainer").load("/welcome/refinepanel");
+	});
+	
+	// Refine UI: remove filter
+	jQuery('#results').on('click', ".removeFilter", function(event, data){
+		event.preventDefault();
+		var remove_id = jQuery(this).data('remove_id');
+		jQuery(".loading").show();
+		jQuery.getJSON("<%= welcome_refine_no_query_path() %>?unrefine[]=" + remove_id, function(data) {
+			jQuery("#results").html(data.html);
+			jQuery("#refineContainer").load("/welcome/refinepanel");
+			jQuery(".loading").hide();
+			return true;
+		});
+	});
 	var timer;
 	$("#results").html('');
 	

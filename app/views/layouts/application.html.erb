@@ -79,9 +79,9 @@
 				  <% if (current_user) %>
 					<a href="#" onClick="$('#newResourceContainer').slideToggle(); return false;">New</a><span class="subQuerySpacer">|</span>		
 				  <% end %>
-				  <a href="#" onClick="$('#queryBuilderContainer').slideUp(250, function() { $('#advancedSearchContainer').slideToggle(); }); return false;">Advanced</a>
+				  <a href="#" onClick="$('#queryBuilderContainer').slideUp(250, function() { $('#advancedSearchContainer').slideToggle(); }); return false;">Advanced Search</a>
 				  <span class="subQuerySpacer">|</span>
-				  <a href="#" onClick="$('#advancedSearchContainer').slideUp(250, function() { $('#queryBuilderContainer').slideToggle(); } ); return false;">Builder</a>
+				  <a href="#" onClick="$('#advancedSearchContainer').slideUp(250, function() { $('#queryBuilderContainer').slideToggle(); } ); return false;">Query Builder</a>
 			 
 				  <span class="subQuerySpacer">|</span>
 				  <% if (current_user) %>
