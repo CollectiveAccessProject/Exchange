@@ -17,6 +17,7 @@ jQuery(document).ready(function() {
 			return true;
 		});
 	});
+	
 	var timer;
 	$("#results").html('');
 	

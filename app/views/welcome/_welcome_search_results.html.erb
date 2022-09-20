@@ -55,11 +55,13 @@
 <% end %>
 </div>
 
+<% if @show_header %>
 <form class="searchPaging">
 	<div class="searchFormElement pull-right">
 		<nobr>Sort by <%= select_tag("sort", options_for_select(sortOptions(), @sort_default), {id: "welcomeSort"}) %></nobr>
 	</div>
 </form>
+<% end %>
 <% if @refine and @refine["_all"] and (@refine["_all"].values.reduce(0) {|sum, v| sum = sum + v.length } > 0) %>
 	<div id="results-filters">
 		<strong>Filters: </strong>
