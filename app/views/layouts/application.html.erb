@@ -46,12 +46,12 @@
   
 		<div id="exmenu" class="navbar-collapse collapse navbar-right">
 			<ul class="nav navbar-nav">
-			<li><%= link_to("Featured", featured_path) %></li>
 			<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About</a>
 				<ul class="dropdown-menu" role="menu">
 					<%= render 'devise/menu/about_items' %>
 				</ul>
 			</li>
+			<li><%= link_to("Resources", featured_path) %></li>
 			<li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Exchange</a>
 				<ul class="dropdown-menu" role="menu">
@@ -69,7 +69,7 @@
 			  </ul>
 			</li>
 			<% else %>
-			<li><a href="http://umma.umich.edu/">UMMA Home</a></li>
+			<li><a href="https://umma.umich.edu/">UMMA Home</a></li>
 			<% end %>
 		  </ul>
 		  <%= form_tag({ controller: '/quick_search', action: 'query' }, method: 'get', class: 'navbar-form navbar-right tour-search-form') do %>
@@ -79,9 +79,9 @@
 				  <% if (current_user) %>
 					<a href="#" onClick="$('#newResourceContainer').slideToggle(); return false;">New</a><span class="subQuerySpacer">|</span>		
 				  <% end %>
-				  <a href="#" onClick="$('#queryBuilderContainer').slideUp(250, function() { $('#advancedSearchContainer').slideToggle(); }); return false;">Advanced</a>
+				  <a href="#" onClick="$('#queryBuilderContainer').slideUp(250, function() { $('#advancedSearchContainer').slideToggle(); }); return false;">Advanced Search</a>
 				  <span class="subQuerySpacer">|</span>
-				  <a href="#" onClick="$('#advancedSearchContainer').slideUp(250, function() { $('#queryBuilderContainer').slideToggle(); } ); return false;">Builder</a>
+				  <a href="#" onClick="$('#advancedSearchContainer').slideUp(250, function() { $('#queryBuilderContainer').slideToggle(); } ); return false;">Query Builder</a>
 			 
 				  <span class="subQuerySpacer">|</span>
 				  <% if (current_user) %>

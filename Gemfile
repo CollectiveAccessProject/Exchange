@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
-gem 'passenger', '6.0.4'
+gem 'passenger', '6.0.12'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0'
 # Use jdbcsqlite3 as the database for Active Record
 #gem 'activerecord-jdbcsqlite3-adapter'
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails'

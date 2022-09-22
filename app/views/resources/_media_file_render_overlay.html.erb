@@ -44,19 +44,13 @@
 	  <div class="col-sm-6">
 		<div class="row">
 			<div class="col-sm-12 text-center scaleImg">
-				<%= media.html_safe %>
+				<%= media.preview(:medium, nil, nil, nil, false, true).html_safe %>
 			</div>
 		</div>
 		<% if (!editable) %>
 			<div class="row">
 				<div class="col-sm-12 scaleImg text-center">
-					<!--<a id="modalSlideshow" href="#" data-dismiss="modal" data-toggle="modal" data-target="#carousel-full" title="Fullscreen slideshow"><i class="fa fa-external-link"></i> Slideshow</a><br/>-->
 					<%= link_to '<i class="fa fa-external-link"></i> Slideshow'.html_safe, load_fullscreen_slideshow_path(:resource_id => r_id), :remote => true, :class => 'slideshowLoad' %><br/>
-					<% if (fzoom = is_zoomable(media_file)) %>
-						<div class="zoomControls">
-							<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-						</div>
-					<% end %>
 				</div>
 			</div>
 		<% end %>

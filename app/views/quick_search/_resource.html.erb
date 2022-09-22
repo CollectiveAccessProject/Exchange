@@ -1,6 +1,6 @@
 <% thumb = false %>
 
-<div class="col-md-2 qsResult">
+<div class="col-md-3 qsResult">
 	<% if (current_user && @available_collections && (@available_collections.length > 0)) %>
 	<div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= resource.id.to_s %>" class="qsResultCheckbox"/></div>
 	<% end %>

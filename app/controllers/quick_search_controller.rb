@@ -1,4 +1,5 @@
 require 'QuickSearchLinkRenderer'
+require 'WelcomeSearchLinkRenderer'
 
 class QuickSearchController < ApplicationController
 
@@ -144,8 +145,7 @@ class QuickSearchController < ApplicationController
       redirect_to("/", :flash => { :error => "Search could not be completed" })
     end
   end
-
-
+  
   #
   # Setup results for quicksearch and paging handler
   #
@@ -294,6 +294,9 @@ class QuickSearchController < ApplicationController
 
     begin
       case
+        when (@type == '_all')
+          @result = res
+          return
         when (@type == 'resource')
           @resources_length = @length
           @resources = res[:resources]

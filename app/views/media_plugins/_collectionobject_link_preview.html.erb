@@ -13,16 +13,22 @@
 
 <span class='previewMedia'>
 <%=
-      render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil}
+      render partial: 'media_plugins/collectiveaccess_link_preview', locals: {plugin_model: f.sourceable, version: version, width: nil, height: nil, links: links, zoom: zoom}
 %>
 <%
 	if !(version.to_s == "icon" || version.to_s == "thumbnail" || caption == 'no')
 %>
 		<div class="previewMediaCaption row">
 			<div class="col-xs-12 text-left previewMediaCol idle-fade">
+<%
+	if(links)
+%>
 				<div class="mediaTips">
 					<span class="popoverWrapper mediaTipsTrigger" title="UMMA Object Image"><div class="previewMediaIcon"><i class="fa fa-image" aria-hidden="true"></i>&nbsp;&nbsp;<i class="fa fa-institution" aria-hidden="true"></i></div></span>
 				</div>
+<%
+	end
+%>
 				<%= sanitize(local_assigns[:caption]) %>
 			</div>
 		</div>

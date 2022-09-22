@@ -73,6 +73,8 @@
                 <% end %>
                 <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
                 <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Access' %>
+                
+                <%= r.input :sort_weight, label: 'Sort weight' %>
 
 
 					<div class="form-group select optional cover">
@@ -148,7 +150,7 @@
                     <% end %>
                     <%= r.input :copyright_license, collection: Resource.license_types, include_blank: false %>
                     <%= r.input :access, collection: Resource.access_types, as: :select, include_blank: false, label: 'Access' %>
-
+					<%= r.input :sort_weight, label: 'Sort weight' %>
 					<div class="form-group select optional cover">
 						<label class="control-label select optional" for="cover">Cover image</label>
 						<%= r.file_field :cover %> <%= (@resource.cover) ? image_tag(@resource.cover.thumb("200x200").url) + "<br/>".html_safe + check_box("cover_remove", "", {}, "1", nil)+ " Remove media" : '' %>

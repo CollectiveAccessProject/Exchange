@@ -28,7 +28,7 @@
 				    child.child_resource.media_files.each do |m| 
 				        next if !m.sourceable
 %>
-					    <%= link_to(m.sourceable.preview(:medium), resource_path(item.resource_id)) %>
+					    <%= link_to(m.sourceable.preview(:medium, nil, nil, nil, false), resource_path(item.resource_id)) %>
 <%
                         collectionImage = true
                         break

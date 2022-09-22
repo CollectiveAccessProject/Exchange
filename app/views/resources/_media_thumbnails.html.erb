@@ -10,8 +10,9 @@
 		  <% end %>
 			  <div class="col-md-3">
 				<div class="thumbnail previewThumbnail">
-				  <a class="modalOpen" href="#" id="<%= 'link' + f.sourceable.class.to_s + f.sourceable.id.to_s %>" data-link-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>Link">
+				  <a class="mediaThumbnail modalOpen" href="#" id="<%= 'link' + f.sourceable.class.to_s + f.sourceable.id.to_s %>" data-link-target="#<%= f.sourceable.class.to_s + f.sourceable.id.to_s %>Link">
 					<%= media_display = f.sourceable.preview :thumbnail %>
+					<div class="zoomIcon"><i class="fa fa-search-plus" aria-hidden="true"></i></div>
 				  </a>
 				  <div class="caption small">
 						<%= 
@@ -28,11 +29,11 @@
 						<% end %>
 					  </div>
 					  <div class="col-sm-4">
-						<% if (fzoom = is_zoomable(f)) %>
+						<!--<% if (fzoom = is_zoomable(f)) %>
 						  <div class="zoomControls">
 							<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(fzoom) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
 						  </div>
-						<% end %>
+						<% end %>-->
 					  </div>
 					</div>
 				  </div>

@@ -1,9 +1,5 @@
 <% thumb = false %>
-<div class="col-md-2 qsResult">
-	<% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
-		<div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= collection_object.id.to_s %>" class="qsResultCheckbox"/></div>
-	<% end %>
-
+<div class="col-md-3 qsResult">
 	<% if collection_object.cover %>
 		<% thumb = true %>
 		<%= link_to(image_tag(collection_object.cover.thumb("200x200").url), get_resource_view_path(collection_object[:id], user_signed_in?)) %>
@@ -12,9 +8,6 @@
 			<% if f.sourceable %>
 				<%= link_to (f.sourceable.preview :thumbnail), get_resource_view_path(collection_object[:id], user_signed_in?) %><br/>
 				<% thumb = true %>
-				<div class="zoomControls searchZoom" onload="$(this).css('top', function(){ console.log($(this).prev().('.previewMediaCaption.').height() * -1);});">
-					<a href="#" class="leafletZoom" data-dismiss="modal" onclick="$('#mediaViewerModal').removeData('iiif'); jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show'); return false;"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-				</div>
 				<% break %>
 			<% end %>
 		<% end %>
@@ -22,6 +15,11 @@
 	<% if(thumb == false) %>
 		<%= link_to '<i class="fa fa-picture-o fa-5x fa-align-center thumbPlaceholder" aria-hidden="true"></i>'.html_safe, get_resource_view_path(collection_object, user_signed_in?) %><br/>
 	<% end %>
+	
+	<% if (current_user && @available_collections_and_resources && (@available_collections_and_resources.length > 0)) %>
+		<div class="qsResultCheckbox"><input type="checkbox" name="add_resource" value="<%= collection_object.id.to_s %>" class="qsResultCheckbox"/></div>
+	<% end %>
+	
 	<div class="text-left qsResultText">
 		<div class="small"><%= sanitize(collection_object.get_collection_object_field('artist')) %> <%= sanitize(collection_object.get_collection_object_field('artist_nationality', { enclose_in_parens: true})) %></div>
 		<%= link_to sanitize(collection_object[:title], tags: %w(strong em a font b sup sub u), attributes: %w(href style)), get_resource_view_path(collection_object[:id], user_signed_in?) %>

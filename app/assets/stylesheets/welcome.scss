@@ -1,3 +1,109 @@
 // Place all the styles related to the Welcome controller here.
 // They will automatically be included in application.css.sass.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+input.welcomeSearch {
+	font-size: 3.25rem;
+    height: 6.5rem;
+    line-height: 1.75rem;
+    line-height: 37px;
+    padding-right: 4rem;
+    text-overflow:ellipsis;
+    
+	border-radius: 0;
+	box-shadow: none;
+	display: block;
+	font-family: Helvetica,Arial,sans-serif;
+	
+	margin: 10px 0 0 0;
+	outline: none;
+	padding: 0 12px;
+	width: 100%;
+	
+	border: 1px solid #444;
+}
+
+.welcomeSearchGroup {
+	position: relative;
+	padding: 0px;
+	margin: 0px;
+}
+
+.welcomeSearchIcon {
+	position: absolute;
+	font-size: 20px; 
+	
+	right: 20px;
+	top: 20px;
+	
+}
+.welcomeSearchClear {
+	position: absolute;
+	display: none;
+	font-size: 20px; 
+	
+	right: 50px;
+	top: 20px;
+}
+
+.welcomeSearchClear:hover {
+	position: absolute;
+	font-size: 20px; 
+	color: black;
+	
+	right: 50px;
+	top: 20px;
+}
+
+.welcomeHeading {
+	color: #8a8a8a;
+	margin: 25px 0 25px 0;
+}
+
+.welcomeSuggestions {
+	margin: 10px 0 10px 0;
+	display: none;
+}
+
+.welcomeResultType {
+	font-family: "Oswald", sans-serif;
+	font-size: 13px;
+	color: #848484 !important;
+}
+
+.panel-welcome {
+	border: 0px !important;
+}
+
+.featureBoxText {
+	text-align: center;
+}
+
+
+.modalRefine {
+    margin: 3px 0 0 3px;
+}
+
+.welcomeRefine .refineContainer {
+	width: 100%;
+	margin: 0px;
+	display: none;
+}
+
+.refineContainerContent {
+	margin-left: 12px !important;
+	margin-right: 12px !important;
+	border-bottom: 1px dotted #555;
+	padding-bottom: 15px;
+}
+
+.welcomeResult .quickSearchRefineSelect {
+	width: 150px !important;
+}
+
+.welcomeResult .qsResultCheckbox {
+  position: absolute;
+  top: 0px;
+  right: 3px;
+  z-index: 30000;
+}

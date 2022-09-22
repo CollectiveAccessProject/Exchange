@@ -51,7 +51,6 @@
   <div class="col-sm-10">
     <p id="notice"><%= notice %></p>
 
-    <!--<H3>UMMA Object</H3>-->
     <H2><%= sanitize(@resource.title, tags: %w(strong em a font b sup sub u i), attributes: %w(href style)) %></H2>
     <div class="row">
       <div class="col-sm-8">
@@ -95,11 +94,8 @@
         </div><!-- end resourceCarousel -->
       	<% else %>
    		  <% @resource.media_files.each do |f| %>
-      		<div class="collectionObjectPreview">
-      			<a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><%= f.sourceable.preview :huge  %></a>
-      			<div class="zoomControls">
-				  <a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
-				</div>
+      		<div class="collectionObjectView">
+      			<%= f.sourceable.preview :huge, nil, nil, nil, false, true  %>
       		</div>
       	<% 
       	  end 

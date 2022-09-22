@@ -6,11 +6,11 @@
 					<div class="col-sm-12">
 						<h4>
 							<div class="row">
-								<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
+								<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+									<%= @collection_objects_count %> UMMA Object<%= (@collection_objects_count == 1) ? "" : "s" %>
 									<% if @collection_objects_num_pages > 0 %>
-										<button id='colObjectResultsRefineTrigger' class='btn btn-default'>Refine</button>
+										<button id='colObjectResultsRefineTrigger' class='refineTrigger btn btn-default'>Refine Results</button>
 									<% end %>
-									<button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_collection_object" href="#">Refine</button>
 								</div>
 								<div id="collection_object_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
 									<form class="searchPaging">
@@ -80,7 +80,7 @@
 								<%= render 'collection_object', collection_object: r %>
 							<% end  %>
 						</div>
-						<div class="infinite-pagination-message">xxxx</div>
+						<div class="infinite-pagination-message"></div>
 						<% Exchange::QuickSearchLinkRenderer.set_data(type: 'collection_object', query: @query_proc) %>
 						<%= will_paginate @collection_objects, renderer: Exchange::QuickSearchLinkRenderer %>
 						<% if current_user %>
@@ -95,6 +95,8 @@
 			</div>
 			<%= render(partial: 'resources/media_overlay') %>
 		</div>
+		
+
 		<%= render :partial => "quick_search/filter_modal.html.erb", :locals => {type: "collection_object", prefix: "colObject" } %>
 
 		<div class="hidden-sm hidden-xs col-md-3 col-lg-3 refineContainer" id="colObjectRefineContainer">

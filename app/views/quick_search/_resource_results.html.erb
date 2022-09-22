@@ -6,12 +6,13 @@
 				<div class="col-sm-12">
 					<h4>
 						<div class="row">
-							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><%= @resources_count %> resource<%= (@resources_count == 1) ? "" : "s" %>
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+								<%= @resources_count %> resource<%= (@resources_count == 1) ? "" : "s" %>
 								<% if @resources_num_pages > 0 %>
-									<button id='resourceResultsRefineTrigger' class='btn btn-default'>Refine</button>
+									<button id='resourceResultsRefineTrigger' class='refineTrigger btn btn-default'>Refine Results</button>
 								<% end %>
-								<button type="button" class="modalOpen btn btn-sm btn-primary hidden-md hidden-lg modalRefine" data-toggle="modal" data-target="#filterModal_resource" href="#">Refine</button>
 							</div>
+							
 							<div id="resource_right" class="col-lg-7 col-md-7 col-sm-7 col-xs-7 text-right">
 								<form class="searchPaging">
 									<div class="searchFormElement">

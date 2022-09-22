@@ -26,30 +26,43 @@
   <div class="col-md-12">
     <ul class="nav nav-tabs">
         <% 
-        	active = 'collection_objects'
+        	active = nil
             active = @dtype + 's' if !@dtype.nil?
             if(@collection_objects.total_entries > 0) 
+            	active = 'collection_objects' if active.nil?
         %>
             <li <%= ((active === 'collection_objects') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_collection_object_results">UMMA objects (<%= @collection_objects.total_entries %>)</a>
             </li>  
         <% end %>
         <% if(@resources.total_entries > 0) %>
+        	<% 
+            	active = 'resources' if active.nil? 
+            %>
             <li <%= ((active === 'resources') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_resource_results">Resources  (<%= @resources.total_entries %>)</a>
             </li>    
         <% end %>
         <% if(@collections.total_entries > 0) %>
+        	<% 
+            	active = 'collections' if active.nil? 
+            %>
             <li <%= ((active === 'collections') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_collection_results">Learning collections  (<%= @collections.total_entries %>)</a>
             </li>   
         <% end %>
         <% if(@is_staff && @crcsets.total_entries > 0) %>
+        	<% 
+            	active = 'crcsets' if active.nil? 
+            %>
             <li <%= ((active === 'crcsets') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_crcset_results">CRC Sets  (<%= @crcsets.total_entries %>)</a>
             </li> 
         <% end %>
         <% if(@exhibitions.total_entries > 0) %>
+       		<% 
+            	active = 'exhibitions' if active.nil? 
+            %>
             <li <%= ((active === 'exhibitions') ? "class='active'" : "").html_safe %>>
                 <a data-toggle="tab" href="#tab_exhibition_results">Exhibitions (<%= @exhibitions.total_entries %>)</a>
             </li>  
