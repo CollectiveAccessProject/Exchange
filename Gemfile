@@ -79,8 +79,9 @@ gem 'acts_as_commentable'
 gem 'will_paginate', '~> 3.1.0'
 
 # elasticsearch
-gem 'elasticsearch-model', git: "https://github.com/elastic/elasticsearch-rails.git", branch: "5.x"
-gem 'elasticsearch-rails'
+#gem 'elasticsearch-model', git: "https://github.com/elastic/elasticsearch-rails.git", branch: "5.x"
+gem 'elasticsearch-model', "~> 5.1.0"
+gem 'elasticsearch-rails', "~> 5.1.0"
 
 # settings
 gem 'ledermann-rails-settings'

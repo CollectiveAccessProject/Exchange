@@ -354,10 +354,14 @@ def get_values_for_refine(field, query, type, refine_filters)
         v['key']
     end  
     
-    sorted_acc = acc.sort.each do |v| 
-        next if !v['key'] or !v['key'].strip
-        {:id => v['key'], :label => v['key'].downcase, :value => v['key']}
-    end 
+    acc = acc.reduce([]) do |c,v|
+    	t = v.split(';')
+   		c.push(*t)
+   	end
+    
+    sorted_acc = acc.uniq.sort
+    
+    return sorted_acc
 end
 
 def get_values_for_refine_for_select(field, query, type, refine_filters)
