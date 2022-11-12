@@ -2,6 +2,7 @@
 <%=
   get_file_icon(mimetype: plugin_model.file_content_type, size: 5, image: plugin_model.media_file.thumbnail, version: version)
 %>
+
   <br/>
 <%
   file_type = MIME::Types[plugin_model.file_content_type].first.friendly if (plugin_model.file_content_type) 
@@ -25,6 +26,8 @@
       #display_file_type = 'Unknown File Type'
   end
 %> 
+<%= link_to("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> Download".html_safe, plugin_model.file.url, class: "idle-fade", download: plugin_model.file.original_filename.nil? ? "download" : plugin_model.file.original_filename)  %>
+
 <%
 	media_id = plugin_model.media_file.id
 	if !(version.to_s == "icon" || version.to_s == "thumbnail" || caption == 'no')

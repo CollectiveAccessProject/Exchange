@@ -35,25 +35,25 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
             end
                 if connected
                   # authentication succeeded
-                  ldap.search( :base => "ou=Groups,dc=umich,dc=edu", :filter => "(&(member=uid=" + username + ",ou=People,dc=umich,dc=edu))" ) do |entry|
-                    groupname = entry[:cn][0]
-                    if groupname
-                        begin 
-                            g = Group.where(name: groupname).first
-                            if g 
-                                #raise "Group ID IS  " + g.id.to_s
-                            else                                
-                                g = Group.new({name: groupname, group_type: 2})
-                                g.save
-                            end
-                            
-                            # add user to group
-                            item = UserGroup.where(group_id: g.id, user_id: @user.id, access_type: 2).first_or_create
-                        rescue Exception => e
-                            raise e.message
-                        end
-                    end
-                  end
+                  # ldap.search( :base => "ou=Groups,dc=umich,dc=edu", :filter => "(&(member=uid=" + username + ",ou=People,dc=umich,dc=edu))" ) do |entry|
+#                     groupname = entry[:cn][0]
+#                     if groupname
+#                         begin 
+#                             g = Group.where(name: groupname).first
+#                             if g 
+#                                 #raise "Group ID IS  " + g.id.to_s
+#                             else                                
+#                                 g = Group.new({name: groupname, group_type: 2})
+#                                 g.save
+#                             end
+#                             
+#                             # add user to group
+#                             item = UserGroup.where(group_id: g.id, user_id: @user.id, access_type: 2).first_or_create
+#                         rescue Exception => e
+#                             raise e.message
+#                         end
+#                     end
+#                   end
                 end
             
         end
