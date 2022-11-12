@@ -75,6 +75,10 @@
                     <div class="zoomControls" style="padding-right: 100px;">
                       <a href="#" class="leafletZoom" onclick="jQuery('#mediaViewerModal').data('iiif', '<%= riiif_info_path(f) %>').modal('show');"><i class="fa fa-search-plus" aria-hidden="true"></i>Zoom</a>
                     </div>
+                    
+					<% if(@is_staff) %>
+						<%= link_to 'Download media', f.sourceable.url, download: @resource.collection_identifier + '.' + f.sourceable.media_file.thumbnail.ext %>
+					<% end %>
                   <% end %>
                 </div>
             <%
@@ -97,6 +101,9 @@
       		<div class="collectionObjectView">
       			<%= f.sourceable.preview :huge, nil, nil, nil, false, true  %>
       		</div>
+      		<% if(@is_staff) %>
+      			<%= link_to 'Download media', f.sourceable.url, download: @resource.collection_identifier + '.' + f.sourceable.media_file.thumbnail.ext %>
+      		<% end %>
       	<% 
       	  end 
       	end

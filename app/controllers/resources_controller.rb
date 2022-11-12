@@ -110,6 +110,8 @@ class ResourcesController < ApplicationController
       @search_next_resource_id = session[:last_search_results][ct][i+1] if (i<(session[:last_search_results][ct].length - 1))
       @search_previous_resource_id = session[:last_search_results][ct][i-1] if (i > 0)
     end
+    
+    @is_staff = current_user.has_role?(:staff)
 
   end
 
@@ -129,6 +131,7 @@ class ResourcesController < ApplicationController
     	end
     end
 
+    @is_staff = current_user.has_role?(:staff)
     render :show
   end
 
