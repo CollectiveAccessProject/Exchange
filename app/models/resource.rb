@@ -1081,7 +1081,7 @@ class Resource < ActiveRecord::Base
             query: {
                 query_string:  {
                     default_operator: "AND",
-                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s + refine_q
+                    query: "(" + query_proc + ") " + ((query_proc.length > 0) ? " AND " : "") + "resource_type:" + Resource::COLLECTION_OBJECT.to_s + " (" + acl_str.join(" OR ") + ")" + refine_q
                 }
             }
         }
