@@ -92,7 +92,7 @@ class QuickSearchController < ApplicationController
     begin
       setup
     rescue Exception => e
-      redirect_to("/", :flash => { :error => "Search could not be completed" })
+      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
     end
     
     respond_to do |format|
@@ -106,7 +106,7 @@ class QuickSearchController < ApplicationController
       setup
     rescue Exception => e
       #raise "Search error: " + e.message
-     redirect_to("/", :flash => { :error => "Search could not be completed"})
+     redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message})
     end
 
     params.permit(:type, :length)
@@ -142,7 +142,7 @@ class QuickSearchController < ApplicationController
       setup(advanced:true)
     rescue Exception => e
       #raise "Search error: " + e.message
-      redirect_to("/", :flash => { :error => "Search could not be completed" })
+      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
     end
   end
   
@@ -165,7 +165,7 @@ class QuickSearchController < ApplicationController
     
     @query_proc = @query.dup if @query
     
-    @query_proc = @query.gsub(/[^[:word:]\s\/\-\.\:\_\*\"]/, '') if @query_proc
+    @query_proc = @query_proc.gsub(/[^[:word:]\&\s\/\-\.\:\_\*\"]/, '') if @query_proc
     @query_proc = self.dates_to_lucene(@query_proc) if @query_proc
     
     @page = params[:page].to_i
@@ -194,7 +194,8 @@ class QuickSearchController < ApplicationController
     
     # rewrite for date search
     @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*[ ]+(TO|-|–)[ ]+["]*([\d]+)["]*/i, '(start_date:>=\\1' + ' AND end_date:<=\\3)') if @query_proc
-    @query_proc = @query_proc.gsub(/date_created:["]*([\d]+)["]*/, '(start_date:<=\\1' + ' AND end_date:>=\\1)') if @query_proc
+    @query_proc = @query_proc.gsub(/date_created:["]*([\d]{4})["]*/, '(start_date:<=\\1' + ' AND end_date:>=\\1)') if @query_proc
+ 	@query_proc = @query_proc.gsub(/date_created:/, '') if @query_proc
 
     # rewrite for updated_at search
     if @query_proc
@@ -215,6 +216,9 @@ class QuickSearchController < ApplicationController
     
     # rewrite rating
     #@query_proc = @query_proc.gsub(/rating:(\[[1-9]+ TO 5\])/, '(rating:\\1 OR rating:0)') if @query_proc
+    
+    entity_coder = HTMLEntities.new
+    @query_proc = entity_coder.decode(@query_proc) 
 
     session[:items_per_page] = {} if (!session[:items_per_page])
     ['resource', 'collection', 'collection_object', 'exhibition', 'crcset'].map {|n| session[:items_per_page][n] = WillPaginate.per_page if (!session[:items_per_page].key?(n))}
@@ -423,8 +427,8 @@ class QuickSearchController < ApplicationController
       }
 
     rescue Exception => e
-      #raise "Search error: " + e.message + @query
-      redirect_to("/", :flash => { :error => "Search could not be completed" })
+      raise "Search error: " + e.message + @query
+      redirect_to("/", :flash => { :error => "Search could not be completed: " + e.message })
     end
   end
 
