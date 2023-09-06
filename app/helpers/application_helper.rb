@@ -329,7 +329,7 @@ def get_field_values_for_objects(f)
 end
 
 def get_values_for_refine(field, query, type, refine_filters)
-    query.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/\-&\*]+)/, '"\1"')
+   # query.gsub!(/(?<=^|\s)([\d]+[A-Za-z0-9\.\/&\*]+)/, '"\1"')
     query.gsub!(/["]{2}/, '"')
     
     refine_q = ''
@@ -338,9 +338,9 @@ def get_values_for_refine(field, query, type, refine_filters)
     end
     agg = Resource.search(
         query: {
-            query_string:  {
+            simple_query_string:  {
                 default_operator: "AND",
-                query: query + refine_q
+                query: '"' + query + '"' +  refine_q
             }
         },
         aggs: {

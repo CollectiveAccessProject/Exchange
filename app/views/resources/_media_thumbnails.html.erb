@@ -26,7 +26,7 @@
 						  <% if f.display_collectionobject_link == 1 %>
 						    <%= link_to "View Object Record".html_safe, get_resource_view_path(f.get_original_resource_id, user_signed_in?) %>
 						  <% end %>
-						  <% if(@is_staff) %>
+						  <% if(@is_staff) and f.sourceable and f.sourceable.get_media and f.sourceable.get_media.sourceable %>
 						  	<%= link_to 'Download media', f.sourceable.get_media.sourceable.url, download:  f.sourceable.get_resource.collection_identifier + '.' +f.sourceable.get_media.sourceable.media_file.thumbnail.ext %>
 						  <% end %>
 						<% end %>
